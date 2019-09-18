@@ -13,6 +13,3 @@ def featless_branch(git_output):
 if __name__ == '__main__':
     for line in sys.stdin:
         sys.stdout.write('{branch}\n'.format(branch=featless_branch(line)))
-
-    if not line:
-        raise Exception('no branches provided')
