@@ -10,6 +10,10 @@ references:
           POSTGRES_DB: pay_test
           POSTGRES_PASSWORD:
 
+  undeploy_image: &undeploy_image
+    docker:
+      - image: circleci/python:3.7
+
   cf_install: &cf_install
     run:
       command: |
@@ -45,3 +49,18 @@ jobs:
       - *cf_install
       - *cf_login
       - run: make deploy-dev
+
+  cleanup-old-deploys:
+    <<: *undeploy_image
+    steps:
+      - checkout
+      - *cf_install
+      - *cf_login
+      - run: make -C ci undeploy
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - cleanup-old-deploys
