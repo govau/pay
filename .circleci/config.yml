@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/elixir:1.9
+      - image: circleci/postgres:9.4
+
+    steps:
+      - checkout
+      - run: make install
+      - run: make test

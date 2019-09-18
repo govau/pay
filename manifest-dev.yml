@@ -1,0 +1,16 @@
+defaults: &defaults
+  buildpacks:
+    - binary_buildpack
+  instances: 1
+  memory: 128M
+  disk_quota: 128MB
+
+
+applications:
+  - name: pay-((stg))
+    <<: *defaults
+    command: ./pay/bin/pay start
+    path: _build/prod/rel
+    services:
+      - pay-psql-((stg))
+
