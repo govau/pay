@@ -2,6 +2,7 @@ use Mix.Config
 
 # Configure your database
 config :pay, Pay.Repo,
+  username: "postgres",
   database: "pay_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

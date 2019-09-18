@@ -1,11 +1,47 @@
 version: 2
+
+references:
+  elixir_image: &elixir_image
+    docker:
+      - image: circleci/elixir:1.9-node
+      - image: circleci/postgres:9.4
+        environment:
+          POSTGRES_USER: postgres
+          POSTGRES_DB: pay_test
+          POSTGRES_PASSWORD:
+
+  cf_install: &cf_install
+    run:
+      command: |
+        curl -L "https://packages.cloudfoundry.org/stable?release=linux64-binary&source=github" | tar -zx
+        mkdir -p `pwd`/bin
+        chmod +x ./cf
+        mv ./cf bin/
+        echo export PATH="$PWD/bin:\$PATH" >> $BASH_ENV
+        source $BASH_ENV
+        cf install-plugin -f https://github.com/contraband/autopilot/releases/download/0.0.8/autopilot-linux
+
+  cf_login: &cf_login
+    run:
+      command: make cf-login
+
+  cf_login_prod: &cf_login_prod
+    run:
+      command: make cf-login-prod
+
 jobs:
   build:
-    docker:
-      - image: circleci/elixir:1.9
-      - image: circleci/postgres:9.4
-
+    <<: *elixir_image
     steps:
       - checkout
-      - run: make install
-      - run: make test
+      - run: mix local.hex --force
+      - run: mix local.rebar --force
+      - run: mix deps.get --only prod
+      - run: mix test
+      - run: npm install --prefix ./assets
+      - run: npm run deploy --prefix ./assets
+      - run: MIX_ENV=prod mix phx.digest
+      - run: MIX_ENV=prod mix release
+      - *cf_install
+      - *cf_login
+      - run: make deploy-dev
