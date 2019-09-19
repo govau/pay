@@ -1,5 +1,7 @@
 defmodule PayWeb.Router do
   use PayWeb, :router
+  use Plug.ErrorHandler
+  use Sentry.Plug
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -17,6 +19,7 @@ defmodule PayWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/_status", PageController, :status
   end
 
   # Other scopes may use custom stacks.

@@ -1,5 +1,6 @@
 defmodule PayWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :pay
+  use Sentry.Phoenix.Endpoint
 
   socket "/socket", PayWeb.UserSocket,
     websocket: true,
