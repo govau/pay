@@ -22,8 +22,15 @@ defmodule PayWeb.Router do
     get "/*path", ReactController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", PayWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", PayWeb do
+    pipe_through(:api)
+    resources("/card-types", CardTypeController, except: [:new, :edit])
+
+    resources("/permissions", PermissionController, except: [:new, :edit])
+    resources("/roles", RoleController, except: [:new, :edit])
+    resources("/users", UserController, except: [:new, :edit])
+    resources "/organisation-types", OrganisationTypeController, except: [:new, :edit]
+    resources "/organisations", OrganisationController, except: [:new, :edit]
+    resources("/services", ServiceController, except: [:new, :edit])
+  end
 end
