@@ -15,22 +15,31 @@ defmodule PayWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/v1/api/", PayWeb.External, as: :external do
+    pipe_through(:api)
+
+    resources("/payments", PaymentController, only: [:index, :show, :create])
+  end
+
+  scope "/v1/api/internal", PayWeb do
+    pipe_through(:api)
+
+    resources("/payments/card-types", CardTypeController, except: [:new, :edit])
+    resources("/payments/gateway-accounts", GatewayAccountController, except: [:new, :edit])
+    resources("/payments/payments", PaymentController, except: [:new, :edit])
+
+    resources("/services/permissions", PermissionController, except: [:new, :edit])
+    resources("/services/roles", RoleController, except: [:new, :edit])
+    resources("/services/users", UserController, except: [:new, :edit])
+    resources "/services/organisation-types", OrganisationTypeController, except: [:new, :edit]
+    resources "/services/organisations", OrganisationController, except: [:new, :edit]
+    resources("/services/services", ServiceController, except: [:new, :edit])
+  end
+
   scope "/", PayWeb do
     pipe_through :browser
 
     get "/_status", PageController, :status
     get "/*path", ReactController, :index
-  end
-
-  scope "/api", PayWeb do
-    pipe_through(:api)
-    resources("/card-types", CardTypeController, except: [:new, :edit])
-
-    resources("/permissions", PermissionController, except: [:new, :edit])
-    resources("/roles", RoleController, except: [:new, :edit])
-    resources("/users", UserController, except: [:new, :edit])
-    resources "/organisation-types", OrganisationTypeController, except: [:new, :edit]
-    resources "/organisations", OrganisationController, except: [:new, :edit]
-    resources("/services", ServiceController, except: [:new, :edit])
   end
 end
