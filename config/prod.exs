@@ -33,10 +33,3 @@ config :pay, PayWeb.Endpoint,
 # to start each relevant endpoint:
 
 config :pay, PayWeb.Endpoint, server: true
-
-config :sentry,
-  dsn: System.get_env("SENTRY_DSN") || raise("Sentry DSN missing"),
-  enable_source_code_context: true,
-  root_source_code_path: File.cwd!(),
-  environment_name: System.get_env("RELEASE_LEVEL") || "staging",
-  included_environments: ~w(production staging)
