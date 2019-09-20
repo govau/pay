@@ -23,7 +23,11 @@ defmodule Pay.Release do
   end
 
   def run_seeds do
-    Enum.each(repos(), &run_seeds_for/1)
+    load_app()
+
+    for repo <- repos() do
+      {:ok, _, _} = Ecto.Migrator.with_repo(repo, &run_seeds_for/1)
+    end
   end
 
   defp run_seeds_for(repo) do
