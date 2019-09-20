@@ -434,9 +434,10 @@ defmodule Pay.Services do
 
   """
   def create_organisation(attrs \\ %{}) do
-    %Organisation{}
-    |> Organisation.changeset(attrs)
-    |> Repo.insert()
+    case Repo.insert(Organisation.changeset(%Organisation{}, attrs)) do
+      {:ok, o} -> {:ok, Repo.preload(o, [:type])}
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   @doc """
