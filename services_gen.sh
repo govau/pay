@@ -3,7 +3,6 @@
 # TODO: remove from repo
 
 SERVICES_CTX=Services
-CHARGES_CTX=Charges
 
 rm -rf ./test/pay
 rm -rf ./test/pay_web/controllers/*.exs
@@ -11,14 +10,6 @@ rm -rf ./priv/repo/migrations/*.exs
 
 mix ecto.drop
 mix ecto.create
-mix ecto.migrate
-
-mix phx.gen.json $CHARGES_CTX CardType card_types \
-    type:string \
-    brand:string \
-    label:string \
-    requires_3ds:boolean
-
 mix ecto.migrate
 
 mix phx.gen.json $SERVICES_CTX Permission permissions \
@@ -90,9 +81,6 @@ mix phx.gen.schema $SERVICES_CTX.ServiceUser service_users \
     role_id:references:roles
 
 mix ecto.migrate
-
-# Run seeds
-mix ecto.setup
 
 # Finally, clean up
 mix format
