@@ -346,7 +346,6 @@ defmodule Pay.ChargesTest do
 
     @valid_attrs %{}
     @update_attrs %{}
-    @invalid_attrs %{}
 
     def gateway_account_card_types_fixture(attrs \\ %{}) do
       {:ok, gateway_account_card_types} =
@@ -374,11 +373,6 @@ defmodule Pay.ChargesTest do
                Charges.create_gateway_account_card_types(@valid_attrs)
     end
 
-    test "create_gateway_account_card_types/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} =
-               Charges.create_gateway_account_card_types(@invalid_attrs)
-    end
-
     test "update_gateway_account_card_types/2 with valid data updates the gateway_account_card_types" do
       gateway_account_card_types = gateway_account_card_types_fixture()
 
@@ -387,19 +381,6 @@ defmodule Pay.ChargesTest do
                  gateway_account_card_types,
                  @update_attrs
                )
-    end
-
-    test "update_gateway_account_card_types/2 with invalid data returns error changeset" do
-      gateway_account_card_types = gateway_account_card_types_fixture()
-
-      assert {:error, %Ecto.Changeset{}} =
-               Charges.update_gateway_account_card_types(
-                 gateway_account_card_types,
-                 @invalid_attrs
-               )
-
-      assert gateway_account_card_types ==
-               Charges.get_gateway_account_card_types!(gateway_account_card_types.id)
     end
 
     test "delete_gateway_account_card_types/1 deletes the gateway_account_card_types" do
