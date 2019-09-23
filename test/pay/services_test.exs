@@ -135,14 +135,14 @@ defmodule Pay.ServicesTest do
       disabled: true,
       email: "some email",
       external_id: "7488a646-e31f-11e4-aace-600308960662",
-      last_logged_in_at: "2010-04-17T14:00:00Z",
+      last_logged_in_at: "2010-04-17T14:00:00.000000Z",
       telephone_number: "some telephone_number"
     }
     @update_attrs %{
       disabled: false,
       email: "some updated email",
       external_id: "7488a646-e31f-11e4-aace-600308960668",
-      last_logged_in_at: "2011-05-18T15:01:01Z",
+      last_logged_in_at: "2011-05-18T15:01:01.000000Z",
       telephone_number: "some updated telephone_number"
     }
     @invalid_attrs %{
@@ -177,7 +177,10 @@ defmodule Pay.ServicesTest do
       assert user.disabled == true
       assert user.email == "some email"
       assert user.external_id == "7488a646-e31f-11e4-aace-600308960662"
-      assert user.last_logged_in_at == DateTime.from_naive!(~N[2010-04-17T14:00:00Z], "Etc/UTC")
+
+      assert user.last_logged_in_at ==
+               DateTime.from_naive!(~N[2010-04-17T14:00:00.000000Z], "Etc/UTC")
+
       assert user.telephone_number == "some telephone_number"
     end
 
@@ -191,7 +194,10 @@ defmodule Pay.ServicesTest do
       assert user.disabled == false
       assert user.email == "some updated email"
       assert user.external_id == "7488a646-e31f-11e4-aace-600308960668"
-      assert user.last_logged_in_at == DateTime.from_naive!(~N[2011-05-18T15:01:01Z], "Etc/UTC")
+
+      assert user.last_logged_in_at ==
+               DateTime.from_naive!(~N[2011-05-18T15:01:01.000000Z], "Etc/UTC")
+
       assert user.telephone_number == "some updated telephone_number"
     end
 
