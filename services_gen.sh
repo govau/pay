@@ -35,7 +35,7 @@ mix phx.gen.json $SERVICES_CTX User users \
     email:string:unique \
     telephone_number:string \
     disabled:boolean \
-    last_logged_in_at:utc_datetime
+    last_logged_in_at:utc_datetime_usec
 
 mix ecto.migrate
 
@@ -79,6 +79,22 @@ mix phx.gen.schema $SERVICES_CTX.ServiceUser service_users \
     service_id:references:services \
     user_id:references:users \
     role_id:references:roles
+
+mix ecto.migrate
+
+mix phx.gen.schema $SERVICES_CTX.ServiceInvite service_invites \
+    service_id:references:services \
+    role_id:references:roles \
+    sender_id:references:users \
+    email:string \
+    expires_at:utc_datetime_usec \
+    disabled:boolean
+
+mix ecto.migrate
+
+mix phx.gen.schema $SERVICES_CTX.ServiceGatewayAccount service_gateway_accounts \
+    service_id:references:services \
+    gateway_account_id:string
 
 mix ecto.migrate
 

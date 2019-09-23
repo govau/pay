@@ -6,7 +6,7 @@ defmodule Pay.Services.User do
     field :disabled, :boolean, default: false
     field :email, :string
     field :external_id, Ecto.UUID
-    field :last_logged_in_at, :utc_datetime
+    field :last_logged_in_at, :utc_datetime_usec
     field :telephone_number, :string
 
     many_to_many :services, Pay.Services.Service, join_through: "service_users"
