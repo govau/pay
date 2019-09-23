@@ -9,7 +9,8 @@ defmodule Pay.Charges.ChargeRefund do
     field :reference, :string
     field :status, :string
     field :user_external_id, Ecto.UUID
-    field :charge_id, :id
+
+    belongs_to :charge, Pay.Charges.Charge
 
     timestamps()
   end

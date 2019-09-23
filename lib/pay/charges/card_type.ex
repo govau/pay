@@ -8,6 +8,9 @@ defmodule Pay.Charges.CardType do
     field :requires_3ds, :boolean, default: false
     field :type, :string
 
+    many_to_many :gateway_accounts, Pay.Charges.GatewayAccount,
+      join_through: "gateway_account_card_types"
+
     timestamps()
   end
 

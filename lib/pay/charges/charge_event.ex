@@ -4,7 +4,8 @@ defmodule Pay.Charges.ChargeEvent do
 
   schema "charge_events" do
     field :status, :string
-    field :charge_id, :id
+
+    belongs_to :charge, Pay.Charges.Charge
 
     timestamps()
   end

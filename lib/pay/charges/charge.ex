@@ -16,7 +16,8 @@ defmodule Pay.Charges.Charge do
     field :return_url, :string
     field :status, :string
     field :wallet, :string
-    field :gateway_account_id, :id
+
+    belongs_to :gateway_account, Pay.Charges.GatewayAccount
 
     timestamps()
   end
