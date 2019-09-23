@@ -293,4 +293,391 @@ defmodule Pay.Charges do
   def change_charge(%Charge{} = charge) do
     Charge.changeset(charge, %{})
   end
+
+  alias Pay.Charges.GatewayAccountCardTypes
+
+  @doc """
+  Returns the list of gateway_account_card_types.
+
+  ## Examples
+
+      iex> list_gateway_account_card_types()
+      [%GatewayAccountCardTypes{}, ...]
+
+  """
+  def list_gateway_account_card_types do
+    Repo.all(GatewayAccountCardTypes)
+  end
+
+  @doc """
+  Gets a single gateway_account_card_types.
+
+  Raises `Ecto.NoResultsError` if the Gateway account card types does not exist.
+
+  ## Examples
+
+      iex> get_gateway_account_card_types!(123)
+      %GatewayAccountCardTypes{}
+
+      iex> get_gateway_account_card_types!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_gateway_account_card_types!(id), do: Repo.get!(GatewayAccountCardTypes, id)
+
+  @doc """
+  Creates a gateway_account_card_types.
+
+  ## Examples
+
+      iex> create_gateway_account_card_types(%{field: value})
+      {:ok, %GatewayAccountCardTypes{}}
+
+      iex> create_gateway_account_card_types(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_gateway_account_card_types(attrs \\ %{}) do
+    %GatewayAccountCardTypes{}
+    |> GatewayAccountCardTypes.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a gateway_account_card_types.
+
+  ## Examples
+
+      iex> update_gateway_account_card_types(gateway_account_card_types, %{field: new_value})
+      {:ok, %GatewayAccountCardTypes{}}
+
+      iex> update_gateway_account_card_types(gateway_account_card_types, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_gateway_account_card_types(
+        %GatewayAccountCardTypes{} = gateway_account_card_types,
+        attrs
+      ) do
+    gateway_account_card_types
+    |> GatewayAccountCardTypes.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a GatewayAccountCardTypes.
+
+  ## Examples
+
+      iex> delete_gateway_account_card_types(gateway_account_card_types)
+      {:ok, %GatewayAccountCardTypes{}}
+
+      iex> delete_gateway_account_card_types(gateway_account_card_types)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_gateway_account_card_types(%GatewayAccountCardTypes{} = gateway_account_card_types) do
+    Repo.delete(gateway_account_card_types)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking gateway_account_card_types changes.
+
+  ## Examples
+
+      iex> change_gateway_account_card_types(gateway_account_card_types)
+      %Ecto.Changeset{source: %GatewayAccountCardTypes{}}
+
+  """
+  def change_gateway_account_card_types(%GatewayAccountCardTypes{} = gateway_account_card_types) do
+    GatewayAccountCardTypes.changeset(gateway_account_card_types, %{})
+  end
+
+  alias Pay.Charges.ChargeFee
+
+  @doc """
+  Returns the list of charge_fees.
+
+  ## Examples
+
+      iex> list_charge_fees()
+      [%ChargeFee{}, ...]
+
+  """
+  def list_charge_fees do
+    Repo.all(ChargeFee)
+  end
+
+  @doc """
+  Gets a single charge_fee.
+
+  Raises `Ecto.NoResultsError` if the Charge fee does not exist.
+
+  ## Examples
+
+      iex> get_charge_fee!(123)
+      %ChargeFee{}
+
+      iex> get_charge_fee!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_charge_fee!(id), do: Repo.get!(ChargeFee, id)
+
+  @doc """
+  Creates a charge_fee.
+
+  ## Examples
+
+      iex> create_charge_fee(%{field: value})
+      {:ok, %ChargeFee{}}
+
+      iex> create_charge_fee(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_charge_fee(attrs \\ %{}) do
+    %ChargeFee{}
+    |> ChargeFee.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a charge_fee.
+
+  ## Examples
+
+      iex> update_charge_fee(charge_fee, %{field: new_value})
+      {:ok, %ChargeFee{}}
+
+      iex> update_charge_fee(charge_fee, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_charge_fee(%ChargeFee{} = charge_fee, attrs) do
+    charge_fee
+    |> ChargeFee.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a ChargeFee.
+
+  ## Examples
+
+      iex> delete_charge_fee(charge_fee)
+      {:ok, %ChargeFee{}}
+
+      iex> delete_charge_fee(charge_fee)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_charge_fee(%ChargeFee{} = charge_fee) do
+    Repo.delete(charge_fee)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking charge_fee changes.
+
+  ## Examples
+
+      iex> change_charge_fee(charge_fee)
+      %Ecto.Changeset{source: %ChargeFee{}}
+
+  """
+  def change_charge_fee(%ChargeFee{} = charge_fee) do
+    ChargeFee.changeset(charge_fee, %{})
+  end
+
+  alias Pay.Charges.ChargeEvent
+
+  @doc """
+  Returns the list of charge_events.
+
+  ## Examples
+
+      iex> list_charge_events()
+      [%ChargeEvent{}, ...]
+
+  """
+  def list_charge_events do
+    Repo.all(ChargeEvent)
+  end
+
+  @doc """
+  Gets a single charge_event.
+
+  Raises `Ecto.NoResultsError` if the Charge event does not exist.
+
+  ## Examples
+
+      iex> get_charge_event!(123)
+      %ChargeEvent{}
+
+      iex> get_charge_event!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_charge_event!(id), do: Repo.get!(ChargeEvent, id)
+
+  @doc """
+  Creates a charge_event.
+
+  ## Examples
+
+      iex> create_charge_event(%{field: value})
+      {:ok, %ChargeEvent{}}
+
+      iex> create_charge_event(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_charge_event(attrs \\ %{}) do
+    %ChargeEvent{}
+    |> ChargeEvent.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a charge_event.
+
+  ## Examples
+
+      iex> update_charge_event(charge_event, %{field: new_value})
+      {:ok, %ChargeEvent{}}
+
+      iex> update_charge_event(charge_event, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_charge_event(%ChargeEvent{} = charge_event, attrs) do
+    charge_event
+    |> ChargeEvent.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a ChargeEvent.
+
+  ## Examples
+
+      iex> delete_charge_event(charge_event)
+      {:ok, %ChargeEvent{}}
+
+      iex> delete_charge_event(charge_event)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_charge_event(%ChargeEvent{} = charge_event) do
+    Repo.delete(charge_event)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking charge_event changes.
+
+  ## Examples
+
+      iex> change_charge_event(charge_event)
+      %Ecto.Changeset{source: %ChargeEvent{}}
+
+  """
+  def change_charge_event(%ChargeEvent{} = charge_event) do
+    ChargeEvent.changeset(charge_event, %{})
+  end
+
+  alias Pay.Charges.ChargeRefund
+
+  @doc """
+  Returns the list of charge_refunds.
+
+  ## Examples
+
+      iex> list_charge_refunds()
+      [%ChargeRefund{}, ...]
+
+  """
+  def list_charge_refunds do
+    Repo.all(ChargeRefund)
+  end
+
+  @doc """
+  Gets a single charge_refund.
+
+  Raises `Ecto.NoResultsError` if the Charge refund does not exist.
+
+  ## Examples
+
+      iex> get_charge_refund!(123)
+      %ChargeRefund{}
+
+      iex> get_charge_refund!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_charge_refund!(id), do: Repo.get!(ChargeRefund, id)
+
+  @doc """
+  Creates a charge_refund.
+
+  ## Examples
+
+      iex> create_charge_refund(%{field: value})
+      {:ok, %ChargeRefund{}}
+
+      iex> create_charge_refund(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_charge_refund(attrs \\ %{}) do
+    %ChargeRefund{}
+    |> ChargeRefund.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a charge_refund.
+
+  ## Examples
+
+      iex> update_charge_refund(charge_refund, %{field: new_value})
+      {:ok, %ChargeRefund{}}
+
+      iex> update_charge_refund(charge_refund, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_charge_refund(%ChargeRefund{} = charge_refund, attrs) do
+    charge_refund
+    |> ChargeRefund.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a ChargeRefund.
+
+  ## Examples
+
+      iex> delete_charge_refund(charge_refund)
+      {:ok, %ChargeRefund{}}
+
+      iex> delete_charge_refund(charge_refund)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_charge_refund(%ChargeRefund{} = charge_refund) do
+    Repo.delete(charge_refund)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking charge_refund changes.
+
+  ## Examples
+
+      iex> change_charge_refund(charge_refund)
+      %Ecto.Changeset{source: %ChargeRefund{}}
+
+  """
+  def change_charge_refund(%ChargeRefund{} = charge_refund) do
+    ChargeRefund.changeset(charge_refund, %{})
+  end
 end
