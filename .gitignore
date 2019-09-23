@@ -33,5 +33,9 @@ npm-debug.log
 # this depending on your deployment strategy.
 /priv/static/
 
+
+# This will be generated in prod from our react build
+/lib/pay_web/templates/react/index.html.eex
+
 manifest-vars-*.yml
 .elixir_ls

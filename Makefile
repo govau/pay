@@ -3,6 +3,9 @@ CF    ?= cf
 MIX   ?= mix
 FLAGS ?=
 
+ASSETS_SRC = $(shell find assets/src -type f)
+ASSETS_PUB = $(shell find assets/public -type f)
+
 CLD_HOST    ?= y.cld.gov.au
 CF_API      ?= https://api.system.$(CLD_HOST)
 CF_ORG      ?= dta
@@ -39,23 +42,41 @@ PSQL_SVC_NAME ?= pay-psql-$(STG)
 run:
 	$(MIX) phx.server
 
+run-frontend:
+	$(MAKE) -C assets start
+
+start: # start both phoenix and react dev server
+	$(MAKE) -j run run-frontend
+
 reset-db:
-	$(MIX) ecto.rollback --all
-	$(MIX) ecto.migrate
-	$(MIX) run priv/repo/seeds.exs
+	$(MIX) ecto.reset
 
 install:
 	$(MIX) deps.get
 
 test:
 	$(MIX) test
+	CI=true $(MAKE) -C assets $@
+
+assets/build/index.html: assets/public/index.html $(ASSETS_SRC) $(ASSETS_PUB)
+	$(MAKE) -C assets build
+
+lib/pay_web/templates/react/index.html.eex: assets/build/index.html
+	mkdir -p $(@D)
+	cp $< $@
+
+priv/static/index.html: assets/build/index.html
+	mkdir -p $(@D)
+	cp -r assets/build/* $(@D)
+
+frontend: lib/pay_web/templates/react/index.html.eex priv/static/index.html
 
 setup:
-	$(MIX) local.hex $(FLAGS)
 	$(MAKE) install
-	$(MAKE) -C frontend $@
+	$(MAKE) -C assets $@
 
 build-release:
+	$(MAKE) frontend
 	$(MIX) release
 
 cf-login:
@@ -80,5 +101,7 @@ deploy-dev: create-service-psql manifest-vars-$(STG).yml
 
 clean:
 	$(MIX) clean
+	$(MAKE) -C assets $@
+	-rm -r lib/pay_web/templates/react/index.html.eex priv/static
 
-.PHONY: run test deploy setup install
+.PHONY: run run-frontend test deploy setup install

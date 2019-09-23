@@ -18,8 +18,8 @@ defmodule PayWeb.Router do
   scope "/", PayWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
     get "/_status", PageController, :status
+    get "/*path", ReactController, :index
   end
 
   # Other scopes may use custom stacks.
