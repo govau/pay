@@ -582,4 +582,292 @@ defmodule Pay.Services do
   def change_service(%Service{} = service) do
     Service.changeset(service, %{})
   end
+
+  alias Pay.Services.RolePermission
+
+  @doc """
+  Returns the list of role_permissions.
+
+  ## Examples
+
+      iex> list_role_permissions()
+      [%RolePermission{}, ...]
+
+  """
+  def list_role_permissions do
+    Repo.all(RolePermission)
+  end
+
+  @doc """
+  Gets a single role_permission.
+
+  Raises `Ecto.NoResultsError` if the Role permission does not exist.
+
+  ## Examples
+
+      iex> get_role_permission!(123)
+      %RolePermission{}
+
+      iex> get_role_permission!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_role_permission!(id), do: Repo.get!(RolePermission, id)
+
+  @doc """
+  Creates a role_permission.
+
+  ## Examples
+
+      iex> create_role_permission(%{field: value})
+      {:ok, %RolePermission{}}
+
+      iex> create_role_permission(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_role_permission(attrs \\ %{}) do
+    %RolePermission{}
+    |> RolePermission.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a role_permission.
+
+  ## Examples
+
+      iex> update_role_permission(role_permission, %{field: new_value})
+      {:ok, %RolePermission{}}
+
+      iex> update_role_permission(role_permission, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_role_permission(%RolePermission{} = role_permission, attrs) do
+    role_permission
+    |> RolePermission.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a RolePermission.
+
+  ## Examples
+
+      iex> delete_role_permission(role_permission)
+      {:ok, %RolePermission{}}
+
+      iex> delete_role_permission(role_permission)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_role_permission(%RolePermission{} = role_permission) do
+    Repo.delete(role_permission)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking role_permission changes.
+
+  ## Examples
+
+      iex> change_role_permission(role_permission)
+      %Ecto.Changeset{source: %RolePermission{}}
+
+  """
+  def change_role_permission(%RolePermission{} = role_permission) do
+    RolePermission.changeset(role_permission, %{})
+  end
+
+  alias Pay.Services.OrganisationDomain
+
+  @doc """
+  Returns the list of organisation_domains.
+
+  ## Examples
+
+      iex> list_organisation_domains()
+      [%OrganisationDomain{}, ...]
+
+  """
+  def list_organisation_domains do
+    Repo.all(OrganisationDomain)
+  end
+
+  @doc """
+  Gets a single organisation_domain.
+
+  Raises `Ecto.NoResultsError` if the Organisation domain does not exist.
+
+  ## Examples
+
+      iex> get_organisation_domain!(123)
+      %OrganisationDomain{}
+
+      iex> get_organisation_domain!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_organisation_domain!(id), do: Repo.get!(OrganisationDomain, id)
+
+  @doc """
+  Creates a organisation_domain.
+
+  ## Examples
+
+      iex> create_organisation_domain(%{field: value})
+      {:ok, %OrganisationDomain{}}
+
+      iex> create_organisation_domain(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_organisation_domain(attrs \\ %{}) do
+    %OrganisationDomain{}
+    |> OrganisationDomain.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a organisation_domain.
+
+  ## Examples
+
+      iex> update_organisation_domain(organisation_domain, %{field: new_value})
+      {:ok, %OrganisationDomain{}}
+
+      iex> update_organisation_domain(organisation_domain, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_organisation_domain(%OrganisationDomain{} = organisation_domain, attrs) do
+    organisation_domain
+    |> OrganisationDomain.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a OrganisationDomain.
+
+  ## Examples
+
+      iex> delete_organisation_domain(organisation_domain)
+      {:ok, %OrganisationDomain{}}
+
+      iex> delete_organisation_domain(organisation_domain)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_organisation_domain(%OrganisationDomain{} = organisation_domain) do
+    Repo.delete(organisation_domain)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking organisation_domain changes.
+
+  ## Examples
+
+      iex> change_organisation_domain(organisation_domain)
+      %Ecto.Changeset{source: %OrganisationDomain{}}
+
+  """
+  def change_organisation_domain(%OrganisationDomain{} = organisation_domain) do
+    OrganisationDomain.changeset(organisation_domain, %{})
+  end
+
+  alias Pay.Services.ServiceUser
+
+  @doc """
+  Returns the list of service_users.
+
+  ## Examples
+
+      iex> list_service_users()
+      [%ServiceUser{}, ...]
+
+  """
+  def list_service_users do
+    Repo.all(ServiceUser)
+  end
+
+  @doc """
+  Gets a single service_user.
+
+  Raises `Ecto.NoResultsError` if the Service user does not exist.
+
+  ## Examples
+
+      iex> get_service_user!(123)
+      %ServiceUser{}
+
+      iex> get_service_user!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_service_user!(id), do: Repo.get!(ServiceUser, id)
+
+  @doc """
+  Creates a service_user.
+
+  ## Examples
+
+      iex> create_service_user(%{field: value})
+      {:ok, %ServiceUser{}}
+
+      iex> create_service_user(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_service_user(attrs \\ %{}) do
+    %ServiceUser{}
+    |> ServiceUser.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a service_user.
+
+  ## Examples
+
+      iex> update_service_user(service_user, %{field: new_value})
+      {:ok, %ServiceUser{}}
+
+      iex> update_service_user(service_user, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_service_user(%ServiceUser{} = service_user, attrs) do
+    service_user
+    |> ServiceUser.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a ServiceUser.
+
+  ## Examples
+
+      iex> delete_service_user(service_user)
+      {:ok, %ServiceUser{}}
+
+      iex> delete_service_user(service_user)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_service_user(%ServiceUser{} = service_user) do
+    Repo.delete(service_user)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking service_user changes.
+
+  ## Examples
+
+      iex> change_service_user(service_user)
+      %Ecto.Changeset{source: %ServiceUser{}}
+
+  """
+  def change_service_user(%ServiceUser{} = service_user) do
+    ServiceUser.changeset(service_user, %{})
+  end
 end

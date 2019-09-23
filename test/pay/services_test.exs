@@ -477,4 +477,176 @@ defmodule Pay.ServicesTest do
       assert %Ecto.Changeset{} = Services.change_service(service)
     end
   end
+
+  describe "role_permissions" do
+    alias Pay.Services.RolePermission
+
+    @valid_attrs %{}
+    @update_attrs %{}
+
+    def role_permission_fixture(attrs \\ %{}) do
+      {:ok, role_permission} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Services.create_role_permission()
+
+      role_permission
+    end
+
+    test "list_role_permissions/0 returns all role_permissions" do
+      role_permission = role_permission_fixture()
+      assert Services.list_role_permissions() == [role_permission]
+    end
+
+    test "get_role_permission!/1 returns the role_permission with given id" do
+      role_permission = role_permission_fixture()
+      assert Services.get_role_permission!(role_permission.id) == role_permission
+    end
+
+    test "create_role_permission/1 with valid data creates a role_permission" do
+      assert {:ok, %RolePermission{} = role_permission} =
+               Services.create_role_permission(@valid_attrs)
+    end
+
+    test "update_role_permission/2 with valid data updates the role_permission" do
+      role_permission = role_permission_fixture()
+
+      assert {:ok, %RolePermission{} = role_permission} =
+               Services.update_role_permission(role_permission, @update_attrs)
+    end
+
+    test "delete_role_permission/1 deletes the role_permission" do
+      role_permission = role_permission_fixture()
+      assert {:ok, %RolePermission{}} = Services.delete_role_permission(role_permission)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Services.get_role_permission!(role_permission.id)
+      end
+    end
+
+    test "change_role_permission/1 returns a role_permission changeset" do
+      role_permission = role_permission_fixture()
+      assert %Ecto.Changeset{} = Services.change_role_permission(role_permission)
+    end
+  end
+
+  describe "organisation_domains" do
+    alias Pay.Services.OrganisationDomain
+
+    @valid_attrs %{domain: "some domain"}
+    @update_attrs %{domain: "some updated domain"}
+    @invalid_attrs %{domain: nil}
+
+    def organisation_domain_fixture(attrs \\ %{}) do
+      {:ok, organisation_domain} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Services.create_organisation_domain()
+
+      organisation_domain
+    end
+
+    test "list_organisation_domains/0 returns all organisation_domains" do
+      organisation_domain = organisation_domain_fixture()
+      assert Services.list_organisation_domains() == [organisation_domain]
+    end
+
+    test "get_organisation_domain!/1 returns the organisation_domain with given id" do
+      organisation_domain = organisation_domain_fixture()
+      assert Services.get_organisation_domain!(organisation_domain.id) == organisation_domain
+    end
+
+    test "create_organisation_domain/1 with valid data creates a organisation_domain" do
+      assert {:ok, %OrganisationDomain{} = organisation_domain} =
+               Services.create_organisation_domain(@valid_attrs)
+
+      assert organisation_domain.domain == "some domain"
+    end
+
+    test "create_organisation_domain/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Services.create_organisation_domain(@invalid_attrs)
+    end
+
+    test "update_organisation_domain/2 with valid data updates the organisation_domain" do
+      organisation_domain = organisation_domain_fixture()
+
+      assert {:ok, %OrganisationDomain{} = organisation_domain} =
+               Services.update_organisation_domain(organisation_domain, @update_attrs)
+
+      assert organisation_domain.domain == "some updated domain"
+    end
+
+    test "update_organisation_domain/2 with invalid data returns error changeset" do
+      organisation_domain = organisation_domain_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Services.update_organisation_domain(organisation_domain, @invalid_attrs)
+
+      assert organisation_domain == Services.get_organisation_domain!(organisation_domain.id)
+    end
+
+    test "delete_organisation_domain/1 deletes the organisation_domain" do
+      organisation_domain = organisation_domain_fixture()
+
+      assert {:ok, %OrganisationDomain{}} =
+               Services.delete_organisation_domain(organisation_domain)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Services.get_organisation_domain!(organisation_domain.id)
+      end
+    end
+
+    test "change_organisation_domain/1 returns a organisation_domain changeset" do
+      organisation_domain = organisation_domain_fixture()
+      assert %Ecto.Changeset{} = Services.change_organisation_domain(organisation_domain)
+    end
+  end
+
+  describe "service_users" do
+    alias Pay.Services.ServiceUser
+
+    @valid_attrs %{}
+    @update_attrs %{}
+
+    def service_user_fixture(attrs \\ %{}) do
+      {:ok, service_user} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Services.create_service_user()
+
+      service_user
+    end
+
+    test "list_service_users/0 returns all service_users" do
+      service_user = service_user_fixture()
+      assert Services.list_service_users() == [service_user]
+    end
+
+    test "get_service_user!/1 returns the service_user with given id" do
+      service_user = service_user_fixture()
+      assert Services.get_service_user!(service_user.id) == service_user
+    end
+
+    test "create_service_user/1 with valid data creates a service_user" do
+      assert {:ok, %ServiceUser{} = service_user} = Services.create_service_user(@valid_attrs)
+    end
+
+    test "update_service_user/2 with valid data updates the service_user" do
+      service_user = service_user_fixture()
+
+      assert {:ok, %ServiceUser{} = service_user} =
+               Services.update_service_user(service_user, @update_attrs)
+    end
+
+    test "delete_service_user/1 deletes the service_user" do
+      service_user = service_user_fixture()
+      assert {:ok, %ServiceUser{}} = Services.delete_service_user(service_user)
+      assert_raise Ecto.NoResultsError, fn -> Services.get_service_user!(service_user.id) end
+    end
+
+    test "change_service_user/1 returns a service_user changeset" do
+      service_user = service_user_fixture()
+      assert %Ecto.Changeset{} = Services.change_service_user(service_user)
+    end
+  end
 end
