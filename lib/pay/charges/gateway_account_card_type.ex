@@ -1,4 +1,4 @@
-defmodule Pay.Charges.GatewayAccountCardTypes do
+defmodule Pay.Charges.GatewayAccountCardType do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -10,8 +10,8 @@ defmodule Pay.Charges.GatewayAccountCardTypes do
   end
 
   @doc false
-  def changeset(gateway_account_card_types, attrs) do
-    gateway_account_card_types
+  def changeset(gateway_account_card_type, attrs) do
+    gateway_account_card_type
     |> cast(attrs, [])
     |> validate_required([])
   end

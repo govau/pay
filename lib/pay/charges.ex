@@ -294,105 +294,6 @@ defmodule Pay.Charges do
     Charge.changeset(charge, %{})
   end
 
-  alias Pay.Charges.GatewayAccountCardTypes
-
-  @doc """
-  Returns the list of gateway_account_card_types.
-
-  ## Examples
-
-      iex> list_gateway_account_card_types()
-      [%GatewayAccountCardTypes{}, ...]
-
-  """
-  def list_gateway_account_card_types do
-    Repo.all(GatewayAccountCardTypes)
-  end
-
-  @doc """
-  Gets a single gateway_account_card_types.
-
-  Raises `Ecto.NoResultsError` if the Gateway account card types does not exist.
-
-  ## Examples
-
-      iex> get_gateway_account_card_types!(123)
-      %GatewayAccountCardTypes{}
-
-      iex> get_gateway_account_card_types!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_gateway_account_card_types!(id), do: Repo.get!(GatewayAccountCardTypes, id)
-
-  @doc """
-  Creates a gateway_account_card_types.
-
-  ## Examples
-
-      iex> create_gateway_account_card_types(%{field: value})
-      {:ok, %GatewayAccountCardTypes{}}
-
-      iex> create_gateway_account_card_types(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_gateway_account_card_types(attrs \\ %{}) do
-    %GatewayAccountCardTypes{}
-    |> GatewayAccountCardTypes.changeset(attrs)
-    |> Repo.insert()
-  end
-
-  @doc """
-  Updates a gateway_account_card_types.
-
-  ## Examples
-
-      iex> update_gateway_account_card_types(gateway_account_card_types, %{field: new_value})
-      {:ok, %GatewayAccountCardTypes{}}
-
-      iex> update_gateway_account_card_types(gateway_account_card_types, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_gateway_account_card_types(
-        %GatewayAccountCardTypes{} = gateway_account_card_types,
-        attrs
-      ) do
-    gateway_account_card_types
-    |> GatewayAccountCardTypes.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a GatewayAccountCardTypes.
-
-  ## Examples
-
-      iex> delete_gateway_account_card_types(gateway_account_card_types)
-      {:ok, %GatewayAccountCardTypes{}}
-
-      iex> delete_gateway_account_card_types(gateway_account_card_types)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_gateway_account_card_types(%GatewayAccountCardTypes{} = gateway_account_card_types) do
-    Repo.delete(gateway_account_card_types)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking gateway_account_card_types changes.
-
-  ## Examples
-
-      iex> change_gateway_account_card_types(gateway_account_card_types)
-      %Ecto.Changeset{source: %GatewayAccountCardTypes{}}
-
-  """
-  def change_gateway_account_card_types(%GatewayAccountCardTypes{} = gateway_account_card_types) do
-    GatewayAccountCardTypes.changeset(gateway_account_card_types, %{})
-  end
-
   alias Pay.Charges.ChargeFee
 
   @doc """
@@ -679,5 +580,104 @@ defmodule Pay.Charges do
   """
   def change_charge_refund(%ChargeRefund{} = charge_refund) do
     ChargeRefund.changeset(charge_refund, %{})
+  end
+
+  alias Pay.Charges.GatewayAccountCardType
+
+  @doc """
+  Returns the list of gateway_account_card_types.
+
+  ## Examples
+
+      iex> list_gateway_account_card_types()
+      [%GatewayAccountCardType{}, ...]
+
+  """
+  def list_gateway_account_card_types do
+    Repo.all(GatewayAccountCardType)
+  end
+
+  @doc """
+  Gets a single gateway_account_card_type.
+
+  Raises `Ecto.NoResultsError` if the Gateway account card type does not exist.
+
+  ## Examples
+
+      iex> get_gateway_account_card_type!(123)
+      %GatewayAccountCardType{}
+
+      iex> get_gateway_account_card_type!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_gateway_account_card_type!(id), do: Repo.get!(GatewayAccountCardType, id)
+
+  @doc """
+  Creates a gateway_account_card_type.
+
+  ## Examples
+
+      iex> create_gateway_account_card_type(%{field: value})
+      {:ok, %GatewayAccountCardType{}}
+
+      iex> create_gateway_account_card_type(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_gateway_account_card_type(attrs \\ %{}) do
+    %GatewayAccountCardType{}
+    |> GatewayAccountCardType.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a gateway_account_card_type.
+
+  ## Examples
+
+      iex> update_gateway_account_card_type(gateway_account_card_type, %{field: new_value})
+      {:ok, %GatewayAccountCardType{}}
+
+      iex> update_gateway_account_card_type(gateway_account_card_type, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_gateway_account_card_type(
+        %GatewayAccountCardType{} = gateway_account_card_type,
+        attrs
+      ) do
+    gateway_account_card_type
+    |> GatewayAccountCardType.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a GatewayAccountCardType.
+
+  ## Examples
+
+      iex> delete_gateway_account_card_type(gateway_account_card_type)
+      {:ok, %GatewayAccountCardType{}}
+
+      iex> delete_gateway_account_card_type(gateway_account_card_type)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_gateway_account_card_type(%GatewayAccountCardType{} = gateway_account_card_type) do
+    Repo.delete(gateway_account_card_type)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking gateway_account_card_type changes.
+
+  ## Examples
+
+      iex> change_gateway_account_card_type(gateway_account_card_type)
+      %Ecto.Changeset{source: %GatewayAccountCardType{}}
+
+  """
+  def change_gateway_account_card_type(%GatewayAccountCardType{} = gateway_account_card_type) do
+    GatewayAccountCardType.changeset(gateway_account_card_type, %{})
   end
 end
