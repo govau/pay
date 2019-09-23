@@ -130,7 +130,7 @@ defmodule PayWeb.GatewayAccountControllerTest do
                "corporate_debit_card_surcharge_amount" => 43,
                "corporate_prepaid_credit_card_surcharge_amount" => 43,
                "corporate_prepaid_debit_card_surcharge_amount" => 43,
-               "credentials" => {},
+               "credentials" => %{},
                "description" => "some updated description",
                "integration_version_3ds" => 43,
                "name" => "some updated name",
