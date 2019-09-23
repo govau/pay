@@ -6,8 +6,8 @@ references:
       - image: circleci/elixir:1.9-node
       - image: circleci/postgres:9.4
         environment:
-          POSTGRES_USER: postgres
           POSTGRES_DB: pay_test
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD:
 
   undeploy_image: &undeploy_image
@@ -41,11 +41,9 @@ jobs:
       - run: mix local.hex --force
       - run: mix local.rebar --force
       - run: mix deps.get --only prod
-      - run: mix test
-      - run: npm install --prefix ./assets
-      - run: npm run deploy --prefix ./assets
-      - run: MIX_ENV=prod mix phx.digest
-      - run: MIX_ENV=prod mix release
+      - run: make -C assets setup
+      - run: MIX_ENV=prod make build-release
+      - run: make test
       - *cf_install
       - *cf_login
       - run: make deploy-dev
