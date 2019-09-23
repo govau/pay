@@ -871,4 +871,100 @@ defmodule Pay.Services do
   def change_service_user(%ServiceUser{} = service_user) do
     ServiceUser.changeset(service_user, %{})
   end
+
+  alias Pay.Services.ServiceInvite
+
+  @doc """
+  Returns the list of service_invites.
+
+  ## Examples
+
+      iex> list_service_invites()
+      [%ServiceInvite{}, ...]
+
+  """
+  def list_service_invites do
+    Repo.all(ServiceInvite)
+  end
+
+  @doc """
+  Gets a single service_invite.
+
+  Raises `Ecto.NoResultsError` if the Service invite does not exist.
+
+  ## Examples
+
+      iex> get_service_invite!(123)
+      %ServiceInvite{}
+
+      iex> get_service_invite!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_service_invite!(id), do: Repo.get!(ServiceInvite, id)
+
+  @doc """
+  Creates a service_invite.
+
+  ## Examples
+
+      iex> create_service_invite(%{field: value})
+      {:ok, %ServiceInvite{}}
+
+      iex> create_service_invite(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_service_invite(attrs \\ %{}) do
+    %ServiceInvite{}
+    |> ServiceInvite.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a service_invite.
+
+  ## Examples
+
+      iex> update_service_invite(service_invite, %{field: new_value})
+      {:ok, %ServiceInvite{}}
+
+      iex> update_service_invite(service_invite, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_service_invite(%ServiceInvite{} = service_invite, attrs) do
+    service_invite
+    |> ServiceInvite.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a ServiceInvite.
+
+  ## Examples
+
+      iex> delete_service_invite(service_invite)
+      {:ok, %ServiceInvite{}}
+
+      iex> delete_service_invite(service_invite)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_service_invite(%ServiceInvite{} = service_invite) do
+    Repo.delete(service_invite)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking service_invite changes.
+
+  ## Examples
+
+      iex> change_service_invite(service_invite)
+      %Ecto.Changeset{source: %ServiceInvite{}}
+
+  """
+  def change_service_invite(%ServiceInvite{} = service_invite) do
+    ServiceInvite.changeset(service_invite, %{})
+  end
 end

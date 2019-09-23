@@ -19,6 +19,7 @@ defmodule Pay.Services.Service do
 
     belongs_to :organisation, Pay.Services.Organisation
     many_to_many :users, Pay.Services.User, join_through: "service_users"
+    many_to_many :invites, Pay.Services.ServiceInvite, join_through: "service_invites"
 
     timestamps()
   end

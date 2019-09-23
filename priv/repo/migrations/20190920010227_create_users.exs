@@ -7,7 +7,7 @@ defmodule Pay.Repo.Migrations.CreateUsers do
       add :email, :string
       add :telephone_number, :string
       add :disabled, :boolean, default: false, null: false
-      add :last_logged_in_at, :utc_datetime
+      add :last_logged_in_at, :utc_datetime_usec
 
       timestamps()
     end
