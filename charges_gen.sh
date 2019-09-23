@@ -39,7 +39,7 @@ mix phx.gen.json $CHARGES_CTX GatewayAccount gateway_accounts \
 
 mix ecto.migrate
 
-mix phx.gen.schema $CHARGES_CTX.GatewayAccountCardTypes gateway_account_card_types \
+mix phx.gen.schema $CHARGES_CTX.GatewayAccountCardType gateway_account_card_types \
     gateway_account_id:references:gateway_accounts \
     card_type_id:references:card_types
 
