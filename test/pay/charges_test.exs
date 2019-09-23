@@ -340,4 +340,339 @@ defmodule Pay.ChargesTest do
       assert %Ecto.Changeset{} = Charges.change_charge(charge)
     end
   end
+
+  describe "gateway_account_card_types" do
+    alias Pay.Charges.GatewayAccountCardTypes
+
+    @valid_attrs %{}
+    @update_attrs %{}
+    @invalid_attrs %{}
+
+    def gateway_account_card_types_fixture(attrs \\ %{}) do
+      {:ok, gateway_account_card_types} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Charges.create_gateway_account_card_types()
+
+      gateway_account_card_types
+    end
+
+    test "list_gateway_account_card_types/0 returns all gateway_account_card_types" do
+      gateway_account_card_types = gateway_account_card_types_fixture()
+      assert Charges.list_gateway_account_card_types() == [gateway_account_card_types]
+    end
+
+    test "get_gateway_account_card_types!/1 returns the gateway_account_card_types with given id" do
+      gateway_account_card_types = gateway_account_card_types_fixture()
+
+      assert Charges.get_gateway_account_card_types!(gateway_account_card_types.id) ==
+               gateway_account_card_types
+    end
+
+    test "create_gateway_account_card_types/1 with valid data creates a gateway_account_card_types" do
+      assert {:ok, %GatewayAccountCardTypes{} = gateway_account_card_types} =
+               Charges.create_gateway_account_card_types(@valid_attrs)
+    end
+
+    test "create_gateway_account_card_types/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} =
+               Charges.create_gateway_account_card_types(@invalid_attrs)
+    end
+
+    test "update_gateway_account_card_types/2 with valid data updates the gateway_account_card_types" do
+      gateway_account_card_types = gateway_account_card_types_fixture()
+
+      assert {:ok, %GatewayAccountCardTypes{} = gateway_account_card_types} =
+               Charges.update_gateway_account_card_types(
+                 gateway_account_card_types,
+                 @update_attrs
+               )
+    end
+
+    test "update_gateway_account_card_types/2 with invalid data returns error changeset" do
+      gateway_account_card_types = gateway_account_card_types_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Charges.update_gateway_account_card_types(
+                 gateway_account_card_types,
+                 @invalid_attrs
+               )
+
+      assert gateway_account_card_types ==
+               Charges.get_gateway_account_card_types!(gateway_account_card_types.id)
+    end
+
+    test "delete_gateway_account_card_types/1 deletes the gateway_account_card_types" do
+      gateway_account_card_types = gateway_account_card_types_fixture()
+
+      assert {:ok, %GatewayAccountCardTypes{}} =
+               Charges.delete_gateway_account_card_types(gateway_account_card_types)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Charges.get_gateway_account_card_types!(gateway_account_card_types.id)
+      end
+    end
+
+    test "change_gateway_account_card_types/1 returns a gateway_account_card_types changeset" do
+      gateway_account_card_types = gateway_account_card_types_fixture()
+
+      assert %Ecto.Changeset{} =
+               Charges.change_gateway_account_card_types(gateway_account_card_types)
+    end
+  end
+
+  describe "charge_fees" do
+    alias Pay.Charges.ChargeFee
+
+    @valid_attrs %{
+      amount_collected: 42,
+      amount_due: 42,
+      collected_at: "2010-04-17T14:00:00.000000Z",
+      external_id: "7488a646-e31f-11e4-aace-600308960662",
+      gateway_transaction_id: "some gateway_transaction_id"
+    }
+    @update_attrs %{
+      amount_collected: 43,
+      amount_due: 43,
+      collected_at: "2011-05-18T15:01:01.000000Z",
+      external_id: "7488a646-e31f-11e4-aace-600308960668",
+      gateway_transaction_id: "some updated gateway_transaction_id"
+    }
+    @invalid_attrs %{
+      amount_collected: nil,
+      amount_due: nil,
+      collected_at: nil,
+      external_id: nil,
+      gateway_transaction_id: nil
+    }
+
+    def charge_fee_fixture(attrs \\ %{}) do
+      {:ok, charge_fee} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Charges.create_charge_fee()
+
+      charge_fee
+    end
+
+    test "list_charge_fees/0 returns all charge_fees" do
+      charge_fee = charge_fee_fixture()
+      assert Charges.list_charge_fees() == [charge_fee]
+    end
+
+    test "get_charge_fee!/1 returns the charge_fee with given id" do
+      charge_fee = charge_fee_fixture()
+      assert Charges.get_charge_fee!(charge_fee.id) == charge_fee
+    end
+
+    test "create_charge_fee/1 with valid data creates a charge_fee" do
+      assert {:ok, %ChargeFee{} = charge_fee} = Charges.create_charge_fee(@valid_attrs)
+      assert charge_fee.amount_collected == 42
+      assert charge_fee.amount_due == 42
+
+      assert charge_fee.collected_at ==
+               DateTime.from_naive!(~N[2010-04-17T14:00:00.000000Z], "Etc/UTC")
+
+      assert charge_fee.external_id == "7488a646-e31f-11e4-aace-600308960662"
+      assert charge_fee.gateway_transaction_id == "some gateway_transaction_id"
+    end
+
+    test "create_charge_fee/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Charges.create_charge_fee(@invalid_attrs)
+    end
+
+    test "update_charge_fee/2 with valid data updates the charge_fee" do
+      charge_fee = charge_fee_fixture()
+
+      assert {:ok, %ChargeFee{} = charge_fee} =
+               Charges.update_charge_fee(charge_fee, @update_attrs)
+
+      assert charge_fee.amount_collected == 43
+      assert charge_fee.amount_due == 43
+
+      assert charge_fee.collected_at ==
+               DateTime.from_naive!(~N[2011-05-18T15:01:01.000000Z], "Etc/UTC")
+
+      assert charge_fee.external_id == "7488a646-e31f-11e4-aace-600308960668"
+      assert charge_fee.gateway_transaction_id == "some updated gateway_transaction_id"
+    end
+
+    test "update_charge_fee/2 with invalid data returns error changeset" do
+      charge_fee = charge_fee_fixture()
+      assert {:error, %Ecto.Changeset{}} = Charges.update_charge_fee(charge_fee, @invalid_attrs)
+      assert charge_fee == Charges.get_charge_fee!(charge_fee.id)
+    end
+
+    test "delete_charge_fee/1 deletes the charge_fee" do
+      charge_fee = charge_fee_fixture()
+      assert {:ok, %ChargeFee{}} = Charges.delete_charge_fee(charge_fee)
+      assert_raise Ecto.NoResultsError, fn -> Charges.get_charge_fee!(charge_fee.id) end
+    end
+
+    test "change_charge_fee/1 returns a charge_fee changeset" do
+      charge_fee = charge_fee_fixture()
+      assert %Ecto.Changeset{} = Charges.change_charge_fee(charge_fee)
+    end
+  end
+
+  describe "charge_events" do
+    alias Pay.Charges.ChargeEvent
+
+    @valid_attrs %{status: "some status"}
+    @update_attrs %{status: "some updated status"}
+    @invalid_attrs %{status: nil}
+
+    def charge_event_fixture(attrs \\ %{}) do
+      {:ok, charge_event} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Charges.create_charge_event()
+
+      charge_event
+    end
+
+    test "list_charge_events/0 returns all charge_events" do
+      charge_event = charge_event_fixture()
+      assert Charges.list_charge_events() == [charge_event]
+    end
+
+    test "get_charge_event!/1 returns the charge_event with given id" do
+      charge_event = charge_event_fixture()
+      assert Charges.get_charge_event!(charge_event.id) == charge_event
+    end
+
+    test "create_charge_event/1 with valid data creates a charge_event" do
+      assert {:ok, %ChargeEvent{} = charge_event} = Charges.create_charge_event(@valid_attrs)
+      assert charge_event.status == "some status"
+    end
+
+    test "create_charge_event/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Charges.create_charge_event(@invalid_attrs)
+    end
+
+    test "update_charge_event/2 with valid data updates the charge_event" do
+      charge_event = charge_event_fixture()
+
+      assert {:ok, %ChargeEvent{} = charge_event} =
+               Charges.update_charge_event(charge_event, @update_attrs)
+
+      assert charge_event.status == "some updated status"
+    end
+
+    test "update_charge_event/2 with invalid data returns error changeset" do
+      charge_event = charge_event_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Charges.update_charge_event(charge_event, @invalid_attrs)
+
+      assert charge_event == Charges.get_charge_event!(charge_event.id)
+    end
+
+    test "delete_charge_event/1 deletes the charge_event" do
+      charge_event = charge_event_fixture()
+      assert {:ok, %ChargeEvent{}} = Charges.delete_charge_event(charge_event)
+      assert_raise Ecto.NoResultsError, fn -> Charges.get_charge_event!(charge_event.id) end
+    end
+
+    test "change_charge_event/1 returns a charge_event changeset" do
+      charge_event = charge_event_fixture()
+      assert %Ecto.Changeset{} = Charges.change_charge_event(charge_event)
+    end
+  end
+
+  describe "charge_refunds" do
+    alias Pay.Charges.ChargeRefund
+
+    @valid_attrs %{
+      amount: 42,
+      external_id: "7488a646-e31f-11e4-aace-600308960662",
+      gateway_transaction_id: "7488a646-e31f-11e4-aace-600308960662",
+      reference: "some reference",
+      status: "some status",
+      user_external_id: "7488a646-e31f-11e4-aace-600308960662"
+    }
+    @update_attrs %{
+      amount: 43,
+      external_id: "7488a646-e31f-11e4-aace-600308960668",
+      gateway_transaction_id: "7488a646-e31f-11e4-aace-600308960668",
+      reference: "some updated reference",
+      status: "some updated status",
+      user_external_id: "7488a646-e31f-11e4-aace-600308960668"
+    }
+    @invalid_attrs %{
+      amount: nil,
+      external_id: nil,
+      gateway_transaction_id: nil,
+      reference: nil,
+      status: nil,
+      user_external_id: nil
+    }
+
+    def charge_refund_fixture(attrs \\ %{}) do
+      {:ok, charge_refund} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Charges.create_charge_refund()
+
+      charge_refund
+    end
+
+    test "list_charge_refunds/0 returns all charge_refunds" do
+      charge_refund = charge_refund_fixture()
+      assert Charges.list_charge_refunds() == [charge_refund]
+    end
+
+    test "get_charge_refund!/1 returns the charge_refund with given id" do
+      charge_refund = charge_refund_fixture()
+      assert Charges.get_charge_refund!(charge_refund.id) == charge_refund
+    end
+
+    test "create_charge_refund/1 with valid data creates a charge_refund" do
+      assert {:ok, %ChargeRefund{} = charge_refund} = Charges.create_charge_refund(@valid_attrs)
+      assert charge_refund.amount == 42
+      assert charge_refund.external_id == "7488a646-e31f-11e4-aace-600308960662"
+      assert charge_refund.gateway_transaction_id == "7488a646-e31f-11e4-aace-600308960662"
+      assert charge_refund.reference == "some reference"
+      assert charge_refund.status == "some status"
+      assert charge_refund.user_external_id == "7488a646-e31f-11e4-aace-600308960662"
+    end
+
+    test "create_charge_refund/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Charges.create_charge_refund(@invalid_attrs)
+    end
+
+    test "update_charge_refund/2 with valid data updates the charge_refund" do
+      charge_refund = charge_refund_fixture()
+
+      assert {:ok, %ChargeRefund{} = charge_refund} =
+               Charges.update_charge_refund(charge_refund, @update_attrs)
+
+      assert charge_refund.amount == 43
+      assert charge_refund.external_id == "7488a646-e31f-11e4-aace-600308960668"
+      assert charge_refund.gateway_transaction_id == "7488a646-e31f-11e4-aace-600308960668"
+      assert charge_refund.reference == "some updated reference"
+      assert charge_refund.status == "some updated status"
+      assert charge_refund.user_external_id == "7488a646-e31f-11e4-aace-600308960668"
+    end
+
+    test "update_charge_refund/2 with invalid data returns error changeset" do
+      charge_refund = charge_refund_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Charges.update_charge_refund(charge_refund, @invalid_attrs)
+
+      assert charge_refund == Charges.get_charge_refund!(charge_refund.id)
+    end
+
+    test "delete_charge_refund/1 deletes the charge_refund" do
+      charge_refund = charge_refund_fixture()
+      assert {:ok, %ChargeRefund{}} = Charges.delete_charge_refund(charge_refund)
+      assert_raise Ecto.NoResultsError, fn -> Charges.get_charge_refund!(charge_refund.id) end
+    end
+
+    test "change_charge_refund/1 returns a charge_refund changeset" do
+      charge_refund = charge_refund_fixture()
+      assert %Ecto.Changeset{} = Charges.change_charge_refund(charge_refund)
+    end
+  end
 end
