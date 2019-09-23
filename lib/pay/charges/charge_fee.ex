@@ -8,7 +8,8 @@ defmodule Pay.Charges.ChargeFee do
     field :collected_at, :utc_datetime_usec
     field :external_id, Ecto.UUID
     field :gateway_transaction_id, :string
-    field :charge_id, :id
+
+    belongs_to :charge, Pay.Charges.Charge
 
     timestamps()
   end
