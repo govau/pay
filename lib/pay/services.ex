@@ -114,7 +114,7 @@ defmodule Pay.Services do
 
   """
   def list_roles do
-    Repo.all(Role)
+    Enum.map(Repo.all(Role), fn r -> Repo.preload(r, [:permissions]) end)
   end
 
   @doc """
@@ -131,7 +131,7 @@ defmodule Pay.Services do
       ** (Ecto.NoResultsError)
 
   """
-  def get_role!(id), do: Repo.get!(Role, id)
+  def get_role!(id), do: Repo.get!(Role, id) |> Repo.preload([:permissions])
 
   @doc """
   Creates a role.
@@ -146,9 +146,10 @@ defmodule Pay.Services do
 
   """
   def create_role(attrs \\ %{}) do
-    %Role{}
-    |> Role.changeset(attrs)
-    |> Repo.insert()
+    case Repo.insert(Role.changeset(%Role{}, attrs)) do
+      {:ok, r} -> {:ok, Repo.preload(r, [:permissions])}
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   @doc """

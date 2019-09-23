@@ -11,6 +11,11 @@ defmodule PayWeb.RoleView do
   end
 
   def render("role.json", %{role: role}) do
-    %{id: role.id, name: role.name, description: role.description}
+    %{
+      id: role.id,
+      name: role.name,
+      description: role.description,
+      permissions: render_many(role.permissions, PayWeb.PermissionView, "permission.json")
+    }
   end
 end
