@@ -341,67 +341,6 @@ defmodule Pay.ChargesTest do
     end
   end
 
-  describe "gateway_account_card_types" do
-    alias Pay.Charges.GatewayAccountCardTypes
-
-    @valid_attrs %{}
-    @update_attrs %{}
-
-    def gateway_account_card_types_fixture(attrs \\ %{}) do
-      {:ok, gateway_account_card_types} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Charges.create_gateway_account_card_types()
-
-      gateway_account_card_types
-    end
-
-    test "list_gateway_account_card_types/0 returns all gateway_account_card_types" do
-      gateway_account_card_types = gateway_account_card_types_fixture()
-      assert Charges.list_gateway_account_card_types() == [gateway_account_card_types]
-    end
-
-    test "get_gateway_account_card_types!/1 returns the gateway_account_card_types with given id" do
-      gateway_account_card_types = gateway_account_card_types_fixture()
-
-      assert Charges.get_gateway_account_card_types!(gateway_account_card_types.id) ==
-               gateway_account_card_types
-    end
-
-    test "create_gateway_account_card_types/1 with valid data creates a gateway_account_card_types" do
-      assert {:ok, %GatewayAccountCardTypes{} = gateway_account_card_types} =
-               Charges.create_gateway_account_card_types(@valid_attrs)
-    end
-
-    test "update_gateway_account_card_types/2 with valid data updates the gateway_account_card_types" do
-      gateway_account_card_types = gateway_account_card_types_fixture()
-
-      assert {:ok, %GatewayAccountCardTypes{} = gateway_account_card_types} =
-               Charges.update_gateway_account_card_types(
-                 gateway_account_card_types,
-                 @update_attrs
-               )
-    end
-
-    test "delete_gateway_account_card_types/1 deletes the gateway_account_card_types" do
-      gateway_account_card_types = gateway_account_card_types_fixture()
-
-      assert {:ok, %GatewayAccountCardTypes{}} =
-               Charges.delete_gateway_account_card_types(gateway_account_card_types)
-
-      assert_raise Ecto.NoResultsError, fn ->
-        Charges.get_gateway_account_card_types!(gateway_account_card_types.id)
-      end
-    end
-
-    test "change_gateway_account_card_types/1 returns a gateway_account_card_types changeset" do
-      gateway_account_card_types = gateway_account_card_types_fixture()
-
-      assert %Ecto.Changeset{} =
-               Charges.change_gateway_account_card_types(gateway_account_card_types)
-    end
-  end
-
   describe "charge_fees" do
     alias Pay.Charges.ChargeFee
 
@@ -654,6 +593,80 @@ defmodule Pay.ChargesTest do
     test "change_charge_refund/1 returns a charge_refund changeset" do
       charge_refund = charge_refund_fixture()
       assert %Ecto.Changeset{} = Charges.change_charge_refund(charge_refund)
+    end
+  end
+
+  describe "gateway_account_card_types" do
+    alias Pay.Charges.GatewayAccountCardType
+
+    @valid_attrs %{}
+    @update_attrs %{}
+    @invalid_attrs %{}
+
+    def gateway_account_card_type_fixture(attrs \\ %{}) do
+      {:ok, gateway_account_card_type} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Charges.create_gateway_account_card_type()
+
+      gateway_account_card_type
+    end
+
+    test "list_gateway_account_card_types/0 returns all gateway_account_card_types" do
+      gateway_account_card_type = gateway_account_card_type_fixture()
+      assert Charges.list_gateway_account_card_types() == [gateway_account_card_type]
+    end
+
+    test "get_gateway_account_card_type!/1 returns the gateway_account_card_type with given id" do
+      gateway_account_card_type = gateway_account_card_type_fixture()
+
+      assert Charges.get_gateway_account_card_type!(gateway_account_card_type.id) ==
+               gateway_account_card_type
+    end
+
+    test "create_gateway_account_card_type/1 with valid data creates a gateway_account_card_type" do
+      assert {:ok, %GatewayAccountCardType{} = gateway_account_card_type} =
+               Charges.create_gateway_account_card_type(@valid_attrs)
+    end
+
+    test "create_gateway_account_card_type/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} =
+               Charges.create_gateway_account_card_type(@invalid_attrs)
+    end
+
+    test "update_gateway_account_card_type/2 with valid data updates the gateway_account_card_type" do
+      gateway_account_card_type = gateway_account_card_type_fixture()
+
+      assert {:ok, %GatewayAccountCardType{} = gateway_account_card_type} =
+               Charges.update_gateway_account_card_type(gateway_account_card_type, @update_attrs)
+    end
+
+    test "update_gateway_account_card_type/2 with invalid data returns error changeset" do
+      gateway_account_card_type = gateway_account_card_type_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Charges.update_gateway_account_card_type(gateway_account_card_type, @invalid_attrs)
+
+      assert gateway_account_card_type ==
+               Charges.get_gateway_account_card_type!(gateway_account_card_type.id)
+    end
+
+    test "delete_gateway_account_card_type/1 deletes the gateway_account_card_type" do
+      gateway_account_card_type = gateway_account_card_type_fixture()
+
+      assert {:ok, %GatewayAccountCardType{}} =
+               Charges.delete_gateway_account_card_type(gateway_account_card_type)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Charges.get_gateway_account_card_type!(gateway_account_card_type.id)
+      end
+    end
+
+    test "change_gateway_account_card_type/1 returns a gateway_account_card_type changeset" do
+      gateway_account_card_type = gateway_account_card_type_fixture()
+
+      assert %Ecto.Changeset{} =
+               Charges.change_gateway_account_card_type(gateway_account_card_type)
     end
   end
 end

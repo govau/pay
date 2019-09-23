@@ -1,4 +1,4 @@
-defmodule Pay.Repo.Migrations.CreateGatewayAccountCardTypes do
+defmodule Pay.Repo.Migrations.CreateGatewayAccountCardType do
   use Ecto.Migration
 
   def change do
