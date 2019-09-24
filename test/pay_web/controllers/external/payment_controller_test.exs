@@ -16,7 +16,6 @@ defmodule PayWeb.External.PaymentControllerTest do
     gateway_transaction_id: "some gateway_transaction_id",
     metadata: %{},
     net_amount: 42,
-    payment_id: "7488a646-e31f-11e4-aace-600308960662",
     payment_outcome: %{},
     payment_provider: "some payment_provider",
     processor_id: "some processor_id",
@@ -42,7 +41,6 @@ defmodule PayWeb.External.PaymentControllerTest do
     gateway_transaction_id: nil,
     metadata: nil,
     net_amount: nil,
-    payment_id: nil,
     payment_outcome: nil,
     payment_provider: nil,
     processor_id: nil,
@@ -75,7 +73,7 @@ defmodule PayWeb.External.PaymentControllerTest do
   describe "create payment" do
     test "renders payment when data is valid", %{conn: conn} do
       conn = post(conn, Routes.external_payment_path(conn, :create), payment: @create_attrs)
-      assert %{"payment_id" => id} = json_response(conn, 201)["data"]
+      assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.external_payment_path(conn, :show, id))
 
@@ -92,7 +90,7 @@ defmodule PayWeb.External.PaymentControllerTest do
                "gateway_transaction_id" => "some gateway_transaction_id",
                "metadata" => %{},
                "net_amount" => 42,
-               "payment_id" => id,
+               "id" => id,
                "payment_outcome" => %{},
                "payment_provider" => "some payment_provider",
                "processor_id" => "some processor_id",

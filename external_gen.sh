@@ -3,7 +3,7 @@
 # TODO: remove from repo
 
 mix phx.gen.json Payments Payment payments \
-    payment_id:uuid \
+    id:uuid \
     amount:integer \
     fee:integer \
     total_amount:integer \

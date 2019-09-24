@@ -13,7 +13,7 @@ defmodule PayWeb.External.PaymentView do
   def render("payment.json", %{payment: payment}) do
     # TODO: fill fields in.
     %{
-      payment_id: payment.external_id,
+      id: payment.external_id,
       amount: payment.amount,
       fee: 42,
       total_amount: 42,
