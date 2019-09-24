@@ -262,7 +262,7 @@ defmodule Pay.Payments do
     %Payment{
       external_id: Ecto.UUID.generate()
     }
-    |> Payment.changeset(attrs)
+    |> Payment.create_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -280,7 +280,7 @@ defmodule Pay.Payments do
   """
   def update_payment(%Payment{} = payment, attrs) do
     payment
-    |> Payment.changeset(attrs)
+    |> Payment.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -298,19 +298,6 @@ defmodule Pay.Payments do
   """
   def delete_payment(%Payment{} = payment) do
     Repo.delete(payment)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking payment changes.
-
-  ## Examples
-
-      iex> change_payment(payment)
-      %Ecto.Changeset{source: %Payment{}}
-
-  """
-  def change_payment(%Payment{} = payment) do
-    Payment.changeset(payment, %{})
   end
 
   alias Pay.Payments.PaymentFee
@@ -357,7 +344,9 @@ defmodule Pay.Payments do
 
   """
   def create_payment_fee(attrs \\ %{}) do
-    %PaymentFee{}
+    %PaymentFee{
+      external_id: Ecto.UUID.generate()
+    }
     |> PaymentFee.changeset(attrs)
     |> Repo.insert()
   end
@@ -549,7 +538,9 @@ defmodule Pay.Payments do
 
   """
   def create_payment_refund(attrs \\ %{}) do
-    %PaymentRefund{}
+    %PaymentRefund{
+      external_id: Ecto.UUID.generate()
+    }
     |> PaymentRefund.changeset(attrs)
     |> Repo.insert()
   end

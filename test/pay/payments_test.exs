@@ -224,7 +224,7 @@ defmodule Pay.PaymentsTest do
       delayed_capture: false,
       description: "some updated description",
       email: "some updated email",
-      external_id: "7488a646-e31f-11e4-aace-600308960668",
+      external_id: "7488a646-e31f-11e4-aace-600308960662",
       external_metadata: %{},
       gateway_transaction_id: "some updated gateway_transaction_id",
       reference: "some updated reference",
@@ -302,7 +302,7 @@ defmodule Pay.PaymentsTest do
       assert payment.delayed_capture == false
       assert payment.description == "some updated description"
       assert payment.email == "some updated email"
-      assert payment.external_id == "7488a646-e31f-11e4-aace-600308960668"
+      assert payment.external_id == "7488a646-e31f-11e4-aace-600308960662"
       assert payment.external_metadata == %{}
       assert payment.gateway_transaction_id == "some updated gateway_transaction_id"
       assert payment.reference == "some updated reference"
@@ -321,11 +321,6 @@ defmodule Pay.PaymentsTest do
       payment = payment_fixture()
       assert {:ok, %Payment{}} = Payments.delete_payment(payment)
       assert_raise Ecto.NoResultsError, fn -> Payments.get_payment!(payment.id) end
-    end
-
-    test "change_payment/1 returns a payment changeset" do
-      payment = payment_fixture()
-      assert %Ecto.Changeset{} = Payments.change_payment(payment)
     end
   end
 

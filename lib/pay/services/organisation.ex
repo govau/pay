@@ -12,10 +12,18 @@ defmodule Pay.Services.Organisation do
   end
 
   @doc false
-  def changeset(organisation, attrs) do
+  def create_changeset(organisation, attrs) do
     organisation
     |> cast(attrs, [:external_id, :name])
     |> validate_required([:external_id, :name])
+    |> unique_constraint(:name)
+  end
+
+  @doc false
+  def update_changeset(organisation, attrs) do
+    organisation
+    |> cast(attrs, [:name])
+    |> validate_required([:name])
     |> unique_constraint(:name)
   end
 end

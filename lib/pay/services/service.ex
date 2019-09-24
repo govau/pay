@@ -25,7 +25,7 @@ defmodule Pay.Services.Service do
   end
 
   @doc false
-  def changeset(service, attrs) do
+  def create_changeset(service, attrs) do
     service
     |> cast(attrs, [
       :external_id,
@@ -44,6 +44,40 @@ defmodule Pay.Services.Service do
     ])
     |> validate_required([
       :external_id,
+      :redirect_to_service_immediately_on_terminal_state,
+      :collect_billing_address,
+      :custom_branding,
+      :current_go_live_stage,
+      :merchant_name,
+      :merchant_telephone_number,
+      :merchant_address_line1,
+      :merchant_address_line2,
+      :merchant_address_city,
+      :merchant_address_postcode,
+      :merchant_address_country,
+      :merchant_email
+    ])
+  end
+
+  # TODO: check what we can update. already removed external_id
+  @doc false
+  def update_changeset(service, attrs) do
+    service
+    |> cast(attrs, [
+      :redirect_to_service_immediately_on_terminal_state,
+      :collect_billing_address,
+      :custom_branding,
+      :current_go_live_stage,
+      :merchant_name,
+      :merchant_telephone_number,
+      :merchant_address_line1,
+      :merchant_address_line2,
+      :merchant_address_city,
+      :merchant_address_postcode,
+      :merchant_address_country,
+      :merchant_email
+    ])
+    |> validate_required([
       :redirect_to_service_immediately_on_terminal_state,
       :collect_billing_address,
       :custom_branding,

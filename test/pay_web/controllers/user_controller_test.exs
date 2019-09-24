@@ -14,7 +14,7 @@ defmodule PayWeb.UserControllerTest do
   @update_attrs %{
     disabled: false,
     email: "some updated email",
-    external_id: "7488a646-e31f-11e4-aace-600308960668",
+    external_id: "7488a646-e31f-11e4-aace-600308960660",
     last_logged_in_at: "2011-05-18T15:01:01.000000Z",
     telephone_number: "some updated telephone_number"
   }
@@ -78,7 +78,7 @@ defmodule PayWeb.UserControllerTest do
                "id" => id,
                "disabled" => false,
                "email" => "some updated email",
-               "external_id" => "7488a646-e31f-11e4-aace-600308960668",
+               "external_id" => "7488a646-e31f-11e4-aace-600308960662",
                "last_logged_in_at" => "2011-05-18T15:01:01.000000Z",
                "telephone_number" => "some updated telephone_number"
              } = json_response(conn, 200)["data"]

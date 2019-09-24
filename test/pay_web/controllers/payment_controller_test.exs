@@ -114,7 +114,7 @@ defmodule PayWeb.PaymentControllerTest do
                "delayed_capture" => false,
                "description" => "some updated description",
                "email" => "some updated email",
-               "external_id" => "7488a646-e31f-11e4-aace-600308960668",
+               "external_id" => "7488a646-e31f-11e4-aace-600308960662",
                "external_metadata" => %{},
                "gateway_transaction_id" => "some updated gateway_transaction_id",
                "reference" => "some updated reference",

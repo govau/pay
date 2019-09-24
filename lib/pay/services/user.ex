@@ -15,9 +15,18 @@ defmodule Pay.Services.User do
   end
 
   @doc false
-  def changeset(user, attrs) do
+  def create_changeset(user, attrs) do
     user
     |> cast(attrs, [:external_id, :email, :telephone_number, :disabled, :last_logged_in_at])
+    |> validate_required([:external_id, :email, :telephone_number, :disabled, :last_logged_in_at])
+    |> unique_constraint(:email)
+  end
+
+  # TODO: check what we can update. already removed external_id
+  @doc false
+  def update_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:email, :telephone_number, :disabled, :last_logged_in_at])
     |> validate_required([:external_id, :email, :telephone_number, :disabled, :last_logged_in_at])
     |> unique_constraint(:email)
   end

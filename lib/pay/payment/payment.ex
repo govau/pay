@@ -23,7 +23,7 @@ defmodule Pay.Payments.Payment do
   end
 
   @doc false
-  def changeset(payment, attrs) do
+  def create_changeset(payment, attrs) do
     payment
     |> cast(attrs, [
       :external_id,
@@ -42,6 +42,40 @@ defmodule Pay.Payments.Payment do
     ])
     |> validate_required([
       :external_id,
+      :amount,
+      :status,
+      :gateway_transaction_id,
+      :return_url,
+      :email,
+      :card_details,
+      :auth_3ds_details,
+      :description,
+      :reference,
+      :delayed_capture,
+      :wallet,
+      :external_metadata
+    ])
+  end
+
+  # TODO: check what we can update. already removed external_id
+  @doc false
+  def update_changeset(payment, attrs) do
+    payment
+    |> cast(attrs, [
+      :amount,
+      :status,
+      :gateway_transaction_id,
+      :return_url,
+      :email,
+      :card_details,
+      :auth_3ds_details,
+      :description,
+      :reference,
+      :delayed_capture,
+      :wallet,
+      :external_metadata
+    ])
+    |> validate_required([
       :amount,
       :status,
       :gateway_transaction_id,

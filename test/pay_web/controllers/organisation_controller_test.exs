@@ -68,7 +68,7 @@ defmodule PayWeb.OrganisationControllerTest do
 
       assert %{
                "id" => id,
-               "external_id" => "7488a646-e31f-11e4-aace-600308960668",
+               "external_id" => "7488a646-e31f-11e4-aace-600308960662",
                "name" => "some updated name"
              } = json_response(conn, 200)["data"]
     end

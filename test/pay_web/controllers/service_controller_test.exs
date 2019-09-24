@@ -111,7 +111,7 @@ defmodule PayWeb.ServiceControllerTest do
                "collect_billing_address" => false,
                "current_go_live_stage" => "some updated current_go_live_stage",
                "custom_branding" => %{},
-               "external_id" => "7488a646-e31f-11e4-aace-600308960668",
+               "external_id" => "7488a646-e31f-11e4-aace-600308960662",
                "merchant_address_city" => "some updated merchant_address_city",
                "merchant_address_country" => "some updated merchant_address_country",
                "merchant_address_line1" => "some updated merchant_address_line1",

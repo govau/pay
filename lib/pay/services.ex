@@ -243,8 +243,10 @@ defmodule Pay.Services do
 
   """
   def create_user(attrs \\ %{}) do
-    %User{}
-    |> User.changeset(attrs)
+    %User{
+      external_id: Ecto.UUID.generate()
+    }
+    |> User.create_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -262,7 +264,7 @@ defmodule Pay.Services do
   """
   def update_user(%User{} = user, attrs) do
     user
-    |> User.changeset(attrs)
+    |> User.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -280,19 +282,6 @@ defmodule Pay.Services do
   """
   def delete_user(%User{} = user) do
     Repo.delete(user)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking user changes.
-
-  ## Examples
-
-      iex> change_user(user)
-      %Ecto.Changeset{source: %User{}}
-
-  """
-  def change_user(%User{} = user) do
-    User.changeset(user, %{})
   end
 
   alias Pay.Services.OrganisationType
@@ -435,7 +424,14 @@ defmodule Pay.Services do
 
   """
   def create_organisation(attrs \\ %{}) do
-    case Repo.insert(Organisation.changeset(%Organisation{}, attrs)) do
+    case Repo.insert(
+           Organisation.create_changeset(
+             %Organisation{
+               external_id: Ecto.UUID.generate()
+             },
+             attrs
+           )
+         ) do
       {:ok, o} -> {:ok, Repo.preload(o, [:type])}
       {:error, changeset} -> {:error, changeset}
     end
@@ -455,7 +451,7 @@ defmodule Pay.Services do
   """
   def update_organisation(%Organisation{} = organisation, attrs) do
     organisation
-    |> Organisation.changeset(attrs)
+    |> Organisation.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -473,19 +469,6 @@ defmodule Pay.Services do
   """
   def delete_organisation(%Organisation{} = organisation) do
     Repo.delete(organisation)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking organisation changes.
-
-  ## Examples
-
-      iex> change_organisation(organisation)
-      %Ecto.Changeset{source: %Organisation{}}
-
-  """
-  def change_organisation(%Organisation{} = organisation) do
-    Organisation.changeset(organisation, %{})
   end
 
   alias Pay.Services.Service
@@ -532,8 +515,10 @@ defmodule Pay.Services do
 
   """
   def create_service(attrs \\ %{}) do
-    %Service{}
-    |> Service.changeset(attrs)
+    %Service{
+      external_id: Ecto.UUID.generate()
+    }
+    |> Service.create_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -551,7 +536,7 @@ defmodule Pay.Services do
   """
   def update_service(%Service{} = service, attrs) do
     service
-    |> Service.changeset(attrs)
+    |> Service.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -569,19 +554,6 @@ defmodule Pay.Services do
   """
   def delete_service(%Service{} = service) do
     Repo.delete(service)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking service changes.
-
-  ## Examples
-
-      iex> change_service(service)
-      %Ecto.Changeset{source: %Service{}}
-
-  """
-  def change_service(%Service{} = service) do
-    Service.changeset(service, %{})
   end
 
   alias Pay.Services.RolePermission

@@ -193,7 +193,7 @@ defmodule Pay.ServicesTest do
       assert {:ok, %User{} = user} = Services.update_user(user, @update_attrs)
       assert user.disabled == false
       assert user.email == "some updated email"
-      assert user.external_id == "7488a646-e31f-11e4-aace-600308960668"
+      assert user.external_id == "7488a646-e31f-11e4-aace-600308960662"
 
       assert user.last_logged_in_at ==
                DateTime.from_naive!(~N[2011-05-18T15:01:01.000000Z], "Etc/UTC")
@@ -211,11 +211,6 @@ defmodule Pay.ServicesTest do
       user = user_fixture()
       assert {:ok, %User{}} = Services.delete_user(user)
       assert_raise Ecto.NoResultsError, fn -> Services.get_user!(user.id) end
-    end
-
-    test "change_user/1 returns a user changeset" do
-      user = user_fixture()
-      assert %Ecto.Changeset{} = Services.change_user(user)
     end
   end
 
@@ -334,7 +329,7 @@ defmodule Pay.ServicesTest do
       assert {:ok, %Organisation{} = organisation} =
                Services.update_organisation(organisation, @update_attrs)
 
-      assert organisation.external_id == "7488a646-e31f-11e4-aace-600308960668"
+      assert organisation.external_id == "7488a646-e31f-11e4-aace-600308960662"
       assert organisation.name == "some updated name"
     end
 
@@ -351,11 +346,6 @@ defmodule Pay.ServicesTest do
       organisation = organisation_fixture()
       assert {:ok, %Organisation{}} = Services.delete_organisation(organisation)
       assert_raise Ecto.NoResultsError, fn -> Services.get_organisation!(organisation.id) end
-    end
-
-    test "change_organisation/1 returns a organisation changeset" do
-      organisation = organisation_fixture()
-      assert %Ecto.Changeset{} = Services.change_organisation(organisation)
     end
   end
 
@@ -454,7 +444,7 @@ defmodule Pay.ServicesTest do
       assert service.collect_billing_address == false
       assert service.current_go_live_stage == "some updated current_go_live_stage"
       assert service.custom_branding == %{}
-      assert service.external_id == "7488a646-e31f-11e4-aace-600308960668"
+      assert service.external_id == "7488a646-e31f-11e4-aace-600308960662"
       assert service.merchant_address_city == "some updated merchant_address_city"
       assert service.merchant_address_country == "some updated merchant_address_country"
       assert service.merchant_address_line1 == "some updated merchant_address_line1"
@@ -476,11 +466,6 @@ defmodule Pay.ServicesTest do
       service = service_fixture()
       assert {:ok, %Service{}} = Services.delete_service(service)
       assert_raise Ecto.NoResultsError, fn -> Services.get_service!(service.id) end
-    end
-
-    test "change_service/1 returns a service changeset" do
-      service = service_fixture()
-      assert %Ecto.Changeset{} = Services.change_service(service)
     end
   end
 
