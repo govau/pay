@@ -1,4 +1,4 @@
-defmodule Pay.Charges.GatewayAccountCardType do
+defmodule Pay.Payments.GatewayAccountCardType do
   use Ecto.Schema
   import Ecto.Changeset
 

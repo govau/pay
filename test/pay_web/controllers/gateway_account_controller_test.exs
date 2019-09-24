@@ -1,17 +1,13 @@
 defmodule PayWeb.GatewayAccountControllerTest do
   use PayWeb.ConnCase
 
-  alias Pay.Charges
-  alias Pay.Charges.GatewayAccount
+  alias Pay.Payments
+  alias Pay.Payments.GatewayAccount
 
   @create_attrs %{
     allow_apple_pay: true,
     allow_google_pay: true,
     allow_zero_amount: 42,
-    corporate_credit_card_surcharge_amount: 42,
-    corporate_debit_card_surcharge_amount: 42,
-    corporate_prepaid_credit_card_surcharge_amount: 42,
-    corporate_prepaid_debit_card_surcharge_amount: 42,
     credentials: %{},
     description: "some description",
     integration_version_3ds: 42,
@@ -24,10 +20,6 @@ defmodule PayWeb.GatewayAccountControllerTest do
     allow_apple_pay: false,
     allow_google_pay: false,
     allow_zero_amount: 43,
-    corporate_credit_card_surcharge_amount: 43,
-    corporate_debit_card_surcharge_amount: 43,
-    corporate_prepaid_credit_card_surcharge_amount: 43,
-    corporate_prepaid_debit_card_surcharge_amount: 43,
     credentials: %{},
     description: "some updated description",
     integration_version_3ds: 43,
@@ -40,10 +32,6 @@ defmodule PayWeb.GatewayAccountControllerTest do
     allow_apple_pay: nil,
     allow_google_pay: nil,
     allow_zero_amount: nil,
-    corporate_credit_card_surcharge_amount: nil,
-    corporate_debit_card_surcharge_amount: nil,
-    corporate_prepaid_credit_card_surcharge_amount: nil,
-    corporate_prepaid_debit_card_surcharge_amount: nil,
     credentials: nil,
     description: nil,
     integration_version_3ds: nil,
@@ -54,7 +42,7 @@ defmodule PayWeb.GatewayAccountControllerTest do
   }
 
   def fixture(:gateway_account) do
-    {:ok, gateway_account} = Charges.create_gateway_account(@create_attrs)
+    {:ok, gateway_account} = Payments.create_gateway_account(@create_attrs)
     gateway_account
   end
 
@@ -83,10 +71,6 @@ defmodule PayWeb.GatewayAccountControllerTest do
                "allow_apple_pay" => true,
                "allow_google_pay" => true,
                "allow_zero_amount" => 42,
-               "corporate_credit_card_surcharge_amount" => 42,
-               "corporate_debit_card_surcharge_amount" => 42,
-               "corporate_prepaid_credit_card_surcharge_amount" => 42,
-               "corporate_prepaid_debit_card_surcharge_amount" => 42,
                "credentials" => %{},
                "description" => "some description",
                "integration_version_3ds" => 42,
@@ -126,10 +110,6 @@ defmodule PayWeb.GatewayAccountControllerTest do
                "allow_apple_pay" => false,
                "allow_google_pay" => false,
                "allow_zero_amount" => 43,
-               "corporate_credit_card_surcharge_amount" => 43,
-               "corporate_debit_card_surcharge_amount" => 43,
-               "corporate_prepaid_credit_card_surcharge_amount" => 43,
-               "corporate_prepaid_debit_card_surcharge_amount" => 43,
                "credentials" => %{},
                "description" => "some updated description",
                "integration_version_3ds" => 43,

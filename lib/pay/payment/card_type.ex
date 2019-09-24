@@ -1,4 +1,4 @@
-defmodule Pay.Charges.CardType do
+defmodule Pay.Payments.CardType do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -8,7 +8,7 @@ defmodule Pay.Charges.CardType do
     field :requires_3ds, :boolean, default: false
     field :type, :string
 
-    many_to_many :gateway_accounts, Pay.Charges.GatewayAccount,
+    many_to_many :gateway_accounts, Pay.Payments.GatewayAccount,
       join_through: "gateway_account_card_types"
 
     timestamps()

@@ -1,4 +1,4 @@
-defmodule Pay.Charges.GatewayAccount do
+defmodule Pay.Payments.GatewayAccount do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -6,10 +6,6 @@ defmodule Pay.Charges.GatewayAccount do
     field :allow_apple_pay, :boolean, default: false
     field :allow_google_pay, :boolean, default: false
     field :allow_zero_amount, :integer
-    field :corporate_credit_card_surcharge_amount, :integer
-    field :corporate_debit_card_surcharge_amount, :integer
-    field :corporate_prepaid_credit_card_surcharge_amount, :integer
-    field :corporate_prepaid_debit_card_surcharge_amount, :integer
     field :credentials, :map
     field :description, :string
     field :integration_version_3ds, :integer
@@ -18,7 +14,7 @@ defmodule Pay.Charges.GatewayAccount do
     field :service_name, :string
     field :type, :string
 
-    many_to_many :card_types, Pay.Charges.CardType, join_through: "gateway_account_card_types"
+    many_to_many :card_types, Pay.Payments.CardType, join_through: "gateway_account_card_types"
 
     timestamps()
   end
@@ -35,10 +31,6 @@ defmodule Pay.Charges.GatewayAccount do
       :requires_3ds,
       :allow_apple_pay,
       :allow_google_pay,
-      :corporate_credit_card_surcharge_amount,
-      :corporate_debit_card_surcharge_amount,
-      :corporate_prepaid_credit_card_surcharge_amount,
-      :corporate_prepaid_debit_card_surcharge_amount,
       :allow_zero_amount,
       :integration_version_3ds
     ])
@@ -51,10 +43,6 @@ defmodule Pay.Charges.GatewayAccount do
       :requires_3ds,
       :allow_apple_pay,
       :allow_google_pay,
-      :corporate_credit_card_surcharge_amount,
-      :corporate_debit_card_surcharge_amount,
-      :corporate_prepaid_credit_card_surcharge_amount,
-      :corporate_prepaid_debit_card_surcharge_amount,
       :allow_zero_amount,
       :integration_version_3ds
     ])

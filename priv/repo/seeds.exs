@@ -11,7 +11,7 @@
 # and so on) as they will fail if something goes wrong.
 
 alias Pay.Repo
-alias Pay.Charges.CardType
+alias Pay.Payments.CardType
 alias Pay.Services.Role
 alias Pay.Services.Permission
 alias Pay.Services.RolePermission

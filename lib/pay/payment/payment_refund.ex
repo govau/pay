@@ -1,8 +1,8 @@
-defmodule Pay.Charges.ChargeRefund do
+defmodule Pay.Payments.PaymentRefund do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "charge_refunds" do
+  schema "payment_refunds" do
     field :amount, :integer
     field :external_id, Ecto.UUID
     field :gateway_transaction_id, Ecto.UUID
@@ -10,14 +10,14 @@ defmodule Pay.Charges.ChargeRefund do
     field :status, :string
     field :user_external_id, Ecto.UUID
 
-    belongs_to :charge, Pay.Charges.Charge
+    belongs_to :payment, Pay.Payments.Payment
 
     timestamps()
   end
 
   @doc false
-  def changeset(charge_refund, attrs) do
-    charge_refund
+  def changeset(payment_refund, attrs) do
+    payment_refund
     |> cast(attrs, [
       :external_id,
       :reference,

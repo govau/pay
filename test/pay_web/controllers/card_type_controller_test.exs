@@ -1,8 +1,8 @@
 defmodule PayWeb.CardTypeControllerTest do
   use PayWeb.ConnCase
 
-  alias Pay.Charges
-  alias Pay.Charges.CardType
+  alias Pay.Payments
+  alias Pay.Payments.CardType
 
   @create_attrs %{
     brand: "some brand",
@@ -19,7 +19,7 @@ defmodule PayWeb.CardTypeControllerTest do
   @invalid_attrs %{brand: nil, label: nil, requires_3ds: nil, type: nil}
 
   def fixture(:card_type) do
-    {:ok, card_type} = Charges.create_card_type(@create_attrs)
+    {:ok, card_type} = Payments.create_card_type(@create_attrs)
     card_type
   end
 

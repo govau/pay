@@ -1,8 +1,8 @@
-defmodule Pay.Charges.Charge do
+defmodule Pay.Payments.Payment do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "charges" do
+  schema "payments" do
     field :amount, :integer
     field :auth_3ds_details, :map
     field :card_details, :map
@@ -17,14 +17,14 @@ defmodule Pay.Charges.Charge do
     field :status, :string
     field :wallet, :string
 
-    belongs_to :gateway_account, Pay.Charges.GatewayAccount
+    belongs_to :gateway_account, Pay.Payments.GatewayAccount
 
     timestamps()
   end
 
   @doc false
-  def changeset(charge, attrs) do
-    charge
+  def changeset(payment, attrs) do
+    payment
     |> cast(attrs, [
       :external_id,
       :amount,

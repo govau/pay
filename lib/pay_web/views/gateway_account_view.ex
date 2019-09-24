@@ -21,14 +21,6 @@ defmodule PayWeb.GatewayAccountView do
       requires_3ds: gateway_account.requires_3ds,
       allow_apple_pay: gateway_account.allow_apple_pay,
       allow_google_pay: gateway_account.allow_google_pay,
-      corporate_credit_card_surcharge_amount:
-        gateway_account.corporate_credit_card_surcharge_amount,
-      corporate_debit_card_surcharge_amount:
-        gateway_account.corporate_debit_card_surcharge_amount,
-      corporate_prepaid_credit_card_surcharge_amount:
-        gateway_account.corporate_prepaid_credit_card_surcharge_amount,
-      corporate_prepaid_debit_card_surcharge_amount:
-        gateway_account.corporate_prepaid_debit_card_surcharge_amount,
       allow_zero_amount: gateway_account.allow_zero_amount,
       integration_version_3ds: gateway_account.integration_version_3ds
     }

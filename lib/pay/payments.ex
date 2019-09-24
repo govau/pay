@@ -1,12 +1,12 @@
-defmodule Pay.Charges do
+defmodule Pay.Payments do
   @moduledoc """
-  The Charges context.
+  The Payments context.
   """
 
   import Ecto.Query, warn: false
   alias Pay.Repo
 
-  alias Pay.Charges.CardType
+  alias Pay.Payments.CardType
 
   @doc """
   Returns the list of card_types.
@@ -102,7 +102,7 @@ defmodule Pay.Charges do
     CardType.changeset(card_type, %{})
   end
 
-  alias Pay.Charges.GatewayAccount
+  alias Pay.Payments.GatewayAccount
 
   @doc """
   Returns the list of gateway_accounts.
@@ -198,391 +198,410 @@ defmodule Pay.Charges do
     GatewayAccount.changeset(gateway_account, %{})
   end
 
-  alias Pay.Charges.Charge
+  alias Pay.Payments.Payment
 
   @doc """
-  Returns the list of charges.
+  Returns the list of payments.
 
   ## Examples
 
-      iex> list_charges()
-      [%Charge{}, ...]
+      iex> list_payments()
+      [%Payment{}, ...]
 
   """
-  def list_charges do
-    Repo.all(Charge)
+  def list_payments do
+    Repo.all(Payment)
   end
 
   @doc """
-  Gets a single charge.
+  Gets a single payment.
 
-  Raises `Ecto.NoResultsError` if the Charge does not exist.
+  Raises `Ecto.NoResultsError` if the Payment does not exist.
 
   ## Examples
 
-      iex> get_charge!(123)
-      %Charge{}
+      iex> get_payment!(123)
+      %Payment{}
 
-      iex> get_charge!(456)
+      iex> get_payment!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_charge!(id), do: Repo.get!(Charge, id)
+  def get_payment!(id), do: Repo.get!(Payment, id)
 
   @doc """
-  Creates a charge.
+  Gets a single payment by the given external ID.
+
+  Raises `Ecto.NoResultsError` if the Payment does not exist.
 
   ## Examples
 
-      iex> create_charge(%{field: value})
-      {:ok, %Charge{}}
+      iex> get_payment_by_external_id!("3bfd1a3c-0960-49da-be66-053b159df62d")
+      %Payment{}
 
-      iex> create_charge(%{field: bad_value})
+      iex> get_payment_by_external_id!("3bfd1a3c-0960-49da-be66-053b159df62e")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_payment_by_external_id!(external_id),
+    do: Repo.get_by!(Payment, external_id: external_id)
+
+  @doc """
+  Creates a payment.
+
+  ## Examples
+
+      iex> create_payment(%{field: value})
+      {:ok, %Payment{}}
+
+      iex> create_payment(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_charge(attrs \\ %{}) do
-    %Charge{}
-    |> Charge.changeset(attrs)
+  def create_payment(attrs \\ %{}) do
+    %Payment{
+      external_id: Ecto.UUID.generate()
+    }
+    |> Payment.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a charge.
+  Updates a payment.
 
   ## Examples
 
-      iex> update_charge(charge, %{field: new_value})
-      {:ok, %Charge{}}
+      iex> update_payment(payment, %{field: new_value})
+      {:ok, %Payment{}}
 
-      iex> update_charge(charge, %{field: bad_value})
+      iex> update_payment(payment, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_charge(%Charge{} = charge, attrs) do
-    charge
-    |> Charge.changeset(attrs)
+  def update_payment(%Payment{} = payment, attrs) do
+    payment
+    |> Payment.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a Charge.
+  Deletes a Payment.
 
   ## Examples
 
-      iex> delete_charge(charge)
-      {:ok, %Charge{}}
+      iex> delete_payment(payment)
+      {:ok, %Payment{}}
 
-      iex> delete_charge(charge)
+      iex> delete_payment(payment)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_charge(%Charge{} = charge) do
-    Repo.delete(charge)
+  def delete_payment(%Payment{} = payment) do
+    Repo.delete(payment)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking charge changes.
+  Returns an `%Ecto.Changeset{}` for tracking payment changes.
 
   ## Examples
 
-      iex> change_charge(charge)
-      %Ecto.Changeset{source: %Charge{}}
+      iex> change_payment(payment)
+      %Ecto.Changeset{source: %Payment{}}
 
   """
-  def change_charge(%Charge{} = charge) do
-    Charge.changeset(charge, %{})
+  def change_payment(%Payment{} = payment) do
+    Payment.changeset(payment, %{})
   end
 
-  alias Pay.Charges.ChargeFee
+  alias Pay.Payments.PaymentFee
 
   @doc """
-  Returns the list of charge_fees.
+  Returns the list of payment_fees.
 
   ## Examples
 
-      iex> list_charge_fees()
-      [%ChargeFee{}, ...]
+      iex> list_payment_fees()
+      [%PaymentFee{}, ...]
 
   """
-  def list_charge_fees do
-    Repo.all(ChargeFee)
+  def list_payment_fees do
+    Repo.all(PaymentFee)
   end
 
   @doc """
-  Gets a single charge_fee.
+  Gets a single payment_fee.
 
-  Raises `Ecto.NoResultsError` if the Charge fee does not exist.
+  Raises `Ecto.NoResultsError` if the Payment fee does not exist.
 
   ## Examples
 
-      iex> get_charge_fee!(123)
-      %ChargeFee{}
+      iex> get_payment_fee!(123)
+      %PaymentFee{}
 
-      iex> get_charge_fee!(456)
+      iex> get_payment_fee!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_charge_fee!(id), do: Repo.get!(ChargeFee, id)
+  def get_payment_fee!(id), do: Repo.get!(PaymentFee, id)
 
   @doc """
-  Creates a charge_fee.
+  Creates a payment_fee.
 
   ## Examples
 
-      iex> create_charge_fee(%{field: value})
-      {:ok, %ChargeFee{}}
+      iex> create_payment_fee(%{field: value})
+      {:ok, %PaymentFee{}}
 
-      iex> create_charge_fee(%{field: bad_value})
+      iex> create_payment_fee(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_charge_fee(attrs \\ %{}) do
-    %ChargeFee{}
-    |> ChargeFee.changeset(attrs)
+  def create_payment_fee(attrs \\ %{}) do
+    %PaymentFee{}
+    |> PaymentFee.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a charge_fee.
+  Updates a payment_fee.
 
   ## Examples
 
-      iex> update_charge_fee(charge_fee, %{field: new_value})
-      {:ok, %ChargeFee{}}
+      iex> update_payment_fee(payment_fee, %{field: new_value})
+      {:ok, %PaymentFee{}}
 
-      iex> update_charge_fee(charge_fee, %{field: bad_value})
+      iex> update_payment_fee(payment_fee, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_charge_fee(%ChargeFee{} = charge_fee, attrs) do
-    charge_fee
-    |> ChargeFee.changeset(attrs)
+  def update_payment_fee(%PaymentFee{} = payment_fee, attrs) do
+    payment_fee
+    |> PaymentFee.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a ChargeFee.
+  Deletes a PaymentFee.
 
   ## Examples
 
-      iex> delete_charge_fee(charge_fee)
-      {:ok, %ChargeFee{}}
+      iex> delete_payment_fee(payment_fee)
+      {:ok, %PaymentFee{}}
 
-      iex> delete_charge_fee(charge_fee)
+      iex> delete_payment_fee(payment_fee)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_charge_fee(%ChargeFee{} = charge_fee) do
-    Repo.delete(charge_fee)
+  def delete_payment_fee(%PaymentFee{} = payment_fee) do
+    Repo.delete(payment_fee)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking charge_fee changes.
+  Returns an `%Ecto.Changeset{}` for tracking payment_fee changes.
 
   ## Examples
 
-      iex> change_charge_fee(charge_fee)
-      %Ecto.Changeset{source: %ChargeFee{}}
+      iex> change_payment_fee(payment_fee)
+      %Ecto.Changeset{source: %PaymentFee{}}
 
   """
-  def change_charge_fee(%ChargeFee{} = charge_fee) do
-    ChargeFee.changeset(charge_fee, %{})
+  def change_payment_fee(%PaymentFee{} = payment_fee) do
+    PaymentFee.changeset(payment_fee, %{})
   end
 
-  alias Pay.Charges.ChargeEvent
+  alias Pay.Payments.PaymentEvent
 
   @doc """
-  Returns the list of charge_events.
+  Returns the list of payment_events.
 
   ## Examples
 
-      iex> list_charge_events()
-      [%ChargeEvent{}, ...]
+      iex> list_payment_events()
+      [%PaymentEvent{}, ...]
 
   """
-  def list_charge_events do
-    Repo.all(ChargeEvent)
+  def list_payment_events do
+    Repo.all(PaymentEvent)
   end
 
   @doc """
-  Gets a single charge_event.
+  Gets a single payment_event.
 
-  Raises `Ecto.NoResultsError` if the Charge event does not exist.
+  Raises `Ecto.NoResultsError` if the Payment event does not exist.
 
   ## Examples
 
-      iex> get_charge_event!(123)
-      %ChargeEvent{}
+      iex> get_payment_event!(123)
+      %PaymentEvent{}
 
-      iex> get_charge_event!(456)
+      iex> get_payment_event!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_charge_event!(id), do: Repo.get!(ChargeEvent, id)
+  def get_payment_event!(id), do: Repo.get!(PaymentEvent, id)
 
   @doc """
-  Creates a charge_event.
+  Creates a payment_event.
 
   ## Examples
 
-      iex> create_charge_event(%{field: value})
-      {:ok, %ChargeEvent{}}
+      iex> create_payment_event(%{field: value})
+      {:ok, %PaymentEvent{}}
 
-      iex> create_charge_event(%{field: bad_value})
+      iex> create_payment_event(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_charge_event(attrs \\ %{}) do
-    %ChargeEvent{}
-    |> ChargeEvent.changeset(attrs)
+  def create_payment_event(attrs \\ %{}) do
+    %PaymentEvent{}
+    |> PaymentEvent.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a charge_event.
+  Updates a payment_event.
 
   ## Examples
 
-      iex> update_charge_event(charge_event, %{field: new_value})
-      {:ok, %ChargeEvent{}}
+      iex> update_payment_event(payment_event, %{field: new_value})
+      {:ok, %PaymentEvent{}}
 
-      iex> update_charge_event(charge_event, %{field: bad_value})
+      iex> update_payment_event(payment_event, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_charge_event(%ChargeEvent{} = charge_event, attrs) do
-    charge_event
-    |> ChargeEvent.changeset(attrs)
+  def update_payment_event(%PaymentEvent{} = payment_event, attrs) do
+    payment_event
+    |> PaymentEvent.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a ChargeEvent.
+  Deletes a PaymentEvent.
 
   ## Examples
 
-      iex> delete_charge_event(charge_event)
-      {:ok, %ChargeEvent{}}
+      iex> delete_payment_event(payment_event)
+      {:ok, %PaymentEvent{}}
 
-      iex> delete_charge_event(charge_event)
+      iex> delete_payment_event(payment_event)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_charge_event(%ChargeEvent{} = charge_event) do
-    Repo.delete(charge_event)
+  def delete_payment_event(%PaymentEvent{} = payment_event) do
+    Repo.delete(payment_event)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking charge_event changes.
+  Returns an `%Ecto.Changeset{}` for tracking payment_event changes.
 
   ## Examples
 
-      iex> change_charge_event(charge_event)
-      %Ecto.Changeset{source: %ChargeEvent{}}
+      iex> change_payment_event(payment_event)
+      %Ecto.Changeset{source: %PaymentEvent{}}
 
   """
-  def change_charge_event(%ChargeEvent{} = charge_event) do
-    ChargeEvent.changeset(charge_event, %{})
+  def change_payment_event(%PaymentEvent{} = payment_event) do
+    PaymentEvent.changeset(payment_event, %{})
   end
 
-  alias Pay.Charges.ChargeRefund
+  alias Pay.Payments.PaymentRefund
 
   @doc """
-  Returns the list of charge_refunds.
+  Returns the list of payment_refunds.
 
   ## Examples
 
-      iex> list_charge_refunds()
-      [%ChargeRefund{}, ...]
+      iex> list_payment_refunds()
+      [%PaymentRefund{}, ...]
 
   """
-  def list_charge_refunds do
-    Repo.all(ChargeRefund)
+  def list_payment_refunds do
+    Repo.all(PaymentRefund)
   end
 
   @doc """
-  Gets a single charge_refund.
+  Gets a single payment_refund.
 
-  Raises `Ecto.NoResultsError` if the Charge refund does not exist.
+  Raises `Ecto.NoResultsError` if the Payment refund does not exist.
 
   ## Examples
 
-      iex> get_charge_refund!(123)
-      %ChargeRefund{}
+      iex> get_payment_refund!(123)
+      %PaymentRefund{}
 
-      iex> get_charge_refund!(456)
+      iex> get_payment_refund!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_charge_refund!(id), do: Repo.get!(ChargeRefund, id)
+  def get_payment_refund!(id), do: Repo.get!(PaymentRefund, id)
 
   @doc """
-  Creates a charge_refund.
+  Creates a payment_refund.
 
   ## Examples
 
-      iex> create_charge_refund(%{field: value})
-      {:ok, %ChargeRefund{}}
+      iex> create_payment_refund(%{field: value})
+      {:ok, %PaymentRefund{}}
 
-      iex> create_charge_refund(%{field: bad_value})
+      iex> create_payment_refund(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_charge_refund(attrs \\ %{}) do
-    %ChargeRefund{}
-    |> ChargeRefund.changeset(attrs)
+  def create_payment_refund(attrs \\ %{}) do
+    %PaymentRefund{}
+    |> PaymentRefund.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a charge_refund.
+  Updates a payment_refund.
 
   ## Examples
 
-      iex> update_charge_refund(charge_refund, %{field: new_value})
-      {:ok, %ChargeRefund{}}
+      iex> update_payment_refund(payment_refund, %{field: new_value})
+      {:ok, %PaymentRefund{}}
 
-      iex> update_charge_refund(charge_refund, %{field: bad_value})
+      iex> update_payment_refund(payment_refund, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_charge_refund(%ChargeRefund{} = charge_refund, attrs) do
-    charge_refund
-    |> ChargeRefund.changeset(attrs)
+  def update_payment_refund(%PaymentRefund{} = payment_refund, attrs) do
+    payment_refund
+    |> PaymentRefund.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a ChargeRefund.
+  Deletes a PaymentRefund.
 
   ## Examples
 
-      iex> delete_charge_refund(charge_refund)
-      {:ok, %ChargeRefund{}}
+      iex> delete_payment_refund(payment_refund)
+      {:ok, %PaymentRefund{}}
 
-      iex> delete_charge_refund(charge_refund)
+      iex> delete_payment_refund(payment_refund)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_charge_refund(%ChargeRefund{} = charge_refund) do
-    Repo.delete(charge_refund)
+  def delete_payment_refund(%PaymentRefund{} = payment_refund) do
+    Repo.delete(payment_refund)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking charge_refund changes.
+  Returns an `%Ecto.Changeset{}` for tracking payment_refund changes.
 
   ## Examples
 
-      iex> change_charge_refund(charge_refund)
-      %Ecto.Changeset{source: %ChargeRefund{}}
+      iex> change_payment_refund(payment_refund)
+      %Ecto.Changeset{source: %PaymentRefund{}}
 
   """
-  def change_charge_refund(%ChargeRefund{} = charge_refund) do
-    ChargeRefund.changeset(charge_refund, %{})
+  def change_payment_refund(%PaymentRefund{} = payment_refund) do
+    PaymentRefund.changeset(payment_refund, %{})
   end
 
-  alias Pay.Charges.GatewayAccountCardType
+  alias Pay.Payments.GatewayAccountCardType
 
   @doc """
   Returns the list of gateway_account_card_types.

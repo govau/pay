@@ -1,8 +1,8 @@
-defmodule Pay.Repo.Migrations.CreateCharges do
+defmodule Pay.Repo.Migrations.CreatePayments do
   use Ecto.Migration
 
   def change do
-    create table(:charges) do
+    create table(:payments) do
       add :external_id, :uuid
       add :amount, :integer
       add :status, :string
@@ -21,6 +21,6 @@ defmodule Pay.Repo.Migrations.CreateCharges do
       timestamps()
     end
 
-    create index(:charges, [:gateway_account_id])
+    create index(:payments, [:gateway_account_id])
   end
 end

@@ -11,10 +11,6 @@ defmodule Pay.Repo.Migrations.CreateGatewayAccounts do
       add :requires_3ds, :boolean, default: false, null: false
       add :allow_apple_pay, :boolean, default: false, null: false
       add :allow_google_pay, :boolean, default: false, null: false
-      add :corporate_credit_card_surcharge_amount, :integer
-      add :corporate_debit_card_surcharge_amount, :integer
-      add :corporate_prepaid_credit_card_surcharge_amount, :integer
-      add :corporate_prepaid_debit_card_surcharge_amount, :integer
       add :allow_zero_amount, :integer
       add :integration_version_3ds, :integer
 

@@ -1,18 +1,18 @@
-defmodule Pay.Charges.ChargeEvent do
+defmodule Pay.Payments.PaymentEvent do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "charge_events" do
+  schema "payment_events" do
     field :status, :string
 
-    belongs_to :charge, Pay.Charges.Charge
+    belongs_to :payment, Pay.Payments.Payment
 
     timestamps()
   end
 
   @doc false
-  def changeset(charge_event, attrs) do
-    charge_event
+  def changeset(payment_event, attrs) do
+    payment_event
     |> cast(attrs, [:status])
     |> validate_required([:status])
   end
