@@ -3,23 +3,35 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@sentry/browser": "5.6.3",
     "@types/jest": "24.0.18",
-    "@types/node": "12.7.5",
-    "@types/react": "16.9.2",
-    "@types/react-dom": "16.9.0",
-    "react": "^16.9.0",
-    "react-dom": "^16.9.0",
+    "@types/node": "12.7.7",
+    "@types/react": "16.9.3",
+    "@types/react-dom": "16.9.1",
+    "@types/react-helmet": "5.0.10",
+    "@types/react-router-dom": "4.3.5",
+    "@types/react-test-renderer": "16.9.0",
+    "core-js": "3.2.1",
+    "date-fns": "2.2.1",
+    "prettier": "1.18.2",
+    "react": "16.9.0",
+    "react-dom": "16.9.0",
+    "react-helmet": "5.2.1",
+    "react-router-dom": "5.1.0",
     "react-scripts": "3.1.2",
+    "react-test-renderer": "16.9.0",
+    "source-map-explorer": "2.1.0",
     "typescript": "3.6.3"
   },
   "scripts": {
+    "analyze": "source-map-explorer build/static/js/main.*",
+    "format": "prettier --write \"**/*.{js,json,jsx,md,ts,tsx}\"",
+    "format-check": "prettier --list-different \"**/*.{js,json,jsx,md,ts,tsx}\"",
+    "lint": "eslint \"src/**/*.ts{,x}\"",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": {
     "production": [
