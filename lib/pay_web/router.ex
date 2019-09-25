@@ -15,15 +15,31 @@ defmodule PayWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/v1/api/", PayWeb.External, as: :external do
+    pipe_through(:api)
+
+    resources("/payments", PaymentController, only: [:index, :show, :create])
+  end
+
+  scope "/v1/api/internal", PayWeb do
+    pipe_through(:api)
+
+    resources("/payments/card-types", CardTypeController, except: [:new, :edit])
+    resources("/payments/gateway-accounts", GatewayAccountController, except: [:new, :edit])
+    resources("/payments/payments", PaymentController, except: [:new, :edit])
+
+    resources("/services/permissions", PermissionController, except: [:new, :edit])
+    resources("/services/roles", RoleController, except: [:new, :edit])
+    resources("/services/users", UserController, except: [:new, :edit])
+    resources "/services/organisation-types", OrganisationTypeController, except: [:new, :edit]
+    resources "/services/organisations", OrganisationController, except: [:new, :edit]
+    resources("/services/services", ServiceController, except: [:new, :edit])
+  end
+
   scope "/", PayWeb do
     pipe_through :browser
 
     get "/_status", PageController, :status
     get "/*path", ReactController, :index
   end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", PayWeb do
-  #   pipe_through :api
-  # end
 end
