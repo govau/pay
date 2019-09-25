@@ -11,8 +11,10 @@
     "@types/react-helmet": "5.0.10",
     "@types/react-router-dom": "4.3.5",
     "@types/react-test-renderer": "16.9.0",
+    "@types/styled-components": "4.1.19",
     "core-js": "3.2.1",
     "date-fns": "2.2.1",
+    "jest-styled-components": "6.3.3",
     "prettier": "1.18.2",
     "react": "16.9.0",
     "react-dom": "16.9.0",
@@ -21,7 +23,10 @@
     "react-scripts": "3.1.2",
     "react-test-renderer": "16.9.0",
     "source-map-explorer": "2.1.0",
-    "typescript": "3.6.3"
+    "styled-components": "4.4.0",
+    "styled-reboot": "4.0.3",
+    "typescript": "3.6.3",
+    "typescript-styled-plugin": "0.14.0"
   },
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",
