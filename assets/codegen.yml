@@ -1,0 +1,15 @@
+overwrite: true
+schema: src/gql/schema.graphql
+documents: "**/{mutations,fragments,queries}.graphql"
+generates:
+  src/__generated__/graphql.tsx:
+    config:
+      noNamespaces: true
+      withHOC: true
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+  ./src/__generated__/introspection-result.ts:
+    plugins:
+      - "fragment-matcher"

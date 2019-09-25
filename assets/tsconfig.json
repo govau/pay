@@ -20,5 +20,5 @@
       }
     ]
   },
-  "include": ["src"]
+  "include": ["typings/**/*.d.ts", "src/**/*"]
 }

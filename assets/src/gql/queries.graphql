@@ -1,0 +1,17 @@
+# import * from './fragments.graphql'
+# import User from './user.graphql'
+
+query User {
+  user {
+    ...User
+  }
+}
+
+query CheckAuth {
+  checkAuth {
+    isAuthenticated
+    user {
+      ...User
+    }
+  }
+}

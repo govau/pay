@@ -1,0 +1,6 @@
+# import * from './inputs.graphql'
+# import * from './fragments.graphql'
+
+mutation Signout {
+  signout
+}
