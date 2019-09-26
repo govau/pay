@@ -20,6 +20,9 @@ if (process.env.REACT_APP_SENTRY_DSN) {
 const restLink = new RestLink({
   uri: "/v1/api",
   endpoints: { v1: "/v1/api" },
+  headers: {
+    "Content-Type": "application/json"
+  },
   responseTransformer: async response =>
     response.json().then(({ data }: { data: any }) => data)
 });
