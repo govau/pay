@@ -1,0 +1,26 @@
+# import * from './fragments.graphql'
+# import User from './user.graphql'
+
+query User {
+  user {
+    ...User
+  }
+}
+
+query CheckAuth {
+  checkAuth {
+    isAuthenticated
+    user {
+      ...User
+    }
+  }
+}
+
+query CardTypes {
+  cardTypes @rest(type: "CardType", path: "/internal/payments/card-types") {
+    id
+    brand
+    label
+    type
+  }
+}

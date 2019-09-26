@@ -1,0 +1,23 @@
+# import User from './user.graphql'
+
+type CheckAuthResponse {
+  isAuthenticated: Boolean!
+  user: User
+}
+
+type CardType {
+  id: String!
+  brand: String
+  label: String
+  type: String
+}
+
+type Query {
+  user: User
+  checkAuth: CheckAuthResponse!
+  cardTypes: [CardType!]!
+}
+
+type Mutation {
+  signout: Boolean!
+}
