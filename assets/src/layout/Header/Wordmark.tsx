@@ -1,8 +1,8 @@
 import * as React from "react";
 
-const WordmarkSVG: React.FC<{
+const Wordmark: React.FC<{
   fill?: string;
-}> = ({ fill = "#333333" }) => (
+}> = ({ fill = "#ffffff" }) => (
   <svg
     role="img"
     aria-labelledby="wordmark-title"
@@ -49,4 +49,4 @@ const WordmarkSVG: React.FC<{
   </svg>
 );
 
-export { WordmarkSVG };
+export { Wordmark };

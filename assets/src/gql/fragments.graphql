@@ -1,4 +1,6 @@
 fragment User on User {
+  id
+  insertedAt
   updatedAt
   name
   email

@@ -3,7 +3,7 @@ import { spacing, Link as LinkComponent } from "@pay/web";
 import styled from "@pay/web/styled-components";
 import { BetaTag } from "../../components/BetaTag";
 
-import { WordmarkSVG } from "./Wordmark";
+import { Wordmark } from "./Wordmark";
 import COA from "./Coat";
 
 interface Props {}
@@ -55,7 +55,7 @@ const Lite: React.FC<Props> = props => (
         <COA />
       </Coat>
       <Link to="/">
-        <WordmarkSVG />
+        <Wordmark fill="#313131" />
         <BetaTag />
       </Link>
     </Logos>

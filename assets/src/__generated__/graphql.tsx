@@ -43,15 +43,15 @@ export type Query = {
 export type User = {
   __typename?: "User";
   id: Scalars["String"];
-  createdAt: Scalars["String"];
-  updatedAt?: Maybe<Scalars["String"]>;
+  insertedAt: Scalars["String"];
+  updatedAt: Scalars["String"];
   name?: Maybe<Scalars["String"]>;
   email?: Maybe<Scalars["String"]>;
   mobilePhone?: Maybe<Scalars["String"]>;
 };
 export type UserFragment = { __typename?: "User" } & Pick<
   User,
-  "updatedAt" | "name" | "email" | "mobilePhone"
+  "id" | "insertedAt" | "updatedAt" | "name" | "email" | "mobilePhone"
 >;
 
 export type SignoutMutationVariables = {};
@@ -88,6 +88,8 @@ export type CardTypesQuery = { __typename?: "Query" } & {
 };
 export const UserFragmentDoc = gql`
   fragment User on User {
+    id
+    insertedAt
     updatedAt
     name
     email

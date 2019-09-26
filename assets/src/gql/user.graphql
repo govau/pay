@@ -1,7 +1,7 @@
 type User {
   id: String!
-  createdAt: String!
-  updatedAt: String
+  insertedAt: String!
+  updatedAt: String!
   name: String
   email: String
   mobilePhone: String

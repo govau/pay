@@ -1,8 +1,8 @@
 import * as React from "react";
 import { styledComponents, tablet } from "@pay/web";
 import { Ul, NavLink } from "./components";
-import { UserContext, UserContextValues } from "../../users";
 import withContext from "../../context/withContext";
+import { UserContext, UserContextValues } from "../../users";
 import { ProfileIcon } from "../../components/icons/ProfileIcon";
 
 interface PrimaryNavProps {
@@ -46,27 +46,26 @@ const Li = styledComponents.styled.li`
   }
 
   &:hover {
-    color: ${props => props.theme.colors.black};
-    background-color: ${props => props.theme.colors.highlightGreen};
+    color: ${props => props.theme.colors.white};
+    background-color: ${props => props.theme.colors.payHeaderBar};
   }
 `;
 
 const ProfileLink = styledComponents.styled(NavLink)`
-
     padding: 2.2rem 1.6rem;
 
     &:hover {
       ${props => `
-        color: ${props.theme.colors.black};
-        background-color: ${props.theme.colors.highlightGreen};
+        color: ${props.theme.colors.white};
+        background-color: ${props.theme.colors.payHeaderBar};
       `}
     }
 
     @media ${tablet} {
       padding: 1.6rem;
       margin: 0;
-      border-left: solid 1px ${props => props.theme.colors.chateauGreen};
-      border-right: solid 1px ${props => props.theme.colors.chateauGreen};
+      border-left: solid 1px ${props => props.theme.colors.white};
+      border-right: solid 1px ${props => props.theme.colors.white};
     }
 
     svg {
@@ -82,35 +81,41 @@ const PrimaryNav: React.FC<Props> = ({
   onHandleNavigate,
   user: { name }
 }) => {
-  if (!authenticated) {
+  // TODO: remove false &&
+  if (false && !authenticated) {
     return null;
   }
   return (
     <NavUl>
+      <Li>
+        <NavLink to="/" exact onClick={onHandleNavigate}>
+          Home
+        </NavLink>
+      </Li>
       <Li>
         <NavLink to="/dashboard" exact onClick={onHandleNavigate}>
           Dashboard
         </NavLink>
       </Li>
       <Li>
-        <NavLink to="/#" exact onClick={onHandleNavigate}>
-          Services
+        <NavLink to="/TODO" exact onClick={onHandleNavigate}>
+          Item 1
         </NavLink>
       </Li>
       <Li>
-        <NavLink to="/activity" exact onClick={onHandleNavigate}>
-          Activity history
+        <NavLink to="/TODO" exact onClick={onHandleNavigate}>
+          Item 2
         </NavLink>
       </Li>
       <Li>
-        <NavLink to="/#" exact onClick={onHandleNavigate}>
-          Inbox
+        <NavLink to="/TODO" exact onClick={onHandleNavigate}>
+          Item 3
         </NavLink>
       </Li>
       <Li>
         <ProfileLink to="/profile" exact onClick={onHandleNavigate}>
           <ProfileIcon />
-          {name}
+          {name || "TODO"}
         </ProfileLink>
       </Li>
     </NavUl>

@@ -4,7 +4,6 @@ const colors = {
   black: "#313131",
   chateauGreen: "#32A556",
   darkGreen: "#026540",
-  lightGreen: "#06905F",
   highlightGreen: "#D7EA6A",
   darkGrey: "#88989D",
   midGrey: "#D8D8D8",
@@ -17,8 +16,10 @@ const colors = {
   darkerBlue: "#0041A3",
   borderBlue: "#2684FF",
 
-  brand: "#2ab4e7",
-  brandDark: "#002341",
+  // TODO: peter rename these to your liking.
+  payBlue: "#032240",
+  payDarkerBlue: "#021627",
+  payHeaderBar: "#1d70b8",
   links: "#1d70b8"
 };
 
@@ -28,8 +29,8 @@ const palette = {
   linkColor: colors.links,
   sectionLabel: colors.chateauGreen,
   sectionBackground: colors.whiteSmoke,
-  brandPrimary: colors.brand,
-  brandSecondary: colors.darkerBlue,
+  brandPrimary: colors.payBlue,
+  brandSecondary: colors.payDarkerBlue,
   footer: {
     textColor: colors.black,
     bgColor: colors.lightGrey

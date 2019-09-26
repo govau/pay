@@ -9,7 +9,7 @@ const { styled } = styledComponents;
 export const Wrapper = styled.header`
   ${Container} {
     display: flex;
-    align-items: stretch;
+    align-items: center;
     justify-content: space-between;
     @media ${tablet} {
       justify-content: flex-start;
@@ -19,26 +19,27 @@ export const Wrapper = styled.header`
 `;
 
 export const PrimaryHeader = styled.div`
-  color: ${props => props.theme.colors.white};
-  background-color: ${props => props.theme.colors.black};
+  background-color: ${props => props.theme.colors.payBlue};
+  padding: 1.5rem 0;
 `;
 
 export const Navbar = styled.div<{ visible: boolean }>`
   display: ${props => (props.visible ? "inherit" : "none")};
-  background-image: linear-gradient(
-    to right,
-    rgb(48, 34, 173),
-    rgb(26, 112, 255)
-  );
+  background-color: ${props => props.theme.colors.payDarkerBlue};
+  padding-top: 1.5rem;
 
   ${Container} {
-    padding: 0 1em;
+    padding: 0;
+
+    @media ${tablet} {
+      padding: 0 1em;
+    }
   }
 
   @media ${tablet} {
     padding-top: 0;
     display: inherit;
-    border-bottom: 8px solid #0052cc;
+    border-bottom: 8px solid ${props => props.theme.colors.payHeaderBar};
   }
 `;
 
@@ -101,12 +102,12 @@ export const NavLink = styled(RRNavLink)`
   border-left: 6px solid transparent;
 
   &:hover {
-    color: ${props => props.theme.colors.black};
-    background-color: ${props => props.theme.colors.highlightGreen};
+    color: ${props => props.theme.colors.white};
+    background-color: ${props => props.theme.colors.payHeaderBar};
   }
 
   &.${NavLinkActiveClassName} {
-    border-left: 6px solid ${props => props.theme.colors.highlightGreen};
+    border-left: 6px solid ${props => props.theme.colors.payHeaderBar};
   }
 
   @media ${tablet} {
@@ -117,8 +118,8 @@ export const NavLink = styled(RRNavLink)`
     &.${NavLinkActiveClassName} {
       ${props => `
         border-left: none;
-        color: ${props.theme.colors.black};
-        background-color: ${props.theme.colors.highlightGreen};
+        color: ${props.theme.colors.white};
+        background-color: ${props.theme.colors.payHeaderBar};
     `}
     }
   }
