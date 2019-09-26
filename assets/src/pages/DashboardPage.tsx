@@ -35,7 +35,7 @@ class DashboardPage extends React.Component<{}, State> {
                 <ul>
                   {data.cardTypes.map(ct => (
                     <li key={ct.id}>
-                      {ct.label}: {ct.brand}
+                      {ct.type}: {ct.label} (slug: {ct.brand})
                     </li>
                   ))}
                 </ul>
