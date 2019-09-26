@@ -56,6 +56,16 @@ const App: React.FC = () => {
                 </DefaultLayout>
               )}
             />
+            {/* TODO PrivateRoute for this */}
+            <Route
+              exact={true}
+              path="/dashboard"
+              render={() => (
+                <DefaultLayout>
+                  <Pages.DashboardPage />
+                </DefaultLayout>
+              )}
+            />
             <Route
               path="*"
               render={() => (

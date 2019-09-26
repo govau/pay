@@ -5,9 +5,17 @@ type CheckAuthResponse {
   user: User
 }
 
+type CardType {
+  id: String!
+  brand: String
+  label: String
+  type: String
+}
+
 type Query {
   user: User
   checkAuth: CheckAuthResponse!
+  cardTypes: [CardType!]!
 }
 
 type Mutation {

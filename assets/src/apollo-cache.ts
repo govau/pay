@@ -1,4 +1,7 @@
-import { InMemoryCache, IntrospectionFragmentMatcher } from "apollo-boost";
+import {
+  InMemoryCache,
+  IntrospectionFragmentMatcher
+} from "apollo-cache-inmemory";
 
 import introspectionQueryResultData from "./__generated__/introspection-result";
 

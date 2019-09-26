@@ -4,7 +4,8 @@ import ReactDOM from "react-dom";
 import * as Sentry from "@sentry/browser";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ApolloProvider } from "react-apollo";
-import ApolloClient from "apollo-boost";
+import { RestLink } from "apollo-link-rest";
+import ApolloClient from "apollo-client";
 
 import { cache } from "./apollo-cache";
 import App from "./App";
@@ -16,10 +17,16 @@ if (process.env.REACT_APP_SENTRY_DSN) {
   });
 }
 
+const restLink = new RestLink({
+  uri: "/v1/api",
+  endpoints: { v1: "/v1/api" },
+  responseTransformer: async response =>
+    response.json().then(({ data }: { data: any }) => data)
+});
+
 const client = new ApolloClient({
-  uri: process.env.REACT_APP_ENDPOINT || "http://localhost:4001",
-  cache,
-  credentials: "include"
+  link: restLink,
+  cache
 });
 
 ReactDOM.render(

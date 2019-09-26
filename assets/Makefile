@@ -1,4 +1,5 @@
 YARN ?= yarn
+PRETTIER ?= prettier
 SRC   = $(shell find src -type f)
 PUB   = $(shell find public -type f)
 PORT ?= 4001
@@ -24,4 +25,8 @@ start: public/index.html $(SRC) $(PUB)
 test:
 	$(YARN) test
 
-.PHONY: clean start test
+generate: codegen.yml
+	$(YARN) generate
+	$(PRETTIER) --write "src/__generated__/**"
+
+.PHONY: clean start test generate
