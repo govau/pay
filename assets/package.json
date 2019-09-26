@@ -11,7 +11,6 @@
     "@graphql-codegen/typescript-react-apollo": "1.7.0",
     "@loadable/component": "5.10.3",
     "@pay/web": "link:./src/pay-web",
-    "@reach/menu-button": "0.1.18",
     "@sentry/browser": "5.6.3",
     "@types/jest": "24.0.18",
     "@types/loadable__component": "5.10.0",
