@@ -3,9 +3,10 @@ defmodule Pay.Repo.Migrations.CreateUsers do
 
   def change do
     create table(:users) do
-      add :external_id, :uuid
-      add :email, :string
+      add :external_id, :uuid, null: false
+      add :email, :string, null: false
       add :telephone_number, :string
+      add :name, :string, null: false
       add :disabled, :boolean, default: false, null: false
       add :last_logged_in_at, :utc_datetime_usec
 

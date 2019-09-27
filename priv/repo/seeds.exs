@@ -230,21 +230,24 @@ user1_id =
   Repo.insert!(%User{
     external_id: Ecto.UUID.generate(),
     email: "user1@dta.gov.au",
-    telephone_number: "+61412111111"
+    telephone_number: "+61412111111",
+    name: "User 1"
   }).id
 
 user2_id =
   Repo.insert!(%User{
     external_id: Ecto.UUID.generate(),
     email: "user2@dta.gov.au",
-    telephone_number: "+61412222222"
+    telephone_number: "+61412222222",
+    name: "User 2"
   }).id
 
 service1_view_only_user_id =
   Repo.insert!(%User{
     external_id: Ecto.UUID.generate(),
     email: "service1-view-only@dta.gov.au",
-    telephone_number: "+61412999999"
+    telephone_number: "+61412999999",
+    name: "Service 1 view only"
   }).id
 
 # Sample services

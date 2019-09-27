@@ -6,6 +6,7 @@ defmodule Pay.Services.User do
     field :disabled, :boolean, default: false
     field :email, :string
     field :external_id, Ecto.UUID
+    field :name, :string
     field :last_logged_in_at, :utc_datetime_usec
     field :telephone_number, :string
 
@@ -17,8 +18,15 @@ defmodule Pay.Services.User do
   @doc false
   def create_changeset(user, attrs) do
     user
-    |> cast(attrs, [:external_id, :email, :telephone_number, :disabled, :last_logged_in_at])
-    |> validate_required([:external_id, :email, :telephone_number, :disabled, :last_logged_in_at])
+    |> cast(attrs, [:external_id, :email, :telephone_number, :name, :disabled, :last_logged_in_at])
+    |> validate_required([
+      :external_id,
+      :email,
+      :telephone_number,
+      :name,
+      :disabled,
+      :last_logged_in_at
+    ])
     |> unique_constraint(:email)
   end
 
@@ -26,8 +34,15 @@ defmodule Pay.Services.User do
   @doc false
   def update_changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :telephone_number, :disabled, :last_logged_in_at])
-    |> validate_required([:external_id, :email, :telephone_number, :disabled, :last_logged_in_at])
+    |> cast(attrs, [:email, :telephone_number, :name, :disabled, :last_logged_in_at])
+    |> validate_required([
+      :external_id,
+      :email,
+      :telephone_number,
+      :name,
+      :disabled,
+      :last_logged_in_at
+    ])
     |> unique_constraint(:email)
   end
 end
