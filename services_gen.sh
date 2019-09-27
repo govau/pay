@@ -34,6 +34,7 @@ mix phx.gen.json $SERVICES_CTX User users \
     external_id:uuid \
     email:string:unique \
     telephone_number:string \
+    name:string \
     disabled:boolean \
     last_logged_in_at:utc_datetime_usec
 
