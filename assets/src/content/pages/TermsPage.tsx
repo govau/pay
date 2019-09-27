@@ -1,7 +1,6 @@
 import * as React from "react";
 import Helmet from "react-helmet";
-
-import PageTitle from "../components/PageTitle";
+import { PageTitle } from "@pay/web";
 
 const TermsPage: React.FunctionComponent = () => (
   <>

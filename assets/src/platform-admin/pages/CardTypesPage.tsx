@@ -1,20 +1,19 @@
 import * as React from "react";
 import Helmet from "react-helmet";
-import { Loader, ErrorAlert } from "@pay/web";
+import { PageTitle, Loader, ErrorAlert } from "@pay/web";
 
 import { CardTypesComponent } from "../__generated__/graphql";
-import PageTitle from "../components/PageTitle";
 
 interface State {}
 
-class DashboardPage extends React.Component<{}, State> {
+class CardTypesPage extends React.Component<{}, State> {
   render() {
     return (
       <>
         <Helmet>
-          <title>Dashboard</title>
+          <title>Card types</title>
         </Helmet>
-        <PageTitle title="Dashboard" />
+        <PageTitle title="Card types" />
         <CardTypesComponent>
           {({ data, loading, error }) => {
             if (loading) {
@@ -30,16 +29,13 @@ class DashboardPage extends React.Component<{}, State> {
               );
             }
             return (
-              <>
-                <h2>Card types</h2>
-                <ul>
-                  {data.cardTypes.map(ct => (
-                    <li key={ct.id}>
-                      {ct.type}: {ct.label} (slug: {ct.brand})
-                    </li>
-                  ))}
-                </ul>
-              </>
+              <ul>
+                {data.cardTypes.map(ct => (
+                  <li key={ct.id}>
+                    {ct.type}: {ct.label} (slug: {ct.brand})
+                  </li>
+                ))}
+              </ul>
             );
           }}
         </CardTypesComponent>
@@ -48,4 +44,4 @@ class DashboardPage extends React.Component<{}, State> {
   }
 }
 
-export default DashboardPage;
+export default CardTypesPage;

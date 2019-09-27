@@ -1,8 +1,6 @@
 import * as React from "react";
 import Helmet from "react-helmet";
-
-import PageTitle from "../components/PageTitle";
-import { Button } from "@pay/web";
+import { PageTitle, Button } from "@pay/web";
 
 const SigninPage: React.FunctionComponent = () => (
   <>

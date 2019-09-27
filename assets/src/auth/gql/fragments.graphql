@@ -1,0 +1,9 @@
+fragment User on User {
+  id
+  inserted_at
+  updated_at
+  platform_admin
+  name
+  email
+  telephone_number
+}

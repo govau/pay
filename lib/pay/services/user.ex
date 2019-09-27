@@ -7,6 +7,8 @@ defmodule Pay.Services.User do
     field :email, :string
     field :external_id, Ecto.UUID
     field :last_logged_in_at, :utc_datetime_usec
+    field :name, :string
+    field :platform_admin, :boolean, default: false
     field :telephone_number, :string
 
     many_to_many :services, Pay.Services.Service, join_through: "service_users"
@@ -17,8 +19,15 @@ defmodule Pay.Services.User do
   @doc false
   def create_changeset(user, attrs) do
     user
-    |> cast(attrs, [:external_id, :email, :telephone_number, :disabled, :last_logged_in_at])
-    |> validate_required([:external_id, :email, :telephone_number, :disabled, :last_logged_in_at])
+    |> cast(attrs, [:external_id, :email, :telephone_number, :name, :disabled, :last_logged_in_at])
+    |> validate_required([
+      :external_id,
+      :email,
+      :telephone_number,
+      :name,
+      :disabled,
+      :last_logged_in_at
+    ])
     |> unique_constraint(:email)
   end
 
@@ -26,8 +35,15 @@ defmodule Pay.Services.User do
   @doc false
   def update_changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :telephone_number, :disabled, :last_logged_in_at])
-    |> validate_required([:external_id, :email, :telephone_number, :disabled, :last_logged_in_at])
+    |> cast(attrs, [:email, :telephone_number, :name, :disabled, :last_logged_in_at])
+    |> validate_required([
+      :external_id,
+      :email,
+      :telephone_number,
+      :name,
+      :disabled,
+      :last_logged_in_at
+    ])
     |> unique_constraint(:email)
   end
 end

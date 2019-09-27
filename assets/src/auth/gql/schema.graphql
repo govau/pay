@@ -1,0 +1,15 @@
+# import User from '../../gql/services.graphql'
+
+type CheckAuthResponse {
+  is_authenticated: Boolean!
+  user: User
+}
+
+type Query {
+  user: User
+  checkAuth: CheckAuthResponse!
+}
+
+type Mutation {
+  signout: Boolean!
+}

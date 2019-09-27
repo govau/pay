@@ -1,0 +1,6 @@
+type CardType {
+  id: String!
+  brand: String
+  label: String
+  type: String
+}

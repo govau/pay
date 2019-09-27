@@ -5,7 +5,7 @@ import {
   SignoutComponent,
   CheckAuthDocument,
   CheckAuthQuery
-} from "../../__generated__/graphql";
+} from "../../auth/__generated__/graphql";
 import { cache } from "../../apollo-cache";
 import withContext from "../../context/withContext";
 import { UserContext, UserContextValues } from "../../users";
@@ -41,7 +41,7 @@ const SignoutButton: React.FC<UserContextValues> = ({ clearUser }) => {
             query: CheckAuthDocument,
             data: {
               checkAuth: {
-                isAuthenticated: false,
+                is_authenticated: false,
                 user: null,
                 __typename: "CheckAuthResponse"
               }

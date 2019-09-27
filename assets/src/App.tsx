@@ -4,8 +4,10 @@ import { styledComponents, theme, GlobalStyle } from "@pay/web";
 
 import { AuthProvider } from "./auth/AuthContext";
 import { UserProvider } from "./users/UserContext";
-import * as Pages from "./pages/Pages";
-import DefaultLayout, { MinimalLayout, PageContent } from "./layout";
+import * as Content from "./content";
+import * as Auth from "./auth";
+import * as Console from "./console";
+import * as PlatformAdmin from "./platform-admin";
 
 const { ThemeProvider } = styledComponents;
 
@@ -16,66 +18,18 @@ const App: React.FC = () => {
         <UserProvider>
           <GlobalStyle />
           <Switch>
-            <Route
-              exact={true}
-              path="/"
-              render={() => (
-                <DefaultLayout>
-                  <Pages.HomePage />
-                </DefaultLayout>
-              )}
-            />
-            <Route
-              exact={true}
-              path="/signin"
-              render={() => (
-                <MinimalLayout>
-                  <Pages.SigninPage />
-                </MinimalLayout>
-              )}
-            />
-            <Route
-              exact={true}
-              path="/terms"
-              component={() => (
-                <DefaultLayout>
-                  <PageContent>
-                    <Pages.TermsPage />
-                  </PageContent>
-                </DefaultLayout>
-              )}
-            />
-            <Route
-              exact={true}
-              path="/privacy"
-              component={() => (
-                <DefaultLayout>
-                  <PageContent>
-                    <Pages.PrivacyPage />
-                  </PageContent>
-                </DefaultLayout>
-              )}
-            />
-            {/* TODO PrivateRoute for this */}
-            <Route
-              exact={true}
-              path="/dashboard"
-              render={() => (
-                <DefaultLayout>
-                  <Pages.DashboardPage />
-                </DefaultLayout>
-              )}
-            />
-            <Route
-              path="*"
-              render={() => (
-                <DefaultLayout>
-                  <PageContent>
-                    <Pages.NotFoundPage />
-                  </PageContent>
-                </DefaultLayout>
-              )}
-            />
+            <Route path="/platform-admin" strict>
+              <PlatformAdmin.Routes />
+            </Route>
+            <Route path="/console" strict>
+              <Console.Routes />
+            </Route>
+            <Route path="/auth" strict>
+              <Auth.Routes />
+            </Route>
+            <Route path="" strict>
+              <Content.Routes />
+            </Route>
           </Switch>
         </UserProvider>
       </AuthProvider>

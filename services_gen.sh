@@ -32,8 +32,10 @@ mix ecto.migrate
 
 mix phx.gen.json $SERVICES_CTX User users \
     external_id:uuid \
+    platform_admin:boolean \
     email:string:unique \
     telephone_number:string \
+    name:string \
     disabled:boolean \
     last_logged_in_at:utc_datetime_usec
 
@@ -60,6 +62,7 @@ mix ecto.migrate
 mix phx.gen.json $SERVICES_CTX Service services \
     external_id:uuid \
     organisation_id:references:organisations \
+    name:string:unique \
     redirect_to_service_immediately_on_terminal_state:boolean \
     collect_billing_address:boolean \
     custom_branding:map \

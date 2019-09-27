@@ -1,0 +1,18 @@
+# import User from '../../gql/services.graphql'
+# import * from './fragments.graphql'
+
+query User {
+  user {
+    ...User
+  }
+}
+
+query CheckAuth {
+  checkAuth
+    @rest(type: "CheckAuthResponse", path: "/internal/services/auth/check") {
+    is_authenticated
+    user @type(name: "User") {
+      ...User
+    }
+  }
+}

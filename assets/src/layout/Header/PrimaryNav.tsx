@@ -81,8 +81,7 @@ const PrimaryNav: React.FC<Props> = ({
   onHandleNavigate,
   user: { name }
 }) => {
-  // TODO: remove false &&
-  if (false && !authenticated) {
+  if (!authenticated) {
     return null;
   }
   return (
@@ -93,13 +92,13 @@ const PrimaryNav: React.FC<Props> = ({
         </NavLink>
       </Li>
       <Li>
-        <NavLink to="/dashboard" exact onClick={onHandleNavigate}>
-          Dashboard
+        <NavLink to="/console" exact onClick={onHandleNavigate}>
+          Console
         </NavLink>
       </Li>
       <Li>
-        <NavLink to="/TODO" exact onClick={onHandleNavigate}>
-          Item 1
+        <NavLink to="/platform-admin" exact onClick={onHandleNavigate}>
+          Platform admin
         </NavLink>
       </Li>
       <Li>
@@ -115,7 +114,7 @@ const PrimaryNav: React.FC<Props> = ({
       <Li>
         <ProfileLink to="/profile" exact onClick={onHandleNavigate}>
           <ProfileIcon />
-          {name || "TODO"}
+          {name}
         </ProfileLink>
       </Li>
     </NavUl>

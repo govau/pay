@@ -31,6 +31,7 @@ defmodule PayWeb.Router do
     resources("/services/permissions", PermissionController, except: [:new, :edit])
     resources("/services/roles", RoleController, except: [:new, :edit])
     resources("/services/users", UserController, except: [:new, :edit])
+    get "/services/auth/check", AuthController, :check, as: :check
     resources "/services/organisation-types", OrganisationTypeController, except: [:new, :edit]
     resources "/services/organisations", OrganisationController, except: [:new, :edit]
     resources("/services/services", ServiceController, except: [:new, :edit])

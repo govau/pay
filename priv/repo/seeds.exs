@@ -226,25 +226,46 @@ Repo.insert!(%OrganisationDomain{
 
 # Sample users
 
+platform_admin1_id =
+  Repo.insert!(%User{
+    external_id: Ecto.UUID.generate(),
+    platform_admin: true,
+    email: "platform-admin1@dta.gov.au",
+    telephone_number: "+61412333333",
+    name: "Plaform admin 1"
+  }).id
+
+platform_admin2_id =
+  Repo.insert!(%User{
+    external_id: Ecto.UUID.generate(),
+    platform_admin: true,
+    email: "platform-admin2@dta.gov.au",
+    telephone_number: "+61412444444",
+    name: "Plaform admin 2"
+  }).id
+
 user1_id =
   Repo.insert!(%User{
     external_id: Ecto.UUID.generate(),
     email: "user1@dta.gov.au",
-    telephone_number: "+61412111111"
+    telephone_number: "+61412111111",
+    name: "User 1"
   }).id
 
 user2_id =
   Repo.insert!(%User{
     external_id: Ecto.UUID.generate(),
     email: "user2@dta.gov.au",
-    telephone_number: "+61412222222"
+    telephone_number: "+61412222222",
+    name: "User 2"
   }).id
 
 service1_view_only_user_id =
   Repo.insert!(%User{
     external_id: Ecto.UUID.generate(),
     email: "service1-view-only@dta.gov.au",
-    telephone_number: "+61412999999"
+    telephone_number: "+61412999999",
+    name: "Service 1 view only"
   }).id
 
 # Sample services
@@ -253,14 +274,14 @@ service1_id =
   Repo.insert!(%Service{
     external_id: Ecto.UUID.generate(),
     organisation_id: dta_id,
-    merchant_name: "Service 1"
+    name: "Service 1"
   }).id
 
 service2_id =
   Repo.insert!(%Service{
     external_id: Ecto.UUID.generate(),
     organisation_id: dfat_id,
-    merchant_name: "Service 2"
+    name: "Service 2"
   }).id
 
 Repo.insert!(%ServiceUser{
