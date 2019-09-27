@@ -1,6 +1,5 @@
-import { styledComponents, desktop } from "@pay/web";
-
-const { styled } = styledComponents;
+import styled from "../styled-components";
+import { desktop } from "../media";
 
 const PageContent = styled.div`
   @media ${desktop} {

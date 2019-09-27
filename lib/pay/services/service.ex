@@ -3,6 +3,7 @@ defmodule Pay.Services.Service do
   import Ecto.Changeset
 
   schema "services" do
+    field :name, :string
     field :collect_billing_address, :boolean, default: false
     field :current_go_live_stage, :string
     field :custom_branding, :map
@@ -29,6 +30,7 @@ defmodule Pay.Services.Service do
     service
     |> cast(attrs, [
       :external_id,
+      :name,
       :redirect_to_service_immediately_on_terminal_state,
       :collect_billing_address,
       :custom_branding,
@@ -44,6 +46,7 @@ defmodule Pay.Services.Service do
     ])
     |> validate_required([
       :external_id,
+      :name,
       :redirect_to_service_immediately_on_terminal_state,
       :collect_billing_address,
       :custom_branding,
@@ -57,6 +60,7 @@ defmodule Pay.Services.Service do
       :merchant_address_country,
       :merchant_email
     ])
+    |> unique_constraint(:name)
   end
 
   # TODO: check what we can update. already removed external_id
@@ -64,6 +68,7 @@ defmodule Pay.Services.Service do
   def update_changeset(service, attrs) do
     service
     |> cast(attrs, [
+      :name,
       :redirect_to_service_immediately_on_terminal_state,
       :collect_billing_address,
       :custom_branding,
@@ -78,6 +83,7 @@ defmodule Pay.Services.Service do
       :merchant_email
     ])
     |> validate_required([
+      :name,
       :redirect_to_service_immediately_on_terminal_state,
       :collect_billing_address,
       :custom_branding,
@@ -91,5 +97,6 @@ defmodule Pay.Services.Service do
       :merchant_address_country,
       :merchant_email
     ])
+    |> unique_constraint(:name)
   end
 end

@@ -16,6 +16,7 @@ defmodule PayWeb.UserView do
       external_id: user.external_id,
       inserted_at: user.inserted_at,
       updated_at: user.updated_at,
+      platform_admin: user.platform_admin,
       name: user.name,
       email: user.email,
       telephone_number: user.telephone_number,

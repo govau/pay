@@ -1,0 +1,19 @@
+type User {
+  id: String!
+  inserted_at: String!
+  updated_at: String!
+  platform_admin: Boolean!
+  name: String
+  email: String
+  telephone_number: String
+}
+
+type Organisation {
+  id: String!
+  name: String!
+}
+
+type Service {
+  id: String!
+  name: String!
+}

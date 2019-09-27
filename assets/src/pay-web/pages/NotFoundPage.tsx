@@ -6,7 +6,7 @@ import PageTitle from "../components/PageTitle";
 const NotFoundPage: React.FunctionComponent<{}> = () => (
   <>
     <Helmet>
-      <title>404 page not found</title>
+      <title>Page not found</title>
     </Helmet>
     <PageTitle title="Page not found" />
     <p>Oops, could not find that page</p>

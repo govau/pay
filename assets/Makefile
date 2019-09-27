@@ -27,6 +27,6 @@ test:
 
 generate: codegen.yml
 	$(YARN) generate
-	$(PRETTIER) --write "src/__generated__/**"
+	$(PRETTIER) --write "src/**/__generated__/**"
 
 .PHONY: clean start test generate

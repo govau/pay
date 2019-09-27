@@ -1,0 +1,23 @@
+query Organisations {
+  organisations
+    @rest(type: "Organisation", path: "/internal/services/organisations") {
+    id
+    name
+  }
+}
+
+query Services {
+  services @rest(type: "Service", path: "/internal/services/services") {
+    id
+    name
+  }
+}
+
+query CardTypes {
+  cardTypes @rest(type: "CardType", path: "/internal/payments/card-types") {
+    id
+    brand
+    label
+    type
+  }
+}

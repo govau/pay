@@ -1,0 +1,10 @@
+query UserServices {
+  services
+    @rest(
+      type: "Service"
+      path: "/internal/services/users/{context.userId}/services"
+    ) {
+    id
+    name
+  }
+}

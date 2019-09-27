@@ -136,6 +136,7 @@ defmodule Pay.ServicesTest do
       email: "some email",
       external_id: "7488a646-e31f-11e4-aace-600308960662",
       last_logged_in_at: "2010-04-17T14:00:00.000000Z",
+      name: "some name",
       telephone_number: "some telephone_number"
     }
     @update_attrs %{
@@ -143,6 +144,7 @@ defmodule Pay.ServicesTest do
       email: "some updated email",
       external_id: "7488a646-e31f-11e4-aace-600308960668",
       last_logged_in_at: "2011-05-18T15:01:01.000000Z",
+      name: "some updated name",
       telephone_number: "some updated telephone_number"
     }
     @invalid_attrs %{
@@ -150,6 +152,7 @@ defmodule Pay.ServicesTest do
       email: nil,
       external_id: nil,
       last_logged_in_at: nil,
+      name: nil,
       telephone_number: nil
     }
 
@@ -181,6 +184,8 @@ defmodule Pay.ServicesTest do
       assert user.last_logged_in_at ==
                DateTime.from_naive!(~N[2010-04-17T14:00:00.000000Z], "Etc/UTC")
 
+      assert user.name == "some name"
+      assert user.platform_admin == false
       assert user.telephone_number == "some telephone_number"
     end
 
@@ -198,6 +203,8 @@ defmodule Pay.ServicesTest do
       assert user.last_logged_in_at ==
                DateTime.from_naive!(~N[2011-05-18T15:01:01.000000Z], "Etc/UTC")
 
+      assert user.name == "some updated name"
+      assert user.platform_admin == false
       assert user.telephone_number == "some updated telephone_number"
     end
 
@@ -365,6 +372,7 @@ defmodule Pay.ServicesTest do
       merchant_email: "some merchant_email",
       merchant_name: "some merchant_name",
       merchant_telephone_number: "some merchant_telephone_number",
+      name: "some name",
       redirect_to_service_immediately_on_terminal_state: true
     }
     @update_attrs %{
@@ -380,6 +388,7 @@ defmodule Pay.ServicesTest do
       merchant_email: "some updated merchant_email",
       merchant_name: "some updated merchant_name",
       merchant_telephone_number: "some updated merchant_telephone_number",
+      name: "some updated name",
       redirect_to_service_immediately_on_terminal_state: false
     }
     @invalid_attrs %{
@@ -395,6 +404,7 @@ defmodule Pay.ServicesTest do
       merchant_email: nil,
       merchant_name: nil,
       merchant_telephone_number: nil,
+      name: nil,
       redirect_to_service_immediately_on_terminal_state: nil
     }
 
@@ -431,6 +441,7 @@ defmodule Pay.ServicesTest do
       assert service.merchant_email == "some merchant_email"
       assert service.merchant_name == "some merchant_name"
       assert service.merchant_telephone_number == "some merchant_telephone_number"
+      assert service.name == "some name"
       assert service.redirect_to_service_immediately_on_terminal_state == true
     end
 
@@ -453,6 +464,7 @@ defmodule Pay.ServicesTest do
       assert service.merchant_email == "some updated merchant_email"
       assert service.merchant_name == "some updated merchant_name"
       assert service.merchant_telephone_number == "some updated merchant_telephone_number"
+      assert service.name == "some updated name"
       assert service.redirect_to_service_immediately_on_terminal_state == false
     end
 

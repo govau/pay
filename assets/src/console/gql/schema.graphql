@@ -1,0 +1,6 @@
+# import Organisation, Service from '../../gql/services.graphql'
+# import CardType from '../../gql/payments.graphql'
+
+type Query {
+  services: [Service!]!
+}

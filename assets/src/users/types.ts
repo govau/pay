@@ -2,16 +2,18 @@ export interface User {
   id: string;
   insertedAt: string;
   updatedAt: string;
+  platformAdmin: boolean;
   name: string;
   email: string;
-  mobilePhone: string;
+  telephoneNumber: string;
 }
 
 export const emptyUser: User = {
   id: "",
   insertedAt: "",
   updatedAt: "",
+  platformAdmin: false,
   name: "",
   email: "",
-  mobilePhone: ""
+  telephoneNumber: ""
 };

@@ -4,6 +4,7 @@ defmodule Pay.Repo.Migrations.CreateServices do
   def change do
     create table(:services) do
       add :external_id, :uuid
+      add :name, :string, null: false
 
       add :redirect_to_service_immediately_on_terminal_state, :boolean,
         default: false,
@@ -25,6 +26,7 @@ defmodule Pay.Repo.Migrations.CreateServices do
       timestamps()
     end
 
+    create unique_index(:services, [:name])
     create index(:services, [:organisation_id])
   end
 end

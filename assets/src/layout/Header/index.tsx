@@ -10,7 +10,10 @@ import {
 } from "./components";
 import PrimaryNav from "./PrimaryNav";
 import { Wordmark } from "./Wordmark";
-import { withCheckAuth, CheckAuthProps } from "../../__generated__/graphql";
+import {
+  withCheckAuth,
+  CheckAuthProps
+} from "../../auth/__generated__/graphql";
 import SignoutButton from "./SignoutButton";
 import Coat from "./Coat";
 import { HamburgerIcon } from "../../components/icons/HamburgerIcon";
@@ -112,7 +115,7 @@ const Header: React.FC<Props> = ({ data, user, setUser }) => {
   });
 
   const isAuthenticated =
-    data && data.checkAuth && data.checkAuth.isAuthenticated;
+    data && data.checkAuth && data.checkAuth.is_authenticated;
 
   return (
     <ThemeProvider
@@ -142,7 +145,7 @@ const Header: React.FC<Props> = ({ data, user, setUser }) => {
               {data.loading ? null : isAuthenticated ? (
                 <SignoutButton />
               ) : (
-                <Link to="/signin">Sign in</Link>
+                <Link to="/auth/signin">Sign in</Link>
               )}
             </ButtonGroup>
           </PrimaryContainer>

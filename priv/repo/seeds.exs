@@ -226,6 +226,24 @@ Repo.insert!(%OrganisationDomain{
 
 # Sample users
 
+platform_admin1_id =
+  Repo.insert!(%User{
+    external_id: Ecto.UUID.generate(),
+    platform_admin: true,
+    email: "platform-admin1@dta.gov.au",
+    telephone_number: "+61412333333",
+    name: "Plaform admin 1"
+  }).id
+
+platform_admin2_id =
+  Repo.insert!(%User{
+    external_id: Ecto.UUID.generate(),
+    platform_admin: true,
+    email: "platform-admin2@dta.gov.au",
+    telephone_number: "+61412444444",
+    name: "Plaform admin 2"
+  }).id
+
 user1_id =
   Repo.insert!(%User{
     external_id: Ecto.UUID.generate(),
@@ -256,14 +274,14 @@ service1_id =
   Repo.insert!(%Service{
     external_id: Ecto.UUID.generate(),
     organisation_id: dta_id,
-    merchant_name: "Service 1"
+    name: "Service 1"
   }).id
 
 service2_id =
   Repo.insert!(%Service{
     external_id: Ecto.UUID.generate(),
     organisation_id: dfat_id,
-    merchant_name: "Service 2"
+    name: "Service 2"
   }).id
 
 Repo.insert!(%ServiceUser{

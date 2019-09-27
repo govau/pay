@@ -14,17 +14,9 @@ export type Scalars = {
   Float: number;
 };
 
-export type CardType = {
-  __typename?: "CardType";
-  id: Scalars["String"];
-  brand?: Maybe<Scalars["String"]>;
-  label?: Maybe<Scalars["String"]>;
-  type?: Maybe<Scalars["String"]>;
-};
-
 export type CheckAuthResponse = {
   __typename?: "CheckAuthResponse";
-  isAuthenticated: Scalars["Boolean"];
+  is_authenticated: Scalars["Boolean"];
   user?: Maybe<User>;
 };
 
@@ -35,23 +27,30 @@ export type Mutation = {
 
 export type Query = {
   __typename?: "Query";
+  dummy?: Maybe<Scalars["String"]>;
   user?: Maybe<User>;
   checkAuth: CheckAuthResponse;
-  cardTypes: Array<CardType>;
 };
 
 export type User = {
   __typename?: "User";
   id: Scalars["String"];
-  insertedAt: Scalars["String"];
-  updatedAt: Scalars["String"];
+  inserted_at: Scalars["String"];
+  updated_at: Scalars["String"];
+  platform_admin: Scalars["Boolean"];
   name?: Maybe<Scalars["String"]>;
   email?: Maybe<Scalars["String"]>;
-  mobilePhone?: Maybe<Scalars["String"]>;
+  telephone_number?: Maybe<Scalars["String"]>;
 };
 export type UserFragment = { __typename?: "User" } & Pick<
   User,
-  "id" | "insertedAt" | "updatedAt" | "name" | "email" | "mobilePhone"
+  | "id"
+  | "inserted_at"
+  | "updated_at"
+  | "platform_admin"
+  | "name"
+  | "email"
+  | "telephone_number"
 >;
 
 export type SignoutMutationVariables = {};
@@ -72,28 +71,18 @@ export type CheckAuthQueryVariables = {};
 export type CheckAuthQuery = { __typename?: "Query" } & {
   checkAuth: { __typename?: "CheckAuthResponse" } & Pick<
     CheckAuthResponse,
-    "isAuthenticated"
+    "is_authenticated"
   > & { user: Maybe<{ __typename?: "User" } & UserFragment> };
-};
-
-export type CardTypesQueryVariables = {};
-
-export type CardTypesQuery = { __typename?: "Query" } & {
-  cardTypes: Array<
-    { __typename?: "CardType" } & Pick<
-      CardType,
-      "id" | "brand" | "label" | "type"
-    >
-  >;
 };
 export const UserFragmentDoc = gql`
   fragment User on User {
     id
-    insertedAt
-    updatedAt
+    inserted_at
+    updated_at
+    platform_admin
     name
     email
-    mobilePhone
+    telephone_number
   }
 `;
 export const SignoutDocument = gql`
@@ -199,9 +188,10 @@ export type UserQueryResult = ApolloReactCommon.QueryResult<
 >;
 export const CheckAuthDocument = gql`
   query CheckAuth {
-    checkAuth {
-      isAuthenticated
-      user {
+    checkAuth
+      @rest(type: "CheckAuthResponse", path: "/internal/services/auth/check") {
+      is_authenticated
+      user @type(name: "User") {
         ...User
       }
     }
@@ -249,56 +239,4 @@ export function withCheckAuth<TProps, TChildProps = {}>(
 export type CheckAuthQueryResult = ApolloReactCommon.QueryResult<
   CheckAuthQuery,
   CheckAuthQueryVariables
->;
-export const CardTypesDocument = gql`
-  query CardTypes {
-    cardTypes @rest(type: "CardType", path: "/internal/payments/card-types") {
-      id
-      brand
-      label
-      type
-    }
-  }
-`;
-export type CardTypesComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    CardTypesQuery,
-    CardTypesQueryVariables
-  >,
-  "query"
->;
-
-export const CardTypesComponent = (props: CardTypesComponentProps) => (
-  <ApolloReactComponents.Query<CardTypesQuery, CardTypesQueryVariables>
-    query={CardTypesDocument}
-    {...props}
-  />
-);
-
-export type CardTypesProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  CardTypesQuery,
-  CardTypesQueryVariables
-> &
-  TChildProps;
-export function withCardTypes<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    CardTypesQuery,
-    CardTypesQueryVariables,
-    CardTypesProps<TChildProps>
-  >
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    CardTypesQuery,
-    CardTypesQueryVariables,
-    CardTypesProps<TChildProps>
-  >(CardTypesDocument, {
-    alias: "cardTypes",
-    ...operationOptions
-  });
-}
-export type CardTypesQueryResult = ApolloReactCommon.QueryResult<
-  CardTypesQuery,
-  CardTypesQueryVariables
 >;

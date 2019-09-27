@@ -17,6 +17,7 @@ defmodule PayWeb.ServiceControllerTest do
     merchant_email: "some merchant_email",
     merchant_name: "some merchant_name",
     merchant_telephone_number: "some merchant_telephone_number",
+    name: "some name",
     redirect_to_service_immediately_on_terminal_state: true
   }
   @update_attrs %{
@@ -32,6 +33,7 @@ defmodule PayWeb.ServiceControllerTest do
     merchant_email: "some updated merchant_email",
     merchant_name: "some updated merchant_name",
     merchant_telephone_number: "some updated merchant_telephone_number",
+    name: "some updated name",
     redirect_to_service_immediately_on_terminal_state: false
   }
   @invalid_attrs %{
@@ -47,6 +49,7 @@ defmodule PayWeb.ServiceControllerTest do
     merchant_email: nil,
     merchant_name: nil,
     merchant_telephone_number: nil,
+    name: nil,
     redirect_to_service_immediately_on_terminal_state: nil
   }
 
@@ -87,6 +90,7 @@ defmodule PayWeb.ServiceControllerTest do
                "merchant_email" => "some merchant_email",
                "merchant_name" => "some merchant_name",
                "merchant_telephone_number" => "some merchant_telephone_number",
+               "name" => "some name",
                "redirect_to_service_immediately_on_terminal_state" => true
              } = json_response(conn, 200)["data"]
     end
@@ -120,6 +124,7 @@ defmodule PayWeb.ServiceControllerTest do
                "merchant_email" => "some updated merchant_email",
                "merchant_name" => "some updated merchant_name",
                "merchant_telephone_number" => "some updated merchant_telephone_number",
+               "name" => "some updated name",
                "redirect_to_service_immediately_on_terminal_state" => false
              } = json_response(conn, 200)["data"]
     end
