@@ -10,14 +10,24 @@ import {
   Button,
   validators,
   Loader,
-  ErrorAlert
+  ErrorAlert,
+  tablet
 } from "@pay/web";
+import styled from "@pay/web/styled-components";
 
 import {
   CreateServiceMutationFn,
   useCreateServiceMutation
 } from "../__generated__/graphql";
 import { isServerError } from "../../apollo-rest-utils";
+
+const InputWrapper = styled.div`
+  ${BasicTextInput} {
+    @media ${tablet} {
+      min-width: 50rem;
+    }
+  }
+`;
 
 interface FormValues {
   name: string;
@@ -76,7 +86,9 @@ const CreateServicePage = () => {
               validate={validators.required("Enter a service name")}
             >
               {({ input, ariaProps, ...rest }) => (
-                <BasicTextInput {...input} {...ariaProps} {...rest} />
+                <InputWrapper>
+                  <BasicTextInput {...input} {...ariaProps} {...rest} />
+                </InputWrapper>
               )}
             </Field>
             <Button type="submit">Create</Button>
