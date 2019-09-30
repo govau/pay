@@ -4,6 +4,8 @@ import ReactDOM from "react-dom";
 import * as Sentry from "@sentry/browser";
 import { BrowserRouter as Router } from "react-router-dom";
 import { ApolloProvider } from "react-apollo";
+import { ApolloLink } from "apollo-link";
+import { onError } from "apollo-link-error";
 import { RestLink } from "apollo-link-rest";
 import ApolloClient from "apollo-client";
 
@@ -17,6 +19,8 @@ if (process.env.REACT_APP_SENTRY_DSN) {
   });
 }
 
+const errorLink = onError(({ graphQLErrors, networkError, response }) => {});
+
 const restLink = new RestLink({
   uri: "/v1/api",
   endpoints: { v1: "/v1/api" },
@@ -27,8 +31,10 @@ const restLink = new RestLink({
     response.json().then(({ data }: { data: any }) => data)
 });
 
+const link = ApolloLink.from([errorLink, restLink]);
+
 const client = new ApolloClient({
-  link: restLink,
+  link,
   cache
 });
 

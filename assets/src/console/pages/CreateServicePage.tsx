@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Redirect } from "react-router-dom";
+import { ApolloError } from "apollo-client";
 import {
   PageContent,
   PageTitle,
@@ -11,15 +12,30 @@ import {
   Loader,
   ErrorAlert
 } from "@pay/web";
+
 import {
   CreateServiceMutationFn,
   useCreateServiceMutation
 } from "../__generated__/graphql";
+import { isServerError } from "../../apollo-rest-utils";
 
 interface FormValues {
   name: string;
   pushEndpoint: string;
 }
+
+const getErrorMessage = (error?: ApolloError) => {
+  if (!error) {
+    return "";
+  }
+  if (error.networkError && isServerError(error.networkError)) {
+    const { result } = error.networkError;
+    return Object.keys(result.errors)
+      .map(key => `${key} ${result.errors[key]}`)
+      .join(", ");
+  }
+  return error.message;
+};
 
 const onSubmit = (createService: CreateServiceMutationFn) => {
   return async (values: FormValues) => {
@@ -44,13 +60,13 @@ const CreateServicePage = () => {
       <Form onSubmit={onSubmit(createService)}>
         {loading ? (
           <Loader message="Creating a new service" />
-        ) : data && data.createService ? (
+        ) : data && data.service ? (
           <Redirect to="/console" />
         ) : (
           <>
             <ErrorAlert
               title="Unable to create service"
-              message={error && error.message}
+              message={getErrorMessage(error)}
               showError={!!error}
             />
 

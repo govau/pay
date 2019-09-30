@@ -53,7 +53,7 @@ export type CreateServiceMutationVariables = {
 };
 
 export type CreateServiceMutation = { __typename?: "Mutation" } & {
-  createService: { __typename?: "Service" } & Pick<Service, "id" | "name">;
+  service: { __typename?: "Service" } & Pick<Service, "id" | "name">;
 };
 
 export const UserServicesDocument = gql`
@@ -115,7 +115,7 @@ export type UserServicesQueryResult = ApolloReactCommon.QueryResult<
 >;
 export const CreateServiceDocument = gql`
   mutation CreateService($input: CreateServiceInput!) {
-    createService(input: $input)
+    service: createService(input: $input)
       @rest(
         type: "Service"
         path: "/internal/services/services"

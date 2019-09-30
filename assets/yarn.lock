@@ -2153,7 +2153,7 @@ apollo-link-rest@0.7.3:
   resolved "https://registry.yarnpkg.com/apollo-link-rest/-/apollo-link-rest-0.7.3.tgz#c7f6caafc811c542f7ab119d7034c603e2987dc9"
   integrity sha512-Cu60ZO/7de9preDsH3N3zHL40mrMfwgGbxPDdDEqRbes1Ms+DSRqBMv5yB641dSjSeZHKQW1ikQwc8GA8dBJKA==
 
-apollo-link@1.2.13, apollo-link@^1.0.0, apollo-link@^1.2.13, apollo-link@^1.2.3:
+apollo-link@^1.0.0, apollo-link@^1.2.13, apollo-link@^1.2.3:
   version "1.2.13"
   resolved "https://registry.yarnpkg.com/apollo-link/-/apollo-link-1.2.13.tgz#dff00fbf19dfcd90fddbc14b6a3f9a771acac6c4"
   integrity sha512-+iBMcYeevMm1JpYgwDEIDt/y0BB7VWyvlm/7x+TIPNLHCTCMgcEgDuW5kH86iQZWo0I7mNwQiTOz+/3ShPFmBw==

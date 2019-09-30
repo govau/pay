@@ -12,7 +12,7 @@ query UserServices {
 }
 
 mutation CreateService($input: CreateServiceInput!) {
-  createService(input: $input)
+  service: createService(input: $input)
     @rest(
       type: "Service"
       path: "/internal/services/services"
