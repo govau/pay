@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useRouteMatch } from "react-router-dom";
-import Helmet from "react-helmet";
+import { Helmet } from "react-helmet";
 import { PageTitle, Loader, ErrorAlert, Link } from "@pay/web";
 
 import { useUserServicesQuery } from "../__generated__/graphql";

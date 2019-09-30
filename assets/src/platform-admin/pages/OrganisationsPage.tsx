@@ -1,5 +1,5 @@
 import * as React from "react";
-import Helmet from "react-helmet";
+import { Helmet } from "react-helmet";
 import { PageTitle, Loader, ErrorAlert } from "@pay/web";
 
 import { useOrganisationsQuery } from "../__generated__/graphql";
