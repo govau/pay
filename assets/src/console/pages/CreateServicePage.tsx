@@ -21,7 +21,6 @@ import { isServerError } from "../../apollo-rest-utils";
 
 interface FormValues {
   name: string;
-  pushEndpoint: string;
 }
 
 const getErrorMessage = (error?: ApolloError) => {
