@@ -1,10 +1,6 @@
 import * as React from "react";
 import styled from "@pay/web/styled-components";
-import {
-  ContainerSmall,
-  ContainerMedium,
-  ScrollToTopOnMount
-} from "@pay/web";
+import { ContainerSmall, ContainerMedium, ScrollToTopOnMount } from "@pay/web";
 
 import Header from "./Header/MinimalHeader";
 
