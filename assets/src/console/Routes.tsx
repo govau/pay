@@ -20,6 +20,9 @@ const Routes: React.FC = () => {
             <Route path={`${url}`} exact strict>
               <Pages.DashboardPage />
             </Route>
+            <Route path={`${url}/services/create`} exact strict>
+              <Pages.CreateServicePage />
+            </Route>
             <Route path="*">
               <CorePages.NotFoundPage />
             </Route>

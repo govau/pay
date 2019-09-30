@@ -2,46 +2,36 @@ import * as React from "react";
 import Helmet from "react-helmet";
 import { PageTitle, Loader, ErrorAlert } from "@pay/web";
 
-import { CardTypesComponent } from "../__generated__/graphql";
+import { useCardTypesQuery } from "../__generated__/graphql";
 
-interface State {}
+const CardTypesPage: React.FC = () => {
+  const { loading, error, data } = useCardTypesQuery({ errorPolicy: "all" });
 
-class CardTypesPage extends React.Component<{}, State> {
-  render() {
-    return (
-      <>
-        <Helmet>
-          <title>Card types</title>
-        </Helmet>
-        <PageTitle title="Card types" />
-        <CardTypesComponent>
-          {({ data, loading, error }) => {
-            if (loading) {
-              return <Loader message="Loading card types." />;
-            }
-            if (error || !data) {
-              return (
-                <ErrorAlert
-                  title="Unable to retrieve card types"
-                  message={error && error.message}
-                  showError
-                />
-              );
-            }
-            return (
-              <ul>
-                {data.cardTypes.map(ct => (
-                  <li key={ct.id}>
-                    {ct.type}: {ct.label} (slug: {ct.brand})
-                  </li>
-                ))}
-              </ul>
-            );
-          }}
-        </CardTypesComponent>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Helmet>
+        <title>Card types</title>
+      </Helmet>
+      <PageTitle title="Card types" />
+      {loading ? (
+        <Loader message="Loading card types" />
+      ) : error || !data ? (
+        <ErrorAlert
+          title="Unable to retrieve card types"
+          message={error && error.message}
+          showError
+        />
+      ) : (
+        <ul>
+          {data.cardTypes.map(ct => (
+            <li key={ct.id}>
+              {ct.type}: {ct.label} (slug: {ct.brand})
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  );
+};
 
 export default CardTypesPage;

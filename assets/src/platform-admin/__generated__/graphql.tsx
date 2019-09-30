@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 import * as React from "react";
 import * as ApolloReactCommon from "@apollo/react-common";
 import * as ApolloReactComponents from "@apollo/react-components";
-import * as ApolloReactHoc from "@apollo/react-hoc";
+import * as ApolloReactHooks from "@apollo/react-hooks";
 export type Maybe<T> = T | null;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
@@ -90,29 +90,32 @@ export const OrganisationsComponent = (props: OrganisationsComponentProps) => (
   />
 );
 
-export type OrganisationsProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  OrganisationsQuery,
-  OrganisationsQueryVariables
-> &
-  TChildProps;
-export function withOrganisations<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
+export function useOrganisationsQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
     OrganisationsQuery,
-    OrganisationsQueryVariables,
-    OrganisationsProps<TChildProps>
+    OrganisationsQueryVariables
   >
 ) {
-  return ApolloReactHoc.withQuery<
-    TProps,
+  return ApolloReactHooks.useQuery<
     OrganisationsQuery,
-    OrganisationsQueryVariables,
-    OrganisationsProps<TChildProps>
-  >(OrganisationsDocument, {
-    alias: "organisations",
-    ...operationOptions
-  });
+    OrganisationsQueryVariables
+  >(OrganisationsDocument, baseOptions);
 }
+export function useOrganisationsLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    OrganisationsQuery,
+    OrganisationsQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    OrganisationsQuery,
+    OrganisationsQueryVariables
+  >(OrganisationsDocument, baseOptions);
+}
+
+export type OrganisationsQueryHookResult = ReturnType<
+  typeof useOrganisationsQuery
+>;
 export type OrganisationsQueryResult = ApolloReactCommon.QueryResult<
   OrganisationsQuery,
   OrganisationsQueryVariables
@@ -140,29 +143,30 @@ export const ServicesComponent = (props: ServicesComponentProps) => (
   />
 );
 
-export type ServicesProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  ServicesQuery,
-  ServicesQueryVariables
-> &
-  TChildProps;
-export function withServices<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
+export function useServicesQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
     ServicesQuery,
-    ServicesQueryVariables,
-    ServicesProps<TChildProps>
+    ServicesQueryVariables
   >
 ) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    ServicesQuery,
-    ServicesQueryVariables,
-    ServicesProps<TChildProps>
-  >(ServicesDocument, {
-    alias: "services",
-    ...operationOptions
-  });
+  return ApolloReactHooks.useQuery<ServicesQuery, ServicesQueryVariables>(
+    ServicesDocument,
+    baseOptions
+  );
 }
+export function useServicesLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    ServicesQuery,
+    ServicesQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<ServicesQuery, ServicesQueryVariables>(
+    ServicesDocument,
+    baseOptions
+  );
+}
+
+export type ServicesQueryHookResult = ReturnType<typeof useServicesQuery>;
 export type ServicesQueryResult = ApolloReactCommon.QueryResult<
   ServicesQuery,
   ServicesQueryVariables
@@ -192,29 +196,30 @@ export const CardTypesComponent = (props: CardTypesComponentProps) => (
   />
 );
 
-export type CardTypesProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  CardTypesQuery,
-  CardTypesQueryVariables
-> &
-  TChildProps;
-export function withCardTypes<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
+export function useCardTypesQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
     CardTypesQuery,
-    CardTypesQueryVariables,
-    CardTypesProps<TChildProps>
+    CardTypesQueryVariables
   >
 ) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    CardTypesQuery,
-    CardTypesQueryVariables,
-    CardTypesProps<TChildProps>
-  >(CardTypesDocument, {
-    alias: "cardTypes",
-    ...operationOptions
-  });
+  return ApolloReactHooks.useQuery<CardTypesQuery, CardTypesQueryVariables>(
+    CardTypesDocument,
+    baseOptions
+  );
 }
+export function useCardTypesLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    CardTypesQuery,
+    CardTypesQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<CardTypesQuery, CardTypesQueryVariables>(
+    CardTypesDocument,
+    baseOptions
+  );
+}
+
+export type CardTypesQueryHookResult = ReturnType<typeof useCardTypesQuery>;
 export type CardTypesQueryResult = ApolloReactCommon.QueryResult<
   CardTypesQuery,
   CardTypesQueryVariables

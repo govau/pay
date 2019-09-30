@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 import * as React from "react";
 import * as ApolloReactCommon from "@apollo/react-common";
 import * as ApolloReactComponents from "@apollo/react-components";
-import * as ApolloReactHoc from "@apollo/react-hoc";
+import * as ApolloReactHooks from "@apollo/react-hooks";
 export type Maybe<T> = T | null;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
@@ -12,6 +12,23 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+};
+
+export type CreateServiceInput = {
+  service: CreateServiceService;
+};
+
+export type CreateServiceService = {
+  name: Scalars["String"];
+};
+
+export type Mutation = {
+  __typename?: "Mutation";
+  createService: Service;
+};
+
+export type MutationCreateServiceArgs = {
+  input?: Maybe<CreateServiceInput>;
 };
 
 export type Query = {
@@ -29,6 +46,14 @@ export type UserServicesQueryVariables = {};
 
 export type UserServicesQuery = { __typename?: "Query" } & {
   services: Array<{ __typename?: "Service" } & Pick<Service, "id" | "name">>;
+};
+
+export type CreateServiceMutationVariables = {
+  input: CreateServiceInput;
+};
+
+export type CreateServiceMutation = { __typename?: "Mutation" } & {
+  createService: { __typename?: "Service" } & Pick<Service, "id" | "name">;
 };
 
 export const UserServicesDocument = gql`
@@ -58,30 +83,89 @@ export const UserServicesComponent = (props: UserServicesComponentProps) => (
   />
 );
 
-export type UserServicesProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  UserServicesQuery,
-  UserServicesQueryVariables
-> &
-  TChildProps;
-export function withUserServices<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
+export function useUserServicesQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
     UserServicesQuery,
-    UserServicesQueryVariables,
-    UserServicesProps<TChildProps>
+    UserServicesQueryVariables
   >
 ) {
-  return ApolloReactHoc.withQuery<
-    TProps,
+  return ApolloReactHooks.useQuery<
     UserServicesQuery,
-    UserServicesQueryVariables,
-    UserServicesProps<TChildProps>
-  >(UserServicesDocument, {
-    alias: "userServices",
-    ...operationOptions
-  });
+    UserServicesQueryVariables
+  >(UserServicesDocument, baseOptions);
 }
+export function useUserServicesLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    UserServicesQuery,
+    UserServicesQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    UserServicesQuery,
+    UserServicesQueryVariables
+  >(UserServicesDocument, baseOptions);
+}
+
+export type UserServicesQueryHookResult = ReturnType<
+  typeof useUserServicesQuery
+>;
 export type UserServicesQueryResult = ApolloReactCommon.QueryResult<
   UserServicesQuery,
   UserServicesQueryVariables
+>;
+export const CreateServiceDocument = gql`
+  mutation CreateService($input: CreateServiceInput!) {
+    createService(input: $input)
+      @rest(
+        type: "Service"
+        path: "/internal/services/services"
+        method: "POST"
+      ) {
+      id
+      name
+    }
+  }
+`;
+export type CreateServiceMutationFn = ApolloReactCommon.MutationFunction<
+  CreateServiceMutation,
+  CreateServiceMutationVariables
+>;
+export type CreateServiceComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    CreateServiceMutation,
+    CreateServiceMutationVariables
+  >,
+  "mutation"
+>;
+
+export const CreateServiceComponent = (props: CreateServiceComponentProps) => (
+  <ApolloReactComponents.Mutation<
+    CreateServiceMutation,
+    CreateServiceMutationVariables
+  >
+    mutation={CreateServiceDocument}
+    {...props}
+  />
+);
+
+export function useCreateServiceMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    CreateServiceMutation,
+    CreateServiceMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    CreateServiceMutation,
+    CreateServiceMutationVariables
+  >(CreateServiceDocument, baseOptions);
+}
+export type CreateServiceMutationHookResult = ReturnType<
+  typeof useCreateServiceMutation
+>;
+export type CreateServiceMutationResult = ApolloReactCommon.MutationResult<
+  CreateServiceMutation
+>;
+export type CreateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateServiceMutation,
+  CreateServiceMutationVariables
 >;

@@ -46,19 +46,7 @@ defmodule Pay.Services.Service do
     ])
     |> validate_required([
       :external_id,
-      :name,
-      :redirect_to_service_immediately_on_terminal_state,
-      :collect_billing_address,
-      :custom_branding,
-      :current_go_live_stage,
-      :merchant_name,
-      :merchant_telephone_number,
-      :merchant_address_line1,
-      :merchant_address_line2,
-      :merchant_address_city,
-      :merchant_address_postcode,
-      :merchant_address_country,
-      :merchant_email
+      :name
     ])
     |> unique_constraint(:name)
   end

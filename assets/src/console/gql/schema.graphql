@@ -4,3 +4,15 @@
 type Query {
   services: [Service!]!
 }
+
+input CreateServiceService {
+  name: String!
+}
+
+input CreateServiceInput {
+  service: CreateServiceService!
+}
+
+type Mutation {
+  createService(input: CreateServiceInput): Service!
+}

@@ -30,7 +30,8 @@ generates:
   src/console/__generated__/graphql.tsx:
     config:
       noNamespaces: true
-      withHOC: true
+      withHOC: false
+      withHooks: true
     schema: src/console/gql/schema.graphql
     documents: "src/console/**/{mutations,fragments,queries}.graphql"
     plugins:
@@ -45,7 +46,8 @@ generates:
   src/platform-admin/__generated__/graphql.tsx:
     config:
       noNamespaces: true
-      withHOC: true
+      withHOC: false
+      withHooks: true
     schema: src/platform-admin/gql/schema.graphql
     documents: "src/platform-admin/**/{mutations,fragments,queries}.graphql"
     plugins:

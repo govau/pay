@@ -1,8 +1,22 @@
+# import CreateServiceInput from "./schema.graphql"
+
 query UserServices {
   services
     @rest(
       type: "Service"
       path: "/internal/services/users/{context.userId}/services"
+    ) {
+    id
+    name
+  }
+}
+
+mutation CreateService($input: CreateServiceInput!) {
+  createService(input: $input)
+    @rest(
+      type: "Service"
+      path: "/internal/services/services"
+      method: "POST"
     ) {
     id
     name
