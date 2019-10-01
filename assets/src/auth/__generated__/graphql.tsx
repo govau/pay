@@ -34,7 +34,7 @@ export type Query = {
 
 export type User = {
   __typename?: "User";
-  id: Scalars["String"];
+  external_id: Scalars["ID"];
   inserted_at: Scalars["String"];
   updated_at: Scalars["String"];
   platform_admin: Scalars["Boolean"];
@@ -44,7 +44,7 @@ export type User = {
 };
 export type UserFragment = { __typename?: "User" } & Pick<
   User,
-  | "id"
+  | "external_id"
   | "inserted_at"
   | "updated_at"
   | "platform_admin"
@@ -76,7 +76,7 @@ export type CheckAuthQuery = { __typename?: "Query" } & {
 };
 export const UserFragmentDoc = gql`
   fragment User on User {
-    id
+    external_id
     inserted_at
     updated_at
     platform_admin

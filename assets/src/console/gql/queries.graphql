@@ -6,7 +6,15 @@ query UserServices {
       type: "Service"
       path: "/internal/services/users/{context.userId}/services"
     ) {
-    id
+    external_id
+    name
+  }
+}
+
+query GetService($id: ID!) {
+  service: getService(id: $id)
+    @rest(type: "Service", path: "/internal/services/services/{args.id}") {
+    external_id
     name
   }
 }
@@ -18,7 +26,7 @@ mutation CreateService($input: CreateServiceInput!) {
       path: "/internal/services/services"
       method: "POST"
     ) {
-    id
+    external_id
     name
   }
 }

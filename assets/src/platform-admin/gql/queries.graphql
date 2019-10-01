@@ -1,14 +1,14 @@
 query Organisations {
   organisations
     @rest(type: "Organisation", path: "/internal/services/organisations") {
-    id
+    external_id
     name
   }
 }
 
 query Services {
   services @rest(type: "Service", path: "/internal/services/services") {
-    id
+    external_id
     name
   }
 }

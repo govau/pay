@@ -6,7 +6,7 @@ export const fromGQLUser = (u: GQLUser | undefined): User => {
     return emptyUser;
   }
   const {
-    id,
+    external_id,
     inserted_at,
     updated_at,
     platform_admin,
@@ -15,7 +15,7 @@ export const fromGQLUser = (u: GQLUser | undefined): User => {
     telephone_number
   } = u;
   return {
-    id: id || "",
+    externalId: external_id || "",
     insertedAt: inserted_at || "",
     updatedAt: updated_at || "",
     platformAdmin: platform_admin || false,

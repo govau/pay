@@ -21,12 +21,12 @@ defmodule PayWeb.ServiceController do
   end
 
   def show(conn, %{"id" => id}) do
-    service = Services.get_service!(id)
+    service = Services.get_service_by_external_id!(id)
     render(conn, "show.json", service: service)
   end
 
   def update(conn, %{"id" => id, "service" => service_params}) do
-    service = Services.get_service!(id)
+    service = Services.get_service_by_external_id!(id)
 
     with {:ok, %Service{} = service} <- Services.update_service(service, service_params) do
       render(conn, "show.json", service: service)
@@ -34,7 +34,7 @@ defmodule PayWeb.ServiceController do
   end
 
   def delete(conn, %{"id" => id}) do
-    service = Services.get_service!(id)
+    service = Services.get_service_by_external_id!(id)
 
     with {:ok, %Service{}} <- Services.delete_service(service) do
       send_resp(conn, :no_content, "")

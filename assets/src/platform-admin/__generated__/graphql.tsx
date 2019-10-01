@@ -16,7 +16,7 @@ export type Scalars = {
 
 export type CardType = {
   __typename?: "CardType";
-  id: Scalars["String"];
+  id: Scalars["ID"];
   brand?: Maybe<Scalars["String"]>;
   label?: Maybe<Scalars["String"]>;
   type?: Maybe<Scalars["String"]>;
@@ -24,7 +24,7 @@ export type CardType = {
 
 export type Organisation = {
   __typename?: "Organisation";
-  id: Scalars["String"];
+  external_id: Scalars["ID"];
   name: Scalars["String"];
 };
 
@@ -38,21 +38,23 @@ export type Query = {
 
 export type Service = {
   __typename?: "Service";
-  id: Scalars["String"];
+  external_id: Scalars["ID"];
   name: Scalars["String"];
 };
 export type OrganisationsQueryVariables = {};
 
 export type OrganisationsQuery = { __typename?: "Query" } & {
   organisations: Array<
-    { __typename?: "Organisation" } & Pick<Organisation, "id" | "name">
+    { __typename?: "Organisation" } & Pick<Organisation, "external_id" | "name">
   >;
 };
 
 export type ServicesQueryVariables = {};
 
 export type ServicesQuery = { __typename?: "Query" } & {
-  services: Array<{ __typename?: "Service" } & Pick<Service, "id" | "name">>;
+  services: Array<
+    { __typename?: "Service" } & Pick<Service, "external_id" | "name">
+  >;
 };
 
 export type CardTypesQueryVariables = {};
@@ -70,7 +72,7 @@ export const OrganisationsDocument = gql`
   query Organisations {
     organisations
       @rest(type: "Organisation", path: "/internal/services/organisations") {
-      id
+      external_id
       name
     }
   }
@@ -123,7 +125,7 @@ export type OrganisationsQueryResult = ApolloReactCommon.QueryResult<
 export const ServicesDocument = gql`
   query Services {
     services @rest(type: "Service", path: "/internal/services/services") {
-      id
+      external_id
       name
     }
   }

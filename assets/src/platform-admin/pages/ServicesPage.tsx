@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
-import { PageTitle, Loader, ErrorAlert } from "@pay/web";
+import { PageTitle, Loader, ErrorAlert, Link } from "@pay/web";
 
 import { useServicesQuery } from "../__generated__/graphql";
 
@@ -24,7 +24,9 @@ const ServicesPage: React.FC = () => {
       ) : (
         <ul>
           {data.services.map(s => (
-            <li key={s.id}>{s.name}</li>
+            <li key={s.external_id}>
+              <Link to={`/console/services/${s.external_id}`}>{s.name}</Link>
+            </li>
           ))}
         </ul>
       )}

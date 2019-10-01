@@ -503,6 +503,23 @@ defmodule Pay.Services do
   def get_service!(id), do: Repo.get!(Service, id)
 
   @doc """
+  Gets a single service by the given external ID.
+
+  Raises `Ecto.NoResultsError` if the Service does not exist.
+
+  ## Examples
+
+      iex> get_service_by_external_id!("3bfd1a3c-0960-49da-be66-053b159df62d")
+      %Service{}
+
+      iex> get_service_by_external_id!("3bfd1a3c-0960-49da-be66-053b159df62e")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_service_by_external_id!(external_id),
+    do: Repo.get_by!(Service, external_id: external_id)
+
+  @doc """
   Creates a service.
 
   ## Examples

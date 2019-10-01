@@ -3,6 +3,7 @@
 
 type Query {
   services: [Service!]!
+  getService(id: ID!): Service!
 }
 
 input CreateServiceService {
@@ -14,5 +15,5 @@ input CreateServiceInput {
 }
 
 type Mutation {
-  createService(input: CreateServiceInput): Service!
+  createService(input: CreateServiceInput!): Service!
 }

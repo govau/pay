@@ -1,5 +1,5 @@
 fragment User on User {
-  id
+  external_id
   inserted_at
   updated_at
   platform_admin

@@ -1,5 +1,5 @@
 export interface User {
-  id: string;
+  externalId: string;
   insertedAt: string;
   updatedAt: string;
   platformAdmin: boolean;
@@ -9,7 +9,7 @@ export interface User {
 }
 
 export const emptyUser: User = {
-  id: "",
+  externalId: "",
   insertedAt: "",
   updatedAt: "",
   platformAdmin: false,

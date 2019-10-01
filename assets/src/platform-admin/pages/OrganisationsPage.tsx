@@ -26,7 +26,7 @@ const OrganisationsPage: React.FC = () => {
       ) : (
         <ul>
           {data.organisations.map(o => (
-            <li key={o.id}>{o.name}</li>
+            <li key={o.external_id}>{o.name}</li>
           ))}
         </ul>
       )}

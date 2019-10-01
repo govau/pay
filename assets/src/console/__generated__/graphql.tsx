@@ -28,24 +28,39 @@ export type Mutation = {
 };
 
 export type MutationCreateServiceArgs = {
-  input?: Maybe<CreateServiceInput>;
+  input: CreateServiceInput;
 };
 
 export type Query = {
   __typename?: "Query";
   dummy?: Maybe<Scalars["String"]>;
   services: Array<Service>;
+  getService: Service;
+};
+
+export type QueryGetServiceArgs = {
+  id: Scalars["ID"];
 };
 
 export type Service = {
   __typename?: "Service";
-  id: Scalars["String"];
+  external_id: Scalars["ID"];
   name: Scalars["String"];
 };
 export type UserServicesQueryVariables = {};
 
 export type UserServicesQuery = { __typename?: "Query" } & {
-  services: Array<{ __typename?: "Service" } & Pick<Service, "id" | "name">>;
+  services: Array<
+    { __typename?: "Service" } & Pick<Service, "external_id" | "name">
+  >;
+};
+
+export type GetServiceQueryVariables = {
+  id: Scalars["ID"];
+};
+
+export type GetServiceQuery = { __typename?: "Query" } & {
+  service: { __typename?: "Service" } & Pick<Service, "external_id" | "name">;
 };
 
 export type CreateServiceMutationVariables = {
@@ -53,7 +68,7 @@ export type CreateServiceMutationVariables = {
 };
 
 export type CreateServiceMutation = { __typename?: "Mutation" } & {
-  service: { __typename?: "Service" } & Pick<Service, "id" | "name">;
+  service: { __typename?: "Service" } & Pick<Service, "external_id" | "name">;
 };
 
 export const UserServicesDocument = gql`
@@ -63,7 +78,7 @@ export const UserServicesDocument = gql`
         type: "Service"
         path: "/internal/services/users/{context.userId}/services"
       ) {
-      id
+      external_id
       name
     }
   }
@@ -113,6 +128,59 @@ export type UserServicesQueryResult = ApolloReactCommon.QueryResult<
   UserServicesQuery,
   UserServicesQueryVariables
 >;
+export const GetServiceDocument = gql`
+  query GetService($id: ID!) {
+    service: getService(id: $id)
+      @rest(type: "Service", path: "/internal/services/services/{args.id}") {
+      external_id
+      name
+    }
+  }
+`;
+export type GetServiceComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    GetServiceQuery,
+    GetServiceQueryVariables
+  >,
+  "query"
+> &
+  ({ variables: GetServiceQueryVariables; skip?: boolean } | { skip: boolean });
+
+export const GetServiceComponent = (props: GetServiceComponentProps) => (
+  <ApolloReactComponents.Query<GetServiceQuery, GetServiceQueryVariables>
+    query={GetServiceDocument}
+    {...props}
+  />
+);
+
+export function useGetServiceQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetServiceQuery,
+    GetServiceQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<GetServiceQuery, GetServiceQueryVariables>(
+    GetServiceDocument,
+    baseOptions
+  );
+}
+export function useGetServiceLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetServiceQuery,
+    GetServiceQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetServiceQuery,
+    GetServiceQueryVariables
+  >(GetServiceDocument, baseOptions);
+}
+
+export type GetServiceQueryHookResult = ReturnType<typeof useGetServiceQuery>;
+export type GetServiceQueryResult = ApolloReactCommon.QueryResult<
+  GetServiceQuery,
+  GetServiceQueryVariables
+>;
 export const CreateServiceDocument = gql`
   mutation CreateService($input: CreateServiceInput!) {
     service: createService(input: $input)
@@ -121,7 +189,7 @@ export const CreateServiceDocument = gql`
         path: "/internal/services/services"
         method: "POST"
       ) {
-      id
+      external_id
       name
     }
   }

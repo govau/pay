@@ -18,8 +18,8 @@ import styled from "@pay/web/styled-components";
 import {
   CreateServiceMutationFn,
   useCreateServiceMutation
-} from "../__generated__/graphql";
-import { isServerError } from "../../apollo-rest-utils";
+} from "../../__generated__/graphql";
+import { isServerError } from "../../../apollo-rest-utils";
 
 const InputWrapper = styled.div`
   ${BasicTextInput} {
@@ -55,7 +55,7 @@ const onSubmit = (createService: CreateServiceMutationFn) => {
   };
 };
 
-const CreateServicePage = () => {
+const CreatePage = () => {
   const [createService, { loading, error, data }] = useCreateServiceMutation({
     errorPolicy: "all"
   });
@@ -99,4 +99,4 @@ const CreateServicePage = () => {
   );
 };
 
-export default CreateServicePage;
+export default CreatePage;
