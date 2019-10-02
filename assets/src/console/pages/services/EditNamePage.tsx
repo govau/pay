@@ -70,7 +70,7 @@ const EditNamePage: React.FC<{
       <Helmet>
         <title>Edit name - {service.name}</title>
       </Helmet>
-      <PageTitle title="Edit service name" grouped />
+      <PageTitle title="Edit service name" />
       <Form
         onSubmit={onSubmit(service.id, updateService)}
         initialValues={{ name: service.name }}

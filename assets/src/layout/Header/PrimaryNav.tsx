@@ -1,123 +1,169 @@
 import * as React from "react";
-import { styledComponents, tablet } from "@pay/web";
-import { Ul, NavLink } from "./components";
+import {
+  desktop,
+  styled,
+  Lozenge,
+  Strong,
+  Container as ContainerComponent
+} from "@pay/web";
+import { NavLinkActiveClassName } from "@pay/web/components/Link";
+import { css } from "@pay/web/styled-components";
+import { Ul, NavLink as NavLinkComponent } from "./components";
 import withContext from "../../context/withContext";
 import { UserContext, UserContextValues } from "../../users";
-import { ProfileIcon } from "../../components/icons/ProfileIcon";
+import { Switch, Route } from "react-router-dom";
 
 interface PrimaryNavProps {
   authenticated?: boolean;
-  onHandleNavigate: () => void;
 }
 
 interface Props extends UserContextValues, PrimaryNavProps {}
 
-const NavUl = styledComponents.styled(Ul)`
-  width: 100%;
+// Visually align things in a row and centered vertically
+const centeredStyles = css`
   display: flex;
-  flex-direction: column;
+  flex-flow: row nowrap;
+  align-items: center;
+`;
 
+// flex parameters here force this part of the nav to stay stretched
+// instead of collapsing onto multiple lines (text wrap)
+const NavUl = styled(Ul)`
+  display: flex;
+  flex: 0 0 auto;
+`;
 
-  @media ${tablet} {
-    flex-direction: row;
+const Li = styled.li``;
 
-    > *:last-child{
-      margin-left: auto;
-    }
-  }
+// Outer container that flips content from vertical to horizontal as
+// screen size increases
+const Container = styled(ContainerComponent)`
+  color: ${props => props.theme.colors.white};
+  display: flex;
+  align-items: flex-start;
+  flex-flow: column nowrap;
 
-  li:last-child {
-    border-top: solid 2px ${props => props.theme.colors.white};
-    border-bottom: none;
-
-    @media ${tablet} {
-      border-top: none;
-    }
+  @media ${desktop} {
+    justify-content: space-between;
+    flex-flow: row nowrap;
+    align-items: center;
   }
 `;
 
-const Li = styledComponents.styled.li`
-  border-bottom: solid 1px ${props => props.theme.colors.white};
-  margin: 0 2rem;
+// Info section of the nav bar -- service name, etc
+const PageInfo = styled.div`
+  ${centeredStyles}
+  margin-top: 1rem;
 
-  @media ${tablet} {
-    border-bottom: none;
-    margin: 0;
-  }
-
-  &:hover {
-    color: ${props => props.theme.colors.white};
-    background-color: ${props => props.theme.colors.payHeaderBar};
+  @media ${desktop} {
+    margin-top: 0;
   }
 `;
 
-const ProfileLink = styledComponents.styled(NavLink)`
-    padding: 2.2rem 1.6rem;
-
-    &:hover {
-      ${props => `
-        color: ${props.theme.colors.white};
-        background-color: ${props.theme.colors.payHeaderBar};
-      `}
-    }
-
-    @media ${tablet} {
-      padding: 1.6rem;
-      margin: 0;
-      border-left: solid 1px ${props => props.theme.colors.white};
-      border-right: solid 1px ${props => props.theme.colors.white};
-    }
-
-    svg {
-      margin-right: 0.8rem;
-      overflow: visible;
-      margin-top: -0.2rem;
-      height: 17px;
-    }
+// nav-link section of the nav bar.
+// forces contents to scroll on teeny tiny screens (iphone5)
+const SubNav = styled.nav`
+  ${centeredStyles}
+  overflow-x: auto;
 `;
 
+// Our background that sits outside the container
+const Wrapper = styled.div`
+  background-color: ${props => props.theme.colors.payDarkerBlue};
+`;
+
+// decoration for active nav link
+export const NavLink = styled(NavLinkComponent)`
+  font-size: 1.4rem;
+  display: block;
+  padding: 1em 0;
+  border-bottom: 3px solid transparent;
+
+  ${Li} + ${Li} & {
+    margin-left: 1em;
+  }
+
+  &.${NavLinkActiveClassName} {
+    border-bottom: 3px solid ${props => props.theme.colors.dtaBlue};
+  }
+`;
+
+const AdminLozenge = styled(Lozenge)`
+  background-color: ${props => props.theme.colors.payPink};
+`;
+
+// Change out the nav to this while we're in /platform-admin
+const PlatformAdminNav: React.FC = () => (
+  <Container>
+    <PageInfo>
+      <AdminLozenge>
+        <Strong>Platform admin</Strong>
+      </AdminLozenge>
+    </PageInfo>
+    <SubNav>
+      <NavUl>
+        <Li>
+          <NavLink to="/platform-admin/organisations">Organisations</NavLink>
+        </Li>
+        <Li>
+          <NavLink to="/platform-admin/services">Services</NavLink>
+        </Li>
+        <Li>
+          <NavLink to="/platform-admin/card-types">Card types</NavLink>
+        </Li>
+      </NavUl>
+    </SubNav>
+  </Container>
+);
+
+// Subnav for when a user is accessing a service
+const ServiceInfoNav: React.FC<{
+  serviceName: string;
+  serviceStage?: "Test" | "Live";
+}> = ({ serviceName, serviceStage = "Test" }) => (
+  <Container>
+    <PageInfo>
+      <Strong>{serviceName}</Strong> <Lozenge>{serviceStage}</Lozenge>
+    </PageInfo>
+    <SubNav>
+      <NavUl>
+        <Li>
+          <NavLink to="/TODO">Dashboard</NavLink>
+        </Li>
+        <Li>
+          <NavLink to="/TODO">Transactions</NavLink>
+        </Li>
+        <Li>
+          <NavLink to="/TODO">Payment links</NavLink>
+        </Li>
+        <Li>
+          <NavLink to="/TODO">Settings</NavLink>
+        </Li>
+      </NavUl>
+    </SubNav>
+  </Container>
+);
+
+// Show the appropriate nav depending on the users' context -- admin, service, signup, ...
 const PrimaryNav: React.FC<Props> = ({
   authenticated,
-  onHandleNavigate,
-  user: { name }
+  user: { name, platformAdmin }
 }) => {
   if (!authenticated) {
     return null;
   }
+
   return (
-    <NavUl>
-      <Li>
-        <NavLink to="/" exact onClick={onHandleNavigate}>
-          Home
-        </NavLink>
-      </Li>
-      <Li>
-        <NavLink to="/console" exact onClick={onHandleNavigate}>
-          Console
-        </NavLink>
-      </Li>
-      <Li>
-        <NavLink to="/platform-admin" exact onClick={onHandleNavigate}>
-          Platform admin
-        </NavLink>
-      </Li>
-      <Li>
-        <NavLink to="/TODO" exact onClick={onHandleNavigate}>
-          Item 2
-        </NavLink>
-      </Li>
-      <Li>
-        <NavLink to="/TODO" exact onClick={onHandleNavigate}>
-          Item 3
-        </NavLink>
-      </Li>
-      <Li>
-        <ProfileLink to="/profile" exact onClick={onHandleNavigate}>
-          <ProfileIcon />
-          {name}
-        </ProfileLink>
-      </Li>
-    </NavUl>
+    <Wrapper>
+      <Switch>
+        <Route path="/platform-admin">
+          <PlatformAdminNav />
+        </Route>
+        <Route>
+          <ServiceInfoNav serviceName="Passport renewal" />
+        </Route>
+      </Switch>
+    </Wrapper>
   );
 };
 

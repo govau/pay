@@ -66,7 +66,7 @@ const TeamPage: React.FC<{
           <Helmet>
             <title>Team members - {getQuery.data.service.name}</title>
           </Helmet>
-          <PageTitle title="Team members" grouped />
+          <PageTitle title="Team members" />
           {renderRoleTables(getQuery.data)}
         </>
       )}

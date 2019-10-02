@@ -2,6 +2,7 @@ import styled, * as styledComponentsNamed from "./styled-components";
 import * as Pages from "./pages/Pages";
 
 const styledComponents = { styled, ...styledComponentsNamed };
+export { styled };
 export { styledComponents };
 
 export { default as media, mobile, desktop, tablet } from "./media";
@@ -21,6 +22,7 @@ export { default as Footer } from "./components/Footer";
 export * from "./components/form";
 export { default as validators } from "./lib/validation";
 export { default as Button } from "./components/Button";
+export { default as Lozenge } from "./components/Lozenge";
 export { Link } from "./components/Link";
 export { LinkButton } from "./components/LinkButton";
 export { default as PageTitle } from "./components/PageTitle";
