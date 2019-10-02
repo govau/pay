@@ -274,14 +274,18 @@ service1_id =
   Repo.insert!(%Service{
     external_id: Ecto.UUID.generate(),
     organisation_id: dta_id,
-    name: "Service 1"
+    name: "Service 1",
+    current_go_live_stage: "not_started",
+    custom_branding: %{}
   }).id
 
 service2_id =
   Repo.insert!(%Service{
     external_id: Ecto.UUID.generate(),
     organisation_id: dfat_id,
-    name: "Service 2"
+    name: "Service 2",
+    current_go_live_stage: "not_started",
+    custom_branding: %{}
   }).id
 
 Repo.insert!(%ServiceUser{

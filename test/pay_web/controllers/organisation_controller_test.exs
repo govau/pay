@@ -39,7 +39,6 @@ defmodule PayWeb.OrganisationControllerTest do
 
       assert %{
                "id" => id,
-               "external_id" => "7488a646-e31f-11e4-aace-600308960662",
                "name" => "some name"
              } = json_response(conn, 200)["data"]
     end
@@ -55,7 +54,7 @@ defmodule PayWeb.OrganisationControllerTest do
 
     test "renders organisation when data is valid", %{
       conn: conn,
-      organisation: %Organisation{id: id} = organisation
+      organisation: %Organisation{external_id: id} = organisation
     } do
       conn =
         put(conn, Routes.organisation_path(conn, :update, organisation),
@@ -68,7 +67,6 @@ defmodule PayWeb.OrganisationControllerTest do
 
       assert %{
                "id" => id,
-               "external_id" => "7488a646-e31f-11e4-aace-600308960662",
                "name" => "some updated name"
              } = json_response(conn, 200)["data"]
     end

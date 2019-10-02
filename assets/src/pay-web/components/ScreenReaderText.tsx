@@ -14,4 +14,3 @@ const ScreenReaderText = styled.span`
 `;
 
 export default ScreenReaderText;
-

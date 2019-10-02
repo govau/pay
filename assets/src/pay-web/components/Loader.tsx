@@ -57,7 +57,10 @@ const Dots = styled.div`
   }
 `;
 
-const Loader: React.StatelessComponent<Props> = ({ message = "Loading", className }) => {
+const Loader: React.StatelessComponent<Props> = ({
+  message = "Loading",
+  className
+}) => {
   const [shouldRender, setShouldRender] = React.useState(false);
 
   React.useLayoutEffect(() => {

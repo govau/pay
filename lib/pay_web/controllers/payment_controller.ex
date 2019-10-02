@@ -21,12 +21,12 @@ defmodule PayWeb.PaymentController do
   end
 
   def show(conn, %{"id" => id}) do
-    payment = Payments.get_payment!(id)
+    payment = Payments.get_payment_by_external_id!(id)
     render(conn, "show.json", payment: payment)
   end
 
   def update(conn, %{"id" => id, "payment" => payment_params}) do
-    payment = Payments.get_payment!(id)
+    payment = Payments.get_payment_by_external_id!(id)
 
     with {:ok, %Payment{} = payment} <- Payments.update_payment(payment, payment_params) do
       render(conn, "show.json", payment: payment)
@@ -34,7 +34,7 @@ defmodule PayWeb.PaymentController do
   end
 
   def delete(conn, %{"id" => id}) do
-    payment = Payments.get_payment!(id)
+    payment = Payments.get_payment_by_external_id!(id)
 
     with {:ok, %Payment{}} <- Payments.delete_payment(payment) do
       send_resp(conn, :no_content, "")

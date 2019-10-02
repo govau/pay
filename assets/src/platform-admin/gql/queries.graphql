@@ -1,15 +1,23 @@
+fragment Organisation on Organisation {
+  id
+  name
+}
+
+fragment Service on Service {
+  id
+  name
+}
+
 query Organisations {
   organisations
     @rest(type: "Organisation", path: "/internal/services/organisations") {
-    id
-    name
+    ...Organisation
   }
 }
 
 query Services {
   services @rest(type: "Service", path: "/internal/services/services") {
-    id
-    name
+    ...Service
   }
 }
 

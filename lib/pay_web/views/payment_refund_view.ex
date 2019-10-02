@@ -12,8 +12,7 @@ defmodule PayWeb.PaymentRefundView do
 
   def render("payment_refund.json", %{payment_refund: payment_refund}) do
     %{
-      id: payment_refund.id,
-      external_id: payment_refund.external_id,
+      id: payment_refund.external_id,
       reference: payment_refund.reference,
       amount: payment_refund.amount,
       status: payment_refund.status,

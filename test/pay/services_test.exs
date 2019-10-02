@@ -175,6 +175,11 @@ defmodule Pay.ServicesTest do
       assert Services.get_user!(user.id) == user
     end
 
+    test "get_user_by_external_id!/1 returns the user with given external_id" do
+      user = user_fixture()
+      assert Services.get_user_by_external_id!(user.external_id) == user
+    end
+
     test "create_user/1 with valid data creates a user" do
       assert {:ok, %User{} = user} = Services.create_user(@valid_attrs)
       assert user.disabled == true
@@ -320,6 +325,11 @@ defmodule Pay.ServicesTest do
       assert Services.get_organisation!(organisation.id) == organisation
     end
 
+    test "get_organisation_by_external_id!/1 returns the organisation with given external_id" do
+      organisation = organisation_fixture()
+      assert Services.get_organisation_by_external_id!(organisation.external_id) == organisation
+    end
+
     test "create_organisation/1 with valid data creates a organisation" do
       assert {:ok, %Organisation{} = organisation} = Services.create_organisation(@valid_attrs)
       assert organisation.external_id == "7488a646-e31f-11e4-aace-600308960662"
@@ -425,6 +435,11 @@ defmodule Pay.ServicesTest do
     test "get_service!/1 returns the service with given id" do
       service = service_fixture()
       assert Services.get_service!(service.id) == service
+    end
+
+    test "get_service_by_external_id!/1 returns the service with given external_id" do
+      service = service_fixture()
+      assert Services.get_service_by_external_id!(service.external_id) == service
     end
 
     test "create_service/1 with valid data creates a service" do

@@ -3,4 +3,26 @@
 
 type Query {
   services: [Service!]!
+  getService(id: ID!): Service!
+}
+
+input CreateServiceService {
+  name: String!
+}
+
+input CreateServiceInput {
+  service: CreateServiceService!
+}
+
+input UpdateServiceService {
+  name: String!
+}
+
+input UpdateServiceInput {
+  service: UpdateServiceService!
+}
+
+type Mutation {
+  createService(input: CreateServiceInput!): Service!
+  updateService(id: ID!, input: UpdateServiceInput!): Service!
 }

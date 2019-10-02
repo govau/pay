@@ -21,12 +21,12 @@ defmodule PayWeb.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    user = Services.get_user!(id)
+    user = Services.get_user_by_external_id!(id)
     render(conn, "show.json", user: user)
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
-    user = Services.get_user!(id)
+    user = Services.get_user_by_external_id!(id)
 
     with {:ok, %User{} = user} <- Services.update_user(user, user_params) do
       render(conn, "show.json", user: user)
@@ -34,7 +34,7 @@ defmodule PayWeb.UserController do
   end
 
   def delete(conn, %{"id" => id}) do
-    user = Services.get_user!(id)
+    user = Services.get_user_by_external_id!(id)
 
     with {:ok, %User{}} <- Services.delete_user(user) do
       send_resp(conn, :no_content, "")

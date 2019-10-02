@@ -2,6 +2,8 @@ defmodule Pay.Payments.Payment do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Phoenix.Param, key: :external_id}
+
   schema "payments" do
     field :amount, :integer
     field :auth_3ds_details, :map

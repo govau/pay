@@ -12,8 +12,7 @@ defmodule PayWeb.OrganisationView do
 
   def render("organisation.json", %{organisation: organisation}) do
     %{
-      id: organisation.id,
-      external_id: organisation.external_id,
+      id: organisation.external_id,
       name: organisation.name,
       type: organisation.type
     }

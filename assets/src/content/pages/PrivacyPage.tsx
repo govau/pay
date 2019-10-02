@@ -1,5 +1,5 @@
 import * as React from "react";
-import Helmet from "react-helmet";
+import { Helmet } from "react-helmet";
 import { PageTitle, Link } from "@pay/web";
 
 const PrivacyPage: React.FunctionComponent = () => (

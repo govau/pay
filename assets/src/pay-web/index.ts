@@ -18,6 +18,8 @@ export {
   ContainerMedium
 } from "./components/Container";
 export { default as Footer } from "./components/Footer";
+export * from "./components/form";
+export { default as validators } from "./lib/validation";
 export { default as Button } from "./components/Button";
 export { Link } from "./components/Link";
 export { LinkButton } from "./components/LinkButton";
@@ -26,6 +28,7 @@ export * from "./components/Typography";
 export * from "./components/icons";
 export { default as Hr } from "./components/Hr";
 export { default as ScreenReaderText } from "./components/ScreenReaderText";
+export * from "./components/Warning";
 export * from "./components/loaders";
 export { default as Error } from "./components/Error";
 export { default as ErrorAlert } from "./components/ErrorAlert";

@@ -1,5 +1,5 @@
 type User {
-  id: String!
+  id: ID!
   inserted_at: String!
   updated_at: String!
   platform_admin: Boolean!
@@ -9,11 +9,11 @@ type User {
 }
 
 type Organisation {
-  id: String!
+  id: ID!
   name: String!
 }
 
 type Service {
-  id: String!
+  id: ID!
   name: String!
 }

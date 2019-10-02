@@ -1,45 +1,37 @@
 import * as React from "react";
-import Helmet from "react-helmet";
-import { PageTitle, Loader, ErrorAlert } from "@pay/web";
+import { Helmet } from "react-helmet";
+import { PageTitle, Loader, ErrorAlert, Link } from "@pay/web";
 
-import { ServicesComponent } from "../__generated__/graphql";
+import { useServicesQuery } from "../__generated__/graphql";
 
-interface State {}
+const ServicesPage: React.FC = () => {
+  const { loading, error, data } = useServicesQuery({ errorPolicy: "all" });
 
-class ServicesPage extends React.Component<{}, State> {
-  render() {
-    return (
-      <>
-        <Helmet>
-          <title>Services</title>
-        </Helmet>
-        <PageTitle title="Services" />
-        <ServicesComponent>
-          {({ data, loading, error }) => {
-            if (loading) {
-              return <Loader message="Loading services." />;
-            }
-            if (error || !data) {
-              return (
-                <ErrorAlert
-                  title="Unable to retrieve services"
-                  message={error && error.message}
-                  showError
-                />
-              );
-            }
-            return (
-              <ul>
-                {data.services.map(s => (
-                  <li key={s.id}>{s.name}</li>
-                ))}
-              </ul>
-            );
-          }}
-        </ServicesComponent>
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <Helmet>
+        <title>Services</title>
+      </Helmet>
+      <PageTitle title="Services" />
+      {loading ? (
+        <Loader message="Loading services" />
+      ) : error || !data ? (
+        <ErrorAlert
+          title="Unable to retrieve services"
+          message={error && error.message}
+          showError
+        />
+      ) : (
+        <ul>
+          {data.services.map(s => (
+            <li key={s.id}>
+              <Link to={`/console/services/${s.id}`}>{s.name}</Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  );
+};
 
 export default ServicesPage;

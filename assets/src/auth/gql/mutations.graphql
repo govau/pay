@@ -1,5 +1,0 @@
-# import * from './fragments.graphql'
-
-mutation Signout {
-  signout
-}

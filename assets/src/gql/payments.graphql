@@ -1,5 +1,5 @@
 type CardType {
-  id: String!
+  id: ID!
   brand: String
   label: String
   type: String

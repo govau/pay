@@ -22,12 +22,12 @@ defmodule PayWeb.OrganisationController do
   end
 
   def show(conn, %{"id" => id}) do
-    organisation = Services.get_organisation!(id)
+    organisation = Services.get_organisation_by_external_id!(id)
     render(conn, "show.json", organisation: organisation)
   end
 
   def update(conn, %{"id" => id, "organisation" => organisation_params}) do
-    organisation = Services.get_organisation!(id)
+    organisation = Services.get_organisation_by_external_id!(id)
 
     with {:ok, %Organisation{} = organisation} <-
            Services.update_organisation(organisation, organisation_params) do
@@ -36,7 +36,7 @@ defmodule PayWeb.OrganisationController do
   end
 
   def delete(conn, %{"id" => id}) do
-    organisation = Services.get_organisation!(id)
+    organisation = Services.get_organisation_by_external_id!(id)
 
     with {:ok, %Organisation{}} <- Services.delete_organisation(organisation) do
       send_resp(conn, :no_content, "")

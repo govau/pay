@@ -1,5 +1,14 @@
 # import User from '../../gql/services.graphql'
-# import * from './fragments.graphql'
+
+fragment User on User {
+  id
+  inserted_at
+  updated_at
+  platform_admin
+  name
+  email
+  telephone_number
+}
 
 query User {
   user {
@@ -15,4 +24,8 @@ query CheckAuth {
       ...User
     }
   }
+}
+
+mutation Signout {
+  signout
 }
