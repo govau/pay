@@ -1,3 +1,8 @@
+fragment Organisation on Organisation {
+  id
+  name
+}
+
 fragment Service on Service {
   id
   name
@@ -6,8 +11,7 @@ fragment Service on Service {
 query Organisations {
   organisations
     @rest(type: "Organisation", path: "/internal/services/organisations") {
-    external_id
-    name
+    ...Organisation
   }
 }
 

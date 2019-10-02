@@ -2,6 +2,8 @@ defmodule Pay.Payments.PaymentRefund do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Phoenix.Param, key: :external_id}
+
   schema "payment_refunds" do
     field :amount, :integer
     field :external_id, Ecto.UUID

@@ -2,6 +2,8 @@ defmodule Pay.Services.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Phoenix.Param, key: :external_id}
+
   schema "users" do
     field :disabled, :boolean, default: false
     field :email, :string

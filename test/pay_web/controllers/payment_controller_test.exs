@@ -81,7 +81,6 @@ defmodule PayWeb.PaymentControllerTest do
                "delayed_capture" => true,
                "description" => "some description",
                "email" => "some email",
-               "external_id" => "7488a646-e31f-11e4-aace-600308960662",
                "external_metadata" => %{},
                "gateway_transaction_id" => "some gateway_transaction_id",
                "reference" => "some reference",
@@ -100,7 +99,10 @@ defmodule PayWeb.PaymentControllerTest do
   describe "update payment" do
     setup [:create_payment]
 
-    test "renders payment when data is valid", %{conn: conn, payment: %Payment{id: id} = payment} do
+    test "renders payment when data is valid", %{
+      conn: conn,
+      payment: %Payment{external_id: id} = payment
+    } do
       conn = put(conn, Routes.payment_path(conn, :update, payment), payment: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
@@ -114,7 +116,6 @@ defmodule PayWeb.PaymentControllerTest do
                "delayed_capture" => false,
                "description" => "some updated description",
                "email" => "some updated email",
-               "external_id" => "7488a646-e31f-11e4-aace-600308960662",
                "external_metadata" => %{},
                "gateway_transaction_id" => "some updated gateway_transaction_id",
                "reference" => "some updated reference",

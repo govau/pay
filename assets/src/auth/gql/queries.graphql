@@ -1,7 +1,7 @@
 # import User from '../../gql/services.graphql'
 
 fragment User on User {
-  external_id
+  id
   inserted_at
   updated_at
   platform_admin

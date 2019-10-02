@@ -57,7 +57,6 @@ defmodule PayWeb.UserControllerTest do
                "disabled" => true,
                "platform_admin" => false,
                "email" => "some email",
-               "external_id" => "7488a646-e31f-11e4-aace-600308960662",
                "last_logged_in_at" => "2010-04-17T14:00:00.000000Z",
                "telephone_number" => "some telephone_number",
                "name" => "some name"
@@ -73,7 +72,7 @@ defmodule PayWeb.UserControllerTest do
   describe "update user" do
     setup [:create_user]
 
-    test "renders user when data is valid", %{conn: conn, user: %User{id: id} = user} do
+    test "renders user when data is valid", %{conn: conn, user: %User{external_id: id} = user} do
       conn = put(conn, Routes.user_path(conn, :update, user), user: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
@@ -84,7 +83,6 @@ defmodule PayWeb.UserControllerTest do
                "disabled" => false,
                "platform_admin" => false,
                "email" => "some updated email",
-               "external_id" => "7488a646-e31f-11e4-aace-600308960662",
                "last_logged_in_at" => "2011-05-18T15:01:01.000000Z",
                "telephone_number" => "some updated telephone_number",
                "name" => "some updated name"

@@ -2,6 +2,8 @@ defmodule Pay.Services.Organisation do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Phoenix.Param, key: :external_id}
+
   schema "organisations" do
     field :external_id, Ecto.UUID
     field :name, :string

@@ -232,6 +232,23 @@ defmodule Pay.Services do
   def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
+  Gets a single user by the given external ID.
+
+  Raises `Ecto.NoResultsError` if the User does not exist.
+
+  ## Examples
+
+      iex> get_user_by_external_id!("3bfd1a3c-0960-49da-be66-053b159df62d")
+      %User{}
+
+      iex> get_user_by_external_id!("3bfd1a3c-0960-49da-be66-053b159df62e")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user_by_external_id!(external_id),
+    do: Repo.get_by!(User, external_id: external_id)
+
+  @doc """
   Creates a user.
 
   ## Examples
@@ -411,6 +428,23 @@ defmodule Pay.Services do
 
   """
   def get_organisation!(id), do: Repo.get!(Organisation, id) |> Repo.preload([:type])
+
+  @doc """
+  Gets a single organisation by the given external ID.
+
+  Raises `Ecto.NoResultsError` if the Organisation does not exist.
+
+  ## Examples
+
+      iex> get_organisation_by_external_id!("3bfd1a3c-0960-49da-be66-053b159df62d")
+      %Organisation{}
+
+      iex> get_organisation_by_external_id!("3bfd1a3c-0960-49da-be66-053b159df62e")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_organisation_by_external_id!(external_id),
+    do: Repo.get_by!(Organisation, external_id: external_id) |> Repo.preload([:type])
 
   @doc """
   Creates a organisation.

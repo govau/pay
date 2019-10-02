@@ -1,5 +1,5 @@
 type User {
-  external_id: ID!
+  id: ID!
   inserted_at: String!
   updated_at: String!
   platform_admin: Boolean!
@@ -9,7 +9,7 @@ type User {
 }
 
 type Organisation {
-  external_id: ID!
+  id: ID!
   name: String!
 }
 

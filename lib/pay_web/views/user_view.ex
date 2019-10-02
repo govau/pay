@@ -12,8 +12,7 @@ defmodule PayWeb.UserView do
 
   def render("user.json", %{user: user}) do
     %{
-      id: user.id,
-      external_id: user.external_id,
+      id: user.external_id,
       inserted_at: user.inserted_at,
       updated_at: user.updated_at,
       platform_admin: user.platform_admin,

@@ -144,7 +144,7 @@ defmodule PayWeb.ServiceControllerTest do
       assert response(conn, 204)
 
       assert_error_sent 404, fn ->
-        get(conn, Routes.service_path(conn, :show, service.external_id))
+        get(conn, Routes.service_path(conn, :show, service))
       end
     end
   end
