@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
-import * as ApolloReactCommon from "@apollo/react-common";
 import * as React from "react";
+import * as ApolloReactCommon from "@apollo/react-common";
 import * as ApolloReactComponents from "@apollo/react-components";
 import * as ApolloReactHoc from "@apollo/react-hoc";
 export type Maybe<T> = T | null;
@@ -53,13 +53,6 @@ export type UserFragment = { __typename?: "User" } & Pick<
   | "telephone_number"
 >;
 
-export type SignoutMutationVariables = {};
-
-export type SignoutMutation = { __typename?: "Mutation" } & Pick<
-  Mutation,
-  "signout"
->;
-
 export type UserQueryVariables = {};
 
 export type UserQuery = { __typename?: "Query" } & {
@@ -74,6 +67,13 @@ export type CheckAuthQuery = { __typename?: "Query" } & {
     "is_authenticated"
   > & { user: Maybe<{ __typename?: "User" } & UserFragment> };
 };
+
+export type SignoutMutationVariables = {};
+
+export type SignoutMutation = { __typename?: "Mutation" } & Pick<
+  Mutation,
+  "signout"
+>;
 export const UserFragmentDoc = gql`
   fragment User on User {
     external_id
@@ -85,60 +85,6 @@ export const UserFragmentDoc = gql`
     telephone_number
   }
 `;
-export const SignoutDocument = gql`
-  mutation Signout {
-    signout
-  }
-`;
-export type SignoutMutationFn = ApolloReactCommon.MutationFunction<
-  SignoutMutation,
-  SignoutMutationVariables
->;
-export type SignoutComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    SignoutMutation,
-    SignoutMutationVariables
-  >,
-  "mutation"
->;
-
-export const SignoutComponent = (props: SignoutComponentProps) => (
-  <ApolloReactComponents.Mutation<SignoutMutation, SignoutMutationVariables>
-    mutation={SignoutDocument}
-    {...props}
-  />
-);
-
-export type SignoutProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  SignoutMutation,
-  SignoutMutationVariables
-> &
-  TChildProps;
-export function withSignout<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    SignoutMutation,
-    SignoutMutationVariables,
-    SignoutProps<TChildProps>
-  >
-) {
-  return ApolloReactHoc.withMutation<
-    TProps,
-    SignoutMutation,
-    SignoutMutationVariables,
-    SignoutProps<TChildProps>
-  >(SignoutDocument, {
-    alias: "signout",
-    ...operationOptions
-  });
-}
-export type SignoutMutationResult = ApolloReactCommon.MutationResult<
-  SignoutMutation
->;
-export type SignoutMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  SignoutMutation,
-  SignoutMutationVariables
->;
 export const UserDocument = gql`
   query User {
     user {
@@ -239,4 +185,58 @@ export function withCheckAuth<TProps, TChildProps = {}>(
 export type CheckAuthQueryResult = ApolloReactCommon.QueryResult<
   CheckAuthQuery,
   CheckAuthQueryVariables
+>;
+export const SignoutDocument = gql`
+  mutation Signout {
+    signout
+  }
+`;
+export type SignoutMutationFn = ApolloReactCommon.MutationFunction<
+  SignoutMutation,
+  SignoutMutationVariables
+>;
+export type SignoutComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    SignoutMutation,
+    SignoutMutationVariables
+  >,
+  "mutation"
+>;
+
+export const SignoutComponent = (props: SignoutComponentProps) => (
+  <ApolloReactComponents.Mutation<SignoutMutation, SignoutMutationVariables>
+    mutation={SignoutDocument}
+    {...props}
+  />
+);
+
+export type SignoutProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  SignoutMutation,
+  SignoutMutationVariables
+> &
+  TChildProps;
+export function withSignout<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    SignoutMutation,
+    SignoutMutationVariables,
+    SignoutProps<TChildProps>
+  >
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    SignoutMutation,
+    SignoutMutationVariables,
+    SignoutProps<TChildProps>
+  >(SignoutDocument, {
+    alias: "signout",
+    ...operationOptions
+  });
+}
+export type SignoutMutationResult = ApolloReactCommon.MutationResult<
+  SignoutMutation
+>;
+export type SignoutMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  SignoutMutation,
+  SignoutMutationVariables
 >;

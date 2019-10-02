@@ -24,8 +24,8 @@ const ServicesPage: React.FC = () => {
       ) : (
         <ul>
           {data.services.map(s => (
-            <li key={s.external_id}>
-              <Link to={`/console/services/${s.external_id}`}>{s.name}</Link>
+            <li key={s.id}>
+              <Link to={`/console/services/${s.id}`}>{s.name}</Link>
             </li>
           ))}
         </ul>

@@ -38,9 +38,14 @@ export type Query = {
 
 export type Service = {
   __typename?: "Service";
-  external_id: Scalars["ID"];
+  id: Scalars["ID"];
   name: Scalars["String"];
 };
+export type ServiceFragment = { __typename?: "Service" } & Pick<
+  Service,
+  "id" | "name"
+>;
+
 export type OrganisationsQueryVariables = {};
 
 export type OrganisationsQuery = { __typename?: "Query" } & {
@@ -52,9 +57,7 @@ export type OrganisationsQuery = { __typename?: "Query" } & {
 export type ServicesQueryVariables = {};
 
 export type ServicesQuery = { __typename?: "Query" } & {
-  services: Array<
-    { __typename?: "Service" } & Pick<Service, "external_id" | "name">
-  >;
+  services: Array<{ __typename?: "Service" } & ServiceFragment>;
 };
 
 export type CardTypesQueryVariables = {};
@@ -67,7 +70,12 @@ export type CardTypesQuery = { __typename?: "Query" } & {
     >
   >;
 };
-
+export const ServiceFragmentDoc = gql`
+  fragment Service on Service {
+    id
+    name
+  }
+`;
 export const OrganisationsDocument = gql`
   query Organisations {
     organisations
@@ -125,10 +133,10 @@ export type OrganisationsQueryResult = ApolloReactCommon.QueryResult<
 export const ServicesDocument = gql`
   query Services {
     services @rest(type: "Service", path: "/internal/services/services") {
-      external_id
-      name
+      ...Service
     }
   }
+  ${ServiceFragmentDoc}
 `;
 export type ServicesComponentProps = Omit<
   ApolloReactComponents.QueryComponentOptions<

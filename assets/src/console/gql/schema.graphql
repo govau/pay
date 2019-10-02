@@ -14,6 +14,15 @@ input CreateServiceInput {
   service: CreateServiceService!
 }
 
+input UpdateServiceService {
+  name: String!
+}
+
+input UpdateServiceInput {
+  service: UpdateServiceService!
+}
+
 type Mutation {
   createService(input: CreateServiceInput!): Service!
+  updateService(id: ID!, input: UpdateServiceInput!): Service!
 }

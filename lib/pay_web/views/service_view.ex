@@ -12,8 +12,7 @@ defmodule PayWeb.ServiceView do
 
   def render("service.json", %{service: service}) do
     %{
-      id: service.id,
-      external_id: service.external_id,
+      id: service.external_id,
       name: service.name,
       redirect_to_service_immediately_on_terminal_state:
         service.redirect_to_service_immediately_on_terminal_state,

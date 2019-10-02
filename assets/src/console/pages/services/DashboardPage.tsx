@@ -1,9 +1,9 @@
 import * as React from "react";
+import { useParams } from "react-router";
 import { Helmet } from "react-helmet";
-import { PageTitle, Loader, ErrorAlert, P } from "@pay/web";
+import { PageTitle, Loader, ErrorAlert, P, Link } from "@pay/web";
 
 import { useGetServiceQuery } from "../../__generated__/graphql";
-import { useParams } from "react-router";
 
 const DashboardPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -44,7 +44,16 @@ const DashboardPage: React.FC = () => {
             </li>
             <li>Manage transactions</li>
             <li>Manage service team members</li>
-            <li>Adjust service settings</li>
+            <li>
+              Adjust service settings{" "}
+              <ul>
+                <li>
+                  <Link to={`/console/services/${data.service.id}/edit-name`}>
+                    Edit name
+                  </Link>{" "}
+                </li>
+              </ul>
+            </li>
             <li>Manage payment links</li>
             <li>Manage API keys</li>
             <li>Manage payment service provider account credentials</li>

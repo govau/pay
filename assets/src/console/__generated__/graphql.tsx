@@ -25,10 +25,16 @@ export type CreateServiceService = {
 export type Mutation = {
   __typename?: "Mutation";
   createService: Service;
+  updateService: Service;
 };
 
 export type MutationCreateServiceArgs = {
   input: CreateServiceInput;
+};
+
+export type MutationUpdateServiceArgs = {
+  id: Scalars["ID"];
+  input: UpdateServiceInput;
 };
 
 export type Query = {
@@ -44,15 +50,26 @@ export type QueryGetServiceArgs = {
 
 export type Service = {
   __typename?: "Service";
-  external_id: Scalars["ID"];
+  id: Scalars["ID"];
   name: Scalars["String"];
 };
+
+export type UpdateServiceInput = {
+  service: UpdateServiceService;
+};
+
+export type UpdateServiceService = {
+  name: Scalars["String"];
+};
+export type ServiceFragment = { __typename?: "Service" } & Pick<
+  Service,
+  "id" | "name"
+>;
+
 export type UserServicesQueryVariables = {};
 
 export type UserServicesQuery = { __typename?: "Query" } & {
-  services: Array<
-    { __typename?: "Service" } & Pick<Service, "external_id" | "name">
-  >;
+  services: Array<{ __typename?: "Service" } & ServiceFragment>;
 };
 
 export type GetServiceQueryVariables = {
@@ -60,7 +77,7 @@ export type GetServiceQueryVariables = {
 };
 
 export type GetServiceQuery = { __typename?: "Query" } & {
-  service: { __typename?: "Service" } & Pick<Service, "external_id" | "name">;
+  service: { __typename?: "Service" } & ServiceFragment;
 };
 
 export type CreateServiceMutationVariables = {
@@ -68,9 +85,23 @@ export type CreateServiceMutationVariables = {
 };
 
 export type CreateServiceMutation = { __typename?: "Mutation" } & {
-  service: { __typename?: "Service" } & Pick<Service, "external_id" | "name">;
+  service: { __typename?: "Service" } & ServiceFragment;
 };
 
+export type UpdateServiceMutationVariables = {
+  id: Scalars["ID"];
+  input: UpdateServiceInput;
+};
+
+export type UpdateServiceMutation = { __typename?: "Mutation" } & {
+  service: { __typename?: "Service" } & ServiceFragment;
+};
+export const ServiceFragmentDoc = gql`
+  fragment Service on Service {
+    id
+    name
+  }
+`;
 export const UserServicesDocument = gql`
   query UserServices {
     services
@@ -78,10 +109,10 @@ export const UserServicesDocument = gql`
         type: "Service"
         path: "/internal/services/users/{context.userId}/services"
       ) {
-      external_id
-      name
+      ...Service
     }
   }
+  ${ServiceFragmentDoc}
 `;
 export type UserServicesComponentProps = Omit<
   ApolloReactComponents.QueryComponentOptions<
@@ -132,10 +163,10 @@ export const GetServiceDocument = gql`
   query GetService($id: ID!) {
     service: getService(id: $id)
       @rest(type: "Service", path: "/internal/services/services/{args.id}") {
-      external_id
-      name
+      ...Service
     }
   }
+  ${ServiceFragmentDoc}
 `;
 export type GetServiceComponentProps = Omit<
   ApolloReactComponents.QueryComponentOptions<
@@ -189,10 +220,10 @@ export const CreateServiceDocument = gql`
         path: "/internal/services/services"
         method: "POST"
       ) {
-      external_id
-      name
+      ...Service
     }
   }
+  ${ServiceFragmentDoc}
 `;
 export type CreateServiceMutationFn = ApolloReactCommon.MutationFunction<
   CreateServiceMutation,
@@ -236,4 +267,60 @@ export type CreateServiceMutationResult = ApolloReactCommon.MutationResult<
 export type CreateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CreateServiceMutation,
   CreateServiceMutationVariables
+>;
+export const UpdateServiceDocument = gql`
+  mutation UpdateService($id: ID!, $input: UpdateServiceInput!) {
+    service: updateService(id: $id, input: $input)
+      @rest(
+        type: "Service"
+        path: "/internal/services/services/{args.id}"
+        method: "PUT"
+      ) {
+      ...Service
+    }
+  }
+  ${ServiceFragmentDoc}
+`;
+export type UpdateServiceMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateServiceMutation,
+  UpdateServiceMutationVariables
+>;
+export type UpdateServiceComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    UpdateServiceMutation,
+    UpdateServiceMutationVariables
+  >,
+  "mutation"
+>;
+
+export const UpdateServiceComponent = (props: UpdateServiceComponentProps) => (
+  <ApolloReactComponents.Mutation<
+    UpdateServiceMutation,
+    UpdateServiceMutationVariables
+  >
+    mutation={UpdateServiceDocument}
+    {...props}
+  />
+);
+
+export function useUpdateServiceMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    UpdateServiceMutation,
+    UpdateServiceMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    UpdateServiceMutation,
+    UpdateServiceMutationVariables
+  >(UpdateServiceDocument, baseOptions);
+}
+export type UpdateServiceMutationHookResult = ReturnType<
+  typeof useUpdateServiceMutation
+>;
+export type UpdateServiceMutationResult = ApolloReactCommon.MutationResult<
+  UpdateServiceMutation
+>;
+export type UpdateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateServiceMutation,
+  UpdateServiceMutationVariables
 >;

@@ -1,4 +1,5 @@
 import "core-js/features/array/find";
+import "core-js/features/string/starts-with";
 import React from "react";
 import ReactDOM from "react-dom";
 import * as Sentry from "@sentry/browser";
@@ -27,8 +28,28 @@ const restLink = new RestLink({
   headers: {
     "Content-Type": "application/json"
   },
-  responseTransformer: async response =>
-    response.json().then(({ data }: { data: any }) => data)
+  responseTransformer: async response => {
+    // https://github.com/apollographql/apollo-link-rest/blob/4ed4e83a4818bba7c053291d385919de135450a0/src/restLink.ts#L1050
+    if (response === null) {
+      return Promise.reject(new Error("Resource not found"));
+    }
+    if (!response) {
+      return Promise.reject(new Error("Received empty response"));
+    }
+    if (
+      response.headers
+        .get("Content-Type")
+        .toLowerCase()
+        .startsWith("application/json")
+    ) {
+      return response.json().then(({ data }: { data: any }) => data);
+    }
+    return response
+      .text()
+      .then((text: string) =>
+        Promise.reject(new Error(`Received unexpected response: ${text}`))
+      );
+  }
 });
 
 const link = ApolloLink.from([errorLink, restLink]);

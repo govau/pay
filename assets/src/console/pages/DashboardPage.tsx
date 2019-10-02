@@ -38,7 +38,7 @@ const DashboardPage: React.FC = () => {
           <h2>Services</h2>
           <ul>
             {data.services.map(s => (
-              <li key={s.external_id}>{s.name}</li>
+              <li key={s.id}>{s.name}</li>
             ))}
           </ul>
         </>

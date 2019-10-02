@@ -7,6 +7,7 @@ defmodule Pay.Services do
   alias Pay.Repo
 
   alias Pay.Services.Permission
+  alias Pay.Services.GoLiveStage
 
   @doc """
   Returns the list of permissions.
@@ -520,6 +521,23 @@ defmodule Pay.Services do
     do: Repo.get_by!(Service, external_id: external_id)
 
   @doc """
+  Gets a single service by the given external ID.
+
+  Returns nil if the Service does not exist.
+
+  ## Examples
+
+      iex> get_service_by_external_id("3bfd1a3c-0960-49da-be66-053b159df62d")
+      %Service{}
+
+      iex> get_service_by_external_id("3bfd1a3c-0960-49da-be66-053b159df62e")
+      nil
+
+  """
+  def get_service_by_external_id(external_id),
+    do: Repo.get_by(Service, external_id: external_id)
+
+  @doc """
   Creates a service.
 
   ## Examples
@@ -533,7 +551,9 @@ defmodule Pay.Services do
   """
   def create_service(attrs \\ %{}) do
     %Service{
-      external_id: Ecto.UUID.generate()
+      external_id: Ecto.UUID.generate(),
+      current_go_live_stage: GoLiveStage.NotStarted.value().name,
+      custom_branding: %{}
     }
     |> Service.create_changeset(attrs)
     |> Repo.insert()

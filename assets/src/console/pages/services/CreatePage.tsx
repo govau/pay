@@ -1,8 +1,8 @@
 import * as React from "react";
+import { Helmet } from "react-helmet";
 import { Redirect } from "react-router-dom";
 import { ApolloError } from "apollo-client";
 import {
-  PageContent,
   PageTitle,
   Form,
   Field,
@@ -61,7 +61,10 @@ const CreatePage = () => {
   });
 
   return (
-    <PageContent>
+    <>
+      <Helmet>
+        <title>Create service</title>
+      </Helmet>
       <PageTitle
         title="What service will you be taking payments for?"
         grouped
@@ -95,7 +98,7 @@ const CreatePage = () => {
           </>
         )}
       </Form>
-    </PageContent>
+    </>
   );
 };
 

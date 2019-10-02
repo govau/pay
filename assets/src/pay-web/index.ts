@@ -28,6 +28,7 @@ export * from "./components/Typography";
 export * from "./components/icons";
 export { default as Hr } from "./components/Hr";
 export { default as ScreenReaderText } from "./components/ScreenReaderText";
+export * from "./components/Warning";
 export * from "./components/loaders";
 export { default as Error } from "./components/Error";
 export { default as ErrorAlert } from "./components/ErrorAlert";

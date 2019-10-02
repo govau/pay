@@ -1,9 +1,0 @@
-fragment User on User {
-  external_id
-  inserted_at
-  updated_at
-  platform_admin
-  name
-  email
-  telephone_number
-}

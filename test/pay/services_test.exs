@@ -429,7 +429,7 @@ defmodule Pay.ServicesTest do
 
     test "get_service_by_external_id!/1 returns the service with given external_id" do
       service = service_fixture()
-      assert Payments.get_service_by_external_id!(service.external_id) == service
+      assert Services.get_service_by_external_id!(service.external_id) == service
     end
 
     test "create_service/1 with valid data creates a service" do

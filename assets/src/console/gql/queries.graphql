@@ -1,21 +1,24 @@
 # import CreateServiceInput from "./schema.graphql"
 
+fragment Service on Service {
+  id
+  name
+}
+
 query UserServices {
   services
     @rest(
       type: "Service"
       path: "/internal/services/users/{context.userId}/services"
     ) {
-    external_id
-    name
+    ...Service
   }
 }
 
 query GetService($id: ID!) {
   service: getService(id: $id)
     @rest(type: "Service", path: "/internal/services/services/{args.id}") {
-    external_id
-    name
+    ...Service
   }
 }
 
@@ -26,7 +29,17 @@ mutation CreateService($input: CreateServiceInput!) {
       path: "/internal/services/services"
       method: "POST"
     ) {
-    external_id
-    name
+    ...Service
+  }
+}
+
+mutation UpdateService($id: ID!, $input: UpdateServiceInput!) {
+  service: updateService(id: $id, input: $input)
+    @rest(
+      type: "Service"
+      path: "/internal/services/services/{args.id}"
+      method: "PUT"
+    ) {
+    ...Service
   }
 }

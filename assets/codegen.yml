@@ -7,9 +7,9 @@ generates:
       - "src/console/gql/schema.graphql"
       - "src/platform-admin/gql/schema.graphql"
     documents:
-      - "src/auth/gql/**/{mutations,fragments,queries}.graphql"
-      - "src/console/gql/**/{mutations,fragments,queries}.graphql"
-      - "src/platform-admin/gql/**/{mutations,fragments,queries}.graphql"
+      - "src/auth/gql/**/{queries}.graphql"
+      - "src/console/gql/**/{queries}.graphql"
+      - "src/platform-admin/gql/**/{queries}.graphql"
     plugins:
       - "fragment-matcher"
   src/auth/__generated__/graphql.tsx:
@@ -17,45 +17,33 @@ generates:
       noNamespaces: true
       withHOC: true
     schema: src/auth/gql/schema.graphql
-    documents: "src/auth/**/{mutations,fragments,queries}.graphql"
+    documents:
+      - "src/auth/**/{queries}.graphql"
     plugins:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
-  src/auth/__generated__/introspection-result.ts:
-    schema: src/auth/gql/schema.graphql
-    documents: "src/auth/**/{mutations,fragments,queries}.graphql"
-    plugins:
-      - "fragment-matcher"
   src/console/__generated__/graphql.tsx:
     config:
       noNamespaces: true
       withHOC: false
       withHooks: true
     schema: src/console/gql/schema.graphql
-    documents: "src/console/**/{mutations,fragments,queries}.graphql"
+    documents:
+      - "src/console/**/{queries}.graphql"
     plugins:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
-  src/console/__generated__/introspection-result.ts:
-    schema: src/console/gql/schema.graphql
-    documents: "src/console/**/{mutations,fragments,queries}.graphql"
-    plugins:
-      - "fragment-matcher"
   src/platform-admin/__generated__/graphql.tsx:
     config:
       noNamespaces: true
       withHOC: false
       withHooks: true
     schema: src/platform-admin/gql/schema.graphql
-    documents: "src/platform-admin/**/{mutations,fragments,queries}.graphql"
+    documents:
+      - "src/platform-admin/**/{queries}.graphql"
     plugins:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
-  src/platform-admin/__generated__/introspection-result.ts:
-    schema: src/platform-admin/gql/schema.graphql
-    documents: "src/platform-admin/**/{mutations,fragments,queries}.graphql"
-    plugins:
-      - "fragment-matcher"
