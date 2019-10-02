@@ -16,9 +16,12 @@ const colors = {
   darkerBlue: "#0041A3",
   borderBlue: "#2684FF",
 
-  // TODO: peter rename these to your liking.
-  payBlue: "#032240",
-  payDarkerBlue: "#021627",
+  // TODO: rename these
+  flair: "#773dc7",
+  dtaBlue: "#2AB4E7",
+  payBlue: "#002341",
+  payPink: "#DE0D79",
+  payDarkerBlue: "#011628",
   payHeaderBar: "#1d70b8",
   links: "#1d70b8"
 };

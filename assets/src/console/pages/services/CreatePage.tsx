@@ -65,10 +65,7 @@ const CreatePage = () => {
       <Helmet>
         <title>Create service</title>
       </Helmet>
-      <PageTitle
-        title="What service will you be taking payments for?"
-        grouped
-      />
+      <PageTitle title="What service will you be taking payments for?" />
       <Form onSubmit={onSubmit(createService)}>
         {loading ? (
           <Loader message="Creating a new service" />

@@ -1,55 +1,77 @@
 import * as React from "react";
-import { styledComponents, Container, mobile, tablet } from "@pay/web";
-import {
-  Wrapper,
-  PrimaryHeader,
-  Logos,
-  Link,
-  PrimaryNavWrapper,
-  Navbar
-} from "./components";
+import { styled, styledComponents, Container, Strong, desktop } from "@pay/web";
+import { SecondaryLozenge } from "@pay/web/components/Lozenge";
+import { PrimaryHeader, Link as LinkComponent } from "./components";
 import PrimaryNav from "./PrimaryNav";
-import { Wordmark } from "./Wordmark";
 import {
   withCheckAuth,
   CheckAuthProps
 } from "../../auth/__generated__/graphql";
-import SignoutButton from "./SignoutButton";
 import Coat from "./Coat";
 import { HamburgerIcon } from "../../components/icons/HamburgerIcon";
 import { CrossIcon } from "../../components/icons/CrossIcon";
 import withContext from "../../context/withContext";
 import { UserContext, UserContextValues } from "../../users";
 import { fromGQLUser } from "../../users/graphql";
-import { BetaTag } from "../../components/BetaTag";
 
-const PrimaryContainer = styledComponents.styled(Container)`
-  padding: 0 1rem;
+const Link = styled(LinkComponent)`
+  font-weight: 700;
+  font-size: 1.4rem;
+`;
+
+// arrange main layout horizontal or vertical based on screen size
+const PrimaryContainer = styled(Container)`
   display: flex;
-  justify-content: "space-between";
+  flex-flow: column nowrap;
 
-  @media ${tablet} {
-    padding: 0 2rem;
-    justify-content: "flex-start";
+  @media ${desktop} {
+    flex-flow: row nowrap;
+    justify-content: space-between;
   }
 `;
 
-const HeaderLink = styledComponents.styled(Link)`
+// this part of the header always stays, does not collapse {coa, logo}
+const VisibleWrapper = styled.div`
   display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+// link around logo
+const HeaderLink = styled(LinkComponent)`
+  display: flex;
+  align-items: center;
   text-decoration: none;
 
   &:hover {
     text-decoration: none;
   }
+`;
 
-  span {
-    @media ${mobile} {
-      display: none;
+interface NavProps {
+  visible?: boolean;
+}
+
+const Nav = styled.div<NavProps>`
+  display: ${props => (props.visible ? "flex" : "none")};
+  flex-flow: column nowrap;
+  margin-top: 1.5rem;
+
+  @media ${desktop} {
+    display: flex;
+    align-items: center;
+    flex-flow: row nowrap;
+    margin-top: 0;
+
+    ${Link} + ${Link} {
+      margin-left: 1em;
     }
   }
 `;
 
-const HamburgerMenu = styledComponents.styled.div`
+// hide the menu while we're on desktop
+const Menu = styled.div`
   color: ${props => props.theme.colors.white};
   display: flex;
   flex-direction: column;
@@ -65,37 +87,22 @@ const HamburgerMenu = styledComponents.styled.div`
     cursor: pointer;
   }
 
-  @media ${tablet} {
+  @media ${desktop} {
     display: none;
   }
 `;
 
-const Coa = styledComponents.styled.div`
-  display: none;
-
-  @media ${tablet} {
-    display: inherit;
-  }
+const CoaLogo = styled(Coat)`
+  height: 5.5rem;
 `;
 
-const CoaLogo = styledComponents.styled(Coat)`
-  height: 6rem;
-`;
+// the wordmark is just pixel-pushed text for now
+const Wordmark = styled.div`
+  margin-top: -5px;
+  font-size: 3rem;
 
-const CoaText = styledComponents.styled.span`
-  color: ${props => props.theme.colors.white};
-  border-right: solid 1px ${props => props.theme.colors.white};
-  padding: 1.5rem;
-  margin-right: 1.5rem;
-  align-self: center;
-`;
-
-const ButtonGroup = styledComponents.styled.div`
-  display: flex;
-  align-items: center;
-
-  @media ${tablet} {
-    margin-left: auto;
+  * + & {
+    margin-left: 1em;
   }
 `;
 
@@ -114,8 +121,12 @@ const Header: React.FC<Props> = ({ data, user, setUser }) => {
     }
   });
 
-  const isAuthenticated =
-    data && data.checkAuth && data.checkAuth.is_authenticated;
+  const checkAuth = data && data.checkAuth;
+
+  const isAuthenticated = checkAuth && checkAuth.is_authenticated;
+
+  const isPlatformAdmin =
+    checkAuth && checkAuth.user && checkAuth.user.platform_admin;
 
   return (
     <ThemeProvider
@@ -124,44 +135,49 @@ const Header: React.FC<Props> = ({ data, user, setUser }) => {
         linkColor: theme.colors.white
       })}
     >
-      <Wrapper>
+      <React.Fragment>
         <PrimaryHeader>
           <PrimaryContainer>
-            <HamburgerMenu onClick={() => setIsNavVisible(!isNavVisible)}>
-              {isNavVisible ? <CrossIcon /> : <HamburgerIcon />}
-              {isNavVisible ? "Close" : "Menu"}
-            </HamburgerMenu>
-            <HeaderLink to="/">
-              <Coa>
+            <VisibleWrapper>
+              <HeaderLink to="/">
                 <CoaLogo />
-                <CoaText>Australian Government</CoaText>
-              </Coa>
-              <Logos>
-                <Wordmark />
-                <BetaTag white />
-              </Logos>
-            </HeaderLink>
-            <ButtonGroup>
-              {data.loading ? null : isAuthenticated ? (
-                <SignoutButton />
-              ) : (
-                <Link to="/auth/signin">Sign in</Link>
-              )}
-            </ButtonGroup>
+                <Wordmark>
+                  <Strong>pay</Strong>.gov.au
+                </Wordmark>
+                <SecondaryLozenge>Beta</SecondaryLozenge>
+              </HeaderLink>
+
+              <Menu onClick={() => setIsNavVisible(!isNavVisible)}>
+                {isNavVisible ? <CrossIcon /> : <HamburgerIcon />}
+              </Menu>
+            </VisibleWrapper>
+
+            {isAuthenticated ? (
+              <Nav visible={isNavVisible}>
+                <Link to="/console">Console</Link>
+                <Link to="/TODO">Services</Link>
+                <Link to="/TODO">Profile</Link>
+                <Link to="/TODO">Documentation</Link>
+
+                {isPlatformAdmin ? (
+                  <Link to="/platform-admin">Platform admin</Link>
+                ) : null}
+
+                <Link to="/TODO">Sign out</Link>
+              </Nav>
+            ) : (
+              <Nav visible={isNavVisible}>
+                <Link to="/TODO">About</Link>
+                <Link to="/TODO">Get started</Link>
+                <Link to="/TODO">Documentation</Link>
+                <Link to="/TODO">Sign in</Link>
+              </Nav>
+            )}
           </PrimaryContainer>
         </PrimaryHeader>
 
-        <Navbar visible={isNavVisible}>
-          <Container>
-            <PrimaryNavWrapper>
-              <PrimaryNav
-                authenticated={isAuthenticated}
-                onHandleNavigate={() => setIsNavVisible(false)}
-              />
-            </PrimaryNavWrapper>
-          </Container>
-        </Navbar>
-      </Wrapper>
+        <PrimaryNav authenticated={isAuthenticated} />
+      </React.Fragment>
     </ThemeProvider>
   );
 };

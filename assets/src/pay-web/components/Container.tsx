@@ -2,7 +2,7 @@ import styled from "../styled-components";
 import { desktop } from "../media";
 
 const Container = styled.div`
-  padding: 0 2rem;
+  padding: 0 1rem;
 
   @media ${desktop} {
     max-width: 90rem;
