@@ -3,6 +3,7 @@ import * as React from "react";
 import * as ApolloReactCommon from "@apollo/react-common";
 import * as ApolloReactComponents from "@apollo/react-components";
 import * as ApolloReactHoc from "@apollo/react-hoc";
+import * as ApolloReactHooks from "@apollo/react-hooks";
 export type Maybe<T> = T | null;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
@@ -53,12 +54,6 @@ export type UserFragment = { __typename?: "User" } & Pick<
   | "telephone_number"
 >;
 
-export type UserQueryVariables = {};
-
-export type UserQuery = { __typename?: "Query" } & {
-  user: Maybe<{ __typename?: "User" } & UserFragment>;
-};
-
 export type CheckAuthQueryVariables = {};
 
 export type CheckAuthQuery = { __typename?: "Query" } & {
@@ -85,53 +80,6 @@ export const UserFragmentDoc = gql`
     telephone_number
   }
 `;
-export const UserDocument = gql`
-  query User {
-    user {
-      ...User
-    }
-  }
-  ${UserFragmentDoc}
-`;
-export type UserComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<UserQuery, UserQueryVariables>,
-  "query"
->;
-
-export const UserComponent = (props: UserComponentProps) => (
-  <ApolloReactComponents.Query<UserQuery, UserQueryVariables>
-    query={UserDocument}
-    {...props}
-  />
-);
-
-export type UserProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  UserQuery,
-  UserQueryVariables
-> &
-  TChildProps;
-export function withUser<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    UserQuery,
-    UserQueryVariables,
-    UserProps<TChildProps>
-  >
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    UserQuery,
-    UserQueryVariables,
-    UserProps<TChildProps>
-  >(UserDocument, {
-    alias: "user",
-    ...operationOptions
-  });
-}
-export type UserQueryResult = ApolloReactCommon.QueryResult<
-  UserQuery,
-  UserQueryVariables
->;
 export const CheckAuthDocument = gql`
   query CheckAuth {
     checkAuth
@@ -182,6 +130,31 @@ export function withCheckAuth<TProps, TChildProps = {}>(
     ...operationOptions
   });
 }
+
+export function useCheckAuthQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    CheckAuthQuery,
+    CheckAuthQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<CheckAuthQuery, CheckAuthQueryVariables>(
+    CheckAuthDocument,
+    baseOptions
+  );
+}
+export function useCheckAuthLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    CheckAuthQuery,
+    CheckAuthQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<CheckAuthQuery, CheckAuthQueryVariables>(
+    CheckAuthDocument,
+    baseOptions
+  );
+}
+
+export type CheckAuthQueryHookResult = ReturnType<typeof useCheckAuthQuery>;
 export type CheckAuthQueryResult = ApolloReactCommon.QueryResult<
   CheckAuthQuery,
   CheckAuthQueryVariables
@@ -233,6 +206,19 @@ export function withSignout<TProps, TChildProps = {}>(
     ...operationOptions
   });
 }
+
+export function useSignoutMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    SignoutMutation,
+    SignoutMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    SignoutMutation,
+    SignoutMutationVariables
+  >(SignoutDocument, baseOptions);
+}
+export type SignoutMutationHookResult = ReturnType<typeof useSignoutMutation>;
 export type SignoutMutationResult = ApolloReactCommon.MutationResult<
   SignoutMutation
 >;

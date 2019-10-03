@@ -9,7 +9,7 @@ defmodule Pay.Payments.CardType do
     field :type, :string
 
     many_to_many :gateway_accounts, Pay.Payments.GatewayAccount,
-      join_through: "gateway_account_card_types"
+      join_through: Pay.Payments.GatewayAccountCardType
 
     timestamps()
   end

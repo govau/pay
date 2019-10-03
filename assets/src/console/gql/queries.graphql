@@ -5,11 +5,11 @@ fragment Service on Service {
   name
 }
 
-query UserServices {
-  services
+query GetUserServices($userId: ID!) {
+  services: getUserServices(userId: $userId)
     @rest(
       type: "Service"
-      path: "/internal/services/users/{context.userId}/services"
+      path: "/internal/services/users/{args.userId}/services"
     ) {
     ...Service
   }
@@ -19,6 +19,28 @@ query GetService($id: ID!) {
   service: getService(id: $id)
     @rest(type: "Service", path: "/internal/services/services/{args.id}") {
     ...Service
+  }
+}
+
+query GetServiceWithUsers($id: ID!) {
+  service: getService(id: $id)
+    @rest(type: "Service", path: "/internal/services/services/{args.id}") {
+    id @export(as: "id")
+    ...Service
+    users
+      @rest(
+        type: "[ServiceUser]"
+        path: "/internal/services/services/{exportVariables.id}/service-users"
+      ) {
+      user {
+        id
+        name
+        email
+      }
+      role {
+        name
+      }
+    }
   }
 }
 

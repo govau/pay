@@ -13,7 +13,7 @@ defmodule Pay.Services.User do
     field :platform_admin, :boolean, default: false
     field :telephone_number, :string
 
-    many_to_many :services, Pay.Services.Service, join_through: "service_users"
+    many_to_many :services, Pay.Services.Service, join_through: Pay.Services.ServiceUser
 
     timestamps()
   end

@@ -3,10 +3,16 @@ import { useRouteMatch } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { PageTitle, Loader, ErrorAlert, Link } from "@pay/web";
 
-import { useUserServicesQuery } from "../__generated__/graphql";
+import { useGetUserServicesQuery } from "../__generated__/graphql";
+import { UserContext } from "../../users";
 
 const DashboardPage: React.FC = () => {
-  const { loading, error, data } = useUserServicesQuery({ errorPolicy: "all" });
+  const { user } = React.useContext(UserContext);
+
+  const { loading, error, data } = useGetUserServicesQuery({
+    variables: { userId: user.id },
+    errorPolicy: "all"
+  });
 
   const match = useRouteMatch("");
   if (!match) {
@@ -38,7 +44,9 @@ const DashboardPage: React.FC = () => {
           <h2>Services</h2>
           <ul>
             {data.services.map(s => (
-              <li key={s.id}>{s.name}</li>
+              <li key={s.id}>
+                <Link to={`/console/services/${s.id}`}>{s.name}</Link>
+              </li>
             ))}
           </ul>
         </>

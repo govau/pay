@@ -8,12 +8,25 @@ type User {
   telephone_number: String
 }
 
+type Role {
+  id: ID!
+  name: String!
+  description: String!
+}
+
 type Organisation {
   id: ID!
   name: String!
 }
 
+type ServiceUser {
+  service: Service!
+  user: User!
+  role: Role!
+}
+
 type Service {
   id: ID!
   name: String!
+  users: [ServiceUser!]
 }

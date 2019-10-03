@@ -2,7 +2,7 @@
 # import CardType from '../../gql/payments.graphql'
 
 type Query {
-  services: [Service!]!
+  getUserServices(userId: ID!): [Service!]!
   getService(id: ID!): Service!
 }
 
