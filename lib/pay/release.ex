@@ -5,13 +5,30 @@ defmodule Pay.Release do
     load_app()
 
     for repo <- repos() do
-      {:ok, _, _} = Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :up, all: true))
+      migrate(repo)
     end
   end
 
+  defp migrate(repo) do
+    {:ok, _, _} = Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :up, all: true))
+  end
+
   def rollback(repo, version) do
-    load_app()
     {:ok, _, _} = Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :down, to: version))
+  end
+
+  defp rollback(repo) do
+    {:ok, _, _} = Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :down, all: true))
+  end
+
+  def reset_database do
+    load_app()
+
+    for repo <- repos() do
+      rollback(repo)
+      migrate(repo)
+      run_seeds(repo)
+    end
   end
 
   defp repos do
@@ -22,12 +39,17 @@ defmodule Pay.Release do
     Application.load(@app)
   end
 
+  @spec run_seeds :: [any]
   def run_seeds do
     load_app()
 
     for repo <- repos() do
       {:ok, _, _} = Ecto.Migrator.with_repo(repo, &run_seeds_for/1)
     end
+  end
+
+  def run_seeds(repo) do
+    {:ok, _, _} = Ecto.Migrator.with_repo(repo, &run_seeds_for/1)
   end
 
   defp run_seeds_for(repo) do
