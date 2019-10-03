@@ -2,7 +2,6 @@ defmodule PayWeb.ServiceUserController do
   use PayWeb, :controller
 
   alias Pay.Services
-  alias Pay.Services.ServiceUser
 
   action_fallback PayWeb.FallbackController
 
