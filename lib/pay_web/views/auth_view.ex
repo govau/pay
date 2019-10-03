@@ -6,7 +6,7 @@ defmodule PayWeb.AuthView do
   def render("check.json", %{user: user}) do
     %{
       data: %{
-        is_authenticated: true,
+        is_authenticated: user && true,
         user: render_one(user, UserView, "user.json")
       }
     }
