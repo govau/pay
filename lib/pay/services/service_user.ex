@@ -1,11 +1,14 @@
 defmodule Pay.Services.ServiceUser do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Pay.Services.Service
+  alias Pay.Services.User
+  alias Pay.Services.Role
 
   schema "service_users" do
-    field :service_id, :id
-    field :user_id, :id
-    field :role_id, :id
+    belongs_to :service, Service
+    belongs_to :user, User
+    belongs_to :role, Role
 
     timestamps()
   end
@@ -13,7 +16,7 @@ defmodule Pay.Services.ServiceUser do
   @doc false
   def changeset(service_user, attrs) do
     service_user
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:service_id, :user_id, :role_id])
+    |> validate_required([:service_id, :user_id, :role_id])
   end
 end

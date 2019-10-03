@@ -78,7 +78,7 @@ mix phx.gen.json $SERVICES_CTX Service services \
 
 mix ecto.migrate
 
-mix phx.gen.schema $SERVICES_CTX.ServiceUser service_users \
+mix phx.gen.json $SERVICES_CTX ServiceUser service_users \
     service_id:references:services \
     user_id:references:users \
     role_id:references:roles

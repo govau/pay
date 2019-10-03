@@ -1,6 +1,8 @@
 defmodule Pay.ServicesTest do
   use Pay.DataCase
 
+  import Pay.Fixtures
+
   alias Pay.Services
 
   describe "permissions" do
@@ -369,6 +371,8 @@ defmodule Pay.ServicesTest do
   describe "services" do
     alias Pay.Services.Service
 
+    setup [:create_admin_role]
+
     @valid_attrs %{
       collect_billing_address: true,
       current_go_live_stage: "some current_go_live_stage",
@@ -418,32 +422,24 @@ defmodule Pay.ServicesTest do
       redirect_to_service_immediately_on_terminal_state: nil
     }
 
-    def service_fixture(attrs \\ %{}) do
-      {:ok, service} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Services.create_service()
-
-      service
-    end
-
     test "list_services/0 returns all services" do
-      service = service_fixture()
+      service = fixture(:service)
       assert Services.list_services() == [service]
     end
 
     test "get_service!/1 returns the service with given id" do
-      service = service_fixture()
+      service = fixture(:service)
       assert Services.get_service!(service.id) == service
     end
 
     test "get_service_by_external_id!/1 returns the service with given external_id" do
-      service = service_fixture()
+      service = fixture(:service)
       assert Services.get_service_by_external_id!(service.external_id) == service
     end
 
-    test "create_service/1 with valid data creates a service" do
-      assert {:ok, %Service{} = service} = Services.create_service(@valid_attrs)
+    test "create_service/2 with valid data creates a service" do
+      user = fixture(:user)
+      assert {:ok, %Service{} = service} = Services.create_service(user, @valid_attrs)
       assert service.collect_billing_address == true
       assert service.current_go_live_stage == "some current_go_live_stage"
       assert service.custom_branding == %{}
@@ -460,12 +456,13 @@ defmodule Pay.ServicesTest do
       assert service.redirect_to_service_immediately_on_terminal_state == true
     end
 
-    test "create_service/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Services.create_service(@invalid_attrs)
+    test "create_service/2 with invalid data returns error changeset" do
+      user = fixture(:user)
+      assert {:error, %Ecto.Changeset{}} = Services.create_service(user, @invalid_attrs)
     end
 
     test "update_service/2 with valid data updates the service" do
-      service = service_fixture()
+      service = fixture(:service)
       assert {:ok, %Service{} = service} = Services.update_service(service, @update_attrs)
       assert service.collect_billing_address == false
       assert service.current_go_live_stage == "some updated current_go_live_stage"
@@ -484,13 +481,13 @@ defmodule Pay.ServicesTest do
     end
 
     test "update_service/2 with invalid data returns error changeset" do
-      service = service_fixture()
+      service = fixture(:service)
       assert {:error, %Ecto.Changeset{}} = Services.update_service(service, @invalid_attrs)
       assert service == Services.get_service!(service.id)
     end
 
     test "delete_service/1 deletes the service" do
-      service = service_fixture()
+      service = fixture(:service)
       assert {:ok, %Service{}} = Services.delete_service(service)
       assert_raise Ecto.NoResultsError, fn -> Services.get_service!(service.id) end
     end
@@ -623,13 +620,20 @@ defmodule Pay.ServicesTest do
   describe "service_users" do
     alias Pay.Services.ServiceUser
 
-    @valid_attrs %{}
     @update_attrs %{}
 
     def service_user_fixture(attrs \\ %{}) do
+      service = fixture(:service)
+      user = fixture(:user)
+      role = fixture(:admin_role)
+
       {:ok, service_user} =
         attrs
-        |> Enum.into(@valid_attrs)
+        |> Enum.into(%{
+          service_id: service.id,
+          user_id: user.id,
+          role_id: role.id
+        })
         |> Services.create_service_user()
 
       service_user
@@ -640,13 +644,30 @@ defmodule Pay.ServicesTest do
       assert Services.list_service_users() == [service_user]
     end
 
+    test "list_service_users_by_service_external_id/1 returns all service_users" do
+      service_user = service_user_fixture()
+
+      service = Services.get_service!(service_user.service_id)
+
+      assert length(Services.list_service_users_by_service_external_id(service.external_id)) == 1
+    end
+
     test "get_service_user!/1 returns the service_user with given id" do
       service_user = service_user_fixture()
       assert Services.get_service_user!(service_user.id) == service_user
     end
 
     test "create_service_user/1 with valid data creates a service_user" do
-      assert {:ok, %ServiceUser{} = service_user} = Services.create_service_user(@valid_attrs)
+      service = fixture(:service)
+      user = fixture(:user)
+      role = fixture(:admin_role)
+
+      assert {:ok, %ServiceUser{} = service_user} =
+               Services.create_service_user(%{
+                 service_id: service.id,
+                 user_id: user.id,
+                 role_id: role.id
+               })
     end
 
     test "update_service_user/2 with valid data updates the service_user" do
@@ -745,5 +766,10 @@ defmodule Pay.ServicesTest do
       service_invite = service_invite_fixture()
       assert %Ecto.Changeset{} = Services.change_service_invite(service_invite)
     end
+  end
+
+  defp create_admin_role(_) do
+    admin_role = fixture(:admin_role)
+    {:ok, admin_role: admin_role}
   end
 end

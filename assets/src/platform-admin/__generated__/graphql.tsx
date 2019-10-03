@@ -36,10 +36,36 @@ export type Query = {
   cardTypes: Array<CardType>;
 };
 
+export type Role = {
+  __typename?: "Role";
+  id: Scalars["ID"];
+  name: Scalars["String"];
+  description: Scalars["String"];
+};
+
 export type Service = {
   __typename?: "Service";
   id: Scalars["ID"];
   name: Scalars["String"];
+  users?: Maybe<Array<ServiceUser>>;
+};
+
+export type ServiceUser = {
+  __typename?: "ServiceUser";
+  service: Service;
+  user: User;
+  role: Role;
+};
+
+export type User = {
+  __typename?: "User";
+  id: Scalars["ID"];
+  inserted_at: Scalars["String"];
+  updated_at: Scalars["String"];
+  platform_admin: Scalars["Boolean"];
+  name?: Maybe<Scalars["String"]>;
+  email?: Maybe<Scalars["String"]>;
+  telephone_number?: Maybe<Scalars["String"]>;
 };
 export type OrganisationFragment = { __typename?: "Organisation" } & Pick<
   Organisation,

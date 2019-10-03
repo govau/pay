@@ -21,8 +21,8 @@ defmodule Pay.Services.Service do
     field :redirect_to_service_immediately_on_terminal_state, :boolean, default: false
 
     belongs_to :organisation, Pay.Services.Organisation
-    many_to_many :users, Pay.Services.User, join_through: "service_users"
-    many_to_many :invites, Pay.Services.ServiceInvite, join_through: "service_invites"
+    many_to_many :users, Pay.Services.User, join_through: Pay.Services.ServiceUser
+    many_to_many :invites, Pay.Services.ServiceInvite, join_through: Pay.Services.ServiceInvite
 
     timestamps()
   end

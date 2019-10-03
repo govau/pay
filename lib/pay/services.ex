@@ -7,6 +7,8 @@ defmodule Pay.Services do
   alias Pay.Repo
 
   alias Pay.Services.Permission
+  alias Pay.Services.Role
+  alias Pay.Services.ServiceUser
   alias Pay.Services.GoLiveStage
 
   @doc """
@@ -133,6 +135,22 @@ defmodule Pay.Services do
 
   """
   def get_role!(id), do: Repo.get!(Role, id) |> Repo.preload([:permissions])
+
+  @doc """
+  Gets a single role by name.
+
+  Raises `Ecto.NoResultsError` if the Role does not exist.
+
+  ## Examples
+
+      iex> get_role_by_name!("admin")
+      %Role{}
+
+      iex> get_role_by_name!("admin2")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_role_by_name!(name), do: Repo.get_by!(Role, name: name) |> Repo.preload([:permissions])
 
   @doc """
   Creates a role.
@@ -522,6 +540,26 @@ defmodule Pay.Services do
   end
 
   @doc """
+  Returns the list of services the user with the given external ID has access to.
+
+  ## Examples
+
+      iex> list_services_by_user_external_id("3bfd1a3c-0960-49da-be66-053b159df62d")
+      [%Service{}, ...]
+
+  """
+  def list_services_by_user_external_id(external_id) do
+    Repo.all(
+      from s in Service,
+        left_join: su in ServiceUser,
+        on: s.id == su.service_id,
+        left_join: u in User,
+        on: u.id == su.user_id,
+        where: u.external_id == ^external_id
+    )
+  end
+
+  @doc """
   Gets a single service.
 
   Raises `Ecto.NoResultsError` if the Service does not exist.
@@ -572,25 +610,45 @@ defmodule Pay.Services do
     do: Repo.get_by(Service, external_id: external_id)
 
   @doc """
-  Creates a service.
+  Creates a service using the given user as the service's owner/admin.
 
   ## Examples
 
-      iex> create_service(%{field: value})
+      iex> create_service(%User{}, %{field: value})
       {:ok, %Service{}}
 
-      iex> create_service(%{field: bad_value})
+      iex> create_service(%User{}, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_service(attrs \\ %{}) do
-    %Service{
-      external_id: Ecto.UUID.generate(),
-      current_go_live_stage: GoLiveStage.NotStarted.value().name,
-      custom_branding: %{}
-    }
-    |> Service.create_changeset(attrs)
-    |> Repo.insert()
+  def create_service(%User{} = user, attrs \\ %{}) do
+    admin_role = get_role_by_name!(Role.Admin.value().name)
+
+    case Repo.insert(
+           Service.create_changeset(
+             %Service{
+               external_id: Ecto.UUID.generate(),
+               current_go_live_stage: GoLiveStage.NotStarted.value().name,
+               custom_branding: %{}
+             },
+             attrs
+           )
+         ) do
+      {:ok, service} ->
+        case Repo.insert(
+               ServiceUser.changeset(%ServiceUser{}, %{
+                 service_id: service.id,
+                 user_id: user.id,
+                 role_id: admin_role.id
+               })
+             ) do
+          {:ok, _assoc} -> {:ok, service}
+          {:error, changeset} -> {:error, changeset}
+        end
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   @doc """
@@ -832,6 +890,27 @@ defmodule Pay.Services do
   """
   def list_service_users do
     Repo.all(ServiceUser)
+  end
+
+  @doc """
+  Returns the list of service_users for the given service external_id.
+
+  ## Examples
+
+      iex> list_service_users_by_service_external_id("3bfd1a3c-0960-49da-be66-053b159df62e")
+      [%ServiceUser{}, ...]
+
+  """
+  def list_service_users_by_service_external_id(external_id) do
+    Repo.all(
+      from su in ServiceUser,
+        left_join: s in Service,
+        on: su.service_id == s.id,
+        left_join: u in User,
+        on: su.user_id == u.id,
+        where: s.external_id == ^external_id,
+        preload: [:user, :role]
+    )
   end
 
   @doc """

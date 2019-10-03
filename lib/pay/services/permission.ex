@@ -6,7 +6,7 @@ defmodule Pay.Services.Permission do
     field :description, :string
     field :name, :string
 
-    many_to_many :roles, Pay.Services.Role, join_through: "role_permissions"
+    many_to_many :roles, Pay.Services.Role, join_through: Pay.Services.RolePermission
 
     timestamps()
   end

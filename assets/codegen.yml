@@ -16,6 +16,7 @@ generates:
     config:
       noNamespaces: true
       withHOC: true
+      withHooks: true
     schema: src/auth/gql/schema.graphql
     documents:
       - "src/auth/**/{queries}.graphql"

@@ -10,12 +10,6 @@ fragment User on User {
   telephone_number
 }
 
-query User {
-  user {
-    ...User
-  }
-}
-
 query CheckAuth {
   checkAuth
     @rest(type: "CheckAuthResponse", path: "/internal/services/auth/check") {

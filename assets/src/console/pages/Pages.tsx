@@ -15,5 +15,8 @@ export const Services = {
   }),
   EditNamePage: loadable(() => import("./services/EditNamePage"), {
     fallback: <Loader />
+  }),
+  TeamPage: loadable(() => import("./services/TeamPage"), {
+    fallback: <Loader />
   })
 };

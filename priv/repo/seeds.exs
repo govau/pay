@@ -34,13 +34,17 @@ Repo.insert!(%CardType{type: "CREDIT", brand: "unionpay", label: "Union Pay"})
 
 # Roles
 
-super_admin_role_id = Repo.insert!(%Role{name: "super-admin", description: "Super admin"}).id
-admin_role_id = Repo.insert!(%Role{name: "admin", description: "Administrator"}).id
+super_admin_role_id =
+  Repo.insert!(%Role{name: Role.SuperAdmin.value().name, description: "Super admin"}).id
+
+admin_role_id =
+  Repo.insert!(%Role{name: Role.Admin.value().name, description: "Administrator"}).id
 
 view_and_refund_role_id =
-  Repo.insert!(%Role{name: "view-and-refund", description: "View and refund"}).id
+  Repo.insert!(%Role{name: Role.ViewAndRefund.value().name, description: "View and refund"}).id
 
-view_only_role_id = Repo.insert!(%Role{name: "view-only", description: "View only"}).id
+view_only_role_id =
+  Repo.insert!(%Role{name: Role.ViewOnly.value().name, description: "View only"}).id
 
 # Permissons
 

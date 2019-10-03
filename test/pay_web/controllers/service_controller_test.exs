@@ -1,7 +1,8 @@
 defmodule PayWeb.ServiceControllerTest do
   use PayWeb.ConnCase
 
-  alias Pay.Services
+  import Pay.Fixtures
+
   alias Pay.Services.Service
 
   @create_attrs %{
@@ -53,12 +54,9 @@ defmodule PayWeb.ServiceControllerTest do
     redirect_to_service_immediately_on_terminal_state: nil
   }
 
-  def fixture(:service) do
-    {:ok, service} = Services.create_service(@create_attrs)
-    service
-  end
-
   setup %{conn: conn} do
+    user = fixture(:user)
+    conn = assign(conn, :current_user, user)
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
 
@@ -70,6 +68,8 @@ defmodule PayWeb.ServiceControllerTest do
   end
 
   describe "create service" do
+    setup [:create_admin_role]
+
     test "renders service when data is valid", %{conn: conn} do
       conn = post(conn, Routes.service_path(conn, :create), service: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
@@ -152,5 +152,10 @@ defmodule PayWeb.ServiceControllerTest do
   defp create_service(_) do
     service = fixture(:service)
     {:ok, service: service}
+  end
+
+  defp create_admin_role(_) do
+    admin_role = fixture(:admin_role)
+    {:ok, admin_role: admin_role}
   end
 end
