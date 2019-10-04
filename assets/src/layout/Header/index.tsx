@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Switch, Route } from "react-router-dom";
 import {
   styled,
   styledComponents,
@@ -6,8 +7,7 @@ import {
   Lozenge,
   desktop
 } from "@pay/web";
-import { PrimaryHeader, Link as LinkComponent } from "./components";
-import PrimaryNav from "./PrimaryNav";
+import { PrimaryHeader, PrimaryNav, Link as LinkComponent } from "./components";
 import Wordmark from "./Wordmark";
 import {
   withCheckAuth,
@@ -19,6 +19,8 @@ import { CrossIcon } from "../../components/icons/CrossIcon";
 import withContext from "../../context/withContext";
 import { UserContext, UserContextValues } from "../../users";
 import { fromGQLUser } from "../../users/graphql";
+import { ServiceInfoNav, NonServiceInfoNav } from "../../console/HeaderNav";
+import PlatformAdminNav from "../../platform-admin/HeaderNav";
 
 const { ThemeProvider } = styledComponents;
 
@@ -169,7 +171,26 @@ const Header: React.FC<Props> = ({ data, user, setUser }) => {
           </PrimaryContainer>
         </PrimaryHeader>
 
-        <PrimaryNav authenticated={isAuthenticated} />
+        {/* Show the appropriate nav depending on the users' context -- admin, service, signup, ... */}
+        {isAuthenticated ? (
+          <PrimaryNav>
+            <Switch>
+              <Route path="/platform-admin">
+                <PlatformAdminNav />
+              </Route>
+              <Route path="/console">
+                <Switch>
+                  <Route path="/console/services/:id([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})">
+                    <ServiceInfoNav />
+                  </Route>
+                  <Route path="*">
+                    <NonServiceInfoNav />
+                  </Route>
+                </Switch>
+              </Route>
+            </Switch>
+          </PrimaryNav>
+        ) : null}
       </React.Fragment>
     </ThemeProvider>
   );
