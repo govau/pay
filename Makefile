@@ -102,6 +102,7 @@ deploy-dev: create-service-psql manifest-vars-$(STG).yml
 clean:
 	$(MIX) clean
 	$(MAKE) -C assets $@
+	-rm -r _build
 	-rm -r lib/pay_web/templates/react/index.html.eex priv/static
 
 .PHONY: run run-frontend test deploy setup install
