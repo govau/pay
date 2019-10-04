@@ -148,16 +148,15 @@ const Header: React.FC<Props> = ({ data, user, setUser }) => {
 
             {isAuthenticated ? (
               <Nav visible={isNavVisible}>
-                <Link to="/console">Console</Link>
-                <Link to="/TODO">Services</Link>
-                <Link to="/TODO">Profile</Link>
-                <Link to="/TODO">Documentation</Link>
+                <Link to="/console">Services</Link>
+                <Link to="/console/profile">Profile</Link>
+                <Link to="/docs">Documentation</Link>
 
                 {isPlatformAdmin ? (
                   <Link to="/platform-admin">Platform admin</Link>
                 ) : null}
 
-                <Link to="/TODO">Sign out</Link>
+                <Link to="/auth/signout">Sign out</Link>
               </Nav>
             ) : (
               <Nav visible={isNavVisible}>

@@ -1,17 +1,18 @@
 import * as React from "react";
+import { Switch, Route, useParams, useRouteMatch } from "react-router-dom";
 import {
   desktop,
-  styled,
   Lozenge,
   Strong,
   Container as ContainerComponent
 } from "@pay/web";
 import { NavLinkActiveClassName } from "@pay/web/components/Link";
-import { css } from "@pay/web/styled-components";
+import styled, { css } from "@pay/web/styled-components";
 import { Ul, NavLink as NavLinkComponent } from "./components";
 import withContext from "../../context/withContext";
 import { UserContext, UserContextValues } from "../../users";
-import { Switch, Route } from "react-router-dom";
+import { useGetServiceQuery } from "../../console/__generated__/graphql";
+import { goLiveStageLabel } from "../../services";
 
 interface PrimaryNavProps {
   authenticated?: boolean;
@@ -112,34 +113,74 @@ const PlatformAdminNav: React.FC = () => (
   </Container>
 );
 
-// Subnav for when a user is accessing a service
-const ServiceInfoNav: React.FC<{
-  serviceName: string;
-  serviceStage?: "Test" | "Live";
-}> = ({ serviceName, serviceStage = "Test" }) => (
-  <Container>
-    <PageInfo>
-      <Strong>{serviceName}</Strong>{" "}
-      <Lozenge variation="flair">{serviceStage}</Lozenge>
-    </PageInfo>
-    <SubNav>
-      <NavUl>
-        <Li>
-          <NavLink to="/TODO">Dashboard</NavLink>
-        </Li>
-        <Li>
-          <NavLink to="/TODO">Transactions</NavLink>
-        </Li>
-        <Li>
-          <NavLink to="/TODO">Payment links</NavLink>
-        </Li>
-        <Li>
-          <NavLink to="/TODO">Settings</NavLink>
-        </Li>
-      </NavUl>
-    </SubNav>
-  </Container>
-);
+// NonServiceInfoNav is shown when in console, inside the context of a service.
+const ServiceInfoNav: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+
+  const { loading, error, data } = useGetServiceQuery({
+    variables: { id },
+    errorPolicy: "all"
+  });
+
+  const match = useRouteMatch("");
+  if (!match) {
+    return null;
+  }
+  const { url } = match;
+
+  if (loading || error || !data) {
+    return null;
+  }
+
+  return (
+    <Container>
+      <PageInfo>
+        <Strong>{data.service.name}</Strong>{" "}
+        <Lozenge variation="flair">
+          {goLiveStageLabel(data.service.current_go_live_stage)}
+        </Lozenge>
+      </PageInfo>
+      <SubNav>
+        <NavUl>
+          <Li>
+            <NavLink to={url}>Dashboard</NavLink>
+          </Li>
+          <Li>
+            <NavLink to={`${url}/payments`}>Transactions</NavLink>
+          </Li>
+          <Li>
+            <NavLink to={`${url}/payment-links`}>Payment links</NavLink>
+          </Li>
+          <Li>
+            <NavLink to={`${url}/settings`}>Settings</NavLink>
+          </Li>
+        </NavUl>
+      </SubNav>
+    </Container>
+  );
+};
+
+// NonServiceInfoNav is shown when in console, outside the context of a service.
+const NonServiceInfoNav: React.FC = () => {
+  const match = useRouteMatch("");
+  if (!match) {
+    return null;
+  }
+  const { url } = match;
+
+  return (
+    <Container>
+      <PageInfo />
+      <SubNav>
+        <NavUl>
+          <Li>
+            <NavLink to={`${url}/services/create`}>Create new service</NavLink>
+          </Li>
+        </NavUl>
+      </SubNav>
+    </Container>
+  );
+};
 
 // Show the appropriate nav depending on the users' context -- admin, service, signup, ...
 const PrimaryNav: React.FC<Props> = ({
@@ -156,8 +197,15 @@ const PrimaryNav: React.FC<Props> = ({
         <Route path="/platform-admin">
           <PlatformAdminNav />
         </Route>
-        <Route>
-          <ServiceInfoNav serviceName="Passport renewal" />
+        <Route path="/console">
+          <Switch>
+            <Route path="/console/services/:id([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})">
+              <ServiceInfoNav />
+            </Route>
+            <Route path="*">
+              <NonServiceInfoNav />
+            </Route>
+          </Switch>
         </Route>
       </Switch>
     </Wrapper>
