@@ -36,14 +36,14 @@ export type GatewayAccount = {
 };
 
 export enum GatewayAccountPaymentProvider {
-  Sandbox = "SANDBOX",
-  Bambora = "BAMBORA",
-  Stripe = "STRIPE"
+  Sandbox = "Sandbox",
+  Bambora = "Bambora",
+  Stripe = "Stripe"
 }
 
 export enum GatewayAccountType {
-  Test = "TEST",
-  Live = "LIVE"
+  Test = "Test",
+  Live = "Live"
 }
 
 export type Mutation = {
@@ -92,8 +92,14 @@ export type Service = {
   __typename?: "Service";
   id: Scalars["ID"];
   name: Scalars["String"];
+  current_go_live_stage: ServiceGoLiveStage;
   users?: Maybe<Array<ServiceUser>>;
 };
+
+export enum ServiceGoLiveStage {
+  NotStarted = "not_started",
+  Live = "live"
+}
 
 export type ServiceUser = {
   __typename?: "ServiceUser";
@@ -122,7 +128,7 @@ export type User = {
 };
 export type ServiceFragment = { __typename?: "Service" } & Pick<
   Service,
-  "id" | "name"
+  "id" | "name" | "current_go_live_stage"
 >;
 
 export type GetUserServicesQueryVariables = {
@@ -189,6 +195,7 @@ export const ServiceFragmentDoc = gql`
   fragment Service on Service {
     id
     name
+    current_go_live_stage
   }
 `;
 export const GetUserServicesDocument = gql`

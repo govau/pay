@@ -6,14 +6,14 @@ type CardType {
 }
 
 enum GatewayAccountPaymentProvider {
-  SANDBOX
-  BAMBORA
-  STRIPE
+  sandbox
+  bambora
+  stripe
 }
 
 enum GatewayAccountType {
-  TEST
-  LIVE
+  test
+  live
 }
 
 type GatewayAccount {

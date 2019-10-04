@@ -25,8 +25,14 @@ type ServiceUser {
   role: Role!
 }
 
+enum ServiceGoLiveStage {
+  not_started
+  live
+}
+
 type Service {
   id: ID!
   name: String!
+  current_go_live_stage: ServiceGoLiveStage!
   users: [ServiceUser!]
 }

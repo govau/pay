@@ -47,8 +47,14 @@ export type Service = {
   __typename?: "Service";
   id: Scalars["ID"];
   name: Scalars["String"];
+  current_go_live_stage: ServiceGoLiveStage;
   users?: Maybe<Array<ServiceUser>>;
 };
+
+export enum ServiceGoLiveStage {
+  NotStarted = "not_started",
+  Live = "live"
+}
 
 export type ServiceUser = {
   __typename?: "ServiceUser";
