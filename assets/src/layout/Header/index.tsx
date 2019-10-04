@@ -1,8 +1,14 @@
 import * as React from "react";
-import { styled, styledComponents, Container, Strong, desktop } from "@pay/web";
-import { SecondaryLozenge } from "@pay/web/components/Lozenge";
+import {
+  styled,
+  styledComponents,
+  Container,
+  Lozenge,
+  desktop
+} from "@pay/web";
 import { PrimaryHeader, Link as LinkComponent } from "./components";
 import PrimaryNav from "./PrimaryNav";
+import Wordmark from "./Wordmark";
 import {
   withCheckAuth,
   CheckAuthProps
@@ -13,6 +19,8 @@ import { CrossIcon } from "../../components/icons/CrossIcon";
 import withContext from "../../context/withContext";
 import { UserContext, UserContextValues } from "../../users";
 import { fromGQLUser } from "../../users/graphql";
+
+const { ThemeProvider } = styledComponents;
 
 const Link = styled(LinkComponent)`
   font-weight: 700;
@@ -96,18 +104,6 @@ const CoaLogo = styled(Coat)`
   height: 5.5rem;
 `;
 
-// the wordmark is just pixel-pushed text for now
-const Wordmark = styled.div`
-  margin-top: -5px;
-  font-size: 3rem;
-
-  * + & {
-    margin-left: 1em;
-  }
-`;
-
-const { ThemeProvider } = styledComponents;
-
 interface Props extends UserContextValues, CheckAuthProps {}
 
 const Header: React.FC<Props> = ({ data, user, setUser }) => {
@@ -141,10 +137,8 @@ const Header: React.FC<Props> = ({ data, user, setUser }) => {
             <VisibleWrapper>
               <HeaderLink to="/">
                 <CoaLogo />
-                <Wordmark>
-                  <Strong>pay</Strong>.gov.au
-                </Wordmark>
-                <SecondaryLozenge>Beta</SecondaryLozenge>
+                <Wordmark />
+                <Lozenge variation="light">Beta</Lozenge>
               </HeaderLink>
 
               <Menu onClick={() => setIsNavVisible(!isNavVisible)}>
@@ -170,7 +164,7 @@ const Header: React.FC<Props> = ({ data, user, setUser }) => {
                 <Link to="/TODO">About</Link>
                 <Link to="/TODO">Get started</Link>
                 <Link to="/TODO">Documentation</Link>
-                <Link to="/TODO">Sign in</Link>
+                <Link to="/auth/signin">Sign in</Link>
               </Nav>
             )}
           </PrimaryContainer>

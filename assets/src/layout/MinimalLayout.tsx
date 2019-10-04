@@ -2,7 +2,7 @@ import * as React from "react";
 import styled from "@pay/web/styled-components";
 import { ContainerSmall, ContainerMedium, ScrollToTopOnMount } from "@pay/web";
 
-import Header from "./Header/MinimalHeader";
+import LiteHeader from "./Header/Lite";
 
 interface Props {
   containerSize?: "sm" | "md";
@@ -32,7 +32,7 @@ const Layout: React.FC<Props> = ({ children, containerSize = "sm" }) => {
       <Main role="main">
         <Centered>
           <Container>
-            <Header />
+            <LiteHeader />
           </Container>
           <Container>{children}</Container>
         </Centered>

@@ -88,17 +88,13 @@ export const NavLink = styled(NavLinkComponent)`
   }
 `;
 
-const AdminLozenge = styled(Lozenge)`
-  background-color: ${props => props.theme.colors.payPink};
-`;
-
 // Change out the nav to this while we're in /platform-admin
 const PlatformAdminNav: React.FC = () => (
   <Container>
     <PageInfo>
-      <AdminLozenge>
+      <Lozenge variation="pink">
         <Strong>Platform admin</Strong>
-      </AdminLozenge>
+      </Lozenge>
     </PageInfo>
     <SubNav>
       <NavUl>
@@ -123,7 +119,8 @@ const ServiceInfoNav: React.FC<{
 }> = ({ serviceName, serviceStage = "Test" }) => (
   <Container>
     <PageInfo>
-      <Strong>{serviceName}</Strong> <Lozenge>{serviceStage}</Lozenge>
+      <Strong>{serviceName}</Strong>{" "}
+      <Lozenge variation="flair">{serviceStage}</Lozenge>
     </PageInfo>
     <SubNav>
       <NavUl>

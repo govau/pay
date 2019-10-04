@@ -10,7 +10,7 @@ export const PrimaryHeader = styled.div`
 `;
 
 // reverses underline from base link for header effect
-const LinkCSS = css`
+const linkCSS = css`
   text-decoration: none;
 
   &:hover,
@@ -20,11 +20,11 @@ const LinkCSS = css`
 `;
 
 export const Link = styled(LinkComponent)`
-  ${LinkCSS}
+  ${linkCSS}
 `;
 
 export const NavLink = styled(NavLinkComponent)`
-  ${LinkCSS}
+  ${linkCSS}
 `;
 
 export const Ul = styled.ul`
