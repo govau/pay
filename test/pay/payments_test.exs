@@ -88,7 +88,7 @@ defmodule Pay.PaymentsTest do
       credentials: %{},
       description: "some description",
       integration_version_3ds: 42,
-      payment_provider:"some payment_provider",
+      payment_provider: "some payment_provider",
       requires_3ds: true,
       service_name: "some service_name",
       type: "some type"
@@ -100,7 +100,7 @@ defmodule Pay.PaymentsTest do
       credentials: %{},
       description: "some updated description",
       integration_version_3ds: 43,
-      payment_provider:"some updated payment_provider",
+      payment_provider: "some updated payment_provider",
       requires_3ds: false,
       service_name: "some updated service_name",
       type: "some updated type"
@@ -112,7 +112,7 @@ defmodule Pay.PaymentsTest do
       credentials: nil,
       description: nil,
       integration_version_3ds: nil,
-      payment_provider:nil,
+      payment_provider: nil,
       requires_3ds: nil,
       service_name: nil,
       type: nil
