@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch, useParams, useRouteMatch } from "react-router-dom";
-import { Loader, ErrorAlert } from "@pay/web";
+import { Loader, ErrorAlert, Pages as CorePages } from "@pay/web";
 
 import * as Pages from "./pages/Pages";
 import { useGetServiceQuery } from "./__generated__/graphql";
@@ -42,6 +42,9 @@ const ServicesRoutes: React.FC = () => {
       </Route>
       <Route path={`${url}/team`} exact strict>
         <Pages.Services.TeamPage service={data.service} />
+      </Route>
+      <Route path="*">
+        <CorePages.NotFoundPage />
       </Route>
     </Switch>
   );
