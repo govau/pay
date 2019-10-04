@@ -5,9 +5,10 @@ type CardType {
   type: String!
 }
 
-enum GatewayAccountProviderName {
+enum GatewayAccountPaymentProvider {
   SANDBOX
   BAMBORA
+  STRIPE
 }
 
 enum GatewayAccountType {
@@ -17,7 +18,7 @@ enum GatewayAccountType {
 
 type GatewayAccount {
   id: ID!
-  provider_name: GatewayAccountProviderName!
+  payment_provider: GatewayAccountPaymentProvider!
   type: GatewayAccountType!
   service_name: String!
   description: String!

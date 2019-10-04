@@ -25,7 +25,7 @@ export type CreateServiceService = {
 export type GatewayAccount = {
   __typename?: "GatewayAccount";
   id: Scalars["ID"];
-  provider_name: GatewayAccountProviderName;
+  payment_provider: GatewayAccountPaymentProvider;
   type: GatewayAccountType;
   service_name: Scalars["String"];
   description: Scalars["String"];
@@ -35,9 +35,10 @@ export type GatewayAccount = {
   requires_3ds: Scalars["Boolean"];
 };
 
-export enum GatewayAccountProviderName {
+export enum GatewayAccountPaymentProvider {
   Sandbox = "SANDBOX",
-  Bambora = "BAMBORA"
+  Bambora = "BAMBORA",
+  Stripe = "STRIPE"
 }
 
 export enum GatewayAccountType {
