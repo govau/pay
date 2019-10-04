@@ -37,6 +37,9 @@ const ServicesRoutes: React.FC = () => {
       <Route path={`${url}`} exact strict>
         <Pages.Services.DashboardPage service={data.service} />
       </Route>
+      <Route path={`${url}/settings`} exact strict>
+        <Pages.Services.SettingsPage service={data.service} />
+      </Route>
       <Route path={`${url}/edit-name`} exact strict>
         <Pages.Services.EditNamePage service={data.service} />
       </Route>

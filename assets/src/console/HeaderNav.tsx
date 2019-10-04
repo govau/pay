@@ -42,7 +42,9 @@ export const ServiceInfoNav: React.FC = () => {
       <SubNav>
         <NavUl>
           <Li>
-            <NavLink to={url}>Dashboard</NavLink>
+            <NavLink to={url} exact>
+              Dashboard
+            </NavLink>
           </Li>
           <Li>
             <NavLink to={`${url}/payments`}>Transactions</NavLink>
@@ -51,7 +53,17 @@ export const ServiceInfoNav: React.FC = () => {
             <NavLink to={`${url}/payment-links`}>Payment links</NavLink>
           </Li>
           <Li>
-            <NavLink to={`${url}/settings`}>Settings</NavLink>
+            <NavLink
+              to={`${url}/settings`}
+              exact
+              isActive={(match, location) =>
+                [`${url}/settings`, `${url}/edit-name`, `${url}/team`].includes(
+                  location.pathname
+                )
+              }
+            >
+              Settings
+            </NavLink>
           </Li>
         </NavUl>
       </SubNav>
@@ -73,7 +85,9 @@ export const NonServiceInfoNav: React.FC = () => {
       <SubNav>
         <NavUl>
           <Li>
-            <NavLink to={`${url}/services/create`}>Create new service</NavLink>
+            <NavLink to={`${url}/services/create`} exact>
+              Create new service
+            </NavLink>
           </Li>
         </NavUl>
       </SubNav>
