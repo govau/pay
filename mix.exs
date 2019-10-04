@@ -45,6 +45,8 @@ defmodule Pay.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:sentry, "~> 7.0"},
       {:slugger, "~> 0.3"},
+      {:stripity_stripe, "~> 2.4.0"},
+      {:bambora, path: "./vendor/bambora"},
 
       # TODO: hackney is a transitive dep of sentry that broke;
       # unpin it once sentry sorts themselves out

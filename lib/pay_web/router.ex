@@ -16,19 +16,20 @@ defmodule PayWeb.Router do
     plug PayWeb.Plugs.SetCurrentUser
   end
 
-  scope "/v1/api/", PayWeb.External, as: :external do
+  scope "/api/v1", PayWeb.External, as: :external do
     pipe_through(:api)
 
-    resources("/payments", PaymentController, only: [:index, :show, :create])
+    resources "/payments", PaymentController, only: [:index, :show, :create]
   end
 
-  scope "/v1/api/internal", PayWeb do
+  scope "/api/v1/internal", PayWeb do
     pipe_through(:api)
 
     scope "/payments", as: :payments do
       resources("/card-types", CardTypeController, except: [:new, :edit])
       resources("/gateway-accounts", GatewayAccountController, except: [:new, :edit])
       resources("/payments", PaymentController, except: [:new, :edit])
+      get "/test-purchase", PaymentController, :make_test_payment
     end
 
     scope "/services", as: :services do

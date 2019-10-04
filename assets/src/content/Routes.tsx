@@ -25,6 +25,9 @@ const Routes: React.FC = () => {
           <Route path={`${url}/privacy`} exact strict>
             <Pages.PrivacyPage />
           </Route>
+          <Route path={`${url}/pay`} exact strict>
+            <Pages.PaymentPage />
+          </Route>
           <Route path="*">
             <CorePages.NotFoundPage />
           </Route>
