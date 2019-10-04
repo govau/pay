@@ -32,6 +32,11 @@ config :sentry,
   environment_name: System.get_env("RELEASE_LEVEL") || "development",
   included_environments: ~w(production staging)
 
+config :soap,
+       :globals,
+       version: "1.1",
+       env_namespace: "soapenv"
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

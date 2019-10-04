@@ -58,8 +58,8 @@ class NotFoundError extends Error {
 }
 
 const restLink = new RestLink({
-  uri: "/v1/api",
-  endpoints: { v1: "/v1/api" },
+  uri: "/api/v1",
+  endpoints: { v1: "/api/v1" },
   headers: {
     "Content-Type": "application/json"
   },

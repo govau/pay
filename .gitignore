@@ -33,6 +33,7 @@ npm-debug.log
 # this depending on your deployment strategy.
 /priv/static/
 
+config/*.secret.exs
 
 # This will be generated in prod from our react build
 /lib/pay_web/templates/react/index.html.eex

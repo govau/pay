@@ -40,4 +40,20 @@ defmodule PayWeb.PaymentController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def make_test_payment(conn, %{"ott" => one_time_token, "amount" => amount}) do
+    response =
+      Bambora.submit_single_payment(
+        one_time_token,
+        %{
+          customer_number: "customer_number",
+          customer_ref: "customer_ref",
+          amount: amount,
+          transaction_type: Bambora.Payment.transaction_type(:purchase),
+          account_number: "account_number"
+        }
+      )
+
+    json(conn, response)
+  end
 end
