@@ -12,6 +12,7 @@
 
 alias Pay.Repo
 alias Pay.Payments.CardType
+alias Pay.Payments.GatewayAccount
 alias Pay.Services.Role
 alias Pay.Services.Permission
 alias Pay.Services.RolePermission
@@ -21,6 +22,7 @@ alias Pay.Services.Organisation
 alias Pay.Services.OrganisationDomain
 alias Pay.Services.Service
 alias Pay.Services.ServiceUser
+alias Pay.Services.ServiceGatewayAccount
 
 Repo.insert!(%CardType{type: "CREDIT", brand: "visa", label: "Visa"})
 Repo.insert!(%CardType{type: "DEBIT", brand: "visa", label: "Visa"})
@@ -274,23 +276,27 @@ service1_view_only_user_id =
 
 # Sample services
 
+service1_gateway_account_id =
+  Repo.insert!(%GatewayAccount{
+    payment_provider: "sandbox",
+    type: GatewayAccount.Type.Test.value().name,
+    service_name: "Service 1",
+    credentials: %{}
+  }).id
+
 service1_id =
   Repo.insert!(%Service{
     external_id: Ecto.UUID.generate(),
     organisation_id: dta_id,
     name: "Service 1",
-    current_go_live_stage: "not_started",
+    current_go_live_stage: Pay.Services.Service.GoLiveStage.NotStarted.value().name,
     custom_branding: %{}
   }).id
 
-service2_id =
-  Repo.insert!(%Service{
-    external_id: Ecto.UUID.generate(),
-    organisation_id: dfat_id,
-    name: "Service 2",
-    current_go_live_stage: "not_started",
-    custom_branding: %{}
-  }).id
+Repo.insert!(%ServiceGatewayAccount{
+  gateway_account_id: Integer.to_string(service1_gateway_account_id),
+  service_id: service1_id
+})
 
 Repo.insert!(%ServiceUser{
   service_id: service1_id,
@@ -298,8 +304,71 @@ Repo.insert!(%ServiceUser{
   role_id: view_only_role_id
 })
 
+service2_gateway_account_id =
+  Repo.insert!(%GatewayAccount{
+    payment_provider: "sandbox",
+    type: GatewayAccount.Type.Test.value().name,
+    service_name: "Service 2",
+    credentials: %{}
+  }).id
+
+service2_id =
+  Repo.insert!(%Service{
+    external_id: Ecto.UUID.generate(),
+    organisation_id: dfat_id,
+    name: "Service 2",
+    current_go_live_stage: Pay.Services.Service.GoLiveStage.NotStarted.value().name,
+    custom_branding: %{}
+  }).id
+
+Repo.insert!(%ServiceGatewayAccount{
+  gateway_account_id: Integer.to_string(service2_gateway_account_id),
+  service_id: service2_id
+})
+
 Repo.insert!(%ServiceUser{
   service_id: service2_id,
   user_id: service1_view_only_user_id,
   role_id: view_only_role_id
+})
+
+service3_test_gateway_account_id =
+  Repo.insert!(%GatewayAccount{
+    payment_provider: "sandbox",
+    type: GatewayAccount.Type.Test.value().name,
+    service_name: "Service 3",
+    credentials: %{}
+  }).id
+
+service3_live_gateway_account_id =
+  Repo.insert!(%GatewayAccount{
+    payment_provider: "bambora",
+    type: GatewayAccount.Type.Live.value().name,
+    service_name: "Service 3",
+    credentials: %{}
+  }).id
+
+service3_id =
+  Repo.insert!(%Service{
+    external_id: Ecto.UUID.generate(),
+    organisation_id: dta_id,
+    name: "Service 3",
+    current_go_live_stage: Pay.Services.Service.GoLiveStage.Live.value().name,
+    custom_branding: %{}
+  }).id
+
+Repo.insert!(%ServiceGatewayAccount{
+  gateway_account_id: Integer.to_string(service3_test_gateway_account_id),
+  service_id: service3_id
+})
+
+Repo.insert!(%ServiceGatewayAccount{
+  gateway_account_id: Integer.to_string(service3_live_gateway_account_id),
+  service_id: service3_id
+})
+
+Repo.insert!(%ServiceUser{
+  service_id: service3_id,
+  user_id: user2_id,
+  role_id: admin_role_id
 })

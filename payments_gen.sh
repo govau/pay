@@ -22,7 +22,7 @@ mix phx.gen.json $PAYMENTS_CTX CardType card_types \
 mix ecto.migrate
 
 mix phx.gen.json $PAYMENTS_CTX GatewayAccount gateway_accounts \
-    name:string \
+    payment_provider:string \
     type:string \
     credentials:map \
     service_name:string \
@@ -30,7 +30,7 @@ mix phx.gen.json $PAYMENTS_CTX GatewayAccount gateway_accounts \
     requires_3ds:boolean \
     allow_apple_pay:boolean \
     allow_google_pay:boolean \
-    allow_zero_amount:integer \
+    allow_zero_amount:boolean \
     integration_version_3ds:integer \
 
 mix ecto.migrate

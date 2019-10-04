@@ -1,5 +1,5 @@
-defmodule Pay.Services.GoLiveStage do
-  alias Pay.Services.GoLiveStage
+defmodule Pay.Services.Service.GoLiveStage do
+  alias Pay.Services.Service.GoLiveStage
 
   defstruct [:name]
 
@@ -7,22 +7,22 @@ defmodule Pay.Services.GoLiveStage do
   @callback value :: GoLiveStage.t()
 end
 
-defmodule Pay.Services.GoLiveStage.NotStarted do
-  alias Pay.Services.GoLiveStage
+defmodule Pay.Services.Service.GoLiveStage.NotStarted do
+  alias Pay.Services.Service.GoLiveStage
 
   @behaviour GoLiveStage
   def value, do: %GoLiveStage{name: "not_started"}
 end
 
-defmodule Pay.Services.GoLiveStage.Denied do
-  alias Pay.Services.GoLiveStage
+defmodule Pay.Services.Service.GoLiveStage.Denied do
+  alias Pay.Services.Service.GoLiveStage
 
   @behaviour GoLiveStage
   def value, do: %GoLiveStage{name: "denied"}
 end
 
-defmodule Pay.Services.GoLiveStage.Live do
-  alias Pay.Services.GoLiveStage
+defmodule Pay.Services.Service.GoLiveStage.Live do
+  alias Pay.Services.Service.GoLiveStage
 
   @behaviour GoLiveStage
   def value, do: %GoLiveStage{name: "live"}

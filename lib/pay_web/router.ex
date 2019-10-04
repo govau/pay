@@ -42,6 +42,7 @@ defmodule PayWeb.Router do
 
     resources("/services/services", ServiceController, except: [:new, :edit]) do
       resources("/service-users", ServiceUserController, only: [:index])
+      resources("/gateway-accounts", GatewayAccountController, only: [:index])
     end
   end
 

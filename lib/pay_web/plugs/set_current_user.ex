@@ -15,7 +15,8 @@ defmodule PayWeb.Plugs.SetCurrentUser do
       # TODO: get user from session or wherever and tmp_user.id becomes user_id
       # user_id = Plug.Conn.get_session(conn, :current_user_id)
       users = Services.list_users()
-      tmp_user = Enum.at(users, 4)
+      # tmp_user = Enum.at(users, 4)
+      tmp_user = users |> Enum.filter(fn u -> u.platform_admin == true end) |> List.first()
 
       cond do
         current_user = tmp_user && tmp_user.id && Repo.get(User, tmp_user.id) ->

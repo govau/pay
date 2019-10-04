@@ -65,3 +65,14 @@ mutation UpdateService($id: ID!, $input: UpdateServiceInput!) {
     ...Service
   }
 }
+
+query GetServiceGatewayAccounts($serviceId: ID!) {
+  gatewayAccounts: getServiceGatewayAccounts(serviceId: $serviceId)
+    @rest(
+      type: "[GatewayAccount]"
+      path: "/internal/services/services/{args.serviceId}/gateway-accounts"
+    ) {
+    id
+    type
+  }
+}

@@ -17,9 +17,9 @@ export type Scalars = {
 export type CardType = {
   __typename?: "CardType";
   id: Scalars["ID"];
-  brand?: Maybe<Scalars["String"]>;
-  label?: Maybe<Scalars["String"]>;
-  type?: Maybe<Scalars["String"]>;
+  brand: Scalars["String"];
+  label: Scalars["String"];
+  type: Scalars["String"];
 };
 
 export type Organisation = {
@@ -64,7 +64,7 @@ export type User = {
   updated_at: Scalars["String"];
   platform_admin: Scalars["Boolean"];
   name?: Maybe<Scalars["String"]>;
-  email?: Maybe<Scalars["String"]>;
+  email: Scalars["String"];
   telephone_number?: Maybe<Scalars["String"]>;
 };
 export type OrganisationFragment = { __typename?: "Organisation" } & Pick<
