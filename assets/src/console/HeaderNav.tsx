@@ -21,7 +21,7 @@ export const ServiceInfoNav: React.FC = () => {
     errorPolicy: "all"
   });
 
-  const match = useRouteMatch("");
+  const match = useRouteMatch();
   if (!match) {
     return null;
   }
@@ -73,7 +73,7 @@ export const ServiceInfoNav: React.FC = () => {
 
 // NonServiceInfoNav is shown when in console, outside the context of a service.
 export const NonServiceInfoNav: React.FC = () => {
-  const match = useRouteMatch("");
+  const match = useRouteMatch();
   if (!match) {
     return null;
   }

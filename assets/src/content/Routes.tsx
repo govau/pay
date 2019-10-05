@@ -6,7 +6,7 @@ import * as Pages from "./pages/Pages";
 import DefaultLayout from "../layout";
 
 const Routes: React.FC = () => {
-  const match = useRouteMatch("");
+  const match = useRouteMatch();
   if (!match) {
     return null;
   }

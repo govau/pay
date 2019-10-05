@@ -11,7 +11,7 @@ import {
 } from "../layout/Header/PrimaryNav";
 
 const HeaderNav: React.FC = () => {
-  const match = useRouteMatch("");
+  const match = useRouteMatch();
   if (!match) {
     return null;
   }

@@ -13,7 +13,7 @@ const ServicesRoutes: React.FC = () => {
     errorPolicy: "all"
   });
 
-  const match = useRouteMatch("");
+  const match = useRouteMatch();
   if (!match) {
     return null;
   }

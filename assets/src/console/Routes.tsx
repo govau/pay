@@ -8,7 +8,7 @@ import RestrictedPage from "../auth/pages/RestrictedPage";
 import ServicesRoutes from "./ServicesRoutes";
 
 const Routes: React.FC = () => {
-  const match = useRouteMatch("");
+  const match = useRouteMatch();
   if (!match) {
     return null;
   }
