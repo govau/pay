@@ -12,7 +12,7 @@ import {
 import { useGetServiceQuery } from "../console/__generated__/graphql";
 import { goLiveStageLabel } from "../services";
 
-// NonServiceInfoNav is shown when in console, inside the context of a service.
+// ServiceInfoNav is shown when in console, inside the context of a service.
 export const ServiceInfoNav: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
