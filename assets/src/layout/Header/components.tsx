@@ -9,8 +9,12 @@ export const PrimaryHeader = styled.div`
   padding: 1.5rem 0;
 `;
 
+export const PrimaryNav = styled.div`
+  background-color: ${props => props.theme.colors.payDarkerBlue};
+`;
+
 // reverses underline from base link for header effect
-const LinkCSS = css`
+const linkCSS = css`
   text-decoration: none;
 
   &:hover,
@@ -20,11 +24,11 @@ const LinkCSS = css`
 `;
 
 export const Link = styled(LinkComponent)`
-  ${LinkCSS}
+  ${linkCSS}
 `;
 
 export const NavLink = styled(NavLinkComponent)`
-  ${LinkCSS}
+  ${linkCSS}
 `;
 
 export const Ul = styled.ul`

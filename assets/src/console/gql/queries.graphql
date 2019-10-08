@@ -3,6 +3,7 @@
 fragment Service on Service {
   id
   name
+  current_go_live_stage
 }
 
 query GetUserServices($userId: ID!) {
@@ -63,5 +64,16 @@ mutation UpdateService($id: ID!, $input: UpdateServiceInput!) {
       method: "PUT"
     ) {
     ...Service
+  }
+}
+
+query GetServiceGatewayAccounts($serviceId: ID!) {
+  gatewayAccounts: getServiceGatewayAccounts(serviceId: $serviceId)
+    @rest(
+      type: "[GatewayAccount]"
+      path: "/internal/services/services/{args.serviceId}/gateway-accounts"
+    ) {
+    id
+    type
   }
 }

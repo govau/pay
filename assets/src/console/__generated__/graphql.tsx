@@ -22,6 +22,30 @@ export type CreateServiceService = {
   name: Scalars["String"];
 };
 
+export type GatewayAccount = {
+  __typename?: "GatewayAccount";
+  id: Scalars["ID"];
+  payment_provider: GatewayAccountPaymentProvider;
+  type: GatewayAccountType;
+  service_name: Scalars["String"];
+  description: Scalars["String"];
+  allow_apple_pay: Scalars["Boolean"];
+  allow_google_pay: Scalars["Boolean"];
+  allow_zero_amount: Scalars["Boolean"];
+  requires_3ds: Scalars["Boolean"];
+};
+
+export enum GatewayAccountPaymentProvider {
+  Sandbox = "Sandbox",
+  Bambora = "Bambora",
+  Stripe = "Stripe"
+}
+
+export enum GatewayAccountType {
+  Test = "Test",
+  Live = "Live"
+}
+
 export type Mutation = {
   __typename?: "Mutation";
   createService: Service;
@@ -42,6 +66,7 @@ export type Query = {
   dummy?: Maybe<Scalars["String"]>;
   getUserServices: Array<Service>;
   getService: Service;
+  getServiceGatewayAccounts: Array<GatewayAccount>;
 };
 
 export type QueryGetUserServicesArgs = {
@@ -50,6 +75,10 @@ export type QueryGetUserServicesArgs = {
 
 export type QueryGetServiceArgs = {
   id: Scalars["ID"];
+};
+
+export type QueryGetServiceGatewayAccountsArgs = {
+  serviceId: Scalars["ID"];
 };
 
 export type Role = {
@@ -63,8 +92,14 @@ export type Service = {
   __typename?: "Service";
   id: Scalars["ID"];
   name: Scalars["String"];
+  current_go_live_stage: ServiceGoLiveStage;
   users?: Maybe<Array<ServiceUser>>;
 };
+
+export enum ServiceGoLiveStage {
+  NotStarted = "not_started",
+  Live = "live"
+}
 
 export type ServiceUser = {
   __typename?: "ServiceUser";
@@ -88,12 +123,12 @@ export type User = {
   updated_at: Scalars["String"];
   platform_admin: Scalars["Boolean"];
   name?: Maybe<Scalars["String"]>;
-  email?: Maybe<Scalars["String"]>;
+  email: Scalars["String"];
   telephone_number?: Maybe<Scalars["String"]>;
 };
 export type ServiceFragment = { __typename?: "Service" } & Pick<
   Service,
-  "id" | "name"
+  "id" | "name" | "current_go_live_stage"
 >;
 
 export type GetUserServicesQueryVariables = {
@@ -146,10 +181,21 @@ export type UpdateServiceMutationVariables = {
 export type UpdateServiceMutation = { __typename?: "Mutation" } & {
   service: { __typename?: "Service" } & ServiceFragment;
 };
+
+export type GetServiceGatewayAccountsQueryVariables = {
+  serviceId: Scalars["ID"];
+};
+
+export type GetServiceGatewayAccountsQuery = { __typename?: "Query" } & {
+  gatewayAccounts: Array<
+    { __typename?: "GatewayAccount" } & Pick<GatewayAccount, "id" | "type">
+  >;
+};
 export const ServiceFragmentDoc = gql`
   fragment Service on Service {
     id
     name
+    current_go_live_stage
   }
 `;
 export const GetUserServicesDocument = gql`
@@ -458,4 +504,69 @@ export type UpdateServiceMutationResult = ApolloReactCommon.MutationResult<
 export type UpdateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UpdateServiceMutation,
   UpdateServiceMutationVariables
+>;
+export const GetServiceGatewayAccountsDocument = gql`
+  query GetServiceGatewayAccounts($serviceId: ID!) {
+    gatewayAccounts: getServiceGatewayAccounts(serviceId: $serviceId)
+      @rest(
+        type: "[GatewayAccount]"
+        path: "/internal/services/services/{args.serviceId}/gateway-accounts"
+      ) {
+      id
+      type
+    }
+  }
+`;
+export type GetServiceGatewayAccountsComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    GetServiceGatewayAccountsQuery,
+    GetServiceGatewayAccountsQueryVariables
+  >,
+  "query"
+> &
+  (
+    | { variables: GetServiceGatewayAccountsQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const GetServiceGatewayAccountsComponent = (
+  props: GetServiceGatewayAccountsComponentProps
+) => (
+  <ApolloReactComponents.Query<
+    GetServiceGatewayAccountsQuery,
+    GetServiceGatewayAccountsQueryVariables
+  >
+    query={GetServiceGatewayAccountsDocument}
+    {...props}
+  />
+);
+
+export function useGetServiceGatewayAccountsQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetServiceGatewayAccountsQuery,
+    GetServiceGatewayAccountsQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    GetServiceGatewayAccountsQuery,
+    GetServiceGatewayAccountsQueryVariables
+  >(GetServiceGatewayAccountsDocument, baseOptions);
+}
+export function useGetServiceGatewayAccountsLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetServiceGatewayAccountsQuery,
+    GetServiceGatewayAccountsQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetServiceGatewayAccountsQuery,
+    GetServiceGatewayAccountsQueryVariables
+  >(GetServiceGatewayAccountsDocument, baseOptions);
+}
+
+export type GetServiceGatewayAccountsQueryHookResult = ReturnType<
+  typeof useGetServiceGatewayAccountsQuery
+>;
+export type GetServiceGatewayAccountsQueryResult = ApolloReactCommon.QueryResult<
+  GetServiceGatewayAccountsQuery,
+  GetServiceGatewayAccountsQueryVariables
 >;

@@ -1,8 +1,14 @@
 import * as React from "react";
-import { styled, styledComponents, Container, Strong, desktop } from "@pay/web";
-import { SecondaryLozenge } from "@pay/web/components/Lozenge";
-import { PrimaryHeader, Link as LinkComponent } from "./components";
-import PrimaryNav from "./PrimaryNav";
+import { Switch, Route } from "react-router-dom";
+import {
+  styled,
+  styledComponents,
+  Container,
+  Lozenge,
+  desktop
+} from "@pay/web";
+import { PrimaryHeader, PrimaryNav, Link as LinkComponent } from "./components";
+import Wordmark from "./Wordmark";
 import {
   withCheckAuth,
   CheckAuthProps
@@ -13,6 +19,10 @@ import { CrossIcon } from "../../components/icons/CrossIcon";
 import withContext from "../../context/withContext";
 import { UserContext, UserContextValues } from "../../users";
 import { fromGQLUser } from "../../users/graphql";
+import { ServiceInfoNav, NonServiceInfoNav } from "../../console/HeaderNav";
+import PlatformAdminNav from "../../platform-admin/HeaderNav";
+
+const { ThemeProvider } = styledComponents;
 
 const Link = styled(LinkComponent)`
   font-weight: 700;
@@ -96,18 +106,6 @@ const CoaLogo = styled(Coat)`
   height: 5.5rem;
 `;
 
-// the wordmark is just pixel-pushed text for now
-const Wordmark = styled.div`
-  margin-top: -5px;
-  font-size: 3rem;
-
-  * + & {
-    margin-left: 1em;
-  }
-`;
-
-const { ThemeProvider } = styledComponents;
-
 interface Props extends UserContextValues, CheckAuthProps {}
 
 const Header: React.FC<Props> = ({ data, user, setUser }) => {
@@ -141,10 +139,8 @@ const Header: React.FC<Props> = ({ data, user, setUser }) => {
             <VisibleWrapper>
               <HeaderLink to="/">
                 <CoaLogo />
-                <Wordmark>
-                  <Strong>pay</Strong>.gov.au
-                </Wordmark>
-                <SecondaryLozenge>Beta</SecondaryLozenge>
+                <Wordmark />
+                <Lozenge variation="light">Beta</Lozenge>
               </HeaderLink>
 
               <Menu onClick={() => setIsNavVisible(!isNavVisible)}>
@@ -154,29 +150,47 @@ const Header: React.FC<Props> = ({ data, user, setUser }) => {
 
             {isAuthenticated ? (
               <Nav visible={isNavVisible}>
-                <Link to="/console">Console</Link>
-                <Link to="/TODO">Services</Link>
-                <Link to="/TODO">Profile</Link>
-                <Link to="/TODO">Documentation</Link>
+                <Link to="/console">Services</Link>
+                <Link to="/console/profile">Profile</Link>
+                <Link to="/docs">Documentation</Link>
 
                 {isPlatformAdmin ? (
                   <Link to="/platform-admin">Platform admin</Link>
                 ) : null}
 
-                <Link to="/TODO">Sign out</Link>
+                <Link to="/auth/signout">Sign out</Link>
               </Nav>
             ) : (
               <Nav visible={isNavVisible}>
                 <Link to="/TODO">About</Link>
                 <Link to="/TODO">Get started</Link>
                 <Link to="/TODO">Documentation</Link>
-                <Link to="/TODO">Sign in</Link>
+                <Link to="/auth/signin">Sign in</Link>
               </Nav>
             )}
           </PrimaryContainer>
         </PrimaryHeader>
 
-        <PrimaryNav authenticated={isAuthenticated} />
+        {/* Show the appropriate nav depending on the users' context -- admin, service, signup, ... */}
+        {isAuthenticated ? (
+          <PrimaryNav>
+            <Switch>
+              <Route path="/platform-admin">
+                <PlatformAdminNav />
+              </Route>
+              <Route path="/console">
+                <Switch>
+                  <Route path="/console/services/:id([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})">
+                    <ServiceInfoNav />
+                  </Route>
+                  <Route path="*">
+                    <NonServiceInfoNav />
+                  </Route>
+                </Switch>
+              </Route>
+            </Switch>
+          </PrimaryNav>
+        ) : null}
       </React.Fragment>
     </ThemeProvider>
   );

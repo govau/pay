@@ -5,7 +5,8 @@ defmodule Pay.Payments do
 
   import Ecto.Query, warn: false
   alias Pay.Repo
-
+  alias Pay.Services.ServiceGatewayAccount
+  alias Pay.Services.Service
   alias Pay.Payments.CardType
 
   @doc """
@@ -115,6 +116,26 @@ defmodule Pay.Payments do
   """
   def list_gateway_accounts do
     Repo.all(GatewayAccount)
+  end
+
+  @doc """
+  Returns the list of gateway_accounts for the given service external_id.
+
+  ## Examples
+
+      iex> list_gateway_accounts_by_service_external_id("3bfd1a3c-0960-49da-be66-053b159df62e")
+      [%GatewayAccount{}, ...]
+
+  """
+  def list_gateway_accounts_by_service_external_id(external_id) do
+    Repo.all(
+      from ga in GatewayAccount,
+        left_join: sga in ServiceGatewayAccount,
+        on: type(ga.id, :string) == sga.gateway_account_id,
+        left_join: s in Service,
+        on: sga.service_id == s.id,
+        where: s.external_id == ^external_id
+    )
   end
 
   @doc """

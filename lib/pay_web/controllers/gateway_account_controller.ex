@@ -6,6 +6,11 @@ defmodule PayWeb.GatewayAccountController do
 
   action_fallback PayWeb.FallbackController
 
+  def index(conn, %{"service_id" => service_id}) do
+    gateway_accounts = Payments.list_gateway_accounts_by_service_external_id(service_id)
+    render(conn, "index.json", gateway_accounts: gateway_accounts)
+  end
+
   def index(conn, _params) do
     gateway_accounts = Payments.list_gateway_accounts()
     render(conn, "index.json", gateway_accounts: gateway_accounts)

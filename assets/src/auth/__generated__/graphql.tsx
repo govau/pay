@@ -40,7 +40,7 @@ export type User = {
   updated_at: Scalars["String"];
   platform_admin: Scalars["Boolean"];
   name?: Maybe<Scalars["String"]>;
-  email?: Maybe<Scalars["String"]>;
+  email: Scalars["String"];
   telephone_number?: Maybe<Scalars["String"]>;
 };
 export type UserFragment = { __typename?: "User" } & Pick<

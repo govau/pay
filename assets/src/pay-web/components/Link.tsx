@@ -22,7 +22,7 @@ const ReactRouterNavLink: React.FC<NavLinkProps> = props => {
   );
 };
 
-const LinkCSS = css`
+const linkCSS = css`
   color: ${props => props.theme.linkColor};
   text-decoration: underline;
 
@@ -34,11 +34,11 @@ const LinkCSS = css`
 `;
 
 const Link = styled(ReactRouterLink)`
-  ${LinkCSS}
+  ${linkCSS}
 `;
 
 const NavLink = styled(ReactRouterNavLink)`
-  ${LinkCSS}
+  ${linkCSS}
 `;
 
 export { Link, NavLink, NavLinkActiveClassName };

@@ -84,11 +84,11 @@ defmodule Pay.PaymentsTest do
     @valid_attrs %{
       allow_apple_pay: true,
       allow_google_pay: true,
-      allow_zero_amount: 42,
+      allow_zero_amount: true,
       credentials: %{},
       description: "some description",
       integration_version_3ds: 42,
-      name: "some name",
+      payment_provider: "some payment_provider",
       requires_3ds: true,
       service_name: "some service_name",
       type: "some type"
@@ -96,11 +96,11 @@ defmodule Pay.PaymentsTest do
     @update_attrs %{
       allow_apple_pay: false,
       allow_google_pay: false,
-      allow_zero_amount: 43,
+      allow_zero_amount: false,
       credentials: %{},
       description: "some updated description",
       integration_version_3ds: 43,
-      name: "some updated name",
+      payment_provider: "some updated payment_provider",
       requires_3ds: false,
       service_name: "some updated service_name",
       type: "some updated type"
@@ -112,7 +112,7 @@ defmodule Pay.PaymentsTest do
       credentials: nil,
       description: nil,
       integration_version_3ds: nil,
-      name: nil,
+      payment_provider: nil,
       requires_3ds: nil,
       service_name: nil,
       type: nil
@@ -143,11 +143,11 @@ defmodule Pay.PaymentsTest do
 
       assert gateway_account.allow_apple_pay == true
       assert gateway_account.allow_google_pay == true
-      assert gateway_account.allow_zero_amount == 42
+      assert gateway_account.allow_zero_amount == true
       assert gateway_account.credentials == %{}
       assert gateway_account.description == "some description"
       assert gateway_account.integration_version_3ds == 42
-      assert gateway_account.name == "some name"
+      assert gateway_account.payment_provider == "some payment_provider"
       assert gateway_account.requires_3ds == true
       assert gateway_account.service_name == "some service_name"
       assert gateway_account.type == "some type"
@@ -165,11 +165,11 @@ defmodule Pay.PaymentsTest do
 
       assert gateway_account.allow_apple_pay == false
       assert gateway_account.allow_google_pay == false
-      assert gateway_account.allow_zero_amount == 43
+      assert gateway_account.allow_zero_amount == false
       assert gateway_account.credentials == %{}
       assert gateway_account.description == "some updated description"
       assert gateway_account.integration_version_3ds == 43
-      assert gateway_account.name == "some updated name"
+      assert gateway_account.payment_provider == "some updated payment_provider"
       assert gateway_account.requires_3ds == false
       assert gateway_account.service_name == "some updated service_name"
       assert gateway_account.type == "some updated type"

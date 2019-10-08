@@ -13,7 +13,7 @@ defmodule PayWeb.GatewayAccountView do
   def render("gateway_account.json", %{gateway_account: gateway_account}) do
     %{
       id: gateway_account.id,
-      name: gateway_account.name,
+      payment_provider: gateway_account.payment_provider,
       type: gateway_account.type,
       credentials: gateway_account.credentials,
       service_name: gateway_account.service_name,

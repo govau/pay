@@ -9,10 +9,12 @@ const Wrapper = styled.div`
   padding: 1.5rem 1rem 1.5rem 2.5rem;
   margin: 2rem 0 2rem 0;
 
-  svg {
-    margin-top: 1rem;
+  > svg {
     margin-right: 1.2rem;
     overflow: visible;
+  }
+  > div {
+    margin-top: 0.8rem;
   }
 `;
 

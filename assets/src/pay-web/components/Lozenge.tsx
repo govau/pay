@@ -1,8 +1,31 @@
-import styled from "../styled-components";
+import styled, { css } from "../styled-components";
 
-const Lozenge = styled.span`
+interface Props {
+  variation: "dark" | "light" | "flair" | "pink";
+}
+
+const Lozenge = styled.span<Props>`
   font-size: 1.4rem;
-  background-color: ${props => props.theme.colors.flair};
+  ${({ theme, variation }) => {
+    switch (variation) {
+      case "dark":
+        return css`
+          border: 1px solid ${theme.colors.black};
+        `;
+      case "light":
+        return css`
+          border: 1px solid ${theme.colors.white};
+        `;
+      case "pink":
+        return css`
+          background-color: ${theme.colors.payPink};
+        `;
+      case "flair":
+        return css`
+          background-color: ${theme.colors.flair};
+        `;
+    }
+  }};
   padding: 2px 8px;
   border-radius: 2px;
 
@@ -11,10 +34,4 @@ const Lozenge = styled.span`
   }
 `;
 
-const SecondaryLozenge = styled(Lozenge)`
-  background-color: transparent;
-  border: 1px solid ${props => props.theme.colors.white};
-`;
-
 export default Lozenge;
-export { SecondaryLozenge };

@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch, useParams, useRouteMatch } from "react-router-dom";
-import { Loader, ErrorAlert } from "@pay/web";
+import { Loader, ErrorAlert, Pages as CorePages } from "@pay/web";
 
 import * as Pages from "./pages/Pages";
 import { useGetServiceQuery } from "./__generated__/graphql";
@@ -13,7 +13,7 @@ const ServicesRoutes: React.FC = () => {
     errorPolicy: "all"
   });
 
-  const match = useRouteMatch("");
+  const match = useRouteMatch();
   if (!match) {
     return null;
   }
@@ -37,11 +37,17 @@ const ServicesRoutes: React.FC = () => {
       <Route path={`${url}`} exact strict>
         <Pages.Services.DashboardPage service={data.service} />
       </Route>
+      <Route path={`${url}/settings`} exact strict>
+        <Pages.Services.SettingsPage service={data.service} />
+      </Route>
       <Route path={`${url}/edit-name`} exact strict>
         <Pages.Services.EditNamePage service={data.service} />
       </Route>
       <Route path={`${url}/team`} exact strict>
         <Pages.Services.TeamPage service={data.service} />
+      </Route>
+      <Route path="*">
+        <CorePages.NotFoundPage />
       </Route>
     </Switch>
   );

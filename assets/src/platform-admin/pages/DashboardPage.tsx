@@ -3,7 +3,7 @@ import { useRouteMatch } from "react-router-dom";
 import { PageTitle, Link } from "@pay/web";
 
 const DashboardPage: React.FunctionComponent = () => {
-  const match = useRouteMatch("");
+  const match = useRouteMatch();
   if (!match) {
     return null;
   }

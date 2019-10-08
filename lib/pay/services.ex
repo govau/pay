@@ -9,7 +9,7 @@ defmodule Pay.Services do
   alias Pay.Services.Permission
   alias Pay.Services.Role
   alias Pay.Services.ServiceUser
-  alias Pay.Services.GoLiveStage
+  alias Pay.Services.Service.GoLiveStage
 
   @doc """
   Returns the list of permissions.
