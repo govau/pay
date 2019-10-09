@@ -2,7 +2,6 @@ import gql from "graphql-tag";
 import * as React from "react";
 import * as ApolloReactCommon from "@apollo/react-common";
 import * as ApolloReactComponents from "@apollo/react-components";
-import * as ApolloReactHoc from "@apollo/react-hoc";
 import * as ApolloReactHooks from "@apollo/react-hooks";
 export type Maybe<T> = T | null;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -43,6 +42,7 @@ export type User = {
   email: Scalars["String"];
   telephone_number?: Maybe<Scalars["String"]>;
 };
+
 export type UserFragment = { __typename?: "User" } & Pick<
   User,
   | "id"
@@ -69,6 +69,7 @@ export type SignoutMutation = { __typename?: "Mutation" } & Pick<
   Mutation,
   "signout"
 >;
+
 export const UserFragmentDoc = gql`
   fragment User on User {
     id
@@ -107,30 +108,21 @@ export const CheckAuthComponent = (props: CheckAuthComponentProps) => (
   />
 );
 
-export type CheckAuthProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  CheckAuthQuery,
-  CheckAuthQueryVariables
-> &
-  TChildProps;
-export function withCheckAuth<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    CheckAuthQuery,
-    CheckAuthQueryVariables,
-    CheckAuthProps<TChildProps>
-  >
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    CheckAuthQuery,
-    CheckAuthQueryVariables,
-    CheckAuthProps<TChildProps>
-  >(CheckAuthDocument, {
-    alias: "checkAuth",
-    ...operationOptions
-  });
-}
-
+/**
+ * __useCheckAuthQuery__
+ *
+ * To run a query within a React component, call `useCheckAuthQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckAuthQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckAuthQuery({
+ *   variables: {
+ *   },
+ * });
+ */
 export function useCheckAuthQuery(
   baseOptions?: ApolloReactHooks.QueryHookOptions<
     CheckAuthQuery,
@@ -153,8 +145,10 @@ export function useCheckAuthLazyQuery(
     baseOptions
   );
 }
-
 export type CheckAuthQueryHookResult = ReturnType<typeof useCheckAuthQuery>;
+export type CheckAuthLazyQueryHookResult = ReturnType<
+  typeof useCheckAuthLazyQuery
+>;
 export type CheckAuthQueryResult = ApolloReactCommon.QueryResult<
   CheckAuthQuery,
   CheckAuthQueryVariables
@@ -183,30 +177,22 @@ export const SignoutComponent = (props: SignoutComponentProps) => (
   />
 );
 
-export type SignoutProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  SignoutMutation,
-  SignoutMutationVariables
-> &
-  TChildProps;
-export function withSignout<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    SignoutMutation,
-    SignoutMutationVariables,
-    SignoutProps<TChildProps>
-  >
-) {
-  return ApolloReactHoc.withMutation<
-    TProps,
-    SignoutMutation,
-    SignoutMutationVariables,
-    SignoutProps<TChildProps>
-  >(SignoutDocument, {
-    alias: "signout",
-    ...operationOptions
-  });
-}
-
+/**
+ * __useSignoutMutation__
+ *
+ * To run a mutation, you first call `useSignoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signoutMutation, { data, loading, error }] = useSignoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
 export function useSignoutMutation(
   baseOptions?: ApolloReactHooks.MutationHookOptions<
     SignoutMutation,

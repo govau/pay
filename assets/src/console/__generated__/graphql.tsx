@@ -36,14 +36,14 @@ export type GatewayAccount = {
 };
 
 export enum GatewayAccountPaymentProvider {
-  Sandbox = "Sandbox",
-  Bambora = "Bambora",
-  Stripe = "Stripe"
+  Sandbox = "sandbox",
+  Bambora = "bambora",
+  Stripe = "stripe"
 }
 
 export enum GatewayAccountType {
-  Test = "Test",
-  Live = "Live"
+  Test = "test",
+  Live = "live"
 }
 
 export type Mutation = {
@@ -126,6 +126,7 @@ export type User = {
   email: Scalars["String"];
   telephone_number?: Maybe<Scalars["String"]>;
 };
+
 export type ServiceFragment = { __typename?: "Service" } & Pick<
   Service,
   "id" | "name" | "current_go_live_stage"
@@ -152,7 +153,7 @@ export type GetServiceWithUsersQueryVariables = {
 };
 
 export type GetServiceWithUsersQuery = { __typename?: "Query" } & {
-  service: ({ __typename?: "Service" } & Pick<Service, "id"> & {
+  service: { __typename?: "Service" } & Pick<Service, "id"> & {
       users: Maybe<
         Array<
           { __typename?: "ServiceUser" } & {
@@ -161,8 +162,7 @@ export type GetServiceWithUsersQuery = { __typename?: "Query" } & {
           }
         >
       >;
-    }) &
-    ServiceFragment;
+    } & ServiceFragment;
 };
 
 export type CreateServiceMutationVariables = {
@@ -191,6 +191,7 @@ export type GetServiceGatewayAccountsQuery = { __typename?: "Query" } & {
     { __typename?: "GatewayAccount" } & Pick<GatewayAccount, "id" | "type">
   >;
 };
+
 export const ServiceFragmentDoc = gql`
   fragment Service on Service {
     id
@@ -233,6 +234,22 @@ export const GetUserServicesComponent = (
   />
 );
 
+/**
+ * __useGetUserServicesQuery__
+ *
+ * To run a query within a React component, call `useGetUserServicesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserServicesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserServicesQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
 export function useGetUserServicesQuery(
   baseOptions?: ApolloReactHooks.QueryHookOptions<
     GetUserServicesQuery,
@@ -255,9 +272,11 @@ export function useGetUserServicesLazyQuery(
     GetUserServicesQueryVariables
   >(GetUserServicesDocument, baseOptions);
 }
-
 export type GetUserServicesQueryHookResult = ReturnType<
   typeof useGetUserServicesQuery
+>;
+export type GetUserServicesLazyQueryHookResult = ReturnType<
+  typeof useGetUserServicesLazyQuery
 >;
 export type GetUserServicesQueryResult = ApolloReactCommon.QueryResult<
   GetUserServicesQuery,
@@ -288,6 +307,22 @@ export const GetServiceComponent = (props: GetServiceComponentProps) => (
   />
 );
 
+/**
+ * __useGetServiceQuery__
+ *
+ * To run a query within a React component, call `useGetServiceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetServiceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetServiceQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
 export function useGetServiceQuery(
   baseOptions?: ApolloReactHooks.QueryHookOptions<
     GetServiceQuery,
@@ -310,8 +345,10 @@ export function useGetServiceLazyQuery(
     GetServiceQueryVariables
   >(GetServiceDocument, baseOptions);
 }
-
 export type GetServiceQueryHookResult = ReturnType<typeof useGetServiceQuery>;
+export type GetServiceLazyQueryHookResult = ReturnType<
+  typeof useGetServiceLazyQuery
+>;
 export type GetServiceQueryResult = ApolloReactCommon.QueryResult<
   GetServiceQuery,
   GetServiceQueryVariables
@@ -363,6 +400,22 @@ export const GetServiceWithUsersComponent = (
   />
 );
 
+/**
+ * __useGetServiceWithUsersQuery__
+ *
+ * To run a query within a React component, call `useGetServiceWithUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetServiceWithUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetServiceWithUsersQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
 export function useGetServiceWithUsersQuery(
   baseOptions?: ApolloReactHooks.QueryHookOptions<
     GetServiceWithUsersQuery,
@@ -385,9 +438,11 @@ export function useGetServiceWithUsersLazyQuery(
     GetServiceWithUsersQueryVariables
   >(GetServiceWithUsersDocument, baseOptions);
 }
-
 export type GetServiceWithUsersQueryHookResult = ReturnType<
   typeof useGetServiceWithUsersQuery
+>;
+export type GetServiceWithUsersLazyQueryHookResult = ReturnType<
+  typeof useGetServiceWithUsersLazyQuery
 >;
 export type GetServiceWithUsersQueryResult = ApolloReactCommon.QueryResult<
   GetServiceWithUsersQuery,
@@ -428,6 +483,23 @@ export const CreateServiceComponent = (props: CreateServiceComponentProps) => (
   />
 );
 
+/**
+ * __useCreateServiceMutation__
+ *
+ * To run a mutation, you first call `useCreateServiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateServiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createServiceMutation, { data, loading, error }] = useCreateServiceMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
 export function useCreateServiceMutation(
   baseOptions?: ApolloReactHooks.MutationHookOptions<
     CreateServiceMutation,
@@ -484,6 +556,24 @@ export const UpdateServiceComponent = (props: UpdateServiceComponentProps) => (
   />
 );
 
+/**
+ * __useUpdateServiceMutation__
+ *
+ * To run a mutation, you first call `useUpdateServiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateServiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateServiceMutation, { data, loading, error }] = useUpdateServiceMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
 export function useUpdateServiceMutation(
   baseOptions?: ApolloReactHooks.MutationHookOptions<
     UpdateServiceMutation,
@@ -540,6 +630,22 @@ export const GetServiceGatewayAccountsComponent = (
   />
 );
 
+/**
+ * __useGetServiceGatewayAccountsQuery__
+ *
+ * To run a query within a React component, call `useGetServiceGatewayAccountsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetServiceGatewayAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetServiceGatewayAccountsQuery({
+ *   variables: {
+ *      serviceId: // value for 'serviceId'
+ *   },
+ * });
+ */
 export function useGetServiceGatewayAccountsQuery(
   baseOptions?: ApolloReactHooks.QueryHookOptions<
     GetServiceGatewayAccountsQuery,
@@ -562,9 +668,11 @@ export function useGetServiceGatewayAccountsLazyQuery(
     GetServiceGatewayAccountsQueryVariables
   >(GetServiceGatewayAccountsDocument, baseOptions);
 }
-
 export type GetServiceGatewayAccountsQueryHookResult = ReturnType<
   typeof useGetServiceGatewayAccountsQuery
+>;
+export type GetServiceGatewayAccountsLazyQueryHookResult = ReturnType<
+  typeof useGetServiceGatewayAccountsLazyQuery
 >;
 export type GetServiceGatewayAccountsQueryResult = ApolloReactCommon.QueryResult<
   GetServiceGatewayAccountsQuery,

@@ -15,7 +15,6 @@ const HeaderNav: React.FC = () => {
   if (!match) {
     return null;
   }
-  console.log(match);
   const { url } = match;
   return (
     <Container>

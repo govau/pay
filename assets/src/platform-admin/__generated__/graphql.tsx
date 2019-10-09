@@ -73,6 +73,7 @@ export type User = {
   email: Scalars["String"];
   telephone_number?: Maybe<Scalars["String"]>;
 };
+
 export type OrganisationFragment = { __typename?: "Organisation" } & Pick<
   Organisation,
   "id" | "name"
@@ -105,6 +106,7 @@ export type CardTypesQuery = { __typename?: "Query" } & {
     >
   >;
 };
+
 export const OrganisationFragmentDoc = gql`
   fragment Organisation on Organisation {
     id
@@ -141,6 +143,21 @@ export const OrganisationsComponent = (props: OrganisationsComponentProps) => (
   />
 );
 
+/**
+ * __useOrganisationsQuery__
+ *
+ * To run a query within a React component, call `useOrganisationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganisationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganisationsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
 export function useOrganisationsQuery(
   baseOptions?: ApolloReactHooks.QueryHookOptions<
     OrganisationsQuery,
@@ -163,9 +180,11 @@ export function useOrganisationsLazyQuery(
     OrganisationsQueryVariables
   >(OrganisationsDocument, baseOptions);
 }
-
 export type OrganisationsQueryHookResult = ReturnType<
   typeof useOrganisationsQuery
+>;
+export type OrganisationsLazyQueryHookResult = ReturnType<
+  typeof useOrganisationsLazyQuery
 >;
 export type OrganisationsQueryResult = ApolloReactCommon.QueryResult<
   OrganisationsQuery,
@@ -194,6 +213,21 @@ export const ServicesComponent = (props: ServicesComponentProps) => (
   />
 );
 
+/**
+ * __useServicesQuery__
+ *
+ * To run a query within a React component, call `useServicesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useServicesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useServicesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
 export function useServicesQuery(
   baseOptions?: ApolloReactHooks.QueryHookOptions<
     ServicesQuery,
@@ -216,8 +250,10 @@ export function useServicesLazyQuery(
     baseOptions
   );
 }
-
 export type ServicesQueryHookResult = ReturnType<typeof useServicesQuery>;
+export type ServicesLazyQueryHookResult = ReturnType<
+  typeof useServicesLazyQuery
+>;
 export type ServicesQueryResult = ApolloReactCommon.QueryResult<
   ServicesQuery,
   ServicesQueryVariables
@@ -247,6 +283,21 @@ export const CardTypesComponent = (props: CardTypesComponentProps) => (
   />
 );
 
+/**
+ * __useCardTypesQuery__
+ *
+ * To run a query within a React component, call `useCardTypesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCardTypesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCardTypesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
 export function useCardTypesQuery(
   baseOptions?: ApolloReactHooks.QueryHookOptions<
     CardTypesQuery,
@@ -269,8 +320,10 @@ export function useCardTypesLazyQuery(
     baseOptions
   );
 }
-
 export type CardTypesQueryHookResult = ReturnType<typeof useCardTypesQuery>;
+export type CardTypesLazyQueryHookResult = ReturnType<
+  typeof useCardTypesLazyQuery
+>;
 export type CardTypesQueryResult = ApolloReactCommon.QueryResult<
   CardTypesQuery,
   CardTypesQueryVariables

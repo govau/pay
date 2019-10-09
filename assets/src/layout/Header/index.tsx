@@ -9,10 +9,7 @@ import {
 } from "@pay/web";
 import { PrimaryHeader, PrimaryNav, Link as LinkComponent } from "./components";
 import Wordmark from "./Wordmark";
-import {
-  withCheckAuth,
-  CheckAuthProps
-} from "../../auth/__generated__/graphql";
+import { useCheckAuthQuery } from "../../auth/__generated__/graphql";
 import Coat from "./Coat";
 import { HamburgerIcon } from "../../components/icons/HamburgerIcon";
 import { CrossIcon } from "../../components/icons/CrossIcon";
@@ -106,20 +103,23 @@ const CoaLogo = styled(Coat)`
   height: 5.5rem;
 `;
 
-interface Props extends UserContextValues, CheckAuthProps {}
+interface Props extends UserContextValues {}
 
-const Header: React.FC<Props> = ({ data, user, setUser }) => {
+const Header: React.FC<Props> = ({ setUser }) => {
+  const checkAuthQuery = useCheckAuthQuery({
+    errorPolicy: "all"
+  });
   const [isNavVisible, setIsNavVisible] = React.useState(false);
 
   React.useEffect(() => {
-    const checkAuthResp = data.checkAuth;
+    const checkAuth = checkAuthQuery.data && checkAuthQuery.data.checkAuth;
 
-    if (checkAuthResp && checkAuthResp.user) {
-      setUser(fromGQLUser(checkAuthResp.user));
+    if (checkAuth && checkAuth.user) {
+      setUser(fromGQLUser(checkAuth.user));
     }
   });
 
-  const checkAuth = data && data.checkAuth;
+  const checkAuth = checkAuthQuery.data && checkAuthQuery.data.checkAuth;
 
   const isAuthenticated = checkAuth && checkAuth.is_authenticated;
 
@@ -165,7 +165,9 @@ const Header: React.FC<Props> = ({ data, user, setUser }) => {
                 <Link to="/TODO">About</Link>
                 <Link to="/TODO">Get started</Link>
                 <Link to="/TODO">Documentation</Link>
-                <Link to="/auth/signin">Sign in</Link>
+                {!checkAuthQuery.loading && (
+                  <Link to="/auth/signin">Sign in</Link>
+                )}
               </Nav>
             )}
           </PrimaryContainer>
@@ -196,7 +198,4 @@ const Header: React.FC<Props> = ({ data, user, setUser }) => {
   );
 };
 
-export default withContext(
-  withCheckAuth<Props>({})(Header),
-  UserContext.Consumer
-);
+export default withContext(Header, UserContext.Consumer);
