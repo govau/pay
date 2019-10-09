@@ -72,25 +72,17 @@ export const ServiceInfoNav: React.FC = () => {
 };
 
 // NonServiceInfoNav is shown when in console, outside the context of a service.
-export const NonServiceInfoNav: React.FC = () => {
-  const match = useRouteMatch();
-  if (!match) {
-    return null;
-  }
-  const { url } = match;
-
-  return (
-    <Container>
-      <PageInfo />
-      <SubNav>
-        <NavUl>
-          <Li>
-            <NavLink to={`${url}/services/create`} exact>
-              Create new service
-            </NavLink>
-          </Li>
-        </NavUl>
-      </SubNav>
-    </Container>
-  );
-};
+export const NonServiceInfoNav: React.FC = () => (
+  <Container>
+    <PageInfo />
+    <SubNav>
+      <NavUl>
+        <Li>
+          <NavLink to="/console/services/create" exact>
+            Create new service
+          </NavLink>
+        </Li>
+      </NavUl>
+    </SubNav>
+  </Container>
+);
