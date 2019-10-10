@@ -1,10 +1,13 @@
 # import Organisation, Service from '../../gql/services.graphql'
 # import CardType, GatewayAccount from '../../gql/payments.graphql'
+# import Product from '../../gql/products.graphql'
 
 type Query {
   getUserServices(userId: ID!): [Service!]!
   getService(id: ID!): Service!
   getServiceGatewayAccounts(serviceId: ID!): [GatewayAccount!]!
+  getGatewayAccount(id: ID!): GatewayAccount!
+  getGatewayAccountProducts(gatewayAccountId: ID!): [Product!]!
 }
 
 input CreateServiceService {

@@ -1,3 +1,5 @@
+# import GatewayAccount from './payments.graphql'
+
 type User {
   id: ID!
   inserted_at: String!
@@ -35,4 +37,5 @@ type Service {
   name: String!
   current_go_live_stage: ServiceGoLiveStage!
   users: [ServiceUser!]
+  gateway_accounts: [GatewayAccount!]
 }

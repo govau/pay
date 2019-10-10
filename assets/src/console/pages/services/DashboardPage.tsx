@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
-import { PageTitle, P, Link } from "@pay/web";
+import { PageTitle, P, Link, Loader } from "@pay/web";
 
 import {
   Service,
@@ -14,8 +14,6 @@ const DashboardPage: React.FC<{
     variables: { serviceId: service.id },
     errorPolicy: "all"
   });
-
-  console.log(getGatewayAccountsQuery);
 
   return (
     <>
@@ -38,9 +36,27 @@ const DashboardPage: React.FC<{
             Manage service team members
           </Link>
         </li>
-        <li>Manage payment links</li>
         <li>Request to go live</li>
       </ul>
+      {getGatewayAccountsQuery.loading ? (
+        <Loader />
+      ) : (
+        <>
+          <h2>Gateway accounts</h2>
+          <ul>
+            {getGatewayAccountsQuery.data &&
+              getGatewayAccountsQuery.data.gatewayAccounts.map(ga => (
+                <li key={ga.id}>
+                  <Link
+                    to={`/console/services/${service.id}/gateway-accounts/${ga.id}/payments`}
+                  >
+                    {ga.type}
+                  </Link>
+                </li>
+              ))}
+          </ul>
+        </>
+      )}
     </>
   );
 };

@@ -21,18 +21,21 @@ defmodule PayWeb.GatewayAccountController do
            Payments.create_gateway_account(gateway_account_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.gateway_account_path(conn, :show, gateway_account))
+      |> put_resp_header(
+        "location",
+        Routes.payments_gateway_account_path(conn, :show, gateway_account)
+      )
       |> render("show.json", gateway_account: gateway_account)
     end
   end
 
   def show(conn, %{"id" => id}) do
-    gateway_account = Payments.get_gateway_account!(id)
+    gateway_account = Payments.get_gateway_account_by_external_id!(id)
     render(conn, "show.json", gateway_account: gateway_account)
   end
 
   def update(conn, %{"id" => id, "gateway_account" => gateway_account_params}) do
-    gateway_account = Payments.get_gateway_account!(id)
+    gateway_account = Payments.get_gateway_account_by_external_id!(id)
 
     with {:ok, %GatewayAccount{} = gateway_account} <-
            Payments.update_gateway_account(gateway_account, gateway_account_params) do
@@ -41,7 +44,7 @@ defmodule PayWeb.GatewayAccountController do
   end
 
   def delete(conn, %{"id" => id}) do
-    gateway_account = Payments.get_gateway_account!(id)
+    gateway_account = Payments.get_gateway_account_by_external_id!(id)
 
     with {:ok, %GatewayAccount{}} <- Payments.delete_gateway_account(gateway_account) do
       send_resp(conn, :no_content, "")

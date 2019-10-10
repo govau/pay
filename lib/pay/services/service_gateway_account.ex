@@ -3,7 +3,7 @@ defmodule Pay.Services.ServiceGatewayAccount do
   import Ecto.Changeset
 
   schema "service_gateway_accounts" do
-    field :gateway_account_id, :string
+    field :gateway_account_id, Ecto.UUID
 
     belongs_to :service, Pay.Services.Service
 

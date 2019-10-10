@@ -12,7 +12,20 @@ export interface IntrospectionResultData {
 
 const result: IntrospectionResultData = {
   __schema: {
-    types: []
+    types: [
+      {
+        kind: "UNION",
+        name: "GatewayAccountCredentials",
+        possibleTypes: [
+          {
+            name: "SandboxCredentials"
+          },
+          {
+            name: "BamboraCredentials"
+          }
+        ]
+      }
+    ]
   }
 };
 

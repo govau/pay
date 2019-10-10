@@ -10,6 +10,7 @@ defmodule PayWeb.GatewayAccountControllerTest do
     allow_zero_amount: true,
     credentials: %{},
     description: "some description",
+    external_id: "7488a646-e31f-11e4-aace-600308960662",
     integration_version_3ds: 42,
     payment_provider: "some payment_provider",
     requires_3ds: true,
@@ -22,6 +23,7 @@ defmodule PayWeb.GatewayAccountControllerTest do
     allow_zero_amount: false,
     credentials: %{},
     description: "some updated description",
+    external_id: "7488a646-e31f-11e4-aace-600308960660",
     integration_version_3ds: 43,
     payment_provider: "some updated payment_provider",
     requires_3ds: false,
@@ -34,6 +36,7 @@ defmodule PayWeb.GatewayAccountControllerTest do
     allow_zero_amount: nil,
     credentials: nil,
     description: nil,
+    external_id: nil,
     integration_version_3ds: nil,
     payment_provider: nil,
     requires_3ds: nil,
@@ -52,7 +55,7 @@ defmodule PayWeb.GatewayAccountControllerTest do
 
   describe "index" do
     test "lists all gateway_accounts", %{conn: conn} do
-      conn = get(conn, Routes.gateway_account_path(conn, :index))
+      conn = get(conn, Routes.payments_gateway_account_path(conn, :index))
       assert json_response(conn, 200)["data"] == []
     end
   end
@@ -60,11 +63,13 @@ defmodule PayWeb.GatewayAccountControllerTest do
   describe "create gateway_account" do
     test "renders gateway_account when data is valid", %{conn: conn} do
       conn =
-        post(conn, Routes.gateway_account_path(conn, :create), gateway_account: @create_attrs)
+        post(conn, Routes.payments_gateway_account_path(conn, :create),
+          gateway_account: @create_attrs
+        )
 
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get(conn, Routes.gateway_account_path(conn, :show, id))
+      conn = get(conn, Routes.payments_gateway_account_path(conn, :show, id))
 
       assert %{
                "id" => id,
@@ -83,7 +88,9 @@ defmodule PayWeb.GatewayAccountControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn =
-        post(conn, Routes.gateway_account_path(conn, :create), gateway_account: @invalid_attrs)
+        post(conn, Routes.payments_gateway_account_path(conn, :create),
+          gateway_account: @invalid_attrs
+        )
 
       assert json_response(conn, 422)["errors"] != %{}
     end
@@ -94,16 +101,16 @@ defmodule PayWeb.GatewayAccountControllerTest do
 
     test "renders gateway_account when data is valid", %{
       conn: conn,
-      gateway_account: %GatewayAccount{id: id} = gateway_account
+      gateway_account: %GatewayAccount{external_id: id} = gateway_account
     } do
       conn =
-        put(conn, Routes.gateway_account_path(conn, :update, gateway_account),
+        put(conn, Routes.payments_gateway_account_path(conn, :update, gateway_account),
           gateway_account: @update_attrs
         )
 
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      conn = get(conn, Routes.gateway_account_path(conn, :show, id))
+      conn = get(conn, Routes.payments_gateway_account_path(conn, :show, id))
 
       assert %{
                "id" => id,
@@ -122,7 +129,7 @@ defmodule PayWeb.GatewayAccountControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn, gateway_account: gateway_account} do
       conn =
-        put(conn, Routes.gateway_account_path(conn, :update, gateway_account),
+        put(conn, Routes.payments_gateway_account_path(conn, :update, gateway_account),
           gateway_account: @invalid_attrs
         )
 
@@ -134,11 +141,11 @@ defmodule PayWeb.GatewayAccountControllerTest do
     setup [:create_gateway_account]
 
     test "deletes chosen gateway_account", %{conn: conn, gateway_account: gateway_account} do
-      conn = delete(conn, Routes.gateway_account_path(conn, :delete, gateway_account))
+      conn = delete(conn, Routes.payments_gateway_account_path(conn, :delete, gateway_account))
       assert response(conn, 204)
 
       assert_error_sent 404, fn ->
-        get(conn, Routes.gateway_account_path(conn, :show, gateway_account))
+        get(conn, Routes.payments_gateway_account_path(conn, :show, gateway_account))
       end
     end
   end

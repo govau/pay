@@ -3,6 +3,7 @@ defmodule Pay.Repo.Migrations.CreateGatewayAccounts do
 
   def change do
     create table(:gateway_accounts) do
+      add :external_id, :uuid
       add :payment_provider, :string, null: false
       add :type, :string, null: false
       add :credentials, :map

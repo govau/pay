@@ -1,3 +1,5 @@
+# import Product from './products.graphql'
+
 type CardType {
   id: ID!
   brand: String!
@@ -16,14 +18,27 @@ enum GatewayAccountType {
   live
 }
 
+type SandboxCredentials {
+  dummy: String
+}
+
+type BamboraCredentials {
+  account_number: String
+  api_username: String
+}
+
+union GatewayAccountCredentials = SandboxCredentials | BamboraCredentials
+
 type GatewayAccount {
   id: ID!
   payment_provider: GatewayAccountPaymentProvider!
   type: GatewayAccountType!
   service_name: String!
   description: String!
+  credentials: GatewayAccountCredentials!
   allow_apple_pay: Boolean!
   allow_google_pay: Boolean!
   allow_zero_amount: Boolean!
   requires_3ds: Boolean!
+  products: [Product!]
 }

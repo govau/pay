@@ -87,6 +87,7 @@ defmodule Pay.PaymentsTest do
       allow_zero_amount: true,
       credentials: %{},
       description: "some description",
+      external_id: "7488a646-e31f-11e4-aace-600308960662",
       integration_version_3ds: 42,
       payment_provider: "some payment_provider",
       requires_3ds: true,
@@ -99,6 +100,7 @@ defmodule Pay.PaymentsTest do
       allow_zero_amount: false,
       credentials: %{},
       description: "some updated description",
+      external_id: "7488a646-e31f-11e4-aace-600308960668",
       integration_version_3ds: 43,
       payment_provider: "some updated payment_provider",
       requires_3ds: false,
@@ -111,6 +113,7 @@ defmodule Pay.PaymentsTest do
       allow_zero_amount: nil,
       credentials: nil,
       description: nil,
+      external_id: nil,
       integration_version_3ds: nil,
       payment_provider: nil,
       requires_3ds: nil,
@@ -137,6 +140,13 @@ defmodule Pay.PaymentsTest do
       assert Payments.get_gateway_account!(gateway_account.id) == gateway_account
     end
 
+    test "get_gateway_account_by_external_id!/1 returns the gateway_account with given external_id" do
+      gateway_account = gateway_account_fixture()
+
+      assert Payments.get_gateway_account_by_external_id!(gateway_account.external_id) ==
+               gateway_account
+    end
+
     test "create_gateway_account/1 with valid data creates a gateway_account" do
       assert {:ok, %GatewayAccount{} = gateway_account} =
                Payments.create_gateway_account(@valid_attrs)
@@ -146,6 +156,7 @@ defmodule Pay.PaymentsTest do
       assert gateway_account.allow_zero_amount == true
       assert gateway_account.credentials == %{}
       assert gateway_account.description == "some description"
+      assert gateway_account.external_id == "7488a646-e31f-11e4-aace-600308960662"
       assert gateway_account.integration_version_3ds == 42
       assert gateway_account.payment_provider == "some payment_provider"
       assert gateway_account.requires_3ds == true
@@ -168,6 +179,7 @@ defmodule Pay.PaymentsTest do
       assert gateway_account.allow_zero_amount == false
       assert gateway_account.credentials == %{}
       assert gateway_account.description == "some updated description"
+      assert gateway_account.external_id == "7488a646-e31f-11e4-aace-600308960662"
       assert gateway_account.integration_version_3ds == 43
       assert gateway_account.payment_provider == "some updated payment_provider"
       assert gateway_account.requires_3ds == false
@@ -191,11 +203,6 @@ defmodule Pay.PaymentsTest do
       assert_raise Ecto.NoResultsError, fn ->
         Payments.get_gateway_account!(gateway_account.id)
       end
-    end
-
-    test "change_gateway_account/1 returns a gateway_account changeset" do
-      gateway_account = gateway_account_fixture()
-      assert %Ecto.Changeset{} = Payments.change_gateway_account(gateway_account)
     end
   end
 
@@ -632,13 +639,6 @@ defmodule Pay.PaymentsTest do
       assert_raise Ecto.NoResultsError, fn ->
         Payments.get_gateway_account_card_type!(gateway_account_card_type.id)
       end
-    end
-
-    test "change_gateway_account_card_type/1 returns a gateway_account_card_type changeset" do
-      gateway_account_card_type = gateway_account_card_type_fixture()
-
-      assert %Ecto.Changeset{} =
-               Payments.change_gateway_account_card_type(gateway_account_card_type)
     end
   end
 end

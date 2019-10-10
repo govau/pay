@@ -25,24 +25,39 @@ defmodule PayWeb.Router do
   scope "/v1/api/internal", PayWeb do
     pipe_through(:api)
 
-    resources("/payments/card-types", CardTypeController, except: [:new, :edit])
-    resources("/payments/gateway-accounts", GatewayAccountController, except: [:new, :edit])
-    resources("/payments/payments", PaymentController, except: [:new, :edit])
-
-    resources("/services/permissions", PermissionController, except: [:new, :edit])
-    resources("/services/roles", RoleController, except: [:new, :edit])
-
-    resources("/services/users", UserController, except: [:new, :edit]) do
-      resources("/services", ServiceController, only: [:index])
+    scope "/payments", as: :payments do
+      resources("/card-types", CardTypeController, except: [:new, :edit])
+      resources("/gateway-accounts", GatewayAccountController, except: [:new, :edit])
+      resources("/payments", PaymentController, except: [:new, :edit])
     end
 
-    get "/services/auth/check", AuthController, :check, as: :check
-    resources "/services/organisation-types", OrganisationTypeController, except: [:new, :edit]
-    resources "/services/organisations", OrganisationController, except: [:new, :edit]
+    scope "/services", as: :services do
+      get "/auth/check", AuthController, :check, as: :check
 
-    resources("/services/services", ServiceController, except: [:new, :edit]) do
-      resources("/service-users", ServiceUserController, only: [:index])
-      resources("/gateway-accounts", GatewayAccountController, only: [:index])
+      resources("/permissions", PermissionController, except: [:new, :edit])
+      resources("/roles", RoleController, except: [:new, :edit])
+
+      resources("/users", UserController, except: [:new, :edit]) do
+        resources("/services", ServiceController, only: [:index])
+      end
+
+      resources "/organisation-types", OrganisationTypeController, except: [:new, :edit]
+      resources "/organisations", OrganisationController, except: [:new, :edit]
+
+      resources("/services", ServiceController, except: [:new, :edit]) do
+        resources("/service-users", ServiceUserController, only: [:index])
+        resources("/gateway-accounts", GatewayAccountController, only: [:index])
+      end
+
+      resources("/gateway-accounts", GatewayAccountController, only: [:index, :show]) do
+        resources "/products", Products.ProductController, except: [:new, :edit]
+      end
+    end
+
+    scope "/products", Products, as: :products do
+      resources "/products", ProductController, except: [:new, :edit] do
+        resources "/payments", ProductPaymentController, only: [:index]
+      end
     end
   end
 

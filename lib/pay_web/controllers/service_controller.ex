@@ -21,7 +21,7 @@ defmodule PayWeb.ServiceController do
            Services.create_service(conn.assigns.current_user, service_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.service_path(conn, :show, service))
+      |> put_resp_header("location", Routes.services_service_path(conn, :show, service))
       |> render("show.json", service: service)
     end
   end

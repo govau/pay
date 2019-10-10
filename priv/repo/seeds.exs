@@ -276,13 +276,14 @@ service1_view_only_user_id =
 
 # Sample services
 
-service1_gateway_account_id =
+service1_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
+    external_id: Ecto.UUID.generate(),
     payment_provider: "sandbox",
     type: GatewayAccount.Type.Test.value().name,
     service_name: "Service 1",
     credentials: %{}
-  }).id
+  }).external_id
 
 service1_id =
   Repo.insert!(%Service{
@@ -294,7 +295,7 @@ service1_id =
   }).id
 
 Repo.insert!(%ServiceGatewayAccount{
-  gateway_account_id: Integer.to_string(service1_gateway_account_id),
+  gateway_account_id: service1_gateway_account_external_id,
   service_id: service1_id
 })
 
@@ -304,13 +305,14 @@ Repo.insert!(%ServiceUser{
   role_id: view_only_role_id
 })
 
-service2_gateway_account_id =
+service2_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
+    external_id: Ecto.UUID.generate(),
     payment_provider: "sandbox",
     type: GatewayAccount.Type.Test.value().name,
     service_name: "Service 2",
     credentials: %{}
-  }).id
+  }).external_id
 
 service2_id =
   Repo.insert!(%Service{
@@ -322,7 +324,7 @@ service2_id =
   }).id
 
 Repo.insert!(%ServiceGatewayAccount{
-  gateway_account_id: Integer.to_string(service2_gateway_account_id),
+  gateway_account_id: service2_gateway_account_external_id,
   service_id: service2_id
 })
 
@@ -332,21 +334,23 @@ Repo.insert!(%ServiceUser{
   role_id: view_only_role_id
 })
 
-service3_test_gateway_account_id =
+service3_test_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
+    external_id: Ecto.UUID.generate(),
     payment_provider: "sandbox",
     type: GatewayAccount.Type.Test.value().name,
     service_name: "Service 3",
     credentials: %{}
-  }).id
+  }).external_id
 
-service3_live_gateway_account_id =
+service3_live_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
+    external_id: Ecto.UUID.generate(),
     payment_provider: "bambora",
     type: GatewayAccount.Type.Live.value().name,
     service_name: "Service 3",
     credentials: %{}
-  }).id
+  }).external_id
 
 service3_id =
   Repo.insert!(%Service{
@@ -358,12 +362,12 @@ service3_id =
   }).id
 
 Repo.insert!(%ServiceGatewayAccount{
-  gateway_account_id: Integer.to_string(service3_test_gateway_account_id),
+  gateway_account_id: service3_test_gateway_account_external_id,
   service_id: service3_id
 })
 
 Repo.insert!(%ServiceGatewayAccount{
-  gateway_account_id: Integer.to_string(service3_live_gateway_account_id),
+  gateway_account_id: service3_live_gateway_account_external_id,
   service_id: service3_id
 })
 

@@ -1,5 +1,4 @@
 overwrite: true
-schema: src/gql/schema.graphql
 generates:
   src/__generated__/introspection-result.ts:
     schema:
