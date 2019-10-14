@@ -17,10 +17,10 @@ import ReviewPage from "./ReviewPage";
 export interface Values {
   name: string;
   description?: string;
-  reference_enabled: boolean;
+  reference_enabled: boolean | null;
   reference_label?: string;
   reference_hint?: string;
-  price_fixed: boolean;
+  price_fixed: boolean | null;
   price?: string;
 }
 
@@ -48,13 +48,18 @@ const handleSubmit = (
   createProduct: CreateProductMutationFn
 ) => {
   return async (values: Values) => {
-    const { price } = values;
+    const { reference_enabled, price_fixed, price } = values;
     try {
       await createProduct({
         variables: {
           gatewayAccountId,
           input: {
-            product: { ...values, price: price ? ensureMoneyInCents(price) : 0 }
+            product: {
+              ...values,
+              reference_enabled: !!reference_enabled,
+              price_fixed: !!price_fixed,
+              price: price ? ensureMoneyInCents(price) : 0
+            }
           }
         }
       });
@@ -81,8 +86,8 @@ const CreateFormPage: React.FC<{
         column
         initialValues={{
           name: "",
-          reference_enabled: false,
-          price_fixed: false
+          reference_enabled: null,
+          price_fixed: null
         }}
       >
         {({ values }) => (

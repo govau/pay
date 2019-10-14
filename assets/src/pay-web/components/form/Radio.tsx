@@ -2,13 +2,13 @@ import * as React from "react";
 import styled from "../../styled-components";
 import { Field } from "react-final-form";
 
-interface Props<FieldValue = string> {
+export interface Props<FieldValue = string> {
   label: string;
   name: string;
   value?: FieldValue;
 }
 
-const Wrapper = styled.label`
+export const Wrapper = styled.label`
   display: flex;
   align-items: center;
   margin: 2rem 0;
@@ -21,47 +21,49 @@ const Wrapper = styled.label`
     width: 0;
   }
 
-  input[type="checkbox"]:checked + span:after {
+  input[type="radio"]:checked + span:after {
     content: "";
     display: block;
-    width: 9px;
-    height: 16px;
-    border: solid ${props => props.theme.colors.black};
-    border-radius: 1px;
-    border-width: 0 4px 4px 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-    margin-left: 8px;
-    margin-top: 2px;
+    width: 1.8rem;
+    height: 1.8rem;
+    background: ${props => props.theme.colors.black};
+    border-radius: 1em;
+    margin-left: 3px;
+    margin-top: 3px;
   }
 
-  input[type="checkbox"]:focus + span {
+  input[type="radio"]:focus + span {
     box-shadow: 0 0 0 2pt ${props => props.theme.colors.orange};
     outline: 0;
   }
 `;
 
-const Checkmark = styled.span`
+export const Checkmark = styled.span`
   height: 2.8rem;
   min-width: 2.8rem;
   background-color: white;
   border: 2px solid ${props => props.theme.colors.black};
+  border-radius: 1em;
   margin-right: 0.8rem;
 `;
 
-function Checkbox<FieldValue = string>({
-  label,
-  name,
-  value
-}: Props<FieldValue>) {
+function Radio<FieldValue = string>({ label, name, value }: Props<FieldValue>) {
   return (
     <Wrapper>
-      <Field<FieldValue>
+      <Field
         name={name}
         value={value}
         component="input"
-        type="checkbox"
+        type="radio"
+        parse={value => {
+          if (!value) {
+            return value;
+          }
+          if (value === "true") {
+            return true;
+          }
+          return false;
+        }}
       />
       <Checkmark />
       {label}
@@ -69,4 +71,4 @@ function Checkbox<FieldValue = string>({
   );
 }
 
-export default Checkbox;
+export default Radio;

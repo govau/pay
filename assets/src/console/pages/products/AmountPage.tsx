@@ -3,7 +3,7 @@ import {
   PageTitle,
   LinkButton,
   Field,
-  Checkbox,
+  BooleanRadio,
   BasicTextInput,
   validators
 } from "@pay/web";
@@ -16,7 +16,7 @@ const AmountPage: React.FC<{
   return (
     <>
       <PageTitle title="Is the payment for a fixed amount?" />
-      <Checkbox<boolean> name="price_fixed" label="Yes" />
+      <BooleanRadio name="price_fixed" value={true} label="Yes" />
       {values.price_fixed ? (
         <Field
           name="price"
@@ -28,6 +28,7 @@ const AmountPage: React.FC<{
           )}
         </Field>
       ) : null}
+      <BooleanRadio name="price_fixed" value={false} label="No" />
       <LinkButton to={`${path}/review`}>Continue</LinkButton>
     </>
   );

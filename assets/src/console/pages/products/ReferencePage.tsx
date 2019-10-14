@@ -3,7 +3,7 @@ import {
   PageTitle,
   LinkButton,
   Field,
-  Checkbox,
+  BooleanRadio,
   BasicTextInput,
   validators
 } from "@pay/web";
@@ -16,9 +16,7 @@ const DetailsPage: React.FC<{
   return (
     <>
       <PageTitle title="Do your users already have a payment reference?" />
-
-      <Checkbox<boolean> name="reference_enabled" label="Yes" />
-
+      <BooleanRadio name="reference_enabled" value={true} label="Yes" />
       {values.reference_enabled ? (
         <>
           <Field
@@ -42,6 +40,7 @@ const DetailsPage: React.FC<{
           </Field>
         </>
       ) : null}
+      <BooleanRadio name="reference_enabled" value={false} label="No" />
       <LinkButton to={`${path}/amount`}>Continue</LinkButton>
     </>
   );
