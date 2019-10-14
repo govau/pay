@@ -14,7 +14,7 @@ const Wrapper = styled.section`
   padding: 3rem 0 1rem;
   color: ${props => props.theme.footer.textColor};
   background-color: ${props => props.theme.footer.bgColor};
-  border-top: 3px solid ${props => props.theme.colors.midGrey};
+  border-top: 3px solid ${props => props.theme.colors.midGray};
 `;
 
 const SecondWrapper = styled(Wrapper)`

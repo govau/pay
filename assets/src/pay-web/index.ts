@@ -28,6 +28,8 @@ export { LinkButton } from "./components/LinkButton";
 export { default as PageTitle } from "./components/PageTitle";
 export * from "./components/Typography";
 export * from "./components/icons";
+export { default as Callout } from "./components/Callout";
+export { default as DescriptionList } from "./components/DescriptionList";
 export { default as Hr } from "./components/Hr";
 export { default as ScreenReaderText } from "./components/ScreenReaderText";
 export * from "./components/Warning";

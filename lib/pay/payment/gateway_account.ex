@@ -45,12 +45,10 @@ defmodule Pay.Payments.GatewayAccount do
       :type,
       :credentials,
       :service_name,
-      :description,
       :requires_3ds,
       :allow_apple_pay,
       :allow_google_pay,
-      :allow_zero_amount,
-      :integration_version_3ds
+      :allow_zero_amount
     ])
   end
 
@@ -75,12 +73,10 @@ defmodule Pay.Payments.GatewayAccount do
       :type,
       :credentials,
       :service_name,
-      :description,
       :requires_3ds,
       :allow_apple_pay,
       :allow_google_pay,
-      :allow_zero_amount,
-      :integration_version_3ds
+      :allow_zero_amount
     ])
   end
 end

@@ -5,9 +5,9 @@ const colors = {
   chateauGreen: "#32A556",
   darkGreen: "#026540",
   highlightGreen: "#D7EA6A",
-  darkGrey: "#88989D",
-  midGrey: "#D8D8D8",
-  lightGrey: "#EEE",
+  darkGray: "#88989D",
+  midGray: "#D8D8D8",
+  lightGray: "#EEE",
   oceanBlue: "#0F6493",
   highlightBlue: "#00BFE9",
   orange: "#EDB131",
@@ -36,7 +36,7 @@ const palette = {
   brandSecondary: colors.payDarkerBlue,
   footer: {
     textColor: colors.black,
-    bgColor: colors.lightGrey
+    bgColor: colors.lightGray
   }
 };
 

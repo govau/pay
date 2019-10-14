@@ -48,16 +48,19 @@ defmodule PayWeb.Router do
         resources("/service-users", ServiceUserController, only: [:index])
         resources("/gateway-accounts", GatewayAccountController, only: [:index])
       end
-
-      resources("/gateway-accounts", GatewayAccountController, only: [:index, :show]) do
-        resources "/products", Products.ProductController, except: [:new, :edit]
-      end
     end
 
     scope "/products", Products, as: :products do
+      resources("/gateway-accounts", PayWeb.GatewayAccountController, only: []) do
+        resources "/products", ProductController, except: [:new, :edit]
+      end
+
       resources "/products", ProductController, except: [:new, :edit] do
         resources "/payments", ProductPaymentController, only: [:index]
       end
+
+      get "/products/:service_name_slug/:name_slug", ProductController, :show_by_slugs,
+        as: :show_by_slugs
     end
   end
 

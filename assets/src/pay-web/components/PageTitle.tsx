@@ -5,26 +5,28 @@ interface Props {
   title: string;
 }
 
-const useFocusedRef = () => {
-  const ref = React.useRef<HTMLHeadingElement>(null);
+class PageTitle extends React.Component<Props> {
+  ref: React.RefObject<HTMLHeadingElement>;
 
-  React.useEffect(() => {
+  constructor(props: Props) {
+    super(props);
+    this.ref = React.createRef();
+  }
+
+  componentDidMount() {
     requestAnimationFrame(() => {
-      ref.current && ref.current.focus();
+      this.ref.current && this.ref.current.focus();
     });
-  });
+  }
 
-  return ref;
-};
-
-const PageTitle: React.FC<Props> = ({ title }) => {
-  const focus = useFocusedRef();
-
-  return (
-    <H1 tabIndex={-1} ref={focus}>
-      {title}
-    </H1>
-  );
-};
+  render() {
+    const { title } = this.props;
+    return (
+      <H1 ref={this.ref} tabIndex={-1} as="h1" style={{ outline: "none" }}>
+        {title}
+      </H1>
+    );
+  }
+}
 
 export default PageTitle;

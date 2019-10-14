@@ -13,37 +13,37 @@ const animation = keyframes`
 
 const CircleLoader = styled.div`
   ${props => {
-    const { white, midGrey } = props.theme.colors;
+    const { white, midGray } = props.theme.colors;
     return css`
       font-size: 1rem;
       text-indent: -9999em;
       width: 2.5rem;
       height: 2.5rem;
       border-radius: 50%;
-      background: ${midGrey};
+      background: ${midGray};
       background: -moz-linear-gradient(
         left,
-        ${midGrey} 10%,
+        ${midGray} 10%,
         rgba(255, 255, 255, 0) 42%
       );
       background: -webkit-linear-gradient(
         left,
-        ${midGrey} 10%,
+        ${midGray} 10%,
         rgba(255, 255, 255, 0) 42%
       );
       background: -o-linear-gradient(
         left,
-        ${midGrey} 10%,
+        ${midGray} 10%,
         rgba(255, 255, 255, 0) 42%
       );
       background: -ms-linear-gradient(
         left,
-        ${midGrey} 10%,
+        ${midGray} 10%,
         rgba(255, 255, 255, 0) 42%
       );
       background: linear-gradient(
         to right,
-        ${midGrey} 10%,
+        ${midGray} 10%,
         rgba(255, 255, 255, 0) 42%
       );
       position: relative;
@@ -53,7 +53,7 @@ const CircleLoader = styled.div`
       &:before {
         width: 50%;
         height: 50%;
-        background: ${midGrey};
+        background: ${midGray};
         border-radius: 100% 0 0 0;
         position: absolute;
         top: 0;

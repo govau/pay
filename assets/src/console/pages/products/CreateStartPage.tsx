@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import { PageTitle, P, LinkButton } from "@pay/web";
 import { useRouteMatch } from "react-router";
 
-const CreatePage = () => {
+const CreateStartPage = () => {
   const match = useRouteMatch();
   if (!match) {
     return null;
@@ -31,4 +31,4 @@ const CreatePage = () => {
   );
 };
 
-export default CreatePage;
+export default CreateStartPage;

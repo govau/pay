@@ -1,6 +1,8 @@
 defmodule PayWeb.ProductControllerTest do
   use PayWeb.ConnCase
 
+  alias Pay.Payments
+  alias Pay.Payments.GatewayAccount
   alias Pay.Products
   alias Pay.Products.Product
 
@@ -8,30 +10,26 @@ defmodule PayWeb.ProductControllerTest do
     api_token: "some api_token",
     description: "some description",
     external_id: "7488a646-e31f-11e4-aace-600308960662",
-    gateway_account_id: "some gateway_account_id",
+    gateway_account_id: "7488a646-e31f-11e4-aace-600308960660",
     name: "some name",
     price: 42,
-    product_name_path: "some product_name_path",
+    name_slug: "some-name",
     reference_enabled: true,
     reference_hint: "some reference_hint",
     reference_label: "some reference_label",
     return_url: "some return_url",
-    service_name_path: "some service_name_path",
+    service_name_slug: "some-service-name",
     status: "some status"
   }
   @update_attrs %{
     api_token: "some updated api_token",
     description: "some updated description",
-    external_id: "7488a646-e31f-11e4-aace-600308960668",
-    gateway_account_id: "some updated gateway_account_id",
     name: "some updated name",
     price: 43,
-    product_name_path: "some updated product_name_path",
     reference_enabled: false,
     reference_hint: "some updated reference_hint",
     reference_label: "some updated reference_label",
     return_url: "some updated return_url",
-    service_name_path: "some updated service_name_path",
     status: "some updated status"
   }
   @invalid_attrs %{
@@ -41,17 +39,34 @@ defmodule PayWeb.ProductControllerTest do
     gateway_account_id: nil,
     name: nil,
     price: nil,
-    product_name_path: nil,
+    name_slug: nil,
     reference_enabled: nil,
     reference_hint: nil,
     reference_label: nil,
     return_url: nil,
-    service_name_path: nil,
+    service_name_slug: nil,
     status: nil
   }
 
-  def fixture(:product) do
-    {:ok, product} = Products.create_product(@create_attrs)
+  def fixture(:gateway_account) do
+    {:ok, gateway_account} =
+      Payments.create_gateway_account(%{
+        "type" => Payments.GatewayAccount.Type.Test.value().name,
+        "payment_provider" => Payments.GatewayAccount.PaymentProvider.Sandbox.value().name,
+        "service_name" => "Test service"
+      })
+
+    gateway_account
+  end
+
+  def fixture(:product, gateway_account) do
+    {:ok, product} =
+      Products.create_product(
+        Map.merge(@create_attrs, %{
+          :gateway_account_id => gateway_account.external_id
+        })
+      )
+
     product
   end
 
@@ -67,8 +82,19 @@ defmodule PayWeb.ProductControllerTest do
   end
 
   describe "create product" do
-    test "renders product when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.products_product_path(conn, :create), product: @create_attrs)
+    setup [:create_gateway_account]
+
+    test "renders product when data is valid", %{
+      conn: conn,
+      gateway_account: %GatewayAccount{external_id: gateway_account_id} = _gateway_account
+    } do
+      conn =
+        post(
+          conn,
+          Routes.products_product_path(conn, :create, gateway_account_id: gateway_account_id),
+          product: @create_attrs
+        )
+
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.products_product_path(conn, :show, id))
@@ -77,22 +103,30 @@ defmodule PayWeb.ProductControllerTest do
                "id" => id,
                "api_token" => "some api_token",
                "description" => "some description",
-               "external_id" => "7488a646-e31f-11e4-aace-600308960662",
-               "gateway_account_id" => "some gateway_account_id",
+               "gateway_account_id" => gateway_account_id,
                "name" => "some name",
                "price" => 42,
-               "product_name_path" => "some product_name_path",
+               "name_slug" => "some-name",
                "reference_enabled" => true,
                "reference_hint" => "some reference_hint",
                "reference_label" => "some reference_label",
                "return_url" => "some return_url",
-               "service_name_path" => "some service_name_path",
+               "service_name_slug" => "test-service",
                "status" => "some status"
              } = json_response(conn, 200)["data"]
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.products_product_path(conn, :create), product: @invalid_attrs)
+    test "renders errors when data is invalid", %{
+      conn: conn,
+      gateway_account: %GatewayAccount{external_id: gateway_account_id} = _gateway_account
+    } do
+      conn =
+        post(
+          conn,
+          Routes.products_product_path(conn, :create, gateway_account_id: gateway_account_id),
+          product: @invalid_attrs
+        )
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -100,7 +134,11 @@ defmodule PayWeb.ProductControllerTest do
   describe "update product" do
     setup [:create_product]
 
-    test "renders product when data is valid", %{conn: conn, product: %Product{id: id} = product} do
+    test "renders product when data is valid", %{
+      conn: conn,
+      gateway_account: %GatewayAccount{external_id: _gateway_account_id} = _gateway_account,
+      product: %Product{external_id: id} = product
+    } do
       conn =
         put(conn, Routes.products_product_path(conn, :update, product), product: @update_attrs)
 
@@ -112,16 +150,15 @@ defmodule PayWeb.ProductControllerTest do
                "id" => id,
                "api_token" => "some updated api_token",
                "description" => "some updated description",
-               "external_id" => "7488a646-e31f-11e4-aace-600308960668",
-               "gateway_account_id" => "some updated gateway_account_id",
+               "gateway_account_id" => gateway_account_id,
                "name" => "some updated name",
                "price" => 43,
-               "product_name_path" => "some updated product_name_path",
+               "name_slug" => "some-updated-name",
                "reference_enabled" => false,
                "reference_hint" => "some updated reference_hint",
                "reference_label" => "some updated reference_label",
                "return_url" => "some updated return_url",
-               "service_name_path" => "some updated service_name_path",
+               "service_name_slug" => "some-service-name",
                "status" => "some updated status"
              } = json_response(conn, 200)["data"]
     end
@@ -147,8 +184,14 @@ defmodule PayWeb.ProductControllerTest do
     end
   end
 
+  defp create_gateway_account(_) do
+    gateway_account = fixture(:gateway_account)
+    {:ok, gateway_account: gateway_account}
+  end
+
   defp create_product(_) do
-    product = fixture(:product)
-    {:ok, product: product}
+    gateway_account = fixture(:gateway_account)
+    product = fixture(:product, gateway_account)
+    {:ok, gateway_account: gateway_account, product: product}
   end
 end

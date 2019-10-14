@@ -22,6 +22,22 @@ defmodule Pay.Products do
   end
 
   @doc """
+  Returns the list of products by the given gateway account external ID.
+
+  ## Examples
+
+      iex> list_products_by_gateway_external_id("3bfd1a3c-0960-49da-be66-053b159df62d")
+      [%Product{}, ...]
+
+  """
+  def list_products_by_gateway_external_id(external_id) do
+    Repo.all(
+      from p in Product,
+        where: p.gateway_account_id == ^external_id
+    )
+  end
+
+  @doc """
   Gets a single product.
 
   Raises `Ecto.NoResultsError` if the Product does not exist.
@@ -38,6 +54,40 @@ defmodule Pay.Products do
   def get_product!(id), do: Repo.get!(Product, id)
 
   @doc """
+  Gets a single product by the given external ID.
+
+  Raises `Ecto.NoResultsError` if the Product does not exist.
+
+  ## Examples
+
+      iex> get_product_by_external_id!("3bfd1a3c-0960-49da-be66-053b159df62d")
+      %Product{}
+
+      iex> get_product_by_external_id!("3bfd1a3c-0960-49da-be66-053b159df62e")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_product_by_external_id!(external_id),
+    do: Repo.get_by!(Product, external_id: external_id)
+
+  @doc """
+  Gets a single product by the given service name and product name slugs.
+
+  Raises `Ecto.NoResultsError` if the Product does not exist.
+
+  ## Examples
+
+      iex> get_product_by_slugs!("australian-passport-office", "passport-renewal")
+      %Product{}
+
+      iex> get_product_by_slugs!("australian-passport-office", "nonexistent")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_product_by_slugs!(service_name_slug, name_slug),
+    do: Repo.get_by!(Product, service_name_slug: service_name_slug, name_slug: name_slug)
+
+  @doc """
   Creates a product.
 
   ## Examples
@@ -50,8 +100,8 @@ defmodule Pay.Products do
 
   """
   def create_product(attrs \\ %{}) do
-    %Product{}
-    |> Product.changeset(attrs)
+    %Product{external_id: Ecto.UUID.generate()}
+    |> Product.create_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -69,7 +119,7 @@ defmodule Pay.Products do
   """
   def update_product(%Product{} = product, attrs) do
     product
-    |> Product.changeset(attrs)
+    |> Product.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -87,19 +137,6 @@ defmodule Pay.Products do
   """
   def delete_product(%Product{} = product) do
     Repo.delete(product)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking product changes.
-
-  ## Examples
-
-      iex> change_product(product)
-      %Ecto.Changeset{source: %Product{}}
-
-  """
-  def change_product(%Product{} = product) do
-    Product.changeset(product, %{})
   end
 
   alias Pay.Products.ProductPayment

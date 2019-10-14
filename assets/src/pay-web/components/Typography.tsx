@@ -47,6 +47,17 @@ export const H4 = styled.h4<HeadingProps>`
   font-size: 1.8rem;
 `;
 
+export const Text = styled.span<{ variant?: "gray" }>`
+  color: ${({ theme, variant }) => {
+    switch (variant) {
+      case "gray":
+        return theme.colors.darkGray;
+      default:
+        return "inherit";
+    }
+  }};
+`;
+
 export const P = styled.p`
   max-width: 70rem;
   margin-bottom: ${spacing.small};

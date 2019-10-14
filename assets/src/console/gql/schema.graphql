@@ -26,7 +26,22 @@ input UpdateServiceInput {
   service: UpdateServiceService!
 }
 
+input CreateProductProduct {
+  name: String!
+  description: String
+  reference_enabled: Boolean!
+  reference_label: String
+  reference_hint: String
+  price_fixed: Boolean!
+  price: Int
+}
+
+input CreateProductInput {
+  product: CreateProductProduct!
+}
+
 type Mutation {
   createService(input: CreateServiceInput!): Service!
   updateService(id: ID!, input: UpdateServiceInput!): Service!
+  createProduct(gatewayAccountId: ID!, input: CreateProductInput!): Service!
 }

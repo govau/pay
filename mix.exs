@@ -44,6 +44,7 @@ defmodule Pay.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:sentry, "~> 7.0"},
+      {:slugger, "~> 0.3"},
 
       # TODO: hackney is a transitive dep of sentry that broke;
       # unpin it once sentry sorts themselves out

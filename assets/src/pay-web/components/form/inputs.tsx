@@ -11,7 +11,7 @@ export const BasicTextInput = styled("input")<{ error?: boolean }>`
   padding: 10px;
   margin-top: 3px;
   box-shadow: none;
-  border: 3px solid ${props => props.theme.colors.darkGrey};
+  border: 3px solid ${props => props.theme.colors.darkGray};
   border-radius: 3px;
   font-size: 1em;
   @media ${tablet} {
@@ -34,5 +34,5 @@ export const Label = styled.label`
 `;
 
 export const Description = styled.div`
-  color: ${props => props.theme.colors.darkGrey};
+  color: ${props => props.theme.colors.darkGray};
 `;

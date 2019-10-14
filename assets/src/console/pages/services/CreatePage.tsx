@@ -10,24 +10,14 @@ import {
   Button,
   validators,
   Loader,
-  ErrorAlert,
-  tablet
+  ErrorAlert
 } from "@pay/web";
-import styled from "@pay/web/styled-components";
 
 import {
   CreateServiceMutationFn,
   useCreateServiceMutation
 } from "../../__generated__/graphql";
 import { isServerError } from "../../../apollo-rest-utils";
-
-const InputWrapper = styled.div`
-  ${BasicTextInput} {
-    @media ${tablet} {
-      min-width: 50rem;
-    }
-  }
-`;
 
 interface FormValues {
   name: string;
@@ -46,7 +36,7 @@ const getErrorMessage = (error?: ApolloError) => {
   return error.message;
 };
 
-const onSubmit = (createService: CreateServiceMutationFn) => {
+const handleSubmit = (createService: CreateServiceMutationFn) => {
   return async (values: FormValues) => {
     try {
       const { name } = values;
@@ -66,7 +56,7 @@ const CreatePage = () => {
         <title>Create service</title>
       </Helmet>
       <PageTitle title="What service will you be taking payments for?" />
-      <Form onSubmit={onSubmit(createService)}>
+      <Form onSubmit={handleSubmit(createService)} column>
         {loading ? (
           <Loader message="Creating a new service" />
         ) : data && data.service ? (
@@ -86,9 +76,7 @@ const CreatePage = () => {
               validate={validators.required("Enter a service name")}
             >
               {({ input, ariaProps, ...rest }) => (
-                <InputWrapper>
-                  <BasicTextInput {...input} {...ariaProps} {...rest} />
-                </InputWrapper>
+                <BasicTextInput {...input} {...ariaProps} {...rest} />
               )}
             </Field>
             <Button type="submit">Create</Button>

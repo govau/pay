@@ -12,6 +12,7 @@
     "@loadable/component": "5.10.3",
     "@pay/web": "link:./src/pay-web",
     "@sentry/browser": "5.6.3",
+    "@sindresorhus/slugify": "0.9.1",
     "@types/jest": "24.0.18",
     "@types/loadable__component": "5.10.0",
     "@types/node": "12.7.11",

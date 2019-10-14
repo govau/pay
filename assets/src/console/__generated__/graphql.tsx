@@ -20,6 +20,20 @@ export type BamboraCredentials = {
   api_username?: Maybe<Scalars["String"]>;
 };
 
+export type CreateProductInput = {
+  product: CreateProductProduct;
+};
+
+export type CreateProductProduct = {
+  name: Scalars["String"];
+  description?: Maybe<Scalars["String"]>;
+  reference_enabled: Scalars["Boolean"];
+  reference_label?: Maybe<Scalars["String"]>;
+  reference_hint?: Maybe<Scalars["String"]>;
+  price_fixed: Scalars["Boolean"];
+  price?: Maybe<Scalars["Int"]>;
+};
+
 export type CreateServiceInput = {
   service: CreateServiceService;
 };
@@ -60,6 +74,7 @@ export type Mutation = {
   __typename?: "Mutation";
   createService: Service;
   updateService: Service;
+  createProduct: Service;
 };
 
 export type MutationCreateServiceArgs = {
@@ -69,6 +84,11 @@ export type MutationCreateServiceArgs = {
 export type MutationUpdateServiceArgs = {
   id: Scalars["ID"];
   input: UpdateServiceInput;
+};
+
+export type MutationCreateProductArgs = {
+  gatewayAccountId: Scalars["ID"];
+  input: CreateProductInput;
 };
 
 export type Product = {
@@ -268,6 +288,15 @@ export type GetGatewayAccountProductsQueryVariables = {
 
 export type GetGatewayAccountProductsQuery = { __typename?: "Query" } & {
   products: Array<{ __typename?: "Product" } & ProductFragment>;
+};
+
+export type CreateProductMutationVariables = {
+  gatewayAccountId: Scalars["ID"];
+  input: CreateProductInput;
+};
+
+export type CreateProductMutation = { __typename?: "Mutation" } & {
+  product: { __typename?: "Service" } & ServiceFragment;
 };
 
 export const ServiceFragmentDoc = gql`
@@ -870,7 +899,7 @@ export const GetGatewayAccountDocument = gql`
     gatewayAccount: getGatewayAccount(id: $id)
       @rest(
         type: "GatewayAccount"
-        path: "/internal/services/gateway-accounts/{args.id}"
+        path: "/internal/payments/gateway-accounts/{args.id}"
       ) {
       ...GatewayAccount
     }
@@ -953,7 +982,7 @@ export const GetGatewayAccountProductsDocument = gql`
     products: getGatewayAccountProducts(gatewayAccountId: $gatewayAccountId)
       @rest(
         type: "[Product]"
-        path: "/internal/services/gateway-accounts/{args.gatewayAccountId}/products"
+        path: "/internal/products/gateway-accounts/{args.gatewayAccountId}/products"
       ) {
       ...Product
     }
@@ -1030,4 +1059,78 @@ export type GetGatewayAccountProductsLazyQueryHookResult = ReturnType<
 export type GetGatewayAccountProductsQueryResult = ApolloReactCommon.QueryResult<
   GetGatewayAccountProductsQuery,
   GetGatewayAccountProductsQueryVariables
+>;
+export const CreateProductDocument = gql`
+  mutation CreateProduct($gatewayAccountId: ID!, $input: CreateProductInput!) {
+    product: createProduct(gatewayAccountId: $gatewayAccountId, input: $input)
+      @rest(
+        type: "Product"
+        path: "/internal/products/gateway-accounts/{args.gatewayAccountId}/products"
+        method: "POST"
+      ) {
+      ...Service
+    }
+  }
+  ${ServiceFragmentDoc}
+`;
+export type CreateProductMutationFn = ApolloReactCommon.MutationFunction<
+  CreateProductMutation,
+  CreateProductMutationVariables
+>;
+export type CreateProductComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    CreateProductMutation,
+    CreateProductMutationVariables
+  >,
+  "mutation"
+>;
+
+export const CreateProductComponent = (props: CreateProductComponentProps) => (
+  <ApolloReactComponents.Mutation<
+    CreateProductMutation,
+    CreateProductMutationVariables
+  >
+    mutation={CreateProductDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useCreateProductMutation__
+ *
+ * To run a mutation, you first call `useCreateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createProductMutation, { data, loading, error }] = useCreateProductMutation({
+ *   variables: {
+ *      gatewayAccountId: // value for 'gatewayAccountId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateProductMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    CreateProductMutation,
+    CreateProductMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    CreateProductMutation,
+    CreateProductMutationVariables
+  >(CreateProductDocument, baseOptions);
+}
+export type CreateProductMutationHookResult = ReturnType<
+  typeof useCreateProductMutation
+>;
+export type CreateProductMutationResult = ApolloReactCommon.MutationResult<
+  CreateProductMutation
+>;
+export type CreateProductMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateProductMutation,
+  CreateProductMutationVariables
 >;

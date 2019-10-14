@@ -36,10 +36,10 @@ export const Services = {
       ListPage: loadable(() => import("./products/ListPage"), {
         fallback: <Loader />
       }),
-      CreatePage: loadable(() => import("./products/CreatePage"), {
+      CreateStartPage: loadable(() => import("./products/CreateStartPage"), {
         fallback: <Loader />
       }),
-      DetailsPage: loadable(() => import("./products/DetailsPage"), {
+      CreateFormPage: loadable(() => import("./products/CreateFormPage"), {
         fallback: <Loader />
       })
     }

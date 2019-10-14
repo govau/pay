@@ -11,11 +11,9 @@ import {
   validators,
   Loader,
   ErrorAlert,
-  tablet,
   Warning,
   P
 } from "@pay/web";
-import styled from "@pay/web/styled-components";
 
 import {
   UpdateServiceMutationFn,
@@ -23,14 +21,6 @@ import {
   Service
 } from "../../__generated__/graphql";
 import { isServerError } from "../../../apollo-rest-utils";
-
-const InputWrapper = styled.div`
-  ${BasicTextInput} {
-    @media ${tablet} {
-      min-width: 50rem;
-    }
-  }
-`;
 
 interface FormValues {
   name: string;
@@ -49,7 +39,7 @@ const getErrorMessage = (error?: ApolloError) => {
   return error.message;
 };
 
-const onSubmit = (id: string, updateService: UpdateServiceMutationFn) => {
+const handleSubmit = (id: string, updateService: UpdateServiceMutationFn) => {
   return async (values: FormValues) => {
     try {
       const { name } = values;
@@ -72,8 +62,9 @@ const EditNamePage: React.FC<{
       </Helmet>
       <PageTitle title="Edit service name" />
       <Form
-        onSubmit={onSubmit(service.id, updateService)}
+        onSubmit={handleSubmit(service.id, updateService)}
         initialValues={{ name: service.name }}
+        column
       >
         {updateMutation.loading ? (
           <Loader message="Updating service name" />
@@ -102,9 +93,7 @@ const EditNamePage: React.FC<{
               validate={validators.required("Enter a service name")}
             >
               {({ input, ariaProps, ...rest }) => (
-                <InputWrapper>
-                  <BasicTextInput {...input} {...ariaProps} {...rest} />
-                </InputWrapper>
+                <BasicTextInput {...input} {...ariaProps} {...rest} />
               )}
             </Field>
             <Button type="submit">Save</Button>

@@ -43,11 +43,11 @@ const ListPage: React.FC<{
           {data.products.length === 0 && (
             <Warning>
               <P>You don’t have any payment links.</P>
-              <P>
-                <Link to={`${url}/create`}>Create a new payment link</Link>
-              </P>
             </Warning>
           )}
+          <P>
+            <Link to={`${url}/create`}>Create a new payment link</Link>
+          </P>
           <ul>
             {data.products.map(p => (
               <li key={p.id}>

@@ -184,7 +184,10 @@ defmodule Pay.Payments do
 
   """
   def create_gateway_account(attrs \\ %{}) do
-    %GatewayAccount{}
+    %GatewayAccount{
+      external_id: Ecto.UUID.generate(),
+      credentials: %{}
+    }
     |> GatewayAccount.create_changeset(attrs)
     |> Repo.insert()
   end

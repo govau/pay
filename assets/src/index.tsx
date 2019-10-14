@@ -48,6 +48,15 @@ const authLink = new ApolloLink((operation, forward) => {
   });
 });
 
+class NotFoundError extends Error {
+  public readonly statusCode: number;
+
+  constructor(message: string) {
+    super(message);
+    this.statusCode = 404;
+  }
+}
+
 const restLink = new RestLink({
   uri: "/v1/api",
   endpoints: { v1: "/v1/api" },
@@ -57,7 +66,7 @@ const restLink = new RestLink({
   responseTransformer: async response => {
     // https://github.com/apollographql/apollo-link-rest/blob/4ed4e83a4818bba7c053291d385919de135450a0/src/restLink.ts#L1050
     if (response === null) {
-      return Promise.reject(new Error("Resource not found"));
+      return Promise.reject(new NotFoundError("Resource not found"));
     }
     if (!response) {
       return Promise.reject(new Error("Received empty response"));

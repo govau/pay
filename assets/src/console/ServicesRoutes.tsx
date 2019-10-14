@@ -60,11 +60,19 @@ const GatewayAccountsRoutes: React.FC<{
               gatewayAccount={data.gatewayAccount}
             />
           </Route>
-          <Route path={`${url}/products/create`} exact strict>
-            <Pages.Services.GatewayAccounts.Products.CreatePage />
-          </Route>
-          <Route path={`${url}/products/create/details`} exact strict>
-            <Pages.Services.GatewayAccounts.Products.DetailsPage />
+          <Route path={`${url}/products/create`} strict>
+            <Switch>
+              <Route path={`${url}/products/create`} exact strict>
+                <Pages.Services.GatewayAccounts.Products.CreateStartPage />
+              </Route>
+              <Route path="*">
+                <Pages.Services.GatewayAccounts.Products.CreateFormPage
+                  serviceName={service.name}
+                  gatewayAccountId={gatewayAccountId}
+                  path={`${url}/products/create`}
+                />
+              </Route>
+            </Switch>
           </Route>
           <Route path="*">
             <CorePages.NotFoundPage />

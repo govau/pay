@@ -114,7 +114,7 @@ query GetGatewayAccount($id: ID!) {
   gatewayAccount: getGatewayAccount(id: $id)
     @rest(
       type: "GatewayAccount"
-      path: "/internal/services/gateway-accounts/{args.id}"
+      path: "/internal/payments/gateway-accounts/{args.id}"
     ) {
     ...GatewayAccount
   }
@@ -124,8 +124,19 @@ query GetGatewayAccountProducts($gatewayAccountId: ID!) {
   products: getGatewayAccountProducts(gatewayAccountId: $gatewayAccountId)
     @rest(
       type: "[Product]"
-      path: "/internal/services/gateway-accounts/{args.gatewayAccountId}/products"
+      path: "/internal/products/gateway-accounts/{args.gatewayAccountId}/products"
     ) {
     ...Product
+  }
+}
+
+mutation CreateProduct($gatewayAccountId: ID!, $input: CreateProductInput!) {
+  product: createProduct(gatewayAccountId: $gatewayAccountId, input: $input)
+    @rest(
+      type: "Product"
+      path: "/internal/products/gateway-accounts/{args.gatewayAccountId}/products"
+      method: "POST"
+    ) {
+    ...Service
   }
 }

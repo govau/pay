@@ -13,8 +13,8 @@ mix phx.gen.json $PRODUCTS_CTX Product products \
     price:integer \
     status:string \
     return_url:string \
-    service_name_path:string \
-    product_name_path:string \
+    service_name_slug:string \
+    name_slug:string \
     reference_enabled:boolean \
     reference_label:string \
     reference_hint:string

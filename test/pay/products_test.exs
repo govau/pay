@@ -10,30 +10,26 @@ defmodule Pay.ProductsTest do
       api_token: "some api_token",
       description: "some description",
       external_id: "7488a646-e31f-11e4-aace-600308960662",
-      gateway_account_id: "some gateway_account_id",
+      gateway_account_id: "7488a646-e31f-11e4-aace-600308960660",
       name: "some name",
       price: 42,
-      product_name_path: "some product_name_path",
       reference_enabled: true,
       reference_hint: "some reference_hint",
       reference_label: "some reference_label",
       return_url: "some return_url",
-      service_name_path: "some service_name_path",
+      service_name_slug: "some service_name_slug",
       status: "some status"
     }
     @update_attrs %{
       api_token: "some updated api_token",
       description: "some updated description",
-      external_id: "7488a646-e31f-11e4-aace-600308960668",
-      gateway_account_id: "some updated gateway_account_id",
       name: "some updated name",
       price: 43,
-      product_name_path: "some updated product_name_path",
       reference_enabled: false,
       reference_hint: "some updated reference_hint",
       reference_label: "some updated reference_label",
       return_url: "some updated return_url",
-      service_name_path: "some updated service_name_path",
+      service_name_slug: "some updated service_name_slug",
       status: "some updated status"
     }
     @invalid_attrs %{
@@ -43,12 +39,12 @@ defmodule Pay.ProductsTest do
       gateway_account_id: nil,
       name: nil,
       price: nil,
-      product_name_path: nil,
+      name_slug: nil,
       reference_enabled: nil,
       reference_hint: nil,
       reference_label: nil,
       return_url: nil,
-      service_name_path: nil,
+      service_name_slug: nil,
       status: nil
     }
 
@@ -71,20 +67,32 @@ defmodule Pay.ProductsTest do
       assert Products.get_product!(product.id) == product
     end
 
+    test "get_product_by_external_id!/1 returns the product with given external_id" do
+      product = product_fixture()
+      assert Products.get_product_by_external_id!(product.external_id) == product
+    end
+
+    test "get_product_by_slugs!/2 returns the product with given slugs" do
+      product = product_fixture()
+
+      assert Products.get_product_by_slugs!(product.service_name_slug, product.name_slug) ==
+               product
+    end
+
     test "create_product/1 with valid data creates a product" do
       assert {:ok, %Product{} = product} = Products.create_product(@valid_attrs)
       assert product.api_token == "some api_token"
       assert product.description == "some description"
       assert product.external_id == "7488a646-e31f-11e4-aace-600308960662"
-      assert product.gateway_account_id == "some gateway_account_id"
+      assert product.gateway_account_id == "7488a646-e31f-11e4-aace-600308960660"
       assert product.name == "some name"
       assert product.price == 42
-      assert product.product_name_path == "some product_name_path"
+      assert product.name_slug == "some-name"
       assert product.reference_enabled == true
       assert product.reference_hint == "some reference_hint"
       assert product.reference_label == "some reference_label"
       assert product.return_url == "some return_url"
-      assert product.service_name_path == "some service_name_path"
+      assert product.service_name_slug == "some service_name_slug"
       assert product.status == "some status"
     end
 
@@ -97,16 +105,16 @@ defmodule Pay.ProductsTest do
       assert {:ok, %Product{} = product} = Products.update_product(product, @update_attrs)
       assert product.api_token == "some updated api_token"
       assert product.description == "some updated description"
-      assert product.external_id == "7488a646-e31f-11e4-aace-600308960668"
-      assert product.gateway_account_id == "some updated gateway_account_id"
+      assert product.external_id == "7488a646-e31f-11e4-aace-600308960662"
+      assert product.gateway_account_id == "7488a646-e31f-11e4-aace-600308960660"
       assert product.name == "some updated name"
       assert product.price == 43
-      assert product.product_name_path == "some updated product_name_path"
+      assert product.name_slug == "some-updated-name"
       assert product.reference_enabled == false
       assert product.reference_hint == "some updated reference_hint"
       assert product.reference_label == "some updated reference_label"
       assert product.return_url == "some updated return_url"
-      assert product.service_name_path == "some updated service_name_path"
+      assert product.service_name_slug == "some updated service_name_slug"
       assert product.status == "some updated status"
     end
 
@@ -120,11 +128,6 @@ defmodule Pay.ProductsTest do
       product = product_fixture()
       assert {:ok, %Product{}} = Products.delete_product(product)
       assert_raise Ecto.NoResultsError, fn -> Products.get_product!(product.id) end
-    end
-
-    test "change_product/1 returns a product changeset" do
-      product = product_fixture()
-      assert %Ecto.Changeset{} = Products.change_product(product)
     end
   end
 
