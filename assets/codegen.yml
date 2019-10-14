@@ -1,15 +1,16 @@
 overwrite: true
-schema: src/gql/schema.graphql
 generates:
   src/__generated__/introspection-result.ts:
     schema:
       - "src/auth/gql/schema.graphql"
       - "src/console/gql/schema.graphql"
       - "src/platform-admin/gql/schema.graphql"
+      - "src/products-app/gql/schema.graphql"
     documents:
       - "src/auth/gql/**/{queries}.graphql"
       - "src/console/gql/**/{queries}.graphql"
       - "src/platform-admin/gql/**/{queries}.graphql"
+      - "src/products-app/gql/**/{queries}.graphql"
     plugins:
       - "fragment-matcher"
   src/auth/__generated__/graphql.tsx:
@@ -44,6 +45,18 @@ generates:
     schema: src/platform-admin/gql/schema.graphql
     documents:
       - "src/platform-admin/**/{queries}.graphql"
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+  src/products-app/__generated__/graphql.tsx:
+    config:
+      noNamespaces: true
+      withHOC: false
+      withHooks: true
+    schema: src/products-app/gql/schema.graphql
+    documents:
+      - "src/products-app/**/{queries}.graphql"
     plugins:
       - "typescript"
       - "typescript-operations"

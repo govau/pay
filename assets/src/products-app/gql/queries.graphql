@@ -1,0 +1,14 @@
+fragment Product on Product {
+  id
+  name
+}
+
+query GetProduct($serviceNameSlug: String!, $nameSlug: String!) {
+  product(serviceNameSlug: $serviceNameSlug, nameSlug: $nameSlug)
+    @rest(
+      type: "Product"
+      path: "/internal/products/products/{args.serviceNameSlug}/{args.nameSlug}"
+    ) {
+    ...Product
+  }
+}

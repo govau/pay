@@ -23,7 +23,7 @@ defmodule PayWeb.OrganisationTypeControllerTest do
 
   describe "index" do
     test "lists all organisation_types", %{conn: conn} do
-      conn = get(conn, Routes.organisation_type_path(conn, :index))
+      conn = get(conn, Routes.services_organisation_type_path(conn, :index))
       assert json_response(conn, 200)["data"] == []
     end
   end
@@ -31,11 +31,13 @@ defmodule PayWeb.OrganisationTypeControllerTest do
   describe "create organisation_type" do
     test "renders organisation_type when data is valid", %{conn: conn} do
       conn =
-        post(conn, Routes.organisation_type_path(conn, :create), organisation_type: @create_attrs)
+        post(conn, Routes.services_organisation_type_path(conn, :create),
+          organisation_type: @create_attrs
+        )
 
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get(conn, Routes.organisation_type_path(conn, :show, id))
+      conn = get(conn, Routes.services_organisation_type_path(conn, :show, id))
 
       assert %{
                "id" => id,
@@ -45,7 +47,9 @@ defmodule PayWeb.OrganisationTypeControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn =
-        post(conn, Routes.organisation_type_path(conn, :create), organisation_type: @invalid_attrs)
+        post(conn, Routes.services_organisation_type_path(conn, :create),
+          organisation_type: @invalid_attrs
+        )
 
       assert json_response(conn, 422)["errors"] != %{}
     end
@@ -59,13 +63,13 @@ defmodule PayWeb.OrganisationTypeControllerTest do
       organisation_type: %OrganisationType{id: id} = organisation_type
     } do
       conn =
-        put(conn, Routes.organisation_type_path(conn, :update, organisation_type),
+        put(conn, Routes.services_organisation_type_path(conn, :update, organisation_type),
           organisation_type: @update_attrs
         )
 
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      conn = get(conn, Routes.organisation_type_path(conn, :show, id))
+      conn = get(conn, Routes.services_organisation_type_path(conn, :show, id))
 
       assert %{
                "id" => id,
@@ -78,7 +82,7 @@ defmodule PayWeb.OrganisationTypeControllerTest do
       organisation_type: organisation_type
     } do
       conn =
-        put(conn, Routes.organisation_type_path(conn, :update, organisation_type),
+        put(conn, Routes.services_organisation_type_path(conn, :update, organisation_type),
           organisation_type: @invalid_attrs
         )
 
@@ -90,11 +94,13 @@ defmodule PayWeb.OrganisationTypeControllerTest do
     setup [:create_organisation_type]
 
     test "deletes chosen organisation_type", %{conn: conn, organisation_type: organisation_type} do
-      conn = delete(conn, Routes.organisation_type_path(conn, :delete, organisation_type))
+      conn =
+        delete(conn, Routes.services_organisation_type_path(conn, :delete, organisation_type))
+
       assert response(conn, 204)
 
       assert_error_sent 404, fn ->
-        get(conn, Routes.organisation_type_path(conn, :show, organisation_type))
+        get(conn, Routes.services_organisation_type_path(conn, :show, organisation_type))
       end
     end
   end

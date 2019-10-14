@@ -14,6 +14,12 @@ export type Scalars = {
   Float: number;
 };
 
+export type BamboraCredentials = {
+  __typename?: "BamboraCredentials";
+  account_number?: Maybe<Scalars["String"]>;
+  api_username?: Maybe<Scalars["String"]>;
+};
+
 export type CardType = {
   __typename?: "CardType";
   id: Scalars["ID"];
@@ -22,15 +28,50 @@ export type CardType = {
   type: Scalars["String"];
 };
 
+export type GatewayAccount = {
+  __typename?: "GatewayAccount";
+  id: Scalars["ID"];
+  payment_provider: GatewayAccountPaymentProvider;
+  type: GatewayAccountType;
+  service_name: Scalars["String"];
+  description: Scalars["String"];
+  credentials: GatewayAccountCredentials;
+  allow_apple_pay: Scalars["Boolean"];
+  allow_google_pay: Scalars["Boolean"];
+  allow_zero_amount: Scalars["Boolean"];
+  requires_3ds: Scalars["Boolean"];
+  products?: Maybe<Array<Product>>;
+};
+
+export type GatewayAccountCredentials = SandboxCredentials | BamboraCredentials;
+
+export enum GatewayAccountPaymentProvider {
+  Sandbox = "sandbox",
+  Bambora = "bambora",
+  Stripe = "stripe"
+}
+
+export enum GatewayAccountType {
+  Test = "test",
+  Live = "live"
+}
+
 export type Organisation = {
   __typename?: "Organisation";
   id: Scalars["ID"];
   name: Scalars["String"];
 };
 
+export type Product = {
+  __typename?: "Product";
+  id: Scalars["ID"];
+  name: Scalars["String"];
+  description: Scalars["String"];
+  gatewayAccount: GatewayAccount;
+};
+
 export type Query = {
   __typename?: "Query";
-  dummy?: Maybe<Scalars["String"]>;
   organisations: Array<Organisation>;
   services: Array<Service>;
   cardTypes: Array<CardType>;
@@ -43,12 +84,18 @@ export type Role = {
   description: Scalars["String"];
 };
 
+export type SandboxCredentials = {
+  __typename?: "SandboxCredentials";
+  dummy?: Maybe<Scalars["String"]>;
+};
+
 export type Service = {
   __typename?: "Service";
   id: Scalars["ID"];
   name: Scalars["String"];
   current_go_live_stage: ServiceGoLiveStage;
   users?: Maybe<Array<ServiceUser>>;
+  gateway_accounts?: Maybe<Array<GatewayAccount>>;
 };
 
 export enum ServiceGoLiveStage {

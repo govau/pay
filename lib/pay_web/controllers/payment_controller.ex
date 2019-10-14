@@ -15,7 +15,7 @@ defmodule PayWeb.PaymentController do
     with {:ok, %Payment{} = payment} <- Payments.create_payment(payment_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.payment_path(conn, :show, payment))
+      |> put_resp_header("location", Routes.payments_payment_path(conn, :show, payment))
       |> render("show.json", payment: payment)
     end
   end

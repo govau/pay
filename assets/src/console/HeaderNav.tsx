@@ -9,15 +9,19 @@ import {
   Li,
   NavLink
 } from "../layout/Header/PrimaryNav";
-import { useGetServiceQuery } from "../console/__generated__/graphql";
+import {
+  useGetServiceWithGatewayAccountsQuery,
+  GatewayAccountType,
+  GatewayAccountFragment
+} from "../console/__generated__/graphql";
 import { goLiveStageLabel } from "../services";
 
 // ServiceInfoNav is shown when in console, inside the context of a service.
 export const ServiceInfoNav: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { serviceId } = useParams<{ serviceId: string }>();
 
-  const { loading, error, data } = useGetServiceQuery({
-    variables: { id },
+  const { loading, error, data } = useGetServiceWithGatewayAccountsQuery({
+    variables: { id: serviceId },
     errorPolicy: "all"
   });
 
@@ -29,6 +33,21 @@ export const ServiceInfoNav: React.FC = () => {
 
   if (loading || error || !data) {
     return null;
+  }
+
+  let gatewayAccount: GatewayAccountFragment | null = null;
+  if (
+    data.service.gateway_accounts &&
+    data.service.gateway_accounts.length > 0
+  ) {
+    const live = data.service.gateway_accounts.filter(
+      ga => ga.type === GatewayAccountType.Live
+    );
+    if (live.length > 0) {
+      gatewayAccount = live[0];
+    } else {
+      gatewayAccount = data.service.gateway_accounts[0];
+    }
   }
 
   return (
@@ -46,12 +65,24 @@ export const ServiceInfoNav: React.FC = () => {
               Dashboard
             </NavLink>
           </Li>
-          <Li>
-            <NavLink to={`${url}/payments`}>Transactions</NavLink>
-          </Li>
-          <Li>
-            <NavLink to={`${url}/payment-links`}>Payment links</NavLink>
-          </Li>
+          {gatewayAccount && (
+            <>
+              <Li>
+                <NavLink
+                  to={`${url}/gateway-accounts/${gatewayAccount.id}/payments`}
+                >
+                  Transactions
+                </NavLink>
+              </Li>
+              <Li>
+                <NavLink
+                  to={`${url}/gateway-accounts/${gatewayAccount.id}/products`}
+                >
+                  Payment links
+                </NavLink>
+              </Li>
+            </>
+          )}
           <Li>
             <NavLink
               to={`${url}/settings`}
@@ -59,7 +90,12 @@ export const ServiceInfoNav: React.FC = () => {
               isActive={(match, location) =>
                 [`${url}/settings`, `${url}/edit-name`, `${url}/team`].includes(
                   location.pathname
-                )
+                ) ||
+                (gatewayAccount
+                  ? location.pathname.startsWith(
+                      `${url}/gateway-accounts/${gatewayAccount.id}/credentials`
+                    )
+                  : false)
               }
             >
               Settings
@@ -72,25 +108,17 @@ export const ServiceInfoNav: React.FC = () => {
 };
 
 // NonServiceInfoNav is shown when in console, outside the context of a service.
-export const NonServiceInfoNav: React.FC = () => {
-  const match = useRouteMatch();
-  if (!match) {
-    return null;
-  }
-  const { url } = match;
-
-  return (
-    <Container>
-      <PageInfo />
-      <SubNav>
-        <NavUl>
-          <Li>
-            <NavLink to={`${url}/services/create`} exact>
-              Create new service
-            </NavLink>
-          </Li>
-        </NavUl>
-      </SubNav>
-    </Container>
-  );
-};
+export const NonServiceInfoNav: React.FC = () => (
+  <Container>
+    <PageInfo />
+    <SubNav>
+      <NavUl>
+        <Li>
+          <NavLink to="/console/services/create" exact>
+            Create new service
+          </NavLink>
+        </Li>
+      </NavUl>
+    </SubNav>
+  </Container>
+);

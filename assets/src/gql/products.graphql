@@ -1,0 +1,8 @@
+# import GatewayAccount from './payments.graphql'
+
+type Product {
+  id: ID!
+  name: String!
+  description: String!
+  gatewayAccount: GatewayAccount!
+}

@@ -62,7 +62,7 @@ defmodule PayWeb.ServiceControllerTest do
 
   describe "index" do
     test "lists all services", %{conn: conn} do
-      conn = get(conn, Routes.service_path(conn, :index))
+      conn = get(conn, Routes.services_service_path(conn, :index))
       assert json_response(conn, 200)["data"] == []
     end
   end
@@ -71,10 +71,10 @@ defmodule PayWeb.ServiceControllerTest do
     setup [:create_admin_role]
 
     test "renders service when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.service_path(conn, :create), service: @create_attrs)
+      conn = post(conn, Routes.services_service_path(conn, :create), service: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get(conn, Routes.service_path(conn, :show, id))
+      conn = get(conn, Routes.services_service_path(conn, :show, id))
 
       assert %{
                "id" => id,
@@ -95,7 +95,7 @@ defmodule PayWeb.ServiceControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.service_path(conn, :create), service: @invalid_attrs)
+      conn = post(conn, Routes.services_service_path(conn, :create), service: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -107,10 +107,12 @@ defmodule PayWeb.ServiceControllerTest do
       conn: conn,
       service: %Service{external_id: id} = service
     } do
-      conn = put(conn, Routes.service_path(conn, :update, service), service: @update_attrs)
+      conn =
+        put(conn, Routes.services_service_path(conn, :update, service), service: @update_attrs)
+
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      conn = get(conn, Routes.service_path(conn, :show, id))
+      conn = get(conn, Routes.services_service_path(conn, :show, id))
 
       assert %{
                "id" => id,
@@ -131,7 +133,9 @@ defmodule PayWeb.ServiceControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, service: service} do
-      conn = put(conn, Routes.service_path(conn, :update, service), service: @invalid_attrs)
+      conn =
+        put(conn, Routes.services_service_path(conn, :update, service), service: @invalid_attrs)
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -140,11 +144,11 @@ defmodule PayWeb.ServiceControllerTest do
     setup [:create_service]
 
     test "deletes chosen service", %{conn: conn, service: service} do
-      conn = delete(conn, Routes.service_path(conn, :delete, service))
+      conn = delete(conn, Routes.services_service_path(conn, :delete, service))
       assert response(conn, 204)
 
       assert_error_sent 404, fn ->
-        get(conn, Routes.service_path(conn, :show, service))
+        get(conn, Routes.services_service_path(conn, :show, service))
       end
     end
   end

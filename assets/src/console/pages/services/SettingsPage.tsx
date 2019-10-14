@@ -2,11 +2,23 @@ import * as React from "react";
 import { Helmet } from "react-helmet";
 import { PageTitle, Link } from "@pay/web";
 
-import { Service } from "../../__generated__/graphql";
+import { Service, GatewayAccountType } from "../../__generated__/graphql";
 
 const SettingsPage: React.FC<{
   service: Service;
 }> = ({ service }) => {
+  let gatewayAccount = null;
+  if (service.gateway_accounts && service.gateway_accounts.length > 0) {
+    const live = service.gateway_accounts.filter(
+      ga => ga.type === GatewayAccountType.Live
+    );
+    if (live.length > 0) {
+      gatewayAccount = live[0];
+    } else {
+      gatewayAccount = service.gateway_accounts[0];
+    }
+  }
+
   return (
     <>
       <Helmet>
@@ -25,7 +37,15 @@ const SettingsPage: React.FC<{
           </Link>
         </li>
         <li>Manage API keys</li>
-        <li>Manage payment service provider account credentials</li>
+        {gatewayAccount && (
+          <li>
+            <Link
+              to={`/console/services/${service.id}/gateway-accounts/${gatewayAccount.id}/credentials`}
+            >
+              Manage payment service provider account credentials
+            </Link>
+          </li>
+        )}
         <li>Manage the cards that you accept</li>
       </ul>
     </>

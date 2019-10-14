@@ -1,10 +1,13 @@
 # import Organisation, Service from '../../gql/services.graphql'
 # import CardType, GatewayAccount from '../../gql/payments.graphql'
+# import Product from '../../gql/products.graphql'
 
 type Query {
   getUserServices(userId: ID!): [Service!]!
   getService(id: ID!): Service!
   getServiceGatewayAccounts(serviceId: ID!): [GatewayAccount!]!
+  getGatewayAccount(id: ID!): GatewayAccount!
+  getGatewayAccountProducts(gatewayAccountId: ID!): [Product!]!
 }
 
 input CreateServiceService {
@@ -23,7 +26,22 @@ input UpdateServiceInput {
   service: UpdateServiceService!
 }
 
+input CreateProductProduct {
+  name: String!
+  description: String
+  reference_enabled: Boolean!
+  reference_label: String
+  reference_hint: String
+  price_fixed: Boolean!
+  price: Int
+}
+
+input CreateProductInput {
+  product: CreateProductProduct!
+}
+
 type Mutation {
   createService(input: CreateServiceInput!): Service!
   updateService(id: ID!, input: UpdateServiceInput!): Service!
+  createProduct(gatewayAccountId: ID!, input: CreateProductInput!): Service!
 }

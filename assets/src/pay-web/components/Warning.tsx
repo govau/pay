@@ -4,7 +4,7 @@ import { WarningIcon } from "../../components/icons/WarningIcon";
 
 const Wrapper = styled.div`
   display: flex;
-  background: ${props => props.theme.colors.lightGrey};
+  background: ${props => props.theme.colors.lightGray};
   border-left: 4px solid ${props => props.theme.colors.orange};
   padding: 1.5rem 1rem 1.5rem 2.5rem;
   margin: 2rem 0 2rem 0;

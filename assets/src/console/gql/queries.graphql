@@ -6,6 +6,24 @@ fragment Service on Service {
   current_go_live_stage
 }
 
+fragment GatewayAccount on GatewayAccount {
+  id
+  type
+  payment_provider
+  credentials {
+    ... on BamboraCredentials {
+      account_number
+      api_username
+    }
+  }
+}
+
+fragment Product on Product {
+  id
+  name
+  description
+}
+
 query GetUserServices($userId: ID!) {
   services: getUserServices(userId: $userId)
     @rest(
@@ -45,6 +63,21 @@ query GetServiceWithUsers($id: ID!) {
   }
 }
 
+query GetServiceWithGatewayAccounts($id: ID!) {
+  service: getService(id: $id)
+    @rest(type: "Service", path: "/internal/services/services/{args.id}") {
+    id @export(as: "id")
+    ...Service
+    gateway_accounts
+      @rest(
+        type: "[GatewayAccount]"
+        path: "/internal/services/services/{exportVariables.id}/gateway-accounts"
+      ) {
+      ...GatewayAccount
+    }
+  }
+}
+
 mutation CreateService($input: CreateServiceInput!) {
   service: createService(input: $input)
     @rest(
@@ -73,7 +106,37 @@ query GetServiceGatewayAccounts($serviceId: ID!) {
       type: "[GatewayAccount]"
       path: "/internal/services/services/{args.serviceId}/gateway-accounts"
     ) {
-    id
-    type
+    ...GatewayAccount
+  }
+}
+
+query GetGatewayAccount($id: ID!) {
+  gatewayAccount: getGatewayAccount(id: $id)
+    @rest(
+      type: "GatewayAccount"
+      path: "/internal/payments/gateway-accounts/{args.id}"
+    ) {
+    ...GatewayAccount
+  }
+}
+
+query GetGatewayAccountProducts($gatewayAccountId: ID!) {
+  products: getGatewayAccountProducts(gatewayAccountId: $gatewayAccountId)
+    @rest(
+      type: "[Product]"
+      path: "/internal/products/gateway-accounts/{args.gatewayAccountId}/products"
+    ) {
+    ...Product
+  }
+}
+
+mutation CreateProduct($gatewayAccountId: ID!, $input: CreateProductInput!) {
+  product: createProduct(gatewayAccountId: $gatewayAccountId, input: $input)
+    @rest(
+      type: "Product"
+      path: "/internal/products/gateway-accounts/{args.gatewayAccountId}/products"
+      method: "POST"
+    ) {
+    ...Service
   }
 }

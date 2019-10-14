@@ -22,6 +22,7 @@ mix phx.gen.json $PAYMENTS_CTX CardType card_types \
 mix ecto.migrate
 
 mix phx.gen.json $PAYMENTS_CTX GatewayAccount gateway_accounts \
+    external_id:uuid \
     payment_provider:string \
     type:string \
     credentials:map \

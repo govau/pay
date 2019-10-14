@@ -61,17 +61,17 @@ defmodule PayWeb.PaymentControllerTest do
 
   describe "index" do
     test "lists all payments", %{conn: conn} do
-      conn = get(conn, Routes.payment_path(conn, :index))
+      conn = get(conn, Routes.payments_payment_path(conn, :index))
       assert json_response(conn, 200)["data"] == []
     end
   end
 
   describe "create payment" do
     test "renders payment when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.payment_path(conn, :create), payment: @create_attrs)
+      conn = post(conn, Routes.payments_payment_path(conn, :create), payment: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get(conn, Routes.payment_path(conn, :show, id))
+      conn = get(conn, Routes.payments_payment_path(conn, :show, id))
 
       assert %{
                "id" => id,
@@ -91,7 +91,7 @@ defmodule PayWeb.PaymentControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.payment_path(conn, :create), payment: @invalid_attrs)
+      conn = post(conn, Routes.payments_payment_path(conn, :create), payment: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -103,10 +103,12 @@ defmodule PayWeb.PaymentControllerTest do
       conn: conn,
       payment: %Payment{external_id: id} = payment
     } do
-      conn = put(conn, Routes.payment_path(conn, :update, payment), payment: @update_attrs)
+      conn =
+        put(conn, Routes.payments_payment_path(conn, :update, payment), payment: @update_attrs)
+
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      conn = get(conn, Routes.payment_path(conn, :show, id))
+      conn = get(conn, Routes.payments_payment_path(conn, :show, id))
 
       assert %{
                "id" => id,
@@ -126,7 +128,9 @@ defmodule PayWeb.PaymentControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, payment: payment} do
-      conn = put(conn, Routes.payment_path(conn, :update, payment), payment: @invalid_attrs)
+      conn =
+        put(conn, Routes.payments_payment_path(conn, :update, payment), payment: @invalid_attrs)
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -135,11 +139,11 @@ defmodule PayWeb.PaymentControllerTest do
     setup [:create_payment]
 
     test "deletes chosen payment", %{conn: conn, payment: payment} do
-      conn = delete(conn, Routes.payment_path(conn, :delete, payment))
+      conn = delete(conn, Routes.payments_payment_path(conn, :delete, payment))
       assert response(conn, 204)
 
       assert_error_sent 404, fn ->
-        get(conn, Routes.payment_path(conn, :show, payment))
+        get(conn, Routes.payments_payment_path(conn, :show, payment))
       end
     end
   end

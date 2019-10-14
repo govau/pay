@@ -11,7 +11,7 @@ defmodule PayWeb.ServiceUserControllerTest do
     setup [:create_service]
 
     test "lists all service_users", %{conn: conn, service: service} do
-      conn = get(conn, Routes.service_service_user_path(conn, :index, service))
+      conn = get(conn, Routes.services_service_service_user_path(conn, :index, service))
       assert json_response(conn, 200)["data"] == []
     end
   end

@@ -8,6 +8,7 @@ import * as Content from "./content";
 import * as Auth from "./auth";
 import * as Console from "./console";
 import * as PlatformAdmin from "./platform-admin";
+import * as ProductsApp from "./products-app";
 
 const { ThemeProvider } = styledComponents;
 
@@ -18,11 +19,14 @@ const App: React.FC = () => {
         <UserProvider>
           <GlobalStyle />
           <Switch>
+            <Route path="/console" strict>
+              <Console.Routes />
+            </Route>
             <Route path="/platform-admin" strict>
               <PlatformAdmin.Routes />
             </Route>
-            <Route path="/console" strict>
-              <Console.Routes />
+            <Route path="/products" strict>
+              <ProductsApp.Routes />
             </Route>
             <Route path="/auth" strict>
               <Auth.Routes />

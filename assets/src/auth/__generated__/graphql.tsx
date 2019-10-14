@@ -14,22 +14,68 @@ export type Scalars = {
   Float: number;
 };
 
+export type BamboraCredentials = {
+  __typename?: "BamboraCredentials";
+  account_number?: Maybe<Scalars["String"]>;
+  api_username?: Maybe<Scalars["String"]>;
+};
+
 export type CheckAuthResponse = {
   __typename?: "CheckAuthResponse";
   is_authenticated: Scalars["Boolean"];
   user?: Maybe<User>;
 };
 
+export type GatewayAccount = {
+  __typename?: "GatewayAccount";
+  id: Scalars["ID"];
+  payment_provider: GatewayAccountPaymentProvider;
+  type: GatewayAccountType;
+  service_name: Scalars["String"];
+  description: Scalars["String"];
+  credentials: GatewayAccountCredentials;
+  allow_apple_pay: Scalars["Boolean"];
+  allow_google_pay: Scalars["Boolean"];
+  allow_zero_amount: Scalars["Boolean"];
+  requires_3ds: Scalars["Boolean"];
+  products?: Maybe<Array<Product>>;
+};
+
+export type GatewayAccountCredentials = SandboxCredentials | BamboraCredentials;
+
+export enum GatewayAccountPaymentProvider {
+  Sandbox = "sandbox",
+  Bambora = "bambora",
+  Stripe = "stripe"
+}
+
+export enum GatewayAccountType {
+  Test = "test",
+  Live = "live"
+}
+
 export type Mutation = {
   __typename?: "Mutation";
   signout: Scalars["Boolean"];
 };
 
+export type Product = {
+  __typename?: "Product";
+  id: Scalars["ID"];
+  name: Scalars["String"];
+  description: Scalars["String"];
+  gatewayAccount: GatewayAccount;
+};
+
 export type Query = {
   __typename?: "Query";
-  dummy?: Maybe<Scalars["String"]>;
   user?: Maybe<User>;
   checkAuth: CheckAuthResponse;
+};
+
+export type SandboxCredentials = {
+  __typename?: "SandboxCredentials";
+  dummy?: Maybe<Scalars["String"]>;
 };
 
 export type User = {

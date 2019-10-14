@@ -25,17 +25,19 @@ defmodule PayWeb.OrganisationControllerTest do
 
   describe "index" do
     test "lists all organisations", %{conn: conn} do
-      conn = get(conn, Routes.organisation_path(conn, :index))
+      conn = get(conn, Routes.services_organisation_path(conn, :index))
       assert json_response(conn, 200)["data"] == []
     end
   end
 
   describe "create organisation" do
     test "renders organisation when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.organisation_path(conn, :create), organisation: @create_attrs)
+      conn =
+        post(conn, Routes.services_organisation_path(conn, :create), organisation: @create_attrs)
+
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get(conn, Routes.organisation_path(conn, :show, id))
+      conn = get(conn, Routes.services_organisation_path(conn, :show, id))
 
       assert %{
                "id" => id,
@@ -44,7 +46,9 @@ defmodule PayWeb.OrganisationControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.organisation_path(conn, :create), organisation: @invalid_attrs)
+      conn =
+        post(conn, Routes.services_organisation_path(conn, :create), organisation: @invalid_attrs)
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -57,13 +61,13 @@ defmodule PayWeb.OrganisationControllerTest do
       organisation: %Organisation{external_id: id} = organisation
     } do
       conn =
-        put(conn, Routes.organisation_path(conn, :update, organisation),
+        put(conn, Routes.services_organisation_path(conn, :update, organisation),
           organisation: @update_attrs
         )
 
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      conn = get(conn, Routes.organisation_path(conn, :show, id))
+      conn = get(conn, Routes.services_organisation_path(conn, :show, id))
 
       assert %{
                "id" => id,
@@ -73,7 +77,7 @@ defmodule PayWeb.OrganisationControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn, organisation: organisation} do
       conn =
-        put(conn, Routes.organisation_path(conn, :update, organisation),
+        put(conn, Routes.services_organisation_path(conn, :update, organisation),
           organisation: @invalid_attrs
         )
 
@@ -85,11 +89,11 @@ defmodule PayWeb.OrganisationControllerTest do
     setup [:create_organisation]
 
     test "deletes chosen organisation", %{conn: conn, organisation: organisation} do
-      conn = delete(conn, Routes.organisation_path(conn, :delete, organisation))
+      conn = delete(conn, Routes.services_organisation_path(conn, :delete, organisation))
       assert response(conn, 204)
 
       assert_error_sent 404, fn ->
-        get(conn, Routes.organisation_path(conn, :show, organisation))
+        get(conn, Routes.services_organisation_path(conn, :show, organisation))
       end
     end
   end

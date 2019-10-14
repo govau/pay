@@ -7,7 +7,7 @@ import validators from "../../lib/validation";
 const { required, isDate, composeValidators } = validators;
 
 const FormatGuide = styled.div`
-  color: ${props => props.theme.colors.darkGrey};
+  color: ${props => props.theme.colors.darkGray};
   margin: 0;
 `;
 

@@ -1,0 +1,5 @@
+# import Product from '../../gql/products.graphql'
+
+type Query {
+  product(serviceNameSlug: String!, nameSlug: String!): Product!
+}

@@ -4,28 +4,28 @@ import {
   FormProps as ReactFinalFormProps
 } from "react-final-form";
 import createDecorator from "final-form-focus";
-import styled from "../../styled-components";
+import styled, { css } from "../../styled-components";
 import ErrorAlert from "../ErrorAlert";
 
-interface FormProps extends ReactFinalFormProps {
-  children: React.ReactNode;
-  onSubmit: (values: any) => void;
+interface AnyObject {
+  [key: string]: any;
+}
+
+interface Props<FormValues = AnyObject>
+  extends ReactFinalFormProps<FormValues> {
   submitError?: string | null;
   submitErrorTitle?: string;
-  initialValues?: {
-    [key: string]: string | number | boolean | (string | number)[];
-  };
   column?: boolean;
 }
 
 const FormElem = styled("form")<{ column?: boolean }>`
   ${props =>
     props.column &&
-    `
-    input {
-      width: 100%;
-    }
-  `}
+    css`
+      input {
+        width: 100%;
+      }
+    `}
 `;
 
 const focusOnErrors = createDecorator();
@@ -33,31 +33,34 @@ const focusOnErrors = createDecorator();
 const formatGraphqlError = (message?: string | null) =>
   message ? message.replace("GraphQL error: ", "") : "";
 
-const Form: React.FC<FormProps> = ({
+function Form<FormValues = AnyObject>({
   children,
-  onSubmit,
   submitError,
   submitErrorTitle,
   column,
   ...rest
-}) => (
-  <ReactFinalForm onSubmit={onSubmit} {...rest} decorators={[focusOnErrors]}>
-    {({ handleSubmit }) => (
-      <>
-        <ErrorAlert
-          showError={!!submitError}
-          title={submitErrorTitle || "Submission error"}
-          message={
-            formatGraphqlError(submitError) ||
-            "There was an error submitting the form"
-          }
-        />
-        <FormElem column={column} onSubmit={handleSubmit} noValidate>
-          {children}
-        </FormElem>
-      </>
-    )}
-  </ReactFinalForm>
-);
+}: Props<FormValues>) {
+  return (
+    <ReactFinalForm {...rest} decorators={[focusOnErrors]}>
+      {({ handleSubmit, ...renderRest }) => (
+        <>
+          <ErrorAlert
+            showError={!!submitError}
+            title={submitErrorTitle || "Submission error"}
+            message={
+              formatGraphqlError(submitError) ||
+              "There was an error submitting the form"
+            }
+          />
+          <FormElem column={column} onSubmit={handleSubmit} noValidate>
+            {typeof children === "function"
+              ? children({ handleSubmit, ...renderRest })
+              : children}
+          </FormElem>
+        </>
+      )}
+    </ReactFinalForm>
+  );
+}
 
 export default Form;

@@ -131,7 +131,7 @@ defmodule Pay.Payments do
     Repo.all(
       from ga in GatewayAccount,
         left_join: sga in ServiceGatewayAccount,
-        on: type(ga.id, :string) == sga.gateway_account_id,
+        on: ga.external_id == sga.gateway_account_id,
         left_join: s in Service,
         on: sga.service_id == s.id,
         where: s.external_id == ^external_id
@@ -155,6 +155,23 @@ defmodule Pay.Payments do
   def get_gateway_account!(id), do: Repo.get!(GatewayAccount, id)
 
   @doc """
+  Gets a single gateway_account by the given external ID.
+
+  Raises `Ecto.NoResultsError` if the GatewayAccount does not exist.
+
+  ## Examples
+
+      iex> get_gateway_account_by_external_id!("3bfd1a3c-0960-49da-be66-053b159df62d")
+      %GatewayAccount{}
+
+      iex> get_gateway_account_by_external_id!("3bfd1a3c-0960-49da-be66-053b159df62e")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_gateway_account_by_external_id!(external_id),
+    do: Repo.get_by!(GatewayAccount, external_id: external_id)
+
+  @doc """
   Creates a gateway_account.
 
   ## Examples
@@ -167,8 +184,11 @@ defmodule Pay.Payments do
 
   """
   def create_gateway_account(attrs \\ %{}) do
-    %GatewayAccount{}
-    |> GatewayAccount.changeset(attrs)
+    %GatewayAccount{
+      external_id: Ecto.UUID.generate(),
+      credentials: %{}
+    }
+    |> GatewayAccount.create_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -186,7 +206,7 @@ defmodule Pay.Payments do
   """
   def update_gateway_account(%GatewayAccount{} = gateway_account, attrs) do
     gateway_account
-    |> GatewayAccount.changeset(attrs)
+    |> GatewayAccount.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -204,19 +224,6 @@ defmodule Pay.Payments do
   """
   def delete_gateway_account(%GatewayAccount{} = gateway_account) do
     Repo.delete(gateway_account)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking gateway_account changes.
-
-  ## Examples
-
-      iex> change_gateway_account(gateway_account)
-      %Ecto.Changeset{source: %GatewayAccount{}}
-
-  """
-  def change_gateway_account(%GatewayAccount{} = gateway_account) do
-    GatewayAccount.changeset(gateway_account, %{})
   end
 
   alias Pay.Payments.Payment

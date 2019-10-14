@@ -8,7 +8,7 @@ export interface ErrorProps {
 }
 
 const ErrorWrapper = styled.div`
-  background: ${props => props.theme.colors.lightGrey};
+  background: ${props => props.theme.colors.lightGray};
   border-left: 4px solid ${props => props.theme.colors.red};
   margin: 2rem 0 2rem 0;
   display: flex;

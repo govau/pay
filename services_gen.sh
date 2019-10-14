@@ -97,7 +97,7 @@ mix ecto.migrate
 
 mix phx.gen.schema $SERVICES_CTX.ServiceGatewayAccount service_gateway_accounts \
     service_id:references:services \
-    gateway_account_id:string
+    gateway_account_id:uuid
 
 mix ecto.migrate
 

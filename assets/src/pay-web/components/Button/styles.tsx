@@ -29,7 +29,8 @@ const variationStyles = (props: ButtonProps) => {
         border-style: solid;
         background: ${props => props.theme.bgColor};
 
-        &:hover {
+        &:hover,
+        &:focus {
           color: ${props => props.theme.textColor};
           border-color: ${props => props.theme.brandPrimary};
           text-decoration: underline;
@@ -42,7 +43,8 @@ const variationStyles = (props: ButtonProps) => {
         border: none;
         padding: none;
 
-        &:hover {
+        &:hover,
+        &:focus {
           color: ${props => props.theme.textColor};
           text-decoration: none;
         }
@@ -60,7 +62,8 @@ const variationStyles = (props: ButtonProps) => {
         background: none;
         border: none;
         text-decoration: underline;
-        &:hover {
+        &:hover,
+        &:focus {
           color: ${props => props.theme.textColor};
         }
         ${props.padded &&
@@ -80,7 +83,8 @@ const variationStyles = (props: ButtonProps) => {
         border-width: 3px;
         border-style: solid;
 
-        &:hover {
+        &:hover,
+        &:focus {
           color: ${props => props.theme.bgColor};
           border-color: ${props => props.theme.brandSecondary};
           background: ${props => props.theme.brandSecondary};

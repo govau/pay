@@ -15,7 +15,7 @@ defmodule PayWeb.RoleController do
     with {:ok, %Role{} = role} <- Services.create_role(role_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.role_path(conn, :show, role))
+      |> put_resp_header("location", Routes.services_role_path(conn, :show, role))
       |> render("show.json", role: role)
     end
   end

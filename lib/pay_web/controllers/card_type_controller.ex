@@ -15,7 +15,7 @@ defmodule PayWeb.CardTypeController do
     with {:ok, %CardType{} = card_type} <- Payments.create_card_type(card_type_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.card_type_path(conn, :show, card_type))
+      |> put_resp_header("location", Routes.payments_card_type_path(conn, :show, card_type))
       |> render("show.json", card_type: card_type)
     end
   end

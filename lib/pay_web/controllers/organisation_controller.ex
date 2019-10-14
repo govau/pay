@@ -16,7 +16,7 @@ defmodule PayWeb.OrganisationController do
            Services.create_organisation(organisation_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.organisation_path(conn, :show, organisation))
+      |> put_resp_header("location", Routes.services_organisation_path(conn, :show, organisation))
       |> render("show.json", organisation: organisation)
     end
   end

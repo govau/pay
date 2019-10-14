@@ -21,5 +21,27 @@ export const Services = {
   }),
   TeamPage: loadable(() => import("./services/TeamPage"), {
     fallback: <Loader />
-  })
+  }),
+  GatewayAccounts: {
+    PaymentsPage: loadable(() => import("./gateway-accounts/PaymentsPage"), {
+      fallback: <Loader />
+    }),
+    CredentialsPage: loadable(
+      () => import("./gateway-accounts/CredentialsPage"),
+      {
+        fallback: <Loader />
+      }
+    ),
+    Products: {
+      ListPage: loadable(() => import("./products/ListPage"), {
+        fallback: <Loader />
+      }),
+      CreateStartPage: loadable(() => import("./products/CreateStartPage"), {
+        fallback: <Loader />
+      }),
+      CreateFormPage: loadable(() => import("./products/CreateFormPage"), {
+        fallback: <Loader />
+      })
+    }
+  }
 };

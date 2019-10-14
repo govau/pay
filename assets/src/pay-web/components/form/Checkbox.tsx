@@ -2,11 +2,10 @@ import * as React from "react";
 import styled from "../../styled-components";
 import { Field } from "react-final-form";
 
-interface Props {
+interface Props<FieldValue = string> {
   label: string;
   name: string;
-  value?: string;
-  onClick?: () => void;
+  value?: FieldValue;
 }
 
 const Wrapper = styled.label`
@@ -51,23 +50,23 @@ const Checkmark = styled.span`
   margin-right: 0.8rem;
 `;
 
-const Checkbox: React.FunctionComponent<Props> = ({
+function Checkbox<FieldValue = string>({
   label,
   name,
-  value,
-  onClick
-}) => (
-  <Wrapper>
-    <Field
-      name={name}
-      value={value}
-      component="input"
-      type="checkbox"
-      onClick={onClick}
-    />
-    <Checkmark />
-    {label}
-  </Wrapper>
-);
+  value
+}: Props<FieldValue>) {
+  return (
+    <Wrapper>
+      <Field<FieldValue>
+        name={name}
+        value={value}
+        component="input"
+        type="checkbox"
+      />
+      <Checkmark />
+      {label}
+    </Wrapper>
+  );
+}
 
 export default Checkbox;

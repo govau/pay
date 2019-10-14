@@ -18,7 +18,7 @@ defmodule PayWeb.OrganisationTypeController do
       |> put_status(:created)
       |> put_resp_header(
         "location",
-        Routes.organisation_type_path(conn, :show, organisation_type)
+        Routes.services_organisation_type_path(conn, :show, organisation_type)
       )
       |> render("show.json", organisation_type: organisation_type)
     end
