@@ -6,9 +6,11 @@ defmodule Pay.Services do
   import Ecto.Query, warn: false
   alias Pay.Repo
 
+  alias Pay.Payments
   alias Pay.Services.Permission
   alias Pay.Services.Role
   alias Pay.Services.ServiceUser
+  alias Pay.Services.ServiceGatewayAccount
   alias Pay.Services.Service.GoLiveStage
 
   @doc """
@@ -642,8 +644,28 @@ defmodule Pay.Services do
                  role_id: admin_role.id
                })
              ) do
-          {:ok, _assoc} -> {:ok, service}
-          {:error, changeset} -> {:error, changeset}
+          {:ok, _serviceUser} ->
+            case Payments.create_gateway_account(%{
+                   "service_name" => service.name,
+                   "type" => Payments.GatewayAccount.Type.Test.value().name,
+                   "payment_provider" =>
+                     Payments.GatewayAccount.PaymentProvider.Sandbox.value().name
+                 }) do
+              {:ok, gatewayAccount} ->
+                case Repo.insert(%ServiceGatewayAccount{
+                       gateway_account_id: gatewayAccount.external_id,
+                       service_id: service.id
+                     }) do
+                  {:ok, _assoc} -> {:ok, service}
+                  {:error, changeset} -> {:error, changeset}
+                end
+
+              {:error, changeset} ->
+                {:error, changeset}
+            end
+
+          {:error, changeset} ->
+            {:error, changeset}
         end
 
       {:error, changeset} ->

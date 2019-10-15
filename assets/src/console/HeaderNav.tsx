@@ -13,7 +13,7 @@ import {
   useGetServiceWithGatewayAccountsQuery,
   GatewayAccountType,
   GatewayAccountFragment
-} from "../console/__generated__/graphql";
+} from "./__generated__/graphql";
 import { goLiveStageLabel } from "../services";
 
 // ServiceInfoNav is shown when in console, inside the context of a service.
