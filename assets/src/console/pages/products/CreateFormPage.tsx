@@ -98,11 +98,13 @@ const CreateFormPage: React.FC<{
               <Redirect to={path + "/TODO"} />
             ) : (
               <>
-                <ErrorAlert
-                  title="Unable to create payment link"
-                  message={getErrorMessage(error)}
-                  showError={!!error}
-                />
+                {error && (
+                  <ErrorAlert
+                    title="Unable to create payment link"
+                    message={getErrorMessage(error)}
+                    showError={true}
+                  />
+                )}
                 <Switch>
                   <Route path={`${path}/details`}>
                     <DetailsPage

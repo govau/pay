@@ -28,7 +28,11 @@ const AmountPage: React.FC<{
           )}
         </Field>
       ) : null}
-      <BooleanRadio name="price_fixed" value={false} label="No" />
+      <BooleanRadio
+        name="price_fixed"
+        value={false}
+        label="No, the user can choose the amount"
+      />
       <LinkButton to={`${path}/review`}>Continue</LinkButton>
     </>
   );
