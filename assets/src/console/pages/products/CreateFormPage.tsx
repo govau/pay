@@ -99,7 +99,7 @@ const CreateFormPage: React.FC<{
             ) : (
               <>
                 <ErrorAlert
-                  title="Unable to create service"
+                  title="Unable to create payment link"
                   message={getErrorMessage(error)}
                   showError={!!error}
                 />
