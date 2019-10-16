@@ -34,10 +34,17 @@ defmodule Pay.Products.ProductPayment do
   def normalize_reference(changeset, %Product{} = product) do
     # If the product's reference field is enabled, the payment reference can be
     # manually provided, so return the existing changeset. Otherwise, delete the
-    # change and preserve the existing value.
+    # change and preserve the existing value (but only if the record is loaded
+    # from the database—allow new records to provide their reference).
     case product.reference_enabled do
-      true -> changeset
-      false -> delete_change(changeset, :reference)
+      true ->
+        changeset
+
+      false ->
+        case Ecto.get_meta(changeset.data, :state) do
+          :loaded -> delete_change(changeset, :reference)
+          _ -> changeset
+        end
     end
   end
 
