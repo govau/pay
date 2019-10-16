@@ -64,7 +64,7 @@ const AmountPage: React.FC<Props> = ({ path, payment, values }) => {
       {payment.product.price_fixed ? (
         <>
           <Label id={labelId} htmlFor={fieldId}>
-            Paymount amount
+            Payment amount
           </Label>
           <Callout id={fieldId}>
             <P>
@@ -76,8 +76,7 @@ const AmountPage: React.FC<Props> = ({ path, payment, values }) => {
         <>
           <Field
             name="amount"
-            label="Paymount amount"
-            validate={validators.required("Enter the paymount amount")}
+            label="Payment amount"
             // TODO: fix format and parse functions.
             format={value => {
               if (!value) {
