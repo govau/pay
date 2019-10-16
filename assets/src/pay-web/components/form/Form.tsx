@@ -45,7 +45,7 @@ function Form<FormValues = AnyObject>({
       {({ handleSubmit, ...renderRest }) => (
         <>
           <ErrorAlert
-            showError={!!submitError}
+            showError={Boolean(submitError)}
             title={submitErrorTitle || "Submission error"}
             message={
               formatGraphqlError(submitError) ||

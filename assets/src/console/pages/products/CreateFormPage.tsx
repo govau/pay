@@ -56,8 +56,8 @@ const handleSubmit = (
           input: {
             product: {
               ...values,
-              reference_enabled: !!reference_enabled,
-              price_fixed: !!price_fixed,
+              reference_enabled: Boolean(reference_enabled),
+              price_fixed: Boolean(price_fixed),
               price: price ? ensureMoneyInCents(price) : 0
             }
           }
