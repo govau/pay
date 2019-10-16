@@ -98,26 +98,28 @@ const CreateFormPage: React.FC<{
               <Redirect to={path + "/TODO"} />
             ) : (
               <>
-                <ErrorAlert
-                  title="Unable to create service"
-                  message={getErrorMessage(error)}
-                  showError={!!error}
-                />
+                {error && (
+                  <ErrorAlert
+                    title="Unable to create payment link"
+                    message={getErrorMessage(error)}
+                    showError={true}
+                  />
+                )}
                 <Switch>
-                  <Route path={`${path}/details`}>
+                  <Route path={`${path}/details`} exact strict>
                     <DetailsPage
                       serviceName={serviceName}
                       path={path}
                       values={values}
                     />
                   </Route>
-                  <Route path={`${path}/reference`}>
+                  <Route path={`${path}/reference`} exact strict>
                     <ReferencePage path={path} values={values} />
                   </Route>
-                  <Route path={`${path}/amount`}>
+                  <Route path={`${path}/amount`} exact strict>
                     <AmountPage path={path} values={values} />
                   </Route>
-                  <Route path={`${path}/review`}>
+                  <Route path={`${path}/review`} exact strict>
                     <ReviewPage path={path} values={values} />
                   </Route>
                   <Route path="*">

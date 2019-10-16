@@ -8,7 +8,7 @@ import * as Content from "./content";
 import * as Auth from "./auth";
 import * as Console from "./console";
 import * as PlatformAdmin from "./platform-admin";
-import * as ProductsApp from "./products-app";
+import * as Products from "./products";
 
 const { ThemeProvider } = styledComponents;
 
@@ -26,7 +26,7 @@ const App: React.FC = () => {
               <PlatformAdmin.Routes />
             </Route>
             <Route path="/products" strict>
-              <ProductsApp.Routes />
+              <Products.Routes />
             </Route>
             <Route path="/auth" strict>
               <Auth.Routes />

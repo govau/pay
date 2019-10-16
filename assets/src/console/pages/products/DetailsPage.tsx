@@ -6,7 +6,8 @@ import {
   Callout,
   Field,
   BasicTextInput,
-  validators
+  validators,
+  P
 } from "@pay/web";
 
 import { Values } from "./CreateFormPage";
@@ -32,10 +33,10 @@ const DetailsPage: React.FC<{
       {values.name && (
         <Callout>
           <h3>The website address for this payment link will look like:</h3>
-          <p>
+          <P>
             https://pay.gov.au/payments/{slugify(serviceName)}/
             {slugify(values.name)}
-          </p>
+          </P>
         </Callout>
       )}
       <Field

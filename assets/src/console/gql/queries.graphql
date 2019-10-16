@@ -21,6 +21,8 @@ fragment GatewayAccount on GatewayAccount {
 fragment Product on Product {
   id
   name
+  name_slug
+  service_name_slug
   description
 }
 

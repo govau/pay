@@ -10,6 +10,7 @@ defmodule Pay.Products.Product do
     field :external_id, Ecto.UUID
     field :gateway_account_id, Ecto.UUID
     field :name, :string
+    field :price_fixed, :boolean, default: false
     field :price, :integer
     field :name_slug, :string
     field :reference_enabled, :boolean, default: false
@@ -40,6 +41,7 @@ defmodule Pay.Products.Product do
       :api_token,
       :name,
       :description,
+      :price_fixed,
       :price,
       :status,
       :return_url,
@@ -55,6 +57,7 @@ defmodule Pay.Products.Product do
       :gateway_account_id,
       :api_token,
       :name,
+      :price_fixed,
       :price,
       :status,
       :return_url,
@@ -72,6 +75,7 @@ defmodule Pay.Products.Product do
       :api_token,
       :name,
       :description,
+      :price_fixed,
       :price,
       :status,
       :return_url,
@@ -86,6 +90,7 @@ defmodule Pay.Products.Product do
       :api_token,
       :name,
       :description,
+      :price_fixed,
       :price,
       :status,
       :return_url,

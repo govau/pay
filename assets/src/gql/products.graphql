@@ -3,6 +3,20 @@
 type Product {
   id: ID!
   name: String!
+  name_slug: String!
+  service_name_slug: String!
   description: String!
-  gatewayAccount: GatewayAccount!
+  reference_enabled: Boolean!
+  reference_label: String!
+  reference_hint: String!
+  price_fixed: Boolean!
+  price: Int!
+  gateway_account: GatewayAccount!
+}
+
+type ProductPayment {
+  id: ID!
+  product: Product!
+  reference: String!
+  amount: Int!
 }

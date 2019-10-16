@@ -13,7 +13,7 @@ const SigninPage: React.FunctionComponent = () => (
       Microsoft.
     </p>
     <Button stretch={true}>Use Google</Button>
-    <Button stretch={true} variation="secondary">
+    <Button stretch={true} variant="secondary">
       Use Microsoft
     </Button>
   </>

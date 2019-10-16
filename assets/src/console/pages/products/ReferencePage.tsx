@@ -5,11 +5,13 @@ import {
   Field,
   BooleanRadio,
   BasicTextInput,
-  validators
+  validators,
+  Callout,
+  P
 } from "@pay/web";
 import { Values } from "./CreateFormPage";
 
-const DetailsPage: React.FC<{
+const ReferencePage: React.FC<{
   path: string;
   values: Pick<Values, "reference_enabled">;
 }> = ({ path, values }) => {
@@ -17,7 +19,7 @@ const DetailsPage: React.FC<{
     <>
       <PageTitle title="Do your users already have a payment reference?" />
       <BooleanRadio name="reference_enabled" value={true} label="Yes" />
-      {values.reference_enabled ? (
+      {values.reference_enabled === true && (
         <>
           <Field
             name="reference_label"
@@ -39,11 +41,19 @@ const DetailsPage: React.FC<{
             )}
           </Field>
         </>
-      ) : null}
+      )}
       <BooleanRadio name="reference_enabled" value={false} label="No" />
+      {values.reference_enabled === false && (
+        <Callout>
+          <P>
+            Pay.gov.au will create a unique payment reference for each
+            transaction.
+          </P>
+        </Callout>
+      )}
       <LinkButton to={`${path}/amount`}>Continue</LinkButton>
     </>
   );
 };
 
-export default DetailsPage;
+export default ReferencePage;

@@ -21,13 +21,13 @@ import PlatformAdminNav from "../../platform-admin/HeaderNav";
 
 const { ThemeProvider } = styledComponents;
 
-const Link = styled(LinkComponent)`
+export const Link = styled(LinkComponent)`
   font-weight: 700;
   font-size: 1.4rem;
 `;
 
 // arrange main layout horizontal or vertical based on screen size
-const PrimaryContainer = styled(Container)`
+export const PrimaryContainer = styled(Container)`
   display: flex;
   flex-flow: column nowrap;
 
@@ -38,7 +38,7 @@ const PrimaryContainer = styled(Container)`
 `;
 
 // this part of the header always stays, does not collapse {coa, logo}
-const VisibleWrapper = styled.div`
+export const VisibleWrapper = styled.div`
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -46,7 +46,7 @@ const VisibleWrapper = styled.div`
 `;
 
 // link around logo
-const HeaderLink = styled(LinkComponent)`
+export const HeaderLink = styled(LinkComponent)`
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -60,10 +60,11 @@ interface NavProps {
   visible?: boolean;
 }
 
-const Nav = styled.div<NavProps>`
+export const Nav = styled.ul<NavProps>`
   display: ${props => (props.visible ? "flex" : "none")};
   flex-flow: column nowrap;
-  margin-top: 1.5rem;
+  margin: 1.5rem 0 0 0;
+  padding: 0;
 
   @media ${desktop} {
     display: flex;
@@ -71,14 +72,18 @@ const Nav = styled.div<NavProps>`
     flex-flow: row nowrap;
     margin-top: 0;
 
-    ${Link} + ${Link} {
+    > li + li {
       margin-left: 1em;
     }
+  }
+
+  > li {
+    display: block;
   }
 `;
 
 // hide the menu while we're on desktop
-const Menu = styled.div`
+export const Menu = styled.div`
   color: ${props => props.theme.colors.white};
   display: flex;
   flex-direction: column;
@@ -99,7 +104,7 @@ const Menu = styled.div`
   }
 `;
 
-const CoaLogo = styled(Coat)`
+export const CoaLogo = styled(Coat)`
   height: 5.5rem;
 `;
 
@@ -133,14 +138,14 @@ const Header: React.FC<Props> = ({ setUser }) => {
         linkColor: theme.colors.white
       })}
     >
-      <React.Fragment>
+      <>
         <PrimaryHeader>
           <PrimaryContainer>
             <VisibleWrapper>
               <HeaderLink to="/">
                 <CoaLogo />
                 <Wordmark />
-                <Lozenge variation="light">Beta</Lozenge>
+                <Lozenge variant="light">Beta</Lozenge>
               </HeaderLink>
 
               <Menu onClick={() => setIsNavVisible(!isNavVisible)}>
@@ -150,30 +155,45 @@ const Header: React.FC<Props> = ({ setUser }) => {
 
             {isAuthenticated ? (
               <Nav visible={isNavVisible}>
-                <Link to="/console">Services</Link>
-                <Link to="/console/profile">Profile</Link>
-                <Link to="/docs">Documentation</Link>
-
+                <li>
+                  <Link to="/console">Services</Link>
+                </li>
+                <li>
+                  <Link to="/console/profile">Profile</Link>
+                </li>
+                <li>
+                  <Link to="/docs">Documentation</Link>
+                </li>
                 {isPlatformAdmin ? (
-                  <Link to="/platform-admin">Platform admin</Link>
+                  <li>
+                    <Link to="/platform-admin">Platform admin</Link>
+                  </li>
                 ) : null}
-
-                <Link to="/auth/signout">Sign out</Link>
+                <li>
+                  <Link to="/auth/signout">Sign out</Link>
+                </li>
               </Nav>
             ) : (
               <Nav visible={isNavVisible}>
-                <Link to="/TODO">About</Link>
-                <Link to="/TODO">Get started</Link>
-                <Link to="/TODO">Documentation</Link>
+                <li>
+                  <Link to="/TODO">About</Link>
+                </li>
+                <li>
+                  <Link to="/TODO">Get started</Link>
+                </li>
+                <li>
+                  <Link to="/TODO">Documentation</Link>
+                </li>
                 {!checkAuthQuery.loading && (
-                  <Link to="/auth/signin">Sign in</Link>
+                  <li>
+                    <Link to="/auth/signin">Sign in</Link>
+                  </li>
                 )}
               </Nav>
             )}
           </PrimaryContainer>
         </PrimaryHeader>
 
-        {/* Show the appropriate nav depending on the users' context -- admin, service, signup, ... */}
         {isAuthenticated ? (
           <PrimaryNav>
             <Switch>
@@ -193,7 +213,7 @@ const Header: React.FC<Props> = ({ setUser }) => {
             </Switch>
           </PrimaryNav>
         ) : null}
-      </React.Fragment>
+      </>
     </ThemeProvider>
   );
 };

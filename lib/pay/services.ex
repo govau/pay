@@ -6,9 +6,11 @@ defmodule Pay.Services do
   import Ecto.Query, warn: false
   alias Pay.Repo
 
+  alias Pay.Payments
   alias Pay.Services.Permission
   alias Pay.Services.Role
   alias Pay.Services.ServiceUser
+  alias Pay.Services.ServiceGatewayAccount
   alias Pay.Services.Service.GoLiveStage
 
   @doc """
@@ -593,6 +595,29 @@ defmodule Pay.Services do
     do: Repo.get_by!(Service, external_id: external_id)
 
   @doc """
+  Gets a single service by the given gateway account external ID.
+
+  Raises `Ecto.NoResultsError` if the Service does not exist.
+
+  ## Examples
+
+      iex> get_service_by_gateway_account_external_id!("3bfd1a3c-0960-49da-be66-053b159df62d")
+      %Service{}
+
+      iex> get_service_by_gateway_account_external_id!("3bfd1a3c-0960-49da-be66-053b159df62e")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_service_by_gateway_account_external_id!(external_id),
+    do:
+      Repo.one!(
+        from s in Service,
+          left_join: sga in ServiceGatewayAccount,
+          on: s.id == sga.service_id,
+          where: sga.gateway_account_id == ^external_id
+      )
+
+  @doc """
   Gets a single service by the given external ID.
 
   Returns nil if the Service does not exist.
@@ -642,8 +667,28 @@ defmodule Pay.Services do
                  role_id: admin_role.id
                })
              ) do
-          {:ok, _assoc} -> {:ok, service}
-          {:error, changeset} -> {:error, changeset}
+          {:ok, _serviceUser} ->
+            case Payments.create_gateway_account(%{
+                   "service_name" => service.name,
+                   "type" => Payments.GatewayAccount.Type.Test.value().name,
+                   "payment_provider" =>
+                     Payments.GatewayAccount.PaymentProvider.Sandbox.value().name
+                 }) do
+              {:ok, gatewayAccount} ->
+                case Repo.insert(%ServiceGatewayAccount{
+                       gateway_account_id: gatewayAccount.external_id,
+                       service_id: service.id
+                     }) do
+                  {:ok, _assoc} -> {:ok, service}
+                  {:error, changeset} -> {:error, changeset}
+                end
+
+              {:error, changeset} ->
+                {:error, changeset}
+            end
+
+          {:error, changeset} ->
+            {:error, changeset}
         end
 
       {:error, changeset} ->

@@ -3,6 +3,7 @@ defmodule Pay.Fixtures do
   alias Pay.Services.Role
   alias Pay.Services.Service
   alias Pay.Services.User
+  alias Pay.Products.Product
 
   def fixture(:admin_role) do
     Repo.insert!(%Role{
@@ -40,6 +41,21 @@ defmodule Pay.Fixtures do
       merchant_telephone_number: "some merchant_telephone_number",
       name: "some name",
       redirect_to_service_immediately_on_terminal_state: true
+    })
+  end
+
+  def fixture(:product) do
+    Repo.insert!(%Product{
+      external_id: "7488a646-e31f-11e4-aace-600308960662",
+      name: "some name",
+      name_slug: "some-name",
+      service_name_slug: "service-name-slug",
+      description: "some description",
+      price_fixed: true,
+      price: 43000,
+      reference_enabled: true,
+      reference_label: "some reference_label",
+      reference_hint: "some reference_hint"
     })
   end
 end

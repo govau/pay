@@ -14,9 +14,9 @@ defmodule PayWeb.Products.ProductView do
     %{
       id: product.external_id,
       gateway_account_id: product.gateway_account_id,
-      api_token: product.api_token,
       name: product.name,
       description: product.description,
+      price_fixed: product.price_fixed,
       price: product.price,
       status: product.status,
       return_url: product.return_url,

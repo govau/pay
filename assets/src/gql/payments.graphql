@@ -1,3 +1,4 @@
+# import Service from './services.graphql'
 # import Product from './products.graphql'
 
 type CardType {
@@ -34,6 +35,7 @@ type GatewayAccount {
   payment_provider: GatewayAccountPaymentProvider!
   type: GatewayAccountType!
   service_name: String!
+  service: Service!
   description: String!
   credentials: GatewayAccountCredentials!
   allow_apple_pay: Boolean!

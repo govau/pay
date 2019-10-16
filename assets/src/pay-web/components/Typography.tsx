@@ -5,7 +5,7 @@ import spacing from "./spacing";
 interface HeadingProps {}
 
 const headingStyles = css<HeadingProps>`
-  line-height: 1.5;
+  line-height: 1.1;
   font-weight: 700;
   max-width: 70rem;
   margin-bottom: ${spacing.fixed(1.5)};
