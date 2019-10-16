@@ -32,6 +32,7 @@ export type GatewayAccount = {
   payment_provider: GatewayAccountPaymentProvider;
   type: GatewayAccountType;
   service_name: Scalars["String"];
+  service: Service;
   description: Scalars["String"];
   credentials: GatewayAccountCredentials;
   allow_apple_pay: Scalars["Boolean"];
@@ -63,8 +64,15 @@ export type Product = {
   __typename?: "Product";
   id: Scalars["ID"];
   name: Scalars["String"];
+  name_slug: Scalars["String"];
+  service_name_slug: Scalars["String"];
   description: Scalars["String"];
-  gatewayAccount: GatewayAccount;
+  reference_enabled: Scalars["Boolean"];
+  reference_label: Scalars["String"];
+  reference_hint: Scalars["String"];
+  price_fixed: Scalars["Boolean"];
+  price: Scalars["Int"];
+  gateway_account: GatewayAccount;
 };
 
 export type Query = {
@@ -73,9 +81,37 @@ export type Query = {
   checkAuth: CheckAuthResponse;
 };
 
+export type Role = {
+  __typename?: "Role";
+  id: Scalars["ID"];
+  name: Scalars["String"];
+  description: Scalars["String"];
+};
+
 export type SandboxCredentials = {
   __typename?: "SandboxCredentials";
   dummy?: Maybe<Scalars["String"]>;
+};
+
+export type Service = {
+  __typename?: "Service";
+  id: Scalars["ID"];
+  name: Scalars["String"];
+  current_go_live_stage: ServiceGoLiveStage;
+  users?: Maybe<Array<ServiceUser>>;
+  gateway_accounts?: Maybe<Array<GatewayAccount>>;
+};
+
+export enum ServiceGoLiveStage {
+  NotStarted = "not_started",
+  Live = "live"
+}
+
+export type ServiceUser = {
+  __typename?: "ServiceUser";
+  service: Service;
+  user: User;
+  role: Role;
 };
 
 export type User = {

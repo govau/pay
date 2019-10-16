@@ -1,9 +1,9 @@
 import * as React from "react";
-import { useParams } from "react-router";
+import { useParams, Redirect } from "react-router";
 import { Helmet } from "react-helmet";
-import { P, PageTitle, Loader, ErrorAlert, Pages as CorePages } from "@pay/web";
+import { PageTitle, Loader, ErrorAlert, Pages as CorePages } from "@pay/web";
 
-import { useGetProductQuery } from "../__generated__/graphql";
+import { useCreatePaymentMutation } from "../__generated__/graphql";
 import { isServerError } from "../../apollo-rest-utils";
 
 const ProductPage: React.FC = () => {
@@ -12,13 +12,21 @@ const ProductPage: React.FC = () => {
     nameSlug: string;
   }>();
 
-  const { loading, error, data } = useGetProductQuery({
+  const [
+    createPaymentMutation,
+    { data, called, loading, error }
+  ] = useCreatePaymentMutation({
     variables: {
       serviceNameSlug,
-      nameSlug
+      nameSlug,
+      input: {}
     },
     errorPolicy: "all"
   });
+
+  if (!called) {
+    createPaymentMutation();
+  }
 
   const is404 =
     error &&
@@ -40,27 +48,14 @@ const ProductPage: React.FC = () => {
             </Helmet>
             <PageTitle title="Something went wrong" />
             <ErrorAlert
-              title="Unable to retrieve product"
+              title="Unable to create payment"
               message={error && error.message}
               showError
             />
           </>
         )
       ) : (
-        <>
-          <Helmet>
-            <title>{data.product.name}</title>
-          </Helmet>
-          <PageTitle title={data.product.name} />
-          <P>This page will let a person pay for this product/service.</P>
-          <ul>
-            <li>We'll create a payment object</li>
-            <li>They'll fill in reference details</li>
-            <li>They'll fill in payment amount</li>
-            <li>They'll fill in credit card details</li>
-            <li>They'll pay</li>
-          </ul>
-        </>
+        <Redirect to={`/products/pay/${data.payment.id}`} />
       )}
     </>
   );

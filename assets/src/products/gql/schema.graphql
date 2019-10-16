@@ -1,5 +1,28 @@
-# import Product from '../../gql/products.graphql'
+# import Product, ProductPayment from '../../gql/products.graphql'
 
 type Query {
   product(serviceNameSlug: String!, nameSlug: String!): Product!
+  productPayment(id: ID!): ProductPayment!
+}
+
+input CreatePaymentInput {
+  dummy: String
+}
+
+input UpdatePaymentPayment {
+  reference: String!
+  amount: Int
+}
+
+input UpdatePaymentInput {
+  payment: UpdatePaymentPayment!
+}
+
+type Mutation {
+  createPayment(
+    serviceNameSlug: String!
+    nameSlug: String!
+    input: CreatePaymentInput!
+  ): ProductPayment!
+  updatePayment(id: ID!, input: UpdatePaymentInput!): ProductPayment!
 }

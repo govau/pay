@@ -1,13 +1,13 @@
 import styled, { css } from "../styled-components";
 
 interface Props {
-  variation: "dark" | "light" | "flair" | "pink";
+  variant: "dark" | "light" | "flair" | "pink";
 }
 
 const Lozenge = styled.span<Props>`
   font-size: 1.4rem;
-  ${({ theme, variation }) => {
-    switch (variation) {
+  ${({ theme, variant }) => {
+    switch (variant) {
       case "dark":
         return css`
           border: 1px solid ${theme.colors.black};

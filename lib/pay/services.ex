@@ -595,6 +595,29 @@ defmodule Pay.Services do
     do: Repo.get_by!(Service, external_id: external_id)
 
   @doc """
+  Gets a single service by the given gateway account external ID.
+
+  Raises `Ecto.NoResultsError` if the Service does not exist.
+
+  ## Examples
+
+      iex> get_service_by_gateway_account_external_id!("3bfd1a3c-0960-49da-be66-053b159df62d")
+      %Service{}
+
+      iex> get_service_by_gateway_account_external_id!("3bfd1a3c-0960-49da-be66-053b159df62e")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_service_by_gateway_account_external_id!(external_id),
+    do:
+      Repo.one!(
+        from s in Service,
+          left_join: sga in ServiceGatewayAccount,
+          on: s.id == sga.service_id,
+          where: sga.gateway_account_id == ^external_id
+      )
+
+  @doc """
   Gets a single service by the given external ID.
 
   Returns nil if the Service does not exist.

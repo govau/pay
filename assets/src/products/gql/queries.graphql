@@ -1,6 +1,30 @@
 fragment Product on Product {
   id
   name
+  name_slug
+  description
+  service_name_slug
+  reference_enabled
+  reference_label
+  reference_hint
+  price_fixed
+  price
+  gateway_account {
+    id
+    service {
+      id
+      name
+    }
+  }
+}
+
+fragment ProductPayment on ProductPayment {
+  id
+  reference
+  amount
+  product {
+    ...Product
+  }
 }
 
 query GetProduct($serviceNameSlug: String!, $nameSlug: String!) {
@@ -10,5 +34,45 @@ query GetProduct($serviceNameSlug: String!, $nameSlug: String!) {
       path: "/internal/products/products/{args.serviceNameSlug}/{args.nameSlug}"
     ) {
     ...Product
+  }
+}
+
+query GetProductPayment($id: ID!) {
+  productPayment(id: $id)
+    @rest(
+      type: "ProductPayment"
+      path: "/internal/products/product-payments/{args.id}"
+    ) {
+    ...ProductPayment
+  }
+}
+
+mutation CreatePayment(
+  $serviceNameSlug: String!
+  $nameSlug: String!
+  $input: CreatePaymentInput!
+) {
+  payment: createPayment(
+    serviceNameSlug: $serviceNameSlug
+    nameSlug: $nameSlug
+    input: $input
+  )
+    @rest(
+      type: "ProductPayment"
+      path: "/internal/products/products/{args.serviceNameSlug}/{args.nameSlug}/payments"
+      method: "POST"
+    ) {
+    ...ProductPayment
+  }
+}
+
+mutation UpdatePayment($id: ID!, $input: UpdatePaymentInput!) {
+  payment: updatePayment(id: $id, input: $input)
+    @rest(
+      type: "ProductPayment"
+      path: "/internal/products/product-payments/{args.id}"
+      method: "PUT"
+    ) {
+    ...ProductPayment
   }
 }

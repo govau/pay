@@ -151,7 +151,7 @@ defmodule Pay.Products do
 
   """
   def list_product_payments do
-    Repo.all(ProductPayment)
+    Enum.map(Repo.all(ProductPayment), fn p -> Repo.preload(p, [:product]) end)
   end
 
   @doc """
@@ -186,24 +186,52 @@ defmodule Pay.Products do
       ** (Ecto.NoResultsError)
 
   """
-  def get_product_payment!(id), do: Repo.get!(ProductPayment, id)
+  def get_product_payment!(id), do: Repo.get!(ProductPayment, id) |> Repo.preload([:product])
 
   @doc """
-  Creates a product_payment.
+  Gets a single product_payment by the given external ID.
+
+  Raises `Ecto.NoResultsError` if the ProductPayment does not exist.
 
   ## Examples
 
-      iex> create_product_payment(%{field: value})
+      iex> get_product_payment_by_external_id!("3bfd1a3c-0960-49da-be66-053b159df62d")
+      %ProductPayment{}
+
+      iex> get_product_payment_by_external_id!("3bfd1a3c-0960-49da-be66-053b159df62e")
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_product_payment_by_external_id!(external_id),
+    do: Repo.get_by!(ProductPayment, external_id: external_id) |> Repo.preload([:product])
+
+  @doc """
+  Creates a product_payment for the given product.
+
+  ## Examples
+
+      iex> create_product_payment(%{field: value}, %Product{})
       {:ok, %ProductPayment{}}
 
-      iex> create_product_payment(%{field: bad_value})
+      iex> create_product_payment(%{field: bad_value}, %Product{})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_product_payment(attrs \\ %{}) do
-    %ProductPayment{}
-    |> ProductPayment.changeset(attrs)
-    |> Repo.insert()
+  def create_product_payment(attrs \\ %{}, %Product{} = product) do
+    case Repo.insert(
+           ProductPayment.create_changeset(
+             %ProductPayment{
+               external_id: Ecto.UUID.generate(),
+               product: product,
+               product_id: product.id,
+               gateway_account_id: product.gateway_account_id
+             },
+             attrs
+           )
+         ) do
+      {:ok, o} -> {:ok, Repo.preload(o, [:product])}
+      {:error, changeset} -> {:error, changeset}
+    end
   end
 
   @doc """
@@ -220,7 +248,7 @@ defmodule Pay.Products do
   """
   def update_product_payment(%ProductPayment{} = product_payment, attrs) do
     product_payment
-    |> ProductPayment.changeset(attrs)
+    |> ProductPayment.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -238,18 +266,5 @@ defmodule Pay.Products do
   """
   def delete_product_payment(%ProductPayment{} = product_payment) do
     Repo.delete(product_payment)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking product_payment changes.
-
-  ## Examples
-
-      iex> change_product_payment(product_payment)
-      %Ecto.Changeset{source: %ProductPayment{}}
-
-  """
-  def change_product_payment(%ProductPayment{} = product_payment) do
-    ProductPayment.changeset(product_payment, %{})
   end
 end

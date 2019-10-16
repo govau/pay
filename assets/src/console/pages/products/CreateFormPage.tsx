@@ -106,20 +106,20 @@ const CreateFormPage: React.FC<{
                   />
                 )}
                 <Switch>
-                  <Route path={`${path}/details`}>
+                  <Route path={`${path}/details`} exact strict>
                     <DetailsPage
                       serviceName={serviceName}
                       path={path}
                       values={values}
                     />
                   </Route>
-                  <Route path={`${path}/reference`}>
+                  <Route path={`${path}/reference`} exact strict>
                     <ReferencePage path={path} values={values} />
                   </Route>
-                  <Route path={`${path}/amount`}>
+                  <Route path={`${path}/amount`} exact strict>
                     <AmountPage path={path} values={values} />
                   </Route>
-                  <Route path={`${path}/review`}>
+                  <Route path={`${path}/review`} exact strict>
                     <ReviewPage path={path} values={values} />
                   </Route>
                   <Route path="*">

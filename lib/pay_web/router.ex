@@ -55,12 +55,17 @@ defmodule PayWeb.Router do
         resources "/products", ProductController, except: [:new, :edit]
       end
 
-      resources "/products", ProductController, except: [:new, :edit] do
-        resources "/payments", ProductPaymentController, only: [:index]
-      end
+      resources "/products", ProductController, except: [:new, :edit]
+
+      resources "/product-payments", ProductPaymentController, only: [:show, :update]
 
       get "/products/:service_name_slug/:name_slug", ProductController, :show_by_slugs,
         as: :show_by_slugs
+
+      post "/products/:service_name_slug/:name_slug/payments",
+           ProductPaymentController,
+           :create_by_slugs,
+           as: :create_payment_by_slugs
     end
   end
 

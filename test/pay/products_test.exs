@@ -1,6 +1,8 @@
 defmodule Pay.ProductsTest do
   use Pay.DataCase
 
+  import Pay.Fixtures
+
   alias Pay.Products
 
   describe "products" do
@@ -12,6 +14,7 @@ defmodule Pay.ProductsTest do
       external_id: "7488a646-e31f-11e4-aace-600308960662",
       gateway_account_id: "7488a646-e31f-11e4-aace-600308960660",
       name: "some name",
+      price_fixed: true,
       price: 42,
       reference_enabled: true,
       reference_hint: "some reference_hint",
@@ -24,6 +27,7 @@ defmodule Pay.ProductsTest do
       api_token: "some updated api_token",
       description: "some updated description",
       name: "some updated name",
+      price_fixed: true,
       price: 43,
       reference_enabled: false,
       reference_hint: "some updated reference_hint",
@@ -38,6 +42,7 @@ defmodule Pay.ProductsTest do
       external_id: nil,
       gateway_account_id: nil,
       name: nil,
+      price_fixed: nil,
       price: nil,
       name_slug: nil,
       reference_enabled: nil,
@@ -86,6 +91,7 @@ defmodule Pay.ProductsTest do
       assert product.external_id == "7488a646-e31f-11e4-aace-600308960662"
       assert product.gateway_account_id == "7488a646-e31f-11e4-aace-600308960660"
       assert product.name == "some name"
+      assert product.price_fixed == true
       assert product.price == 42
       assert product.name_slug == "some-name"
       assert product.reference_enabled == true
@@ -108,6 +114,7 @@ defmodule Pay.ProductsTest do
       assert product.external_id == "7488a646-e31f-11e4-aace-600308960662"
       assert product.gateway_account_id == "7488a646-e31f-11e4-aace-600308960660"
       assert product.name == "some updated name"
+      assert product.price_fixed == true
       assert product.price == 43
       assert product.name_slug == "some-updated-name"
       assert product.reference_enabled == false
@@ -137,19 +144,19 @@ defmodule Pay.ProductsTest do
     @valid_attrs %{
       amount: 42,
       external_id: "7488a646-e31f-11e4-aace-600308960662",
-      gateway_account_id: "some gateway_account_id",
+      gateway_account_id: "7488a646-e31f-11e4-aace-600308960660",
       next_url: "some next_url",
       payment_id: "some payment_id",
-      reference_number: "some reference_number",
+      reference: "some reference",
       status: "some status"
     }
     @update_attrs %{
       amount: 43,
       external_id: "7488a646-e31f-11e4-aace-600308960668",
-      gateway_account_id: "some updated gateway_account_id",
+      gateway_account_id: "7488a646-e31f-11e4-aace-600308960111",
       next_url: "some updated next_url",
       payment_id: "some updated payment_id",
-      reference_number: "some updated reference_number",
+      reference: "some updated reference",
       status: "some updated status"
     }
     @invalid_attrs %{
@@ -158,15 +165,17 @@ defmodule Pay.ProductsTest do
       gateway_account_id: nil,
       next_url: nil,
       payment_id: nil,
-      reference_number: nil,
+      reference: nil,
       status: nil
     }
 
     def product_payment_fixture(attrs \\ %{}) do
+      product = fixture(:product)
+
       {:ok, product_payment} =
         attrs
         |> Enum.into(@valid_attrs)
-        |> Products.create_product_payment()
+        |> Products.create_product_payment(product)
 
       product_payment
     end
@@ -181,21 +190,33 @@ defmodule Pay.ProductsTest do
       assert Products.get_product_payment!(product_payment.id) == product_payment
     end
 
-    test "create_product_payment/1 with valid data creates a product_payment" do
-      assert {:ok, %ProductPayment{} = product_payment} =
-               Products.create_product_payment(@valid_attrs)
+    test "get_product_payment_by_external_id!/1 returns the product_payment with given external_id" do
+      product_payment = product_payment_fixture()
 
-      assert product_payment.amount == 42
+      assert Products.get_product_payment_by_external_id!(product_payment.external_id) ==
+               product_payment
+    end
+
+    test "create_product_payment/2 with valid data creates a product_payment" do
+      product = fixture(:product)
+
+      assert {:ok, %ProductPayment{} = product_payment} =
+               Products.create_product_payment(@valid_attrs, product)
+
+      assert product_payment.amount == 43000
       assert product_payment.external_id == "7488a646-e31f-11e4-aace-600308960662"
-      assert product_payment.gateway_account_id == "some gateway_account_id"
+      assert product_payment.gateway_account_id == "7488a646-e31f-11e4-aace-600308960660"
       assert product_payment.next_url == "some next_url"
       assert product_payment.payment_id == "some payment_id"
-      assert product_payment.reference_number == "some reference_number"
+      assert product_payment.reference == "some reference"
       assert product_payment.status == "some status"
     end
 
-    test "create_product_payment/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Products.create_product_payment(@invalid_attrs)
+    test "create_product_payment/2 with invalid data returns error changeset" do
+      product = fixture(:product)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Products.create_product_payment(@invalid_attrs, product)
     end
 
     test "update_product_payment/2 with valid data updates the product_payment" do
@@ -204,12 +225,13 @@ defmodule Pay.ProductsTest do
       assert {:ok, %ProductPayment{} = product_payment} =
                Products.update_product_payment(product_payment, @update_attrs)
 
-      assert product_payment.amount == 43
-      assert product_payment.external_id == "7488a646-e31f-11e4-aace-600308960668"
-      assert product_payment.gateway_account_id == "some updated gateway_account_id"
+      # Product fixture has a fixed price
+      assert product_payment.amount == 43000
+      assert product_payment.external_id == "7488a646-e31f-11e4-aace-600308960662"
+      assert product_payment.gateway_account_id == "7488a646-e31f-11e4-aace-600308960660"
       assert product_payment.next_url == "some updated next_url"
-      assert product_payment.payment_id == "some updated payment_id"
-      assert product_payment.reference_number == "some updated reference_number"
+      assert product_payment.payment_id == "some payment_id"
+      assert product_payment.reference == "some updated reference"
       assert product_payment.status == "some updated status"
     end
 
@@ -229,11 +251,6 @@ defmodule Pay.ProductsTest do
       assert_raise Ecto.NoResultsError, fn ->
         Products.get_product_payment!(product_payment.id)
       end
-    end
-
-    test "change_product_payment/1 returns a product_payment changeset" do
-      product_payment = product_payment_fixture()
-      assert %Ecto.Changeset{} = Products.change_product_payment(product_payment)
     end
   end
 end

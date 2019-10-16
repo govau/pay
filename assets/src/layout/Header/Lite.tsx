@@ -62,7 +62,7 @@ const Lite: React.FC = () => (
             <Coat />
           </CoatWrapper>
           <Wordmark />
-          <Lozenge variation="dark">Beta</Lozenge>
+          <Lozenge variant="dark">Beta</Lozenge>
         </HeaderLink>
       </Logos>
     </Wrapper>

@@ -10,6 +10,7 @@ mix phx.gen.json $PRODUCTS_CTX Product products \
     api_token:string \
     name:string \
     description:string \
+    price_fixed:boolean \
     price:integer \
     status:string \
     return_url:string \
@@ -29,7 +30,7 @@ mix phx.gen.json $PRODUCTS_CTX ProductPayment product_payments \
     amount:integer \
     status:string \
     gateway_account_id:uuid \
-    reference_number:string
+    reference:string
 
 mix ecto.migrate
 

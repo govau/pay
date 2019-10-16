@@ -49,13 +49,19 @@ const ListPage: React.FC<{
             <Link to={`${url}/create`}>Create a new payment link</Link>
           </P>
           <ul>
-            {data.products.map(p => (
-              <li key={p.id}>
-                <Link to={`/console/services/${service.id}/products/${p.id}`}>
-                  {p.name}
-                </Link>
-              </li>
-            ))}
+            {data.products.map(
+              ({ id, name, name_slug, service_name_slug }, _) => (
+                <li key={id}>
+                  <Link to={`/console/services/${service.id}/products/${id}`}>
+                    {name}
+                  </Link>
+                  —
+                  <Link to={`/products/${service_name_slug}/${name_slug}`}>
+                    /payments/{service_name_slug}/{name_slug}
+                  </Link>
+                </li>
+              )
+            )}
           </ul>
         </>
       )}

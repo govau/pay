@@ -1,25 +1,25 @@
 import { css } from "../../styled-components";
 import { desktop } from "../../media";
 
-export type ButtonVariation = "primary" | "secondary" | "tertiary" | "link";
+type ButtonVariant = "primary" | "secondary" | "tertiary" | "link";
 
 export interface ButtonProps {
-  variation?: ButtonVariation;
+  variant?: ButtonVariant;
   stretch?: boolean;
   padded?: boolean;
 }
 
-const appearsAsButton = new Set<ButtonVariation>([
+const appearsAsButton = new Set<ButtonVariant>([
   "primary",
   "secondary",
   "tertiary"
 ]);
 
-const hasButtonAppearance = (variation?: ButtonVariation) =>
-  variation ? appearsAsButton.has(variation) : true;
+const hasButtonAppearance = (variant?: ButtonVariant) =>
+  variant ? appearsAsButton.has(variant) : true;
 
-const variationStyles = (props: ButtonProps) => {
-  switch (props.variation) {
+const variantStyles = (props: ButtonProps) => {
+  switch (props.variant) {
     case "secondary": {
       return css`
         color: ${props => props.theme.textColor};
@@ -136,8 +136,8 @@ const Styles = css<ButtonProps>`
   font-size: 1em;
   font-family: ${props => props.theme.fontFamily};
   text-align: center;
-  ${variationStyles}
-  ${props => (hasButtonAppearance(props.variation) ? ButtonStyles : css``)};
+  ${variantStyles}
+  ${props => (hasButtonAppearance(props.variant) ? ButtonStyles : css``)};
 `;
 
 export { Styles as default, disabledStyles };

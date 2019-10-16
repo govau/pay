@@ -12,7 +12,7 @@ interface LinkButtonProps extends LinkProps, ButtonProps {
 }
 
 const Stripped: React.FC<LinkButtonProps> = ({
-  variation,
+  variant,
   stretch,
   disabled,
   padded,

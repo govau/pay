@@ -6,7 +6,6 @@ import {
   PageInfo,
   SubNav,
   NavUl,
-  Li,
   NavLink
 } from "../layout/Header/PrimaryNav";
 import {
@@ -54,36 +53,36 @@ export const ServiceInfoNav: React.FC = () => {
     <Container>
       <PageInfo>
         <Strong>{data.service.name}</Strong>{" "}
-        <Lozenge variation="flair">
+        <Lozenge variant="flair">
           {goLiveStageLabel(data.service.current_go_live_stage)}
         </Lozenge>
       </PageInfo>
       <SubNav>
         <NavUl>
-          <Li>
+          <li>
             <NavLink to={url} exact>
               Dashboard
             </NavLink>
-          </Li>
+          </li>
           {gatewayAccount && (
             <>
-              <Li>
+              <li>
                 <NavLink
                   to={`${url}/gateway-accounts/${gatewayAccount.id}/payments`}
                 >
                   Transactions
                 </NavLink>
-              </Li>
-              <Li>
+              </li>
+              <li>
                 <NavLink
                   to={`${url}/gateway-accounts/${gatewayAccount.id}/products`}
                 >
                   Payment links
                 </NavLink>
-              </Li>
+              </li>
             </>
           )}
-          <Li>
+          <li>
             <NavLink
               to={`${url}/settings`}
               exact
@@ -100,7 +99,7 @@ export const ServiceInfoNav: React.FC = () => {
             >
               Settings
             </NavLink>
-          </Li>
+          </li>
         </NavUl>
       </SubNav>
     </Container>
@@ -113,11 +112,11 @@ export const NonServiceInfoNav: React.FC = () => (
     <PageInfo />
     <SubNav>
       <NavUl>
-        <Li>
+        <li>
           <NavLink to="/console/services/create" exact>
             Create new service
           </NavLink>
-        </Li>
+        </li>
       </NavUl>
     </SubNav>
   </Container>

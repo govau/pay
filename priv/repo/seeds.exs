@@ -23,6 +23,7 @@ alias Pay.Services.OrganisationDomain
 alias Pay.Services.Service
 alias Pay.Services.ServiceUser
 alias Pay.Services.ServiceGatewayAccount
+alias Pay.Products.Product
 
 Repo.insert!(%CardType{type: "CREDIT", brand: "visa", label: "Visa"})
 Repo.insert!(%CardType{type: "DEBIT", brand: "visa", label: "Visa"})
@@ -318,7 +319,7 @@ service2_id =
   Repo.insert!(%Service{
     external_id: Ecto.UUID.generate(),
     organisation_id: dfat_id,
-    name: "Service 2",
+    name: "Australian Passport Office",
     current_go_live_stage: Pay.Services.Service.GoLiveStage.NotStarted.value().name,
     custom_branding: %{}
   }).id
@@ -332,6 +333,21 @@ Repo.insert!(%ServiceUser{
   service_id: service2_id,
   user_id: service1_view_only_user_id,
   role_id: view_only_role_id
+})
+
+Repo.insert!(%Product{
+  external_id: Ecto.UUID.generate(),
+  gateway_account_id: service2_gateway_account_external_id,
+  name: "New adult passport",
+  name_slug: "new-adult-passport",
+  service_name_slug: "australian-passport-office",
+  description: "Pay for your adult Australian passport, valid for 10 years.",
+  price_fixed: true,
+  price: 29300,
+  reference_enabled: true,
+  reference_label: "Passport application number",
+  reference_hint:
+    "You can find your application number on the top right hand side of your application form."
 })
 
 service3_test_gateway_account_external_id =

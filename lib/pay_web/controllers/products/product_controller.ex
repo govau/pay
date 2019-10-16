@@ -25,6 +25,8 @@ defmodule PayWeb.Products.ProductController do
     # - Work out what status should be
     # - Work out what return URL should be
 
+    # TODO: handle unique constraint error (when name and service name slugs already exist).
+
     with {:ok, %Product{} = product} <-
            Products.create_product(
              Map.merge(product_params, %{

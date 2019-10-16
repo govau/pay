@@ -11,7 +11,7 @@ import {
 } from "@pay/web";
 import { Values } from "./CreateFormPage";
 
-const DetailsPage: React.FC<{
+const ReferencePage: React.FC<{
   path: string;
   values: Pick<Values, "reference_enabled">;
 }> = ({ path, values }) => {
@@ -56,4 +56,4 @@ const DetailsPage: React.FC<{
   );
 };
 
-export default DetailsPage;
+export default ReferencePage;

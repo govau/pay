@@ -8,6 +8,7 @@ defmodule Pay.Repo.Migrations.CreateProducts do
       add :api_token, :string
       add :name, :string
       add :description, :string
+      add :price_fixed, :boolean, default: false, null: false
       add :price, :integer
       add :status, :string
       add :return_url, :string

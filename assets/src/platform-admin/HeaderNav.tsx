@@ -6,7 +6,6 @@ import {
   PageInfo,
   SubNav,
   NavUl,
-  Li,
   NavLink
 } from "../layout/Header/PrimaryNav";
 
@@ -19,21 +18,21 @@ const HeaderNav: React.FC = () => {
   return (
     <Container>
       <PageInfo>
-        <Lozenge variation="pink">
+        <Lozenge variant="pink">
           <Strong>Platform admin</Strong>
         </Lozenge>
       </PageInfo>
       <SubNav>
         <NavUl>
-          <Li>
+          <li>
             <NavLink to={`${url}/organisations`}>Organisations</NavLink>
-          </Li>
-          <Li>
+          </li>
+          <li>
             <NavLink to={`${url}/services`}>Services</NavLink>
-          </Li>
-          <Li>
+          </li>
+          <li>
             <NavLink to={`${url}/card-types`}>Card types</NavLink>
-          </Li>
+          </li>
         </NavUl>
       </SubNav>
     </Container>

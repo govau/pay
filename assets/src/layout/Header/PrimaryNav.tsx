@@ -17,8 +17,6 @@ export const NavUl = styled(Ul)`
   flex: 0 0 auto;
 `;
 
-export const Li = styled.li``;
-
 // Outer container that flips content from vertical to horizontal as
 // screen size increases
 export const Container = styled(ContainerComponent)`
@@ -38,6 +36,7 @@ export const Container = styled(ContainerComponent)`
 export const PageInfo = styled.div`
   ${centeredStyles}
   margin-top: 1rem;
+  min-height: 5.3rem;
 
   @media ${desktop} {
     margin-top: 0;
@@ -58,7 +57,7 @@ export const NavLink = styled(NavLinkComponent)`
   padding: 1em 0;
   border-bottom: 3px solid transparent;
 
-  ${Li} + ${Li} & {
+  li + li & {
     margin-left: 1em;
   }
 

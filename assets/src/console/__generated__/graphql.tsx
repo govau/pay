@@ -48,6 +48,7 @@ export type GatewayAccount = {
   payment_provider: GatewayAccountPaymentProvider;
   type: GatewayAccountType;
   service_name: Scalars["String"];
+  service: Service;
   description: Scalars["String"];
   credentials: GatewayAccountCredentials;
   allow_apple_pay: Scalars["Boolean"];
@@ -95,8 +96,15 @@ export type Product = {
   __typename?: "Product";
   id: Scalars["ID"];
   name: Scalars["String"];
+  name_slug: Scalars["String"];
+  service_name_slug: Scalars["String"];
   description: Scalars["String"];
-  gatewayAccount: GatewayAccount;
+  reference_enabled: Scalars["Boolean"];
+  reference_label: Scalars["String"];
+  reference_hint: Scalars["String"];
+  price_fixed: Scalars["Boolean"];
+  price: Scalars["Int"];
+  gateway_account: GatewayAccount;
 };
 
 export type Query = {
@@ -199,7 +207,7 @@ export type GatewayAccountFragment = { __typename?: "GatewayAccount" } & Pick<
 
 export type ProductFragment = { __typename?: "Product" } & Pick<
   Product,
-  "id" | "name" | "description"
+  "id" | "name" | "name_slug" | "service_name_slug" | "description"
 >;
 
 export type GetUserServicesQueryVariables = {
@@ -323,6 +331,8 @@ export const ProductFragmentDoc = gql`
   fragment Product on Product {
     id
     name
+    name_slug
+    service_name_slug
     description
   }
 `;

@@ -12,6 +12,7 @@ defmodule PayWeb.ProductControllerTest do
     external_id: "7488a646-e31f-11e4-aace-600308960662",
     gateway_account_id: "7488a646-e31f-11e4-aace-600308960660",
     name: "some name",
+    price_fixed: true,
     price: 42,
     name_slug: "some-name",
     reference_enabled: true,
@@ -25,6 +26,7 @@ defmodule PayWeb.ProductControllerTest do
     api_token: "some updated api_token",
     description: "some updated description",
     name: "some updated name",
+    price_fixed: true,
     price: 43,
     reference_enabled: false,
     reference_hint: "some updated reference_hint",
@@ -38,6 +40,7 @@ defmodule PayWeb.ProductControllerTest do
     external_id: nil,
     gateway_account_id: nil,
     name: nil,
+    price_fixed: nil,
     price: nil,
     name_slug: nil,
     reference_enabled: nil,
@@ -101,10 +104,10 @@ defmodule PayWeb.ProductControllerTest do
 
       assert %{
                "id" => id,
-               "api_token" => "some api_token",
                "description" => "some description",
                "gateway_account_id" => gateway_account_id,
                "name" => "some name",
+               "price_fixed" => true,
                "price" => 42,
                "name_slug" => "some-name",
                "reference_enabled" => true,
@@ -148,10 +151,10 @@ defmodule PayWeb.ProductControllerTest do
 
       assert %{
                "id" => id,
-               "api_token" => "some updated api_token",
                "description" => "some updated description",
                "gateway_account_id" => gateway_account_id,
                "name" => "some updated name",
+               "price_fixed" => true,
                "price" => 43,
                "name_slug" => "some-updated-name",
                "reference_enabled" => false,

@@ -8,3 +8,9 @@ export const HomePage = loadable(() => import("./HomePage"), {
 export const ProductPage = loadable(() => import("./ProductPage"), {
   fallback: <Loader />
 });
+export const PayPage = loadable(() => import("./PayPage"), {
+  fallback: <Loader />
+});
+export const PayFormPage = loadable(() => import("./PayFormPage"), {
+  fallback: <Loader />
+});

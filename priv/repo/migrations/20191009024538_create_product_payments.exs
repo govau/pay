@@ -9,7 +9,7 @@ defmodule Pay.Repo.Migrations.CreateProductPayments do
       add :amount, :integer
       add :status, :string
       add :gateway_account_id, :string
-      add :reference_number, :string
+      add :reference, :string
       add :product_id, references(:products, on_delete: :nothing)
 
       timestamps()
