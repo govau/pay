@@ -30,6 +30,15 @@ const required = (errorMessage: string) =>
     (value: ValidatorValue) => value !== undefined && value !== ""
   );
 
+const isGreaterThan = (errorMessage: string, { min }: { min: number }) =>
+  validatorFactory(
+    errorMessage || errorMessages.isGreaterThan(min),
+    (value: ValidatorValue) => {
+      value = value.toString();
+      return Number(value) > min;
+    }
+  );
+
 const isMinLength = (errorMessage: string, { min }: { min: number }) =>
   validatorFactory(
     errorMessage || errorMessages.isMinLength(min),
@@ -69,6 +78,7 @@ const isDate = () =>
 export default {
   required,
   isMinLength,
+  isGreaterThan,
   isEmail,
   isLocalMobileNumber,
   isDate,

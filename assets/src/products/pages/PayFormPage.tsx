@@ -1,7 +1,8 @@
 import * as React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { ApolloError } from "apollo-client";
-import { Form, Pages as CorePages, Loader, ErrorAlert } from "@pay/web";
+import { Pages as CorePages, Loader, ErrorAlert, validators } from "@pay/web";
+import { NakedForm } from "@pay/web/components/form/Form";
 
 import {
   UpdatePaymentMutationFn,
@@ -41,7 +42,38 @@ const handleSubmit = (
   updatePayment: UpdatePaymentMutationFn
 ) => {
   return async (values: Values) => {
+    const errors = [
+      payment.product.reference_enabled
+        ? {
+            name: "reference",
+            error: validators.required(
+              `${payment.product.reference_label} is required`
+            )(values.reference)
+          }
+        : null,
+      !payment.product.price_fixed
+        ? {
+            name: "amount",
+            error: validators.isGreaterThan("Enter the paymount amount", {
+              min: 0
+            })(values.amount)
+          }
+        : null
+    ].filter(f => Boolean(f && f.error));
+
+    if (errors.length > 0) {
+      const initial: Partial<{ [key: string]: string }> = {};
+      return errors.reduce((map, f) => {
+        if (!f) {
+          return map;
+        }
+        map[f.name] = f.error;
+        return map;
+      }, initial);
+    }
+
     const { amount } = values;
+
     try {
       await updatePayment({
         variables: {
@@ -71,7 +103,7 @@ const PayFormPage: React.FC<{
   });
 
   return (
-    <Form<Values>
+    <NakedForm<Values>
       onSubmit={handleSubmit(payment, updatePayment)}
       column
       initialValues={{
@@ -79,17 +111,15 @@ const PayFormPage: React.FC<{
         amount: payment.amount ? payment.amount / 100 : 0
       }}
     >
-      {({ values }) => (
+      {({ handleSubmit, values }) => (
         <>
           {loading ? (
-            <Loader message="TODO" />
-          ) : data ? (
-            <Redirect to={path + "/TODO"} />
+            <Loader />
           ) : (
             <>
               {error && (
                 <ErrorAlert
-                  title="Unable to create payment link"
+                  title="Unable to update the payment"
                   message={getErrorMessage(error)}
                   showError={true}
                 />
@@ -100,13 +130,22 @@ const PayFormPage: React.FC<{
                 </Route>
                 <Route path={`${path}/reference`} exact strict>
                   {payment.product.reference_enabled ? (
-                    <ReferencePage path={path} payment={payment} />
+                    <ReferencePage
+                      path={path}
+                      payment={payment}
+                      onSubmit={handleSubmit}
+                    />
                   ) : (
                     <Redirect to={`${path}/amount`} />
                   )}
                 </Route>
                 <Route path={`${path}/amount`} exact strict>
-                  <AmountPage path={path} payment={payment} values={values} />
+                  <AmountPage
+                    path={path}
+                    payment={payment}
+                    values={values}
+                    onSubmit={handleSubmit}
+                  />
                 </Route>
                 <Route path="*">
                   <CorePages.NotFoundPage />
@@ -116,7 +155,7 @@ const PayFormPage: React.FC<{
           )}
         </>
       )}
-    </Form>
+    </NakedForm>
   );
 };
 
