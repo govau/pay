@@ -36,10 +36,13 @@ export const Container = styled(ContainerComponent)`
 export const PageInfo = styled.div`
   ${centeredStyles}
   margin-top: 1rem;
-  min-height: 5.3rem;
+  margin-bottom: 1rem;
+  min-height: 2.6rem;
 
   @media ${desktop} {
     margin-top: 0;
+    margin-bottom: 0;
+    min-height: 5.3rem;
   }
 `;
 
