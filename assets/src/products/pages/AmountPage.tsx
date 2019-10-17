@@ -1,10 +1,10 @@
 import * as React from "react";
+import { useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import {
   PageTitle,
   Field,
   BasicTextInput,
-  validators,
   Callout,
   P,
   Strong,
@@ -12,8 +12,9 @@ import {
   styled,
   Button
 } from "@pay/web";
-import { ProductPaymentFragment } from "../__generated__/graphql";
+import { FormElement, OnSubmitFn } from "@pay/web/components/form/Form";
 import { generateId } from "@pay/web/lib/utils";
+import { ProductPaymentFragment } from "../__generated__/graphql";
 import { Values } from "./PayFormPage";
 
 const PriceInputWrapper = styled.div`
@@ -36,17 +37,30 @@ interface Props {
   path: string;
   payment: ProductPaymentFragment;
   values: Pick<Values, "amount">;
+  onSubmit: OnSubmitFn;
 }
 
 // The title and description are only shown on the first page of the form.
 // If the user does not have to provide a reference then this would be the first
 // page of the form, so show them.
-const AmountPage: React.FC<Props> = ({ path, payment, values }) => {
+const AmountPage: React.FC<Props> = ({ path, payment, values, onSubmit }) => {
   const [labelId] = React.useState(generateId("payment-amount-label-"));
   const [fieldId] = React.useState(generateId("payment-amount-"));
 
+  const history = useHistory();
+
   return (
-    <>
+    <FormElement
+      column
+      onSubmit={async event => {
+        const error = await onSubmit(event);
+        if (error && error.amount) {
+          return;
+        }
+        history.push(`${path}/TODO`);
+      }}
+      noValidate
+    >
       <Helmet>
         <title>
           {payment.product.price_fixed
@@ -64,7 +78,7 @@ const AmountPage: React.FC<Props> = ({ path, payment, values }) => {
       {payment.product.price_fixed ? (
         <>
           <Label id={labelId} htmlFor={fieldId}>
-            Paymount amount
+            Payment amount
           </Label>
           <Callout id={fieldId}>
             <P>
@@ -76,8 +90,7 @@ const AmountPage: React.FC<Props> = ({ path, payment, values }) => {
         <>
           <Field
             name="amount"
-            label="Paymount amount"
-            validate={validators.required("Enter the paymount amount")}
+            label="Payment amount"
             // TODO: fix format and parse functions.
             format={value => {
               if (!value) {
@@ -117,7 +130,7 @@ const AmountPage: React.FC<Props> = ({ path, payment, values }) => {
         </>
       )}
       <Button type="submit">Proceed to payment</Button>
-    </>
+    </FormElement>
   );
 };
 

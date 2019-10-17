@@ -22,5 +22,6 @@ export const errorMessages: { [key: string]: (opts?: any) => string } = {
   required: () => "Required",
   isEmail: () => "Enter a valid email address",
   isMinLength: ({ min }: { min: number }) =>
-    `Must be at least ${min} characters long`
+    `Must be at least ${min} characters long`,
+  isGreaterThan: ({ min }: { min: number }) => `Must be greater than ${min}`
 };

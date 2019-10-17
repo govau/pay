@@ -84,7 +84,7 @@ const EditNamePage: React.FC<{
             <ErrorAlert
               title="Unable to update service name"
               message={getErrorMessage(updateMutation.error)}
-              showError={!!updateMutation.error}
+              showError={Boolean(updateMutation.error)}
             />
             <Field
               name="name"

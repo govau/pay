@@ -62,7 +62,8 @@ class Field extends React.Component<FieldProps> {
       <FinalFormField
         name={name}
         render={({ input, meta }) => {
-          const showError = Boolean(meta.error && meta.submitFailed);
+          const error = meta.touched ? meta.error || meta.submitError : null;
+          const showError = Boolean(error);
           const ariaProps = {
             id: this.fieldId,
             "aria-invalid": showError,
@@ -73,13 +74,11 @@ class Field extends React.Component<FieldProps> {
           return (
             <>
               <Label id={this.labelId} htmlFor={this.fieldId}>
-                <span aria-hidden={!!ariaLabel}>{label}</span>
+                <span aria-hidden={Boolean(ariaLabel)}>{label}</span>
                 {ariaLabel && <ScreenreaderText>{ariaLabel}</ScreenreaderText>}
               </Label>
               {description && <Description>{description}</Description>}
-              {showError && (
-                <FieldError id={this.errorId}>{meta.error}</FieldError>
-              )}
+              {showError && <FieldError id={this.errorId}>{error}</FieldError>}
               {children({
                 input,
                 meta,

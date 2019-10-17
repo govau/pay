@@ -66,7 +66,7 @@ const CreatePage = () => {
             <ErrorAlert
               title="Unable to create service"
               message={getErrorMessage(error)}
-              showError={!!error}
+              showError={Boolean(error)}
             />
 
             <Field

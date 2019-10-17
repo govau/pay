@@ -11,6 +11,10 @@ interface AnyObject {
   [key: string]: any;
 }
 
+export type OnSubmitFn = (
+  event?: React.SyntheticEvent<HTMLFormElement>
+) => Promise<AnyObject | undefined> | undefined;
+
 interface Props<FormValues = AnyObject>
   extends ReactFinalFormProps<FormValues> {
   submitError?: string | null;
@@ -18,7 +22,7 @@ interface Props<FormValues = AnyObject>
   column?: boolean;
 }
 
-const FormElem = styled("form")<{ column?: boolean }>`
+export const FormElement = styled("form")<{ column?: boolean }>`
   ${props =>
     props.column &&
     css`
@@ -45,20 +49,38 @@ function Form<FormValues = AnyObject>({
       {({ handleSubmit, ...renderRest }) => (
         <>
           <ErrorAlert
-            showError={!!submitError}
+            showError={Boolean(submitError)}
             title={submitErrorTitle || "Submission error"}
             message={
               formatGraphqlError(submitError) ||
               "There was an error submitting the form"
             }
           />
-          <FormElem column={column} onSubmit={handleSubmit} noValidate>
+          <FormElement column={column} onSubmit={handleSubmit} noValidate>
             {typeof children === "function"
               ? children({ handleSubmit, ...renderRest })
               : children}
-          </FormElem>
+          </FormElement>
         </>
       )}
+    </ReactFinalForm>
+  );
+}
+
+// NakedForm lets the caller provide their own FormElement. This is useful for
+// multi-page forms / wizards where you want to have a submit button on each
+// page of the form that submits the form naturally.
+// NakedForm is a very thin wrapper around Final Form's Form element.
+export function NakedForm<FormValues = AnyObject>({
+  children,
+  submitError,
+  submitErrorTitle,
+  column,
+  ...rest
+}: Props<FormValues>) {
+  return (
+    <ReactFinalForm {...rest} decorators={[focusOnErrors]}>
+      {children}
     </ReactFinalForm>
   );
 }
