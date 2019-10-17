@@ -288,7 +288,9 @@ defmodule Pay.Payments do
   """
   def create_payment(attrs \\ %{}) do
     %Payment{
-      external_id: Ecto.UUID.generate()
+      external_id: Ecto.UUID.generate(),
+      external_metadata: %{},
+      status: Pay.Payments.Payment.Status.Created.value().name
     }
     |> Payment.create_changeset(attrs)
     |> Repo.insert()

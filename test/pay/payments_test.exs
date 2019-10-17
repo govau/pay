@@ -1,6 +1,8 @@
 defmodule Pay.PaymentsTest do
   use Pay.DataCase
 
+  import Pay.Fixtures
+
   alias Pay.Payments
 
   describe "card_types" do
@@ -256,9 +258,15 @@ defmodule Pay.PaymentsTest do
     }
 
     def payment_fixture(attrs \\ %{}) do
+      gateway_account = fixture(:gateway_account)
+
       {:ok, payment} =
         attrs
-        |> Enum.into(@valid_attrs)
+        |> Enum.into(
+          Map.merge(@valid_attrs, %{
+            gateway_account_id: gateway_account.id
+          })
+        )
         |> Payments.create_payment()
 
       payment
@@ -280,7 +288,18 @@ defmodule Pay.PaymentsTest do
     end
 
     test "create_payment/1 with valid data creates a payment" do
-      assert {:ok, %Payment{} = payment} = Payments.create_payment(@valid_attrs)
+      gateway_account = fixture(:gateway_account)
+
+      assert {:ok, %Payment{} = payment} =
+               Payments.create_payment(
+                 Map.merge(
+                   @valid_attrs,
+                   %{
+                     gateway_account_id: gateway_account.id
+                   }
+                 )
+               )
+
       assert payment.amount == 42
       assert payment.auth_3ds_details == %{}
       assert payment.card_details == %{}

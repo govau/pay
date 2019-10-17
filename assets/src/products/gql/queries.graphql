@@ -22,6 +22,8 @@ fragment ProductPayment on ProductPayment {
   id
   reference
   amount
+  status
+  next_url
   product {
     ...Product
   }
@@ -37,8 +39,8 @@ query GetProduct($serviceNameSlug: String!, $nameSlug: String!) {
   }
 }
 
-query GetProductPayment($id: ID!) {
-  productPayment(id: $id)
+query GetPayment($id: ID!) {
+  payment(id: $id)
     @rest(
       type: "ProductPayment"
       path: "/internal/products/product-payments/{args.id}"
@@ -72,6 +74,17 @@ mutation UpdatePayment($id: ID!, $input: UpdatePaymentInput!) {
       type: "ProductPayment"
       path: "/internal/products/product-payments/{args.id}"
       method: "PUT"
+    ) {
+    ...ProductPayment
+  }
+}
+
+mutation SubmitPayment($id: ID!, $input: SubmitPaymentInput!) {
+  payment: submitPayment(id: $id, input: $input)
+    @rest(
+      type: "ProductPayment"
+      path: "/internal/products/product-payments/{args.id}/submit"
+      method: "POST"
     ) {
     ...ProductPayment
   }

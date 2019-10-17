@@ -141,14 +141,10 @@ defmodule Pay.ProductsTest do
   describe "product_payments" do
     alias Pay.Products.ProductPayment
 
-    @valid_attrs %{
-      amount: 42,
+    @create_attrs %{
       external_id: "7488a646-e31f-11e4-aace-600308960662",
       gateway_account_id: "7488a646-e31f-11e4-aace-600308960660",
-      next_url: "some next_url",
-      payment_id: "some payment_id",
-      reference: "some reference",
-      status: "some status"
+      reference: "some reference"
     }
     @update_attrs %{
       amount: 43,
@@ -174,7 +170,7 @@ defmodule Pay.ProductsTest do
 
       {:ok, product_payment} =
         attrs
-        |> Enum.into(@valid_attrs)
+        |> Enum.into(@create_attrs)
         |> Products.create_product_payment(product)
 
       product_payment
@@ -201,15 +197,16 @@ defmodule Pay.ProductsTest do
       product = fixture(:product)
 
       assert {:ok, %ProductPayment{} = product_payment} =
-               Products.create_product_payment(@valid_attrs, product)
+               Products.create_product_payment(@create_attrs, product)
 
+      # Product fixture has a fixed price
       assert product_payment.amount == 43000
       assert product_payment.external_id == "7488a646-e31f-11e4-aace-600308960662"
       assert product_payment.gateway_account_id == "7488a646-e31f-11e4-aace-600308960660"
-      assert product_payment.next_url == "some next_url"
-      assert product_payment.payment_id == "some payment_id"
+      assert product_payment.next_url == nil
+      assert product_payment.payment_id == nil
       assert product_payment.reference == "some reference"
-      assert product_payment.status == "some status"
+      assert product_payment.status == "created"
     end
 
     test "create_product_payment/2 with invalid data returns error changeset" do
@@ -229,10 +226,10 @@ defmodule Pay.ProductsTest do
       assert product_payment.amount == 43000
       assert product_payment.external_id == "7488a646-e31f-11e4-aace-600308960662"
       assert product_payment.gateway_account_id == "7488a646-e31f-11e4-aace-600308960660"
-      assert product_payment.next_url == "some updated next_url"
-      assert product_payment.payment_id == "some payment_id"
+      assert product_payment.next_url == nil
+      assert product_payment.payment_id == nil
       assert product_payment.reference == "some updated reference"
-      assert product_payment.status == "some updated status"
+      assert product_payment.status == "created"
     end
 
     test "update_product_payment/2 with invalid data returns error changeset" do
@@ -240,6 +237,28 @@ defmodule Pay.ProductsTest do
 
       assert {:error, %Ecto.Changeset{}} =
                Products.update_product_payment(product_payment, @invalid_attrs)
+
+      assert product_payment == Products.get_product_payment!(product_payment.id)
+    end
+
+    test "submit_product_payment/3 with valid data updates the product_payment" do
+      product_payment = product_payment_fixture()
+
+      assert {:ok, %ProductPayment{} = product_payment} =
+               Products.submit_product_payment(product_payment, "payment_id", "/next_url")
+
+      assert product_payment.external_id == "7488a646-e31f-11e4-aace-600308960662"
+      assert product_payment.gateway_account_id == "7488a646-e31f-11e4-aace-600308960660"
+      assert product_payment.next_url == "/next_url"
+      assert product_payment.payment_id == "payment_id"
+      assert product_payment.status == "submitted"
+    end
+
+    test "submit_product_payment/2 with invalid data returns error changeset" do
+      product_payment = product_payment_fixture()
+
+      assert {:error, %Ecto.Changeset{}} =
+               Products.submit_product_payment(product_payment, "", "")
 
       assert product_payment == Products.get_product_payment!(product_payment.id)
     end

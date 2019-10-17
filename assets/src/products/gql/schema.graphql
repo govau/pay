@@ -2,7 +2,7 @@
 
 type Query {
   product(serviceNameSlug: String!, nameSlug: String!): Product!
-  productPayment(id: ID!): ProductPayment!
+  payment(id: ID!): ProductPayment!
 }
 
 input CreatePaymentInput {
@@ -18,6 +18,10 @@ input UpdatePaymentInput {
   payment: UpdatePaymentPayment!
 }
 
+input SubmitPaymentInput {
+  dummy: String
+}
+
 type Mutation {
   createPayment(
     serviceNameSlug: String!
@@ -25,4 +29,5 @@ type Mutation {
     input: CreatePaymentInput!
   ): ProductPayment!
   updatePayment(id: ID!, input: UpdatePaymentInput!): ProductPayment!
+  submitPayment(id: ID!, input: SubmitPaymentInput!): ProductPayment!
 }

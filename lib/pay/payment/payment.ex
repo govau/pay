@@ -29,6 +29,7 @@ defmodule Pay.Payments.Payment do
     payment
     |> cast(attrs, [
       :external_id,
+      :gateway_account_id,
       :amount,
       :status,
       :gateway_transaction_id,
@@ -46,15 +47,11 @@ defmodule Pay.Payments.Payment do
       :external_id,
       :amount,
       :status,
-      :gateway_transaction_id,
+      :gateway_account_id,
       :return_url,
-      :email,
-      :card_details,
-      :auth_3ds_details,
       :description,
       :reference,
       :delayed_capture,
-      :wallet,
       :external_metadata
     ])
   end
@@ -92,4 +89,20 @@ defmodule Pay.Payments.Payment do
       :external_metadata
     ])
   end
+end
+
+defmodule Pay.Payments.Payment.Status do
+  alias Pay.Payments.Payment.Status
+
+  defstruct [:name]
+
+  @type t :: %Status{}
+  @callback value :: Status.t()
+end
+
+defmodule Pay.Payments.Payment.Status.Created do
+  alias Pay.Payments.Payment.Status
+
+  @behaviour Status
+  def value, do: %Status{name: "created"}
 end

@@ -11,6 +11,7 @@ import {
 import { isServerError } from "../../apollo-rest-utils";
 import ReferencePage from "./ReferencePage";
 import AmountPage from "./AmountPage";
+import SubmitPage from "./SubmitPage";
 import { ProductPaymentFragment } from "../__generated__/graphql";
 
 export interface Values {
@@ -146,6 +147,9 @@ const PayFormPage: React.FC<{
                     values={values}
                     onSubmit={handleSubmit}
                   />
+                </Route>
+                <Route path={`${path}/submit`} exact strict>
+                  <SubmitPage path={path} payment={payment} />
                 </Route>
                 <Route path="*">
                   <CorePages.NotFoundPage />

@@ -9,10 +9,7 @@ import {
   Pages as CorePages
 } from "@pay/web";
 
-import {
-  useGetProductPaymentQuery,
-  ProductFragment
-} from "./__generated__/graphql";
+import { useGetPaymentQuery, ProductFragment } from "./__generated__/graphql";
 import { isServerError } from "../apollo-rest-utils";
 import * as Pages from "./pages/Pages";
 import Layout from "./Layout";
@@ -23,7 +20,7 @@ const PayRoutes: React.FC<{
 }> = ({ onReceiveProduct }) => {
   const { productPaymentId: id } = useParams<{ productPaymentId: string }>();
 
-  const { loading, error, data } = useGetProductPaymentQuery({
+  const { loading, error, data } = useGetPaymentQuery({
     variables: { id },
     errorPolicy: "all"
   });
@@ -64,9 +61,9 @@ const PayRoutes: React.FC<{
     );
   }
 
-  onReceiveProduct(data.productPayment.product);
+  onReceiveProduct(data.payment.product);
 
-  return <Pages.PayFormPage path={url} payment={data.productPayment} />;
+  return <Pages.PayFormPage path={url} payment={data.payment} />;
 };
 
 const Routes: React.FC = () => {

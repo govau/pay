@@ -57,7 +57,7 @@ const AmountPage: React.FC<Props> = ({ path, payment, values, onSubmit }) => {
         if (error && error.amount) {
           return;
         }
-        history.push(`${path}/TODO`);
+        history.push(`${path}/submit`);
       }}
       noValidate
     >

@@ -38,6 +38,7 @@ defmodule PayWeb.External.PaymentControllerTest do
     description: nil,
     email: nil,
     fee: nil,
+    gateway_account_id: nil,
     gateway_transaction_id: nil,
     metadata: nil,
     net_amount: nil,
@@ -54,9 +55,15 @@ defmodule PayWeb.External.PaymentControllerTest do
     total_amount: nil
   }
 
-  def fixture(:payment) do
-    {:ok, payment} = Payments.create_payment(@create_attrs)
-    payment
+  def fixture(:gateway_account) do
+    {:ok, gateway_account} =
+      Payments.create_gateway_account(%{
+        "type" => Payments.GatewayAccount.Type.Test.value().name,
+        "payment_provider" => Payments.GatewayAccount.PaymentProvider.Sandbox.value().name,
+        "service_name" => "Test service"
+      })
+
+    gateway_account
   end
 
   setup %{conn: conn} do
@@ -71,6 +78,8 @@ defmodule PayWeb.External.PaymentControllerTest do
   end
 
   describe "create payment" do
+    setup [:create_gateway_account]
+
     test "renders payment when data is valid", %{conn: conn} do
       conn = post(conn, Routes.external_payment_path(conn, :create), payment: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
@@ -109,5 +118,10 @@ defmodule PayWeb.External.PaymentControllerTest do
       conn = post(conn, Routes.external_payment_path(conn, :create), payment: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
+  end
+
+  defp create_gateway_account(_) do
+    gateway_account = fixture(:gateway_account)
+    {:ok, gateway_account: gateway_account}
   end
 end

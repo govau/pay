@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { Helmet } from "react-helmet";
 import { P, PageTitle, Loader, ErrorAlert, Pages as CorePages } from "@pay/web";
 
-import { useGetProductPaymentQuery } from "../__generated__/graphql";
+import { useGetPaymentQuery } from "../__generated__/graphql";
 import { isServerError } from "../../apollo-rest-utils";
 
 const PayPage: React.FC = () => {
@@ -11,7 +11,7 @@ const PayPage: React.FC = () => {
     productPaymentId: string;
   }>();
 
-  const { loading, error, data } = useGetProductPaymentQuery({
+  const { loading, error, data } = useGetPaymentQuery({
     variables: {
       id
     },
@@ -47,10 +47,10 @@ const PayPage: React.FC = () => {
       ) : (
         <>
           <Helmet>
-            <title>{data.productPayment.product.name}</title>
+            <title>{data.payment.product.name}</title>
           </Helmet>
-          <PageTitle title={data.productPayment.product.name} />
-          <P>{data.productPayment.product.description}</P>
+          <PageTitle title={data.payment.product.name} />
+          <P>{data.payment.product.description}</P>
           <ul>
             <li>They'll fill in reference details</li>
             <li>They'll fill in payment amount</li>
