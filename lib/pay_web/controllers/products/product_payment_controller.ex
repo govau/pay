@@ -81,9 +81,9 @@ defmodule PayWeb.Products.ProductPaymentController do
              "reference" => product_payment.reference,
              "amount" => product_payment.amount,
              "description" => product_payment.product.name,
-             # We will pass a URL here so that the pay page knows how to
-             # redirect back to the products page to show a confirmation page.
-             "return_url" => "TODO.some.host/product_payment.external_id"
+             # We pass a URL here so that the pay page knows how to redirect
+             # back to the products page to show a confirmation page.
+             "return_url" => "/products/pay/#{product_payment.external_id}/status"
            }),
          {:ok, %ProductPayment{} = product_payment} <-
            Products.submit_product_payment(

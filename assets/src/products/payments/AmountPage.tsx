@@ -14,8 +14,9 @@ import {
 } from "@pay/web";
 import { FormElement, OnSubmitFn } from "@pay/web/components/form/Form";
 import { generateId } from "@pay/web/lib/utils";
+
 import { ProductPaymentFragment } from "../__generated__/graphql";
-import { Values } from "./PayFormPage";
+import { Values } from "./Form";
 
 const PriceInputWrapper = styled.div`
   position: relative;

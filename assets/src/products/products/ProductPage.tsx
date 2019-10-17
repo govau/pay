@@ -3,8 +3,8 @@ import { useParams, Redirect } from "react-router";
 import { Helmet } from "react-helmet";
 import { PageTitle, Loader, ErrorAlert, Pages as CorePages } from "@pay/web";
 
-import { useCreatePaymentMutation } from "../__generated__/graphql";
 import { isServerError } from "../../apollo-rest-utils";
+import { useCreatePaymentMutation } from "../__generated__/graphql";
 
 const ProductPage: React.FC = () => {
   const { serviceNameSlug, nameSlug } = useParams<{
