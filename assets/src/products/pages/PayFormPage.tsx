@@ -98,7 +98,7 @@ const PayFormPage: React.FC<{
   payment: ProductPaymentFragment;
   path: string;
 }> = ({ payment, path }) => {
-  const [updatePayment, { loading, error, data }] = useUpdatePaymentMutation({
+  const [updatePayment, { loading, error }] = useUpdatePaymentMutation({
     errorPolicy: "all"
   });
 
