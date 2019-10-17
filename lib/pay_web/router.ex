@@ -59,6 +59,11 @@ defmodule PayWeb.Router do
 
       resources "/product-payments", ProductPaymentController, only: [:show, :update]
 
+      post "/product-payments/:id/submit",
+           ProductPaymentController,
+           :submit,
+           as: :submit
+
       get "/products/:service_name_slug/:name_slug", ProductController, :show_by_slugs,
         as: :show_by_slugs
 

@@ -12,9 +12,15 @@ defmodule PayWeb.External.PaymentController do
   end
 
   def create(conn, %{"payment" => payment_params}) do
+    # TODO: just getting one for tests to pass but this should be autoset from
+    # the auth token.
+    gateway_accounts = Payments.list_gateway_accounts()
+    gateway_account = List.first(gateway_accounts)
+
     with {:ok, %Payment{} = payment} <-
            Payments.create_payment(
              Map.merge(payment_params, %{
+               "gateway_account_id" => gateway_account.id,
                "status" => "TODO",
                "auth_3ds_details" => %{},
                "external_metadata" => %{},

@@ -2,6 +2,7 @@ defmodule PayWeb.PaymentControllerTest do
   use PayWeb.ConnCase
 
   alias Pay.Payments
+  alias Pay.Payments.GatewayAccount
   alias Pay.Payments.Payment
 
   @create_attrs %{
@@ -50,8 +51,21 @@ defmodule PayWeb.PaymentControllerTest do
     wallet: nil
   }
 
-  def fixture(:payment) do
-    {:ok, payment} = Payments.create_payment(@create_attrs)
+  def fixture(:gateway_account) do
+    {:ok, gateway_account} =
+      Payments.create_gateway_account(%{
+        "type" => Payments.GatewayAccount.Type.Test.value().name,
+        "payment_provider" => Payments.GatewayAccount.PaymentProvider.Sandbox.value().name,
+        "service_name" => "Test service"
+      })
+
+    gateway_account
+  end
+
+  def fixture(:payment, gateway_account) do
+    {:ok, payment} =
+      Payments.create_payment(Map.merge(@create_attrs, %{gateway_account_id: gateway_account.id}))
+
     payment
   end
 
@@ -67,8 +81,17 @@ defmodule PayWeb.PaymentControllerTest do
   end
 
   describe "create payment" do
-    test "renders payment when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.payments_payment_path(conn, :create), payment: @create_attrs)
+    setup [:create_gateway_account]
+
+    test "renders payment when data is valid", %{
+      conn: conn,
+      gateway_account: %GatewayAccount{} = gateway_account
+    } do
+      conn =
+        post(conn, Routes.payments_payment_path(conn, :create),
+          payment: Map.merge(@create_attrs, %{gateway_account_id: gateway_account.id})
+        )
+
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.payments_payment_path(conn, :show, id))
@@ -148,8 +171,14 @@ defmodule PayWeb.PaymentControllerTest do
     end
   end
 
+  defp create_gateway_account(_) do
+    gateway_account = fixture(:gateway_account)
+    {:ok, gateway_account: gateway_account}
+  end
+
   defp create_payment(_) do
-    payment = fixture(:payment)
+    gateway_account = fixture(:gateway_account)
+    payment = fixture(:payment, gateway_account)
     {:ok, payment: payment}
   end
 end

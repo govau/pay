@@ -57,6 +57,7 @@ export type Mutation = {
   __typename?: "Mutation";
   createPayment: ProductPayment;
   updatePayment: ProductPayment;
+  submitPayment: ProductPayment;
 };
 
 export type MutationCreatePaymentArgs = {
@@ -68,6 +69,11 @@ export type MutationCreatePaymentArgs = {
 export type MutationUpdatePaymentArgs = {
   id: Scalars["ID"];
   input: UpdatePaymentInput;
+};
+
+export type MutationSubmitPaymentArgs = {
+  id: Scalars["ID"];
+  input: SubmitPaymentInput;
 };
 
 export type Product = {
@@ -91,12 +97,20 @@ export type ProductPayment = {
   product: Product;
   reference: Scalars["String"];
   amount: Scalars["Int"];
+  status: ProductPaymentStatus;
+  next_url: Scalars["String"];
 };
+
+export enum ProductPaymentStatus {
+  Created = "created",
+  Submitted = "submitted",
+  Error = "error"
+}
 
 export type Query = {
   __typename?: "Query";
   product: Product;
-  productPayment: ProductPayment;
+  payment: ProductPayment;
 };
 
 export type QueryProductArgs = {
@@ -104,7 +118,7 @@ export type QueryProductArgs = {
   nameSlug: Scalars["String"];
 };
 
-export type QueryProductPaymentArgs = {
+export type QueryPaymentArgs = {
   id: Scalars["ID"];
 };
 
@@ -139,6 +153,10 @@ export type ServiceUser = {
   service: Service;
   user: User;
   role: Role;
+};
+
+export type SubmitPaymentInput = {
+  dummy?: Maybe<Scalars["String"]>;
 };
 
 export type UpdatePaymentInput = {
@@ -182,7 +200,7 @@ export type ProductFragment = { __typename?: "Product" } & Pick<
 
 export type ProductPaymentFragment = { __typename?: "ProductPayment" } & Pick<
   ProductPayment,
-  "id" | "reference" | "amount"
+  "id" | "reference" | "amount" | "status" | "next_url"
 > & { product: { __typename?: "Product" } & ProductFragment };
 
 export type GetProductQueryVariables = {
@@ -194,12 +212,12 @@ export type GetProductQuery = { __typename?: "Query" } & {
   product: { __typename?: "Product" } & ProductFragment;
 };
 
-export type GetProductPaymentQueryVariables = {
+export type GetPaymentQueryVariables = {
   id: Scalars["ID"];
 };
 
-export type GetProductPaymentQuery = { __typename?: "Query" } & {
-  productPayment: { __typename?: "ProductPayment" } & ProductPaymentFragment;
+export type GetPaymentQuery = { __typename?: "Query" } & {
+  payment: { __typename?: "ProductPayment" } & ProductPaymentFragment;
 };
 
 export type CreatePaymentMutationVariables = {
@@ -218,6 +236,15 @@ export type UpdatePaymentMutationVariables = {
 };
 
 export type UpdatePaymentMutation = { __typename?: "Mutation" } & {
+  payment: { __typename?: "ProductPayment" } & ProductPaymentFragment;
+};
+
+export type SubmitPaymentMutationVariables = {
+  id: Scalars["ID"];
+  input: SubmitPaymentInput;
+};
+
+export type SubmitPaymentMutation = { __typename?: "Mutation" } & {
   payment: { __typename?: "ProductPayment" } & ProductPaymentFragment;
 };
 
@@ -247,6 +274,8 @@ export const ProductPaymentFragmentDoc = gql`
     id
     reference
     amount
+    status
+    next_url
     product {
       ...Product
     }
@@ -328,9 +357,9 @@ export type GetProductQueryResult = ApolloReactCommon.QueryResult<
   GetProductQuery,
   GetProductQueryVariables
 >;
-export const GetProductPaymentDocument = gql`
-  query GetProductPayment($id: ID!) {
-    productPayment(id: $id)
+export const GetPaymentDocument = gql`
+  query GetPayment($id: ID!) {
+    payment(id: $id)
       @rest(
         type: "ProductPayment"
         path: "/internal/products/product-payments/{args.id}"
@@ -340,76 +369,67 @@ export const GetProductPaymentDocument = gql`
   }
   ${ProductPaymentFragmentDoc}
 `;
-export type GetProductPaymentComponentProps = Omit<
+export type GetPaymentComponentProps = Omit<
   ApolloReactComponents.QueryComponentOptions<
-    GetProductPaymentQuery,
-    GetProductPaymentQueryVariables
+    GetPaymentQuery,
+    GetPaymentQueryVariables
   >,
   "query"
 > &
-  (
-    | { variables: GetProductPaymentQueryVariables; skip?: boolean }
-    | { skip: boolean });
+  ({ variables: GetPaymentQueryVariables; skip?: boolean } | { skip: boolean });
 
-export const GetProductPaymentComponent = (
-  props: GetProductPaymentComponentProps
-) => (
-  <ApolloReactComponents.Query<
-    GetProductPaymentQuery,
-    GetProductPaymentQueryVariables
-  >
-    query={GetProductPaymentDocument}
+export const GetPaymentComponent = (props: GetPaymentComponentProps) => (
+  <ApolloReactComponents.Query<GetPaymentQuery, GetPaymentQueryVariables>
+    query={GetPaymentDocument}
     {...props}
   />
 );
 
 /**
- * __useGetProductPaymentQuery__
+ * __useGetPaymentQuery__
  *
- * To run a query within a React component, call `useGetProductPaymentQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProductPaymentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetPaymentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPaymentQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetProductPaymentQuery({
+ * const { data, loading, error } = useGetPaymentQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useGetProductPaymentQuery(
+export function useGetPaymentQuery(
   baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetProductPaymentQuery,
-    GetProductPaymentQueryVariables
+    GetPaymentQuery,
+    GetPaymentQueryVariables
   >
 ) {
-  return ApolloReactHooks.useQuery<
-    GetProductPaymentQuery,
-    GetProductPaymentQueryVariables
-  >(GetProductPaymentDocument, baseOptions);
+  return ApolloReactHooks.useQuery<GetPaymentQuery, GetPaymentQueryVariables>(
+    GetPaymentDocument,
+    baseOptions
+  );
 }
-export function useGetProductPaymentLazyQuery(
+export function useGetPaymentLazyQuery(
   baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetProductPaymentQuery,
-    GetProductPaymentQueryVariables
+    GetPaymentQuery,
+    GetPaymentQueryVariables
   >
 ) {
   return ApolloReactHooks.useLazyQuery<
-    GetProductPaymentQuery,
-    GetProductPaymentQueryVariables
-  >(GetProductPaymentDocument, baseOptions);
+    GetPaymentQuery,
+    GetPaymentQueryVariables
+  >(GetPaymentDocument, baseOptions);
 }
-export type GetProductPaymentQueryHookResult = ReturnType<
-  typeof useGetProductPaymentQuery
+export type GetPaymentQueryHookResult = ReturnType<typeof useGetPaymentQuery>;
+export type GetPaymentLazyQueryHookResult = ReturnType<
+  typeof useGetPaymentLazyQuery
 >;
-export type GetProductPaymentLazyQueryHookResult = ReturnType<
-  typeof useGetProductPaymentLazyQuery
->;
-export type GetProductPaymentQueryResult = ApolloReactCommon.QueryResult<
-  GetProductPaymentQuery,
-  GetProductPaymentQueryVariables
+export type GetPaymentQueryResult = ApolloReactCommon.QueryResult<
+  GetPaymentQuery,
+  GetPaymentQueryVariables
 >;
 export const CreatePaymentDocument = gql`
   mutation CreatePayment(
@@ -567,4 +587,78 @@ export type UpdatePaymentMutationResult = ApolloReactCommon.MutationResult<
 export type UpdatePaymentMutationOptions = ApolloReactCommon.BaseMutationOptions<
   UpdatePaymentMutation,
   UpdatePaymentMutationVariables
+>;
+export const SubmitPaymentDocument = gql`
+  mutation SubmitPayment($id: ID!, $input: SubmitPaymentInput!) {
+    payment: submitPayment(id: $id, input: $input)
+      @rest(
+        type: "ProductPayment"
+        path: "/internal/products/product-payments/{args.id}/submit"
+        method: "POST"
+      ) {
+      ...ProductPayment
+    }
+  }
+  ${ProductPaymentFragmentDoc}
+`;
+export type SubmitPaymentMutationFn = ApolloReactCommon.MutationFunction<
+  SubmitPaymentMutation,
+  SubmitPaymentMutationVariables
+>;
+export type SubmitPaymentComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    SubmitPaymentMutation,
+    SubmitPaymentMutationVariables
+  >,
+  "mutation"
+>;
+
+export const SubmitPaymentComponent = (props: SubmitPaymentComponentProps) => (
+  <ApolloReactComponents.Mutation<
+    SubmitPaymentMutation,
+    SubmitPaymentMutationVariables
+  >
+    mutation={SubmitPaymentDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useSubmitPaymentMutation__
+ *
+ * To run a mutation, you first call `useSubmitPaymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitPaymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitPaymentMutation, { data, loading, error }] = useSubmitPaymentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSubmitPaymentMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    SubmitPaymentMutation,
+    SubmitPaymentMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    SubmitPaymentMutation,
+    SubmitPaymentMutationVariables
+  >(SubmitPaymentDocument, baseOptions);
+}
+export type SubmitPaymentMutationHookResult = ReturnType<
+  typeof useSubmitPaymentMutation
+>;
+export type SubmitPaymentMutationResult = ApolloReactCommon.MutationResult<
+  SubmitPaymentMutation
+>;
+export type SubmitPaymentMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  SubmitPaymentMutation,
+  SubmitPaymentMutationVariables
 >;

@@ -1,17 +1,15 @@
 import * as React from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
 import { ApolloError } from "apollo-client";
-import { Pages as CorePages, Loader, ErrorAlert, validators } from "@pay/web";
+import { Loader, ErrorAlert, validators } from "@pay/web";
+import { FormRenderProps } from "react-final-form";
 import { NakedForm } from "@pay/web/components/form/Form";
 
 import {
   UpdatePaymentMutationFn,
-  useUpdatePaymentMutation
+  useUpdatePaymentMutation,
+  ProductPaymentFragment
 } from "../__generated__/graphql";
 import { isServerError } from "../../apollo-rest-utils";
-import ReferencePage from "./ReferencePage";
-import AmountPage from "./AmountPage";
-import { ProductPaymentFragment } from "../__generated__/graphql";
 
 export interface Values {
   reference: string;
@@ -94,10 +92,12 @@ const handleSubmit = (
   };
 };
 
-const PayFormPage: React.FC<{
+interface Props {
+  children: (props: FormRenderProps<Values>) => React.ReactNode;
   payment: ProductPaymentFragment;
-  path: string;
-}> = ({ payment, path }) => {
+}
+
+const Form: React.FC<Props> = ({ children, payment }) => {
   const [updatePayment, { loading, error }] = useUpdatePaymentMutation({
     errorPolicy: "all"
   });
@@ -111,52 +111,24 @@ const PayFormPage: React.FC<{
         amount: payment.amount ? payment.amount / 100 : 0
       }}
     >
-      {({ handleSubmit, values }) => (
-        <>
-          {loading ? (
-            <Loader />
-          ) : (
-            <>
-              {error && (
-                <ErrorAlert
-                  title="Unable to update the payment"
-                  message={getErrorMessage(error)}
-                  showError={true}
-                />
-              )}
-              <Switch>
-                <Route path={path} exact strict>
-                  <Redirect to={`${path}/reference`} />
-                </Route>
-                <Route path={`${path}/reference`} exact strict>
-                  {payment.product.reference_enabled ? (
-                    <ReferencePage
-                      path={path}
-                      payment={payment}
-                      onSubmit={handleSubmit}
-                    />
-                  ) : (
-                    <Redirect to={`${path}/amount`} />
-                  )}
-                </Route>
-                <Route path={`${path}/amount`} exact strict>
-                  <AmountPage
-                    path={path}
-                    payment={payment}
-                    values={values}
-                    onSubmit={handleSubmit}
-                  />
-                </Route>
-                <Route path="*">
-                  <CorePages.NotFoundPage />
-                </Route>
-              </Switch>
-            </>
-          )}
-        </>
-      )}
+      {renderProps =>
+        loading ? (
+          <Loader />
+        ) : (
+          <>
+            {error && (
+              <ErrorAlert
+                title="Unable to update the payment"
+                message={getErrorMessage(error)}
+                showError={true}
+              />
+            )}
+            {children(renderProps)}
+          </>
+        )
+      }
     </NakedForm>
   );
 };
 
-export default PayFormPage;
+export default Form;

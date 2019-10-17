@@ -66,8 +66,6 @@ defmodule Pay.Products.ProductPayment do
     |> validate_required([
       :external_id,
       :product_id,
-      :payment_id,
-      :next_url,
       :status,
       :gateway_account_id
     ])
@@ -77,16 +75,59 @@ defmodule Pay.Products.ProductPayment do
   def update_changeset(product_payment, attrs) do
     product_payment
     |> cast(attrs, [
-      :next_url,
       :amount,
-      :status,
       :reference
     ])
     |> normalize_amount(product_payment.product)
     |> normalize_reference(product_payment.product)
     |> validate_required([
-      :next_url,
-      :status
+      :amount,
+      :reference
     ])
   end
+
+  @doc false
+  def submit_changeset(product_payment, attrs) do
+    product_payment
+    |> cast(attrs, [
+      :payment_id,
+      :status,
+      :next_url
+    ])
+    |> validate_required([
+      :payment_id,
+      :status,
+      :next_url
+    ])
+  end
+end
+
+defmodule Pay.Products.ProductPayment.Status do
+  alias Pay.Products.ProductPayment.Status
+
+  defstruct [:name]
+
+  @type t :: %Status{}
+  @callback value :: Status.t()
+end
+
+defmodule Pay.Products.ProductPayment.Status.Created do
+  alias Pay.Products.ProductPayment.Status
+
+  @behaviour Status
+  def value, do: %Status{name: "created"}
+end
+
+defmodule Pay.Products.ProductPayment.Status.Submitted do
+  alias Pay.Products.ProductPayment.Status
+
+  @behaviour Status
+  def value, do: %Status{name: "submitted"}
+end
+
+defmodule Pay.Products.ProductPayment.Status.Error do
+  alias Pay.Products.ProductPayment.Status
+
+  @behaviour Status
+  def value, do: %Status{name: "error"}
 end

@@ -7,6 +7,7 @@ defmodule Pay.Products do
   alias Pay.Repo
 
   alias Pay.Products.Product
+  alias Pay.Products.ProductPayment
 
   @doc """
   Returns the list of products.
@@ -224,7 +225,8 @@ defmodule Pay.Products do
                external_id: Ecto.UUID.generate(),
                product: product,
                product_id: product.id,
-               gateway_account_id: product.gateway_account_id
+               gateway_account_id: product.gateway_account_id,
+               status: ProductPayment.Status.Created.value().name
              },
              attrs
            )
@@ -249,6 +251,28 @@ defmodule Pay.Products do
   def update_product_payment(%ProductPayment{} = product_payment, attrs) do
     product_payment
     |> ProductPayment.update_changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Marks a product_payment as submitted.
+
+  ## Examples
+
+      iex> submit_product_payment(product_payment, "some payment_id", "/next_url")
+      {:ok, %ProductPayment{}}
+
+      iex> submit_product_payment(product_payment, "", "")
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def submit_product_payment(%ProductPayment{} = product_payment, payment_id, next_url) do
+    product_payment
+    |> ProductPayment.submit_changeset(%{
+      payment_id: payment_id,
+      status: ProductPayment.Status.Submitted.value().name,
+      next_url: next_url
+    })
     |> Repo.update()
   end
 

@@ -14,9 +14,17 @@ type Product {
   gateway_account: GatewayAccount!
 }
 
+enum ProductPaymentStatus {
+  created
+  submitted
+  error
+}
+
 type ProductPayment {
   id: ID!
   product: Product!
   reference: String!
   amount: Int!
+  status: ProductPaymentStatus!
+  next_url: String!
 }
