@@ -104,62 +104,64 @@ const PayFormPage: React.FC<{
   });
 
   return (
-    <NakedForm<Values>
-      onSubmit={handleSubmit(payment, updatePayment)}
-      column
-      initialValues={{
-        reference: payment.reference || "",
-        amount: payment.amount ? payment.amount / 100 : 0
-      }}
-    >
-      {({ handleSubmit, values }) => (
-        <>
-          {loading ? (
-            <Loader />
-          ) : (
-            <>
-              {error && (
-                <ErrorAlert
-                  title="Unable to update the payment"
-                  message={getErrorMessage(error)}
-                  showError={true}
-                />
-              )}
-              <Switch>
-                <Route path={path} exact strict>
-                  <Redirect to={`${path}/reference`} />
-                </Route>
-                <Route path={`${path}/reference`} exact strict>
-                  {payment.product.reference_enabled ? (
-                    <ReferencePage
+    <Switch>
+      <Route path={`${path}/submit`} exact strict>
+        <SubmitPage path={path} payment={payment} />
+      </Route>
+      <Route path="*">
+        <NakedForm<Values>
+          onSubmit={handleSubmit(payment, updatePayment)}
+          column
+          initialValues={{
+            reference: payment.reference || "",
+            amount: payment.amount ? payment.amount / 100 : 0
+          }}
+        >
+          {({ handleSubmit, values }) =>
+            loading ? (
+              <Loader />
+            ) : (
+              <>
+                {error && (
+                  <ErrorAlert
+                    title="Unable to update the payment"
+                    message={getErrorMessage(error)}
+                    showError={true}
+                  />
+                )}
+                <Switch>
+                  <Route path={path} exact strict>
+                    <Redirect to={`${path}/reference`} />
+                  </Route>
+                  <Route path={`${path}/reference`} exact strict>
+                    {payment.product.reference_enabled ? (
+                      <ReferencePage
+                        path={path}
+                        payment={payment}
+                        onSubmit={handleSubmit}
+                      />
+                    ) : (
+                      <Redirect to={`${path}/amount`} />
+                    )}
+                  </Route>
+                  <Route path={`${path}/amount`} exact strict>
+                    <AmountPage
                       path={path}
                       payment={payment}
+                      values={values}
                       onSubmit={handleSubmit}
                     />
-                  ) : (
-                    <Redirect to={`${path}/amount`} />
-                  )}
-                </Route>
-                <Route path={`${path}/amount`} exact strict>
-                  <AmountPage
-                    path={path}
-                    payment={payment}
-                    values={values}
-                    onSubmit={handleSubmit}
-                  />
-                </Route>
-                <Route path={`${path}/submit`} exact strict>
-                  <SubmitPage path={path} payment={payment} />
-                </Route>
-                <Route path="*">
-                  <CorePages.NotFoundPage />
-                </Route>
-              </Switch>
-            </>
-          )}
-        </>
-      )}
-    </NakedForm>
+                  </Route>
+                  <Route path="*">
+                    <CorePages.NotFoundPage />
+                  </Route>
+                </Switch>
+              </>
+            )
+          }
+        </NakedForm>
+      </Route>
+    </Switch>
   );
 };
 
