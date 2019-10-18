@@ -20,7 +20,7 @@ export interface AriaProps {
   spellCheck: boolean;
 }
 
-interface ChildRenderProps<FieldValue = any>
+export interface ChildRenderProps<FieldValue = any>
   extends FieldRenderProps<FieldValue, HTMLInputElement> {
   ariaProps: AriaProps;
   labelId: string;

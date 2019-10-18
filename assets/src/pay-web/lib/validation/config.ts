@@ -1,7 +1,7 @@
 export type ValidatorOptions = {
   [key: string]: string | number;
 };
-export type ValidatorValue = string | number;
+export type ValidatorValue = null | boolean | string | number;
 export type ValidatorResult = string | undefined;
 export type Validator = (value: ValidatorValue) => ValidatorResult;
 export type ValidatorCheck = (
@@ -20,6 +20,7 @@ export const regexPatterns = {
 
 export const errorMessages: { [key: string]: (opts?: any) => string } = {
   required: () => "Required",
+  isNotNull: () => "Required",
   isEmail: () => "Enter a valid email address",
   isMinLength: ({ min }: { min: number }) =>
     `Must be at least ${min} characters long`,

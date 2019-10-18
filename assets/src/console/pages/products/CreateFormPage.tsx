@@ -2,7 +2,8 @@ import * as React from "react";
 import { Helmet } from "react-helmet";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { ApolloError } from "apollo-client";
-import { Form, Pages as CorePages, Loader, ErrorAlert } from "@pay/web";
+import { validators, Pages as CorePages, Loader, ErrorAlert } from "@pay/web";
+import { NakedForm } from "@pay/web/components/form/Form";
 
 import {
   CreateProductMutationFn,
@@ -18,10 +19,10 @@ export interface Values {
   name: string;
   description?: string;
   reference_enabled: boolean | null;
-  reference_label?: string;
-  reference_hint?: string;
+  reference_label: string;
+  reference_hint: string;
   price_fixed: boolean | null;
-  price?: string;
+  price: number;
 }
 
 const getErrorMessage = (error?: ApolloError) => {
@@ -38,9 +39,9 @@ const getErrorMessage = (error?: ApolloError) => {
 };
 
 // TODO: move to module.
-const ensureMoneyInCents = (amount: string) => {
+const ensureMoneyInCents = (amount: number) => {
   // TODO: correct calculation.
-  return Number(amount) * 100;
+  return amount * 100;
 };
 
 const handleSubmit = (
@@ -48,7 +49,61 @@ const handleSubmit = (
   createProduct: CreateProductMutationFn
 ) => {
   return async (values: Values) => {
+    const errors = [
+      {
+        name: "name",
+        error: validators.required("Enter a payment link title")(values.name)
+      },
+      {
+        name: "reference_enabled",
+        error: validators.isNotNull("Please choose an option")(
+          values.reference_enabled
+        )
+      },
+      {
+        name: "price_fixed",
+        error: validators.isNotNull("Please choose an option")(
+          values.price_fixed
+        )
+      },
+      values.reference_enabled
+        ? {
+            name: "reference_label",
+            error: validators.required("Enter a payment reference")(
+              values.reference_label
+            )
+          }
+        : null,
+      values.price_fixed
+        ? {
+            name: "price",
+            error: validators.isGreaterThan("Enter the amount", {
+              min: 0
+            })(values.price)
+          }
+        : null
+    ].filter(f => Boolean(f && f.error));
+
+    if (errors.length > 0) {
+      const initial: Partial<{ [key: string]: string }> = {};
+      return errors.reduce((map, f) => {
+        if (!f) {
+          return map;
+        }
+        map[f.name] = f.error;
+        return map;
+      }, initial);
+    }
+
+    // TODO: fix bug whereby a user that edits a step of this form and then
+    // submits causes the request below to execute (because there are no more
+    // errors). The way to fix it is to set a state in the location/history when
+    // on the review page. If they go to a step to make a change, check for that
+    // state and if it exists, instead of submitting, redirects to /review
+    // (unless on /review already).
+
     const { reference_enabled, price_fixed, price } = values;
+
     try {
       await createProduct({
         variables: {
@@ -67,11 +122,17 @@ const handleSubmit = (
   };
 };
 
-const CreateFormPage: React.FC<{
+interface Props {
   serviceName: string;
   gatewayAccountId: string;
   path: string;
-}> = ({ serviceName, gatewayAccountId, path }) => {
+}
+
+const CreateFormPage: React.FC<Props> = ({
+  serviceName,
+  gatewayAccountId,
+  path
+}) => {
   const [createProduct, { loading, error, data }] = useCreateProductMutation({
     errorPolicy: "all"
   });
@@ -81,16 +142,19 @@ const CreateFormPage: React.FC<{
       <Helmet>
         <title>Create payment link</title>
       </Helmet>
-      <Form<Values>
+      <NakedForm<Values>
         onSubmit={handleSubmit(gatewayAccountId, createProduct)}
         column
         initialValues={{
           name: "",
           reference_enabled: null,
-          price_fixed: null
+          reference_label: "",
+          reference_hint: "",
+          price_fixed: null,
+          price: 0
         }}
       >
-        {({ values }) => (
+        {({ values, handleSubmit }) => (
           <>
             {loading ? (
               <Loader message="Creating a new payment link" />
@@ -111,13 +175,22 @@ const CreateFormPage: React.FC<{
                       serviceName={serviceName}
                       path={path}
                       values={values}
+                      onSubmit={handleSubmit}
                     />
                   </Route>
                   <Route path={`${path}/reference`} exact strict>
-                    <ReferencePage path={path} values={values} />
+                    <ReferencePage
+                      path={path}
+                      values={values}
+                      onSubmit={handleSubmit}
+                    />
                   </Route>
                   <Route path={`${path}/amount`} exact strict>
-                    <AmountPage path={path} values={values} />
+                    <AmountPage
+                      path={path}
+                      values={values}
+                      onSubmit={handleSubmit}
+                    />
                   </Route>
                   <Route path={`${path}/review`} exact strict>
                     <ReviewPage path={path} values={values} />
@@ -130,7 +203,7 @@ const CreateFormPage: React.FC<{
             )}
           </>
         )}
-      </Form>
+      </NakedForm>
     </>
   );
 };

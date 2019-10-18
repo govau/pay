@@ -1,31 +1,52 @@
 import * as React from "react";
 import {
   PageTitle,
-  LinkButton,
+  Button,
   Field,
   BooleanRadio,
   BasicTextInput,
-  validators,
   Callout,
   P
 } from "@pay/web";
-import { Values } from "./CreateFormPage";
+import { FormElement, OnSubmitFn } from "@pay/web/components/form/Form";
 
-const ReferencePage: React.FC<{
+import { Values } from "./CreateFormPage";
+import { useHistory } from "react-router";
+
+interface Props {
   path: string;
   values: Pick<Values, "reference_enabled">;
-}> = ({ path, values }) => {
+  onSubmit: OnSubmitFn;
+}
+
+const ReferencePage: React.FC<Props> = ({ path, values, onSubmit }) => {
+  const history = useHistory();
+
   return (
-    <>
+    <FormElement
+      column
+      onSubmit={async event => {
+        const error = await onSubmit(event);
+        if (
+          error &&
+          (error.reference_enabled ||
+            error.reference_label ||
+            error.reference_hint)
+        ) {
+          return;
+        }
+        history.push(`${path}/amount`);
+      }}
+      noValidate
+    >
       <PageTitle title="Do your users already have a payment reference?" />
-      <BooleanRadio name="reference_enabled" value={true} label="Yes" />
+      <BooleanRadio name="reference_enabled" value={true} label="Yes" first />
       {values.reference_enabled === true && (
         <>
           <Field
             name="reference_label"
             label="Name of payment reference"
             description="For example, “invoice number”"
-            validate={validators.required("Enter a payment reference")}
           >
             {({ input, ariaProps, ...rest }) => (
               <BasicTextInput {...input} {...ariaProps} {...rest} />
@@ -51,8 +72,8 @@ const ReferencePage: React.FC<{
           </P>
         </Callout>
       )}
-      <LinkButton to={`${path}/amount`}>Continue</LinkButton>
-    </>
+      <Button type="submit">Continue</Button>
+    </FormElement>
   );
 };
 
