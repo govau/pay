@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useHistory } from "react-router";
 import {
   PageTitle,
   Button,
@@ -11,7 +12,6 @@ import {
 import { FormElement, OnSubmitFn } from "@pay/web/components/form/Form";
 
 import { Values } from "./CreateFormPage";
-import { useHistory } from "react-router";
 
 interface Props {
   path: string;

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, useLocation } from "react-router-dom";
 import { ApolloError } from "apollo-client";
 import { validators, Pages as CorePages, Loader, ErrorAlert } from "@pay/web";
 import { NakedForm } from "@pay/web/components/form/Form";
@@ -14,6 +14,7 @@ import DetailsPage from "./DetailsPage";
 import ReferencePage from "./ReferencePage";
 import AmountPage from "./AmountPage";
 import ReviewPage from "./ReviewPage";
+import { Location } from "history";
 
 export interface Values {
   name: string;
@@ -45,6 +46,8 @@ const ensureMoneyInCents = (amount: number) => {
 };
 
 const handleSubmit = (
+  location: Location,
+  path: string,
   gatewayAccountId: string,
   createProduct: CreateProductMutationFn
 ) => {
@@ -95,12 +98,9 @@ const handleSubmit = (
       }, initial);
     }
 
-    // TODO: fix bug whereby a user that edits a step of this form and then
-    // submits causes the request below to execute (because there are no more
-    // errors). The way to fix it is to set a state in the location/history when
-    // on the review page. If they go to a step to make a change, check for that
-    // state and if it exists, instead of submitting, redirects to /review
-    // (unless on /review already).
+    if (location.pathname !== `${path}/review`) {
+      return;
+    }
 
     const { reference_enabled, price_fixed, price } = values;
 
@@ -125,14 +125,18 @@ const handleSubmit = (
 interface Props {
   serviceName: string;
   gatewayAccountId: string;
+  productsPath: string;
   path: string;
 }
 
 const CreateFormPage: React.FC<Props> = ({
   serviceName,
   gatewayAccountId,
+  productsPath,
   path
 }) => {
+  const location = useLocation();
+
   const [createProduct, { loading, error, data }] = useCreateProductMutation({
     errorPolicy: "all"
   });
@@ -143,7 +147,7 @@ const CreateFormPage: React.FC<Props> = ({
         <title>Create payment link</title>
       </Helmet>
       <NakedForm<Values>
-        onSubmit={handleSubmit(gatewayAccountId, createProduct)}
+        onSubmit={handleSubmit(location, path, gatewayAccountId, createProduct)}
         column
         initialValues={{
           name: "",
@@ -159,7 +163,7 @@ const CreateFormPage: React.FC<Props> = ({
             {loading ? (
               <Loader message="Creating a new payment link" />
             ) : data && data.product ? (
-              <Redirect to={path + "/TODO"} />
+              <Redirect to={productsPath} />
             ) : (
               <>
                 {error && (
@@ -193,7 +197,11 @@ const CreateFormPage: React.FC<Props> = ({
                     />
                   </Route>
                   <Route path={`${path}/review`} exact strict>
-                    <ReviewPage path={path} values={values} />
+                    <ReviewPage
+                      path={path}
+                      values={values}
+                      onSubmit={handleSubmit}
+                    />
                   </Route>
                   <Route path="*">
                     <CorePages.NotFoundPage />

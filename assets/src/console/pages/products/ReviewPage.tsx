@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useHistory } from "react-router";
 import {
   PageTitle,
   DescriptionList,
@@ -7,14 +8,27 @@ import {
   ScreenReaderText,
   Text
 } from "@pay/web";
+import { FormElement, OnSubmitFn } from "@pay/web/components/form/Form";
+
 import { Values } from "./CreateFormPage";
 
-const ReviewPage: React.FC<{
+interface Props {
   path: string;
   values: Values;
-}> = ({ path, values }) => {
+  onSubmit: OnSubmitFn;
+}
+
+const ReviewPage: React.FC<Props> = ({ path, values, onSubmit }) => {
+  const history = useHistory();
+
   return (
-    <>
+    <FormElement
+      column
+      onSubmit={async event => {
+        await onSubmit(event);
+      }}
+      noValidate
+    >
       <PageTitle title="Review your payment link details" />
       <DescriptionList>
         <div>
@@ -74,7 +88,7 @@ const ReviewPage: React.FC<{
         </div>
       </DescriptionList>
       <Button type="submit">Create payment link</Button>
-    </>
+    </FormElement>
   );
 };
 
