@@ -13,6 +13,7 @@ defmodule PayWeb.PaymentView do
   def render("payment.json", %{payment: payment}) do
     %{
       id: payment.external_id,
+      inserted_at: payment.inserted_at,
       amount: payment.amount,
       status: payment.status,
       gateway_transaction_id: payment.gateway_transaction_id,

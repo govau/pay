@@ -26,6 +26,22 @@ fragment Product on Product {
   description
 }
 
+fragment Payment on Payment {
+  id
+  inserted_at
+  status
+  amount
+  reference
+  description
+  email
+  card_details {
+    cardholder_name
+    card_brand
+    last_digits_card_number
+    first_digits_card_number
+  }
+}
+
 query GetUserServices($userId: ID!) {
   services: getUserServices(userId: $userId)
     @rest(
@@ -140,5 +156,15 @@ mutation CreateProduct($gatewayAccountId: ID!, $input: CreateProductInput!) {
       method: "POST"
     ) {
     ...Service
+  }
+}
+
+query GetPayments($gatewayAccountId: ID!) {
+  payments: getPayments(gatewayAccountId: $gatewayAccountId)
+    @rest(
+      type: "[Payment]"
+      path: "/internal/services/gateway-accounts/{args.gatewayAccountId}/payments"
+    ) {
+    ...Payment
   }
 }

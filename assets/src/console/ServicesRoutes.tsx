@@ -42,6 +42,7 @@ const GatewayAccountsRoutes: React.FC<{
     <Switch>
       <Route path={`${url}/payments`} exact strict>
         <Pages.Services.GatewayAccounts.PaymentsPage
+          path={`${url}/payments`}
           service={service}
           gatewayAccount={data.gatewayAccount}
         />

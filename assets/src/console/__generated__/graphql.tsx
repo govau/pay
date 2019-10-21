@@ -20,6 +20,15 @@ export type BamboraCredentials = {
   api_username?: Maybe<Scalars["String"]>;
 };
 
+export type CardDetails = {
+  __typename?: "CardDetails";
+  cardholder_name: Scalars["String"];
+  last_digits_card_number: Scalars["String"];
+  first_digits_card_number: Scalars["String"];
+  expiry_date: Scalars["String"];
+  card_brand: Scalars["String"];
+};
+
 export type CreateProductInput = {
   product: CreateProductProduct;
 };
@@ -92,6 +101,31 @@ export type MutationCreateProductArgs = {
   input: CreateProductInput;
 };
 
+export type Payment = {
+  __typename?: "Payment";
+  id: Scalars["ID"];
+  inserted_at: Scalars["String"];
+  status: PaymentStatus;
+  amount: Scalars["Int"];
+  reference: Scalars["String"];
+  description: Scalars["String"];
+  email: Scalars["String"];
+  card_details?: Maybe<CardDetails>;
+  gateway_account: GatewayAccount;
+};
+
+export enum PaymentStatus {
+  Created = "created",
+  Started = "started",
+  Submitted = "submitted",
+  Capturable = "capturable",
+  Success = "success",
+  Declined = "declined",
+  TimedOut = "timed_out",
+  Cancelled = "cancelled",
+  Error = "error"
+}
+
 export type Product = {
   __typename?: "Product";
   id: Scalars["ID"];
@@ -114,6 +148,7 @@ export type Query = {
   getServiceGatewayAccounts: Array<GatewayAccount>;
   getGatewayAccount: GatewayAccount;
   getGatewayAccountProducts: Array<Product>;
+  getPayments: Array<Payment>;
 };
 
 export type QueryGetUserServicesArgs = {
@@ -133,6 +168,10 @@ export type QueryGetGatewayAccountArgs = {
 };
 
 export type QueryGetGatewayAccountProductsArgs = {
+  gatewayAccountId: Scalars["ID"];
+};
+
+export type QueryGetPaymentsArgs = {
   gatewayAccountId: Scalars["ID"];
 };
 
@@ -209,6 +248,27 @@ export type ProductFragment = { __typename?: "Product" } & Pick<
   Product,
   "id" | "name" | "name_slug" | "service_name_slug" | "description"
 >;
+
+export type PaymentFragment = { __typename?: "Payment" } & Pick<
+  Payment,
+  | "id"
+  | "inserted_at"
+  | "status"
+  | "amount"
+  | "reference"
+  | "description"
+  | "email"
+> & {
+    card_details: Maybe<
+      { __typename?: "CardDetails" } & Pick<
+        CardDetails,
+        | "cardholder_name"
+        | "card_brand"
+        | "last_digits_card_number"
+        | "first_digits_card_number"
+      >
+    >;
+  };
 
 export type GetUserServicesQueryVariables = {
   userId: Scalars["ID"];
@@ -307,6 +367,14 @@ export type CreateProductMutation = { __typename?: "Mutation" } & {
   product: { __typename?: "Service" } & ServiceFragment;
 };
 
+export type GetPaymentsQueryVariables = {
+  gatewayAccountId: Scalars["ID"];
+};
+
+export type GetPaymentsQuery = { __typename?: "Query" } & {
+  payments: Array<{ __typename?: "Payment" } & PaymentFragment>;
+};
+
 export const ServiceFragmentDoc = gql`
   fragment Service on Service {
     id
@@ -334,6 +402,23 @@ export const ProductFragmentDoc = gql`
     name_slug
     service_name_slug
     description
+  }
+`;
+export const PaymentFragmentDoc = gql`
+  fragment Payment on Payment {
+    id
+    inserted_at
+    status
+    amount
+    reference
+    description
+    email
+    card_details {
+      cardholder_name
+      card_brand
+      last_digits_card_number
+      first_digits_card_number
+    }
   }
 `;
 export const GetUserServicesDocument = gql`
@@ -1143,4 +1228,80 @@ export type CreateProductMutationResult = ApolloReactCommon.MutationResult<
 export type CreateProductMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CreateProductMutation,
   CreateProductMutationVariables
+>;
+export const GetPaymentsDocument = gql`
+  query GetPayments($gatewayAccountId: ID!) {
+    payments: getPayments(gatewayAccountId: $gatewayAccountId)
+      @rest(
+        type: "[Payment]"
+        path: "/internal/services/gateway-accounts/{args.gatewayAccountId}/payments"
+      ) {
+      ...Payment
+    }
+  }
+  ${PaymentFragmentDoc}
+`;
+export type GetPaymentsComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    GetPaymentsQuery,
+    GetPaymentsQueryVariables
+  >,
+  "query"
+> &
+  (
+    | { variables: GetPaymentsQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const GetPaymentsComponent = (props: GetPaymentsComponentProps) => (
+  <ApolloReactComponents.Query<GetPaymentsQuery, GetPaymentsQueryVariables>
+    query={GetPaymentsDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useGetPaymentsQuery__
+ *
+ * To run a query within a React component, call `useGetPaymentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPaymentsQuery({
+ *   variables: {
+ *      gatewayAccountId: // value for 'gatewayAccountId'
+ *   },
+ * });
+ */
+export function useGetPaymentsQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetPaymentsQuery,
+    GetPaymentsQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<GetPaymentsQuery, GetPaymentsQueryVariables>(
+    GetPaymentsDocument,
+    baseOptions
+  );
+}
+export function useGetPaymentsLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetPaymentsQuery,
+    GetPaymentsQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetPaymentsQuery,
+    GetPaymentsQueryVariables
+  >(GetPaymentsDocument, baseOptions);
+}
+export type GetPaymentsQueryHookResult = ReturnType<typeof useGetPaymentsQuery>;
+export type GetPaymentsLazyQueryHookResult = ReturnType<
+  typeof useGetPaymentsLazyQuery
+>;
+export type GetPaymentsQueryResult = ApolloReactCommon.QueryResult<
+  GetPaymentsQuery,
+  GetPaymentsQueryVariables
 >;
