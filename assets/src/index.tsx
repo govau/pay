@@ -84,6 +84,18 @@ const restLink = new RestLink({
       .then((text: string) =>
         Promise.reject(new Error(`Received unexpected response: ${text}`))
       );
+  },
+  typePatcher: {
+    Payment: (
+      data: any,
+      outerType: string,
+      patchDeeper: RestLink.FunctionalTypePatcher
+    ): any => {
+      if (data.card_details) {
+        data.card_details = { __typename: "CardDetails", ...data.card_details };
+      }
+      return data;
+    }
   }
 });
 
