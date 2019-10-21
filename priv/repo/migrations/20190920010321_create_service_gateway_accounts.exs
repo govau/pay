@@ -6,7 +6,7 @@ defmodule Pay.Repo.Migrations.CreateServiceGatewayAccounts do
       add :gateway_account_id, :uuid
       add :service_id, references(:services, on_delete: :nothing)
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create index(:service_gateway_accounts, [:service_id])

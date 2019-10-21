@@ -1,6 +1,7 @@
 defmodule Pay.Payments.GatewayAccountCardType do
   use Ecto.Schema
   import Ecto.Changeset
+  @timestamps_opts [type: :utc_datetime_usec]
 
   schema "gateway_account_card_types" do
     field :gateway_account_id, :id

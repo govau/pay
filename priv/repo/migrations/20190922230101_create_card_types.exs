@@ -8,7 +8,7 @@ defmodule Pay.Repo.Migrations.CreateCardTypes do
       add :label, :string
       add :requires_3ds, :boolean, default: false, null: false
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
   end
 end

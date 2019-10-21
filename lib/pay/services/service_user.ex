@@ -4,6 +4,7 @@ defmodule Pay.Services.ServiceUser do
   alias Pay.Services.Service
   alias Pay.Services.User
   alias Pay.Services.Role
+  @timestamps_opts [type: :utc_datetime_usec]
 
   schema "service_users" do
     belongs_to :service, Service

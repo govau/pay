@@ -12,7 +12,7 @@ defmodule Pay.Repo.Migrations.CreateProductPayments do
       add :reference, :string
       add :product_id, references(:products, on_delete: :nothing)
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create index(:product_payments, [:product_id])

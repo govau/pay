@@ -2,6 +2,7 @@ defmodule Pay.Products.ProductPayment do
   use Ecto.Schema
   import Ecto.Changeset
   alias Pay.Products.Product
+  @timestamps_opts [type: :utc_datetime_usec]
 
   @derive {Phoenix.Param, key: :external_id}
 

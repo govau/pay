@@ -18,7 +18,7 @@ defmodule Pay.Repo.Migrations.CreateProducts do
       add :reference_label, :string
       add :reference_hint, :string
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create unique_index(:products, [:name_slug, :service_name_slug])

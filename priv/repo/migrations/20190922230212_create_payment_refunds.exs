@@ -11,7 +11,7 @@ defmodule Pay.Repo.Migrations.CreatePaymentRefunds do
       add :gateway_transaction_id, :uuid
       add :payment_id, references(:payments, on_delete: :nothing)
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create index(:payment_refunds, [:payment_id])

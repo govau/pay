@@ -1,6 +1,7 @@
 defmodule Pay.Payments.PaymentFee do
   use Ecto.Schema
   import Ecto.Changeset
+  @timestamps_opts [type: :utc_datetime_usec]
 
   @derive {Phoenix.Param, key: :external_id}
 

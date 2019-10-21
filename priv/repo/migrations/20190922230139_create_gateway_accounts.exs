@@ -15,7 +15,7 @@ defmodule Pay.Repo.Migrations.CreateGatewayAccounts do
       add :allow_zero_amount, :boolean, default: false, null: false
       add :integration_version_3ds, :integer
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
   end
 end
