@@ -11,6 +11,9 @@ import { RestLink } from "apollo-link-rest";
 import ApolloClient from "apollo-client";
 
 import { cache } from "./apollo-cache";
+import { typePatchers as paymentsTypePatchers } from "./gql/payments";
+import { typePatchers as productsTypePatchers } from "./gql/products";
+import { typePatchers as servicesTypePatchers } from "./gql/services";
 import App from "./App";
 
 if (process.env.REACT_APP_SENTRY_DSN) {
@@ -86,16 +89,9 @@ const restLink = new RestLink({
       );
   },
   typePatcher: {
-    Payment: (
-      data: any,
-      outerType: string,
-      patchDeeper: RestLink.FunctionalTypePatcher
-    ): any => {
-      if (data.card_details) {
-        data.card_details = { __typename: "CardDetails", ...data.card_details };
-      }
-      return data;
-    }
+    ...paymentsTypePatchers,
+    ...productsTypePatchers,
+    ...servicesTypePatchers
   }
 });
 

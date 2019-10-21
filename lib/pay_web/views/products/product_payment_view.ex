@@ -30,7 +30,6 @@ defmodule PayWeb.Products.ProductPaymentView do
 
   def render("service.json", %{service: service}) do
     %{
-      __typename: "Service",
       id: service.external_id,
       name: service.name
     }
@@ -38,7 +37,6 @@ defmodule PayWeb.Products.ProductPaymentView do
 
   def render("gateway_account.json", %{gateway_account: gateway_account, service: service}) do
     %{
-      __typename: "GatewayAccount",
       id: gateway_account.external_id,
       service: render(ProductPaymentView, "service.json", service: service)
     }
@@ -50,7 +48,6 @@ defmodule PayWeb.Products.ProductPaymentView do
         service: service
       }) do
     %{
-      __typename: "Product",
       id: product.external_id,
       name: product.name,
       name_slug: product.name_slug,
@@ -75,7 +72,6 @@ defmodule PayWeb.Products.ProductPaymentView do
         product: product
       }) do
     %{
-      __typename: "Product",
       id: product.external_id,
       name: product.name,
       name_slug: product.name_slug,

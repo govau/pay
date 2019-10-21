@@ -12,7 +12,6 @@ defmodule PayWeb.ServiceUserView do
 
   def render("user.json", %{user: user}) do
     %{
-      __typename: "User",
       id: user.external_id,
       name: user.name,
       email: user.email
@@ -21,7 +20,6 @@ defmodule PayWeb.ServiceUserView do
 
   def render("role.json", %{role: role}) do
     %{
-      __typename: "Role",
       id: role.id,
       name: role.name,
       description: role.description
