@@ -88,6 +88,10 @@ const PaymentsPage: React.FC<Props> = ({ path, service, gatewayAccount }) => {
     errorPolicy: "all"
   });
 
+  console.log(loading);
+  console.log(error);
+  console.log(data);
+
   return (
     <>
       <Helmet>
