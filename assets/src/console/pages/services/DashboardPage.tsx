@@ -4,13 +4,13 @@ import { PageTitle, P, Link, Loader } from "@pay/web";
 
 import {
   Service,
-  useGetServiceGatewayAccountsQuery
+  useGetGatewayAccountsQuery
 } from "../../__generated__/graphql";
 
 const DashboardPage: React.FC<{
   service: Service;
 }> = ({ service }) => {
-  const getGatewayAccountsQuery = useGetServiceGatewayAccountsQuery({
+  const getGatewayAccountsQuery = useGetGatewayAccountsQuery({
     variables: { serviceId: service.id },
     errorPolicy: "all"
   });

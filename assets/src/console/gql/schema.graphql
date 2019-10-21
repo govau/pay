@@ -3,12 +3,12 @@
 # import Product from '../../gql/products.graphql'
 
 type Query {
-  getUserServices(userId: ID!): [Service!]!
-  getService(id: ID!): Service!
-  getServiceGatewayAccounts(serviceId: ID!): [GatewayAccount!]!
-  getGatewayAccount(id: ID!): GatewayAccount!
-  getGatewayAccountProducts(gatewayAccountId: ID!): [Product!]!
-  getPayments(gatewayAccountId: ID!): [Payment!]!
+  userServices(userId: ID!): [Service!]!
+  service(id: ID!): Service!
+  gatewayAccounts(serviceId: ID!): [GatewayAccount!]!
+  gatewayAccount(id: ID!): GatewayAccount!
+  products(gatewayAccountId: ID!): [Product!]!
+  payments(gatewayAccountId: ID!): [Payment!]!
 }
 
 input CreateServiceService {

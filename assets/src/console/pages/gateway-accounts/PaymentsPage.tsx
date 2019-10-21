@@ -84,7 +84,8 @@ const PaymentsPage: React.FC<Props> = ({ path, service, gatewayAccount }) => {
   const { loading, error, data } = useGetPaymentsQuery({
     variables: {
       gatewayAccountId: gatewayAccount.id
-    }
+    },
+    errorPolicy: "all"
   });
 
   return (
