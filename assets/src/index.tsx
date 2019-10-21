@@ -20,7 +20,9 @@ if (process.env.REACT_APP_SENTRY_DSN) {
   });
 }
 
-const errorLink = onError(({ graphQLErrors, networkError, response }) => {});
+const errorLink = onError(({ graphQLErrors, networkError, response }) => {
+  console.log("errorLink", graphQLErrors, networkError, response);
+});
 
 const authLink = new ApolloLink((operation, forward) => {
   operation.setContext((req: Request) => {
