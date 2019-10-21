@@ -19,7 +19,10 @@ defmodule PayWeb.PaymentView do
       gateway_transaction_id: payment.gateway_transaction_id,
       return_url: payment.return_url,
       email: payment.email,
-      card_details: payment.card_details,
+      card_details:
+        Map.merge(payment.card_details || %{}, %{
+          "__typename" => "CardDetails"
+        }),
       auth_3ds_details: payment.auth_3ds_details,
       description: payment.description,
       reference: payment.reference,
