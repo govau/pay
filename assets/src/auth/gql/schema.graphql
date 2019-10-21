@@ -1,5 +1,3 @@
-# import User from '../../gql/services.graphql'
-
 type CheckAuthResponse {
   is_authenticated: Boolean!
   user: User

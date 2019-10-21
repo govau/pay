@@ -1,26 +1,38 @@
 overwrite: true
 generates:
-  src/__generated__/introspection-result.ts:
+  src/__generated__/graphql-introspection-result.ts:
     schema:
+      - "src/gql/payments.graphql"
+      - "src/gql/products.graphql"
+      - "src/gql/services.graphql"
       - "src/auth/gql/schema.graphql"
       - "src/console/gql/schema.graphql"
       - "src/platform-admin/gql/schema.graphql"
       - "src/products/gql/schema.graphql"
     documents:
-      - "src/auth/gql/**/{queries}.graphql"
-      - "src/console/gql/**/{queries}.graphql"
-      - "src/platform-admin/gql/**/{queries}.graphql"
-      - "src/products/gql/**/{queries}.graphql"
+      - "src/auth/gql/queries.graphql"
+      - "src/console/gql/queries.graphql"
+      - "src/platform-admin/gql/queries.graphql"
+      - "src/products/gql/queries.graphql"
     plugins:
       - "fragment-matcher"
+  src/__generated__/schema.ts:
+    schema:
+      - "src/gql/payments.graphql"
+      - "src/gql/products.graphql"
+      - "src/gql/services.graphql"
+    plugins:
+      - "typescript"
   src/auth/__generated__/graphql.tsx:
     config:
       noNamespaces: true
       withHOC: false
       withHooks: true
-    schema: src/auth/gql/schema.graphql
+    schema:
+      - "src/gql/services.graphql"
+      - "src/auth/gql/schema.graphql"
     documents:
-      - "src/auth/**/{queries}.graphql"
+      - "src/auth/gql/queries.graphql"
     plugins:
       - "typescript"
       - "typescript-operations"
@@ -30,9 +42,13 @@ generates:
       noNamespaces: true
       withHOC: false
       withHooks: true
-    schema: src/console/gql/schema.graphql
+    schema:
+      - "src/gql/payments.graphql"
+      - "src/gql/products.graphql"
+      - "src/gql/services.graphql"
+      - "src/console/gql/schema.graphql"
     documents:
-      - "src/console/**/{queries}.graphql"
+      - "src/console/gql/queries.graphql"
     plugins:
       - "typescript"
       - "typescript-operations"
@@ -42,9 +58,13 @@ generates:
       noNamespaces: true
       withHOC: false
       withHooks: true
-    schema: src/platform-admin/gql/schema.graphql
+    schema:
+      - "src/gql/payments.graphql"
+      - "src/gql/products.graphql"
+      - "src/gql/services.graphql"
+      - "src/platform-admin/gql/schema.graphql"
     documents:
-      - "src/platform-admin/**/{queries}.graphql"
+      - "src/platform-admin/gql/queries.graphql"
     plugins:
       - "typescript"
       - "typescript-operations"
@@ -54,9 +74,11 @@ generates:
       noNamespaces: true
       withHOC: false
       withHooks: true
-    schema: src/products/gql/schema.graphql
+    schema:
+      - "src/gql/products.graphql"
+      - "src/products/gql/schema.graphql"
     documents:
-      - "src/products/**/{queries}.graphql"
+      - "src/products/gql/queries.graphql"
     plugins:
       - "typescript"
       - "typescript-operations"

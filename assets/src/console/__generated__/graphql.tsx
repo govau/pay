@@ -29,6 +29,14 @@ export type CardDetails = {
   card_brand: Scalars["String"];
 };
 
+export type CardType = {
+  __typename?: "CardType";
+  id: Scalars["ID"];
+  brand: Scalars["String"];
+  label: Scalars["String"];
+  type: Scalars["String"];
+};
+
 export type CreateProductInput = {
   product: CreateProductProduct;
 };
@@ -101,6 +109,12 @@ export type MutationCreateProductArgs = {
   input: CreateProductInput;
 };
 
+export type Organisation = {
+  __typename?: "Organisation";
+  id: Scalars["ID"];
+  name: Scalars["String"];
+};
+
 export type Payment = {
   __typename?: "Payment";
   id: Scalars["ID"];
@@ -140,6 +154,22 @@ export type Product = {
   price: Scalars["Int"];
   gateway_account: GatewayAccount;
 };
+
+export type ProductPayment = {
+  __typename?: "ProductPayment";
+  id: Scalars["ID"];
+  product: Product;
+  reference: Scalars["String"];
+  amount: Scalars["Int"];
+  status: ProductPaymentStatus;
+  next_url: Scalars["String"];
+};
+
+export enum ProductPaymentStatus {
+  Created = "created",
+  Submitted = "submitted",
+  Error = "error"
+}
 
 export type Query = {
   __typename?: "Query";

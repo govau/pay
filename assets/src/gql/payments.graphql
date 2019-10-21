@@ -1,5 +1,5 @@
-# import Service from './services.graphql'
 # import Product from './products.graphql'
+# import Service from './services.graphql'
 
 type CardType {
   id: ID!

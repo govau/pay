@@ -60,6 +60,12 @@ export type Mutation = {
   signout: Scalars["Boolean"];
 };
 
+export type Organisation = {
+  __typename?: "Organisation";
+  id: Scalars["ID"];
+  name: Scalars["String"];
+};
+
 export type Product = {
   __typename?: "Product";
   id: Scalars["ID"];

@@ -1,4 +1,4 @@
-import { GatewayAccountPaymentProvider } from "../console/__generated__/graphql";
+import { GatewayAccountPaymentProvider } from "../__generated__/schema";
 
 export const typePatchers = {
   GatewayAccount: (data: any): any => {

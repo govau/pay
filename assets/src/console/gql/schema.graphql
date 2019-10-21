@@ -1,7 +1,3 @@
-# import Organisation, Service from '../../gql/services.graphql'
-# import CardType, GatewayAccount, Payment from '../../gql/payments.graphql'
-# import Product from '../../gql/products.graphql'
-
 type Query {
   userServices(userId: ID!): [Service!]!
   service(id: ID!): Service!
