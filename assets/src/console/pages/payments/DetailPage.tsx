@@ -7,7 +7,8 @@ import * as Table from "@pay/web/components/Table";
 import {
   Service,
   GatewayAccountFragment,
-  PaymentFragment
+  PaymentFragment,
+  GatewayAccountType
 } from "../../__generated__/graphql";
 import { paymentProviderLabel, paymentStatusLabel } from "../../payments";
 
@@ -42,7 +43,10 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
     <>
       <Helmet>
         <title>
-          Transaction details {reference} {service.name}
+          Transaction details {reference} - {service.name}{" "}
+          {gatewayAccount.type === GatewayAccountType.Test
+            ? [gatewayAccount.payment_provider, gatewayAccount.type].join(" ")
+            : gatewayAccount.type}
         </title>
       </Helmet>
       <PageTitle title="Transaction detail" />
