@@ -7,8 +7,7 @@ import {
   CheckAuthQuery
 } from "../../auth/__generated__/graphql";
 import { cache } from "../../apollo-cache";
-import withContext from "../../context/withContext";
-import { UserContext, UserContextValues } from "../../users";
+import { UserContext } from "../../users";
 
 const Button = styled.button`
   margin-left: 0;
@@ -26,7 +25,9 @@ const Button = styled.button`
   }
 `;
 
-const SignoutButton: React.FC<UserContextValues> = ({ clearUser }) => {
+const SignoutButton: React.FC = () => {
+  const { clearUser } = React.useContext(UserContext);
+
   const handleSubmit = async (signout: SignoutMutationFn) => {
     await signout();
     await cache.reset();
@@ -57,4 +58,4 @@ const SignoutButton: React.FC<UserContextValues> = ({ clearUser }) => {
   );
 };
 
-export default withContext(SignoutButton, UserContext.Consumer);
+export default SignoutButton;

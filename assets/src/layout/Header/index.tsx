@@ -13,8 +13,7 @@ import { useCheckAuthQuery } from "../../auth/__generated__/graphql";
 import Coat from "./Coat";
 import { HamburgerIcon } from "../../components/icons/HamburgerIcon";
 import { CrossIcon } from "../../components/icons/CrossIcon";
-import withContext from "../../context/withContext";
-import { UserContext, UserContextValues } from "../../users";
+import { UserContext } from "../../users";
 import { fromGQLUser } from "../../users/graphql";
 import { ServiceInfoNav, NonServiceInfoNav } from "../../console/HeaderNav";
 import PlatformAdminNav from "../../platform-admin/HeaderNav";
@@ -108,9 +107,9 @@ export const CoaLogo = styled(Coat)`
   height: 5.5rem;
 `;
 
-interface Props extends UserContextValues {}
+const Header: React.FC = () => {
+  const { setUser } = React.useContext(UserContext);
 
-const Header: React.FC<Props> = ({ setUser }) => {
   const checkAuthQuery = useCheckAuthQuery({
     errorPolicy: "all"
   });
@@ -220,4 +219,4 @@ const Header: React.FC<Props> = ({ setUser }) => {
   );
 };
 
-export default withContext(Header, UserContext.Consumer);
+export default Header;

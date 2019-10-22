@@ -1,18 +1,16 @@
 import * as React from "react";
 import { ErrorAlert } from "@pay/web";
 
-import withContext from "../../context/withContext";
-import { UserContext, UserContextValues } from "../../users";
+import { UserContext } from "../../users";
 
 interface Props {
   children: JSX.Element;
 }
 
-const RestrictedPage: React.FC<Props & UserContextValues> = ({
-  children,
-  user: { platformAdmin }
-}) => {
-  if (platformAdmin) {
+const RestrictedPage: React.FC<Props> = ({ children }) => {
+  const { user } = React.useContext(UserContext);
+
+  if (user.platformAdmin) {
     return children;
   }
   return (
@@ -24,4 +22,4 @@ const RestrictedPage: React.FC<Props & UserContextValues> = ({
   );
 };
 
-export default withContext<Props>(RestrictedPage, UserContext.Consumer);
+export default RestrictedPage;
