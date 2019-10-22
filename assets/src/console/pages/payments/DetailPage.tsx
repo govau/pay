@@ -4,13 +4,18 @@ import { format } from "date-fns";
 import { PageTitle, H2 } from "@pay/web";
 import * as Table from "@pay/web/components/Table";
 
+import { paymentProviderLabel, paymentStatusLabel } from "../../payments";
 import {
   Service,
+  GatewayAccountType,
+  PaymentStatus,
+  PaymentEventType
+} from "../../../__generated__/schema";
+import {
   GatewayAccountFragment,
   PaymentFragment,
-  GatewayAccountType
+  PaymentEventFragment
 } from "../../__generated__/graphql";
-import { paymentProviderLabel, paymentStatusLabel } from "../../payments";
 
 interface Props {
   service: Service;
@@ -34,10 +39,26 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
     gateway_transaction_id
   } = payment;
 
-  const refunded = false; // TODO
-  const refunded_amount = 0; // TODO
+  const refunded = false; // TODO: from payment
+  const refunded_amount = 0; // TODO: from payment
 
-  const events = []; // TODO
+  // TODO: from API
+  const events: PaymentEventFragment[] = [
+    {
+      id: "1",
+      inserted_at: String(new Date()),
+      updated_at: String(new Date()),
+      type: PaymentEventType.Payment,
+      status: PaymentStatus.Created
+    },
+    {
+      id: "2",
+      inserted_at: String(new Date()),
+      updated_at: String(new Date()),
+      type: PaymentEventType.Refund,
+      status: PaymentStatus.Created
+    }
+  ];
 
   return (
     <>
@@ -138,6 +159,27 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
       {events.length > 0 && (
         <>
           <H2>Transaction events</H2>
+          <Table.Table>
+            <tbody>
+              {events.map(({ id, inserted_at, updated_at, type, status }) => (
+                <Table.Row key={id}>
+                  <Table.Cell>{paymentStatusLabel(status)}</Table.Cell>
+                  <Table.Cell>
+                    {type === PaymentEventType.Refund ? "-" : ""}$
+                    {(amount / 100).toFixed(2)}
+                  </Table.Cell>
+                  <Table.NumericCell>
+                    <time dateTime={updated_at || inserted_at}>
+                      {format(
+                        new Date(updated_at || inserted_at),
+                        "dd MMM yyyy — HH:mm:ss"
+                      )}
+                    </time>
+                  </Table.NumericCell>
+                </Table.Row>
+              ))}
+            </tbody>
+          </Table.Table>
         </>
       )}
     </>

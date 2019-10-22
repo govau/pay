@@ -87,6 +87,20 @@ export type Payment = {
   gateway_account: GatewayAccount;
 };
 
+export type PaymentEvent = {
+  __typename?: "PaymentEvent";
+  id: Scalars["ID"];
+  inserted_at: Scalars["String"];
+  updated_at: Scalars["String"];
+  type: PaymentEventType;
+  status: PaymentStatus;
+};
+
+export enum PaymentEventType {
+  Payment = "payment",
+  Refund = "refund"
+}
+
 export enum PaymentStatus {
   Created = "created",
   Started = "started",

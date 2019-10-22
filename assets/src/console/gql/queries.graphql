@@ -45,6 +45,14 @@ fragment Payment on Payment {
   }
 }
 
+fragment PaymentEvent on PaymentEvent {
+  id
+  inserted_at
+  updated_at
+  type
+  status
+}
+
 query GetUserServices($userId: ID!) {
   services: userServices(userId: $userId)
     @rest(

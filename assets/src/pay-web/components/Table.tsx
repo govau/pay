@@ -27,6 +27,10 @@ const cellStyle = css`
   vertical-align: top;
   padding: 1rem 2rem 1rem 0;
   border-bottom: 1px solid silver;
+
+  &:last-child {
+    padding-right: 0;
+  }
 `;
 
 export const Header = styled.th`
