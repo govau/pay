@@ -78,3 +78,16 @@ type Payment {
   gateway_transaction_id: ID
   gateway_account: GatewayAccount!
 }
+
+enum PaymentEventType {
+  payment
+  refund
+}
+
+type PaymentEvent {
+  id: ID!
+  inserted_at: String!
+  updated_at: String!
+  type: PaymentEventType!
+  status: PaymentStatus!
+}

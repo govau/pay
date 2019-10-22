@@ -130,6 +130,20 @@ export type Payment = {
   gateway_account: GatewayAccount;
 };
 
+export type PaymentEvent = {
+  __typename?: "PaymentEvent";
+  id: Scalars["ID"];
+  inserted_at: Scalars["String"];
+  updated_at: Scalars["String"];
+  type: PaymentEventType;
+  status: PaymentStatus;
+};
+
+export enum PaymentEventType {
+  Payment = "payment",
+  Refund = "refund"
+}
+
 export enum PaymentStatus {
   Created = "created",
   Started = "started",
@@ -310,6 +324,11 @@ export type PaymentFragment = { __typename?: "Payment" } & Pick<
     >;
   };
 
+export type PaymentEventFragment = { __typename?: "PaymentEvent" } & Pick<
+  PaymentEvent,
+  "id" | "inserted_at" | "updated_at" | "type" | "status"
+>;
+
 export type GetUserServicesQueryVariables = {
   userId: Scalars["ID"];
 };
@@ -470,6 +489,15 @@ export const PaymentFragmentDoc = gql`
       expiry_date
       card_brand
     }
+  }
+`;
+export const PaymentEventFragmentDoc = gql`
+  fragment PaymentEvent on PaymentEvent {
+    id
+    inserted_at
+    updated_at
+    type
+    status
   }
 `;
 export const GetUserServicesDocument = gql`
