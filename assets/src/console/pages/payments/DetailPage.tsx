@@ -71,115 +71,121 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
         </title>
       </Helmet>
       <PageTitle title="Transaction detail" />
-      <Table.Table>
-        <tbody>
-          <Table.Row>
-            <Table.Header scope="row">Reference number</Table.Header>
-            <Table.Cell>{reference}</Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Header scope="row">Description</Table.Header>
-            <Table.Cell>{description}</Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Header scope="row">Payment status</Table.Header>
-            <Table.Cell>{paymentStatusLabel(status)}</Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Header scope="row">Payment amount</Table.Header>
-            <Table.Cell>${(amount / 100).toFixed(2)}</Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Header scope="row">Refunded amount</Table.Header>
-            <Table.Cell>
-              ${((refunded ? refunded_amount : 0) / 100).toFixed(2)}
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Header scope="row">Date created</Table.Header>
-            <Table.Cell>
-              <time dateTime={updated_at || inserted_at}>
-                {format(
-                  new Date(updated_at || inserted_at),
-                  "dd MMM yyyy — HH:mm:ss"
-                )}
-              </time>
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Header scope="row">Provider</Table.Header>
-            <Table.Cell>
-              {paymentProviderLabel(gatewayAccount.payment_provider)}
-            </Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Header scope="row">Provider ID</Table.Header>
-            <Table.Cell>{optional(gateway_transaction_id)}</Table.Cell>
-          </Table.Row>
-          <Table.Row>
-            <Table.Header scope="row">Pay.gov.au payment ID</Table.Header>
-            <Table.Cell>{id}</Table.Cell>
-          </Table.Row>
-        </tbody>
-      </Table.Table>
+      <Table.ResponsiveWrapper>
+        <Table.Table>
+          <tbody>
+            <Table.Row>
+              <Table.Header scope="row">Reference number</Table.Header>
+              <Table.Cell>{reference}</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Header scope="row">Description</Table.Header>
+              <Table.Cell>{description}</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Header scope="row">Payment status</Table.Header>
+              <Table.Cell>{paymentStatusLabel(status)}</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Header scope="row">Payment amount</Table.Header>
+              <Table.Cell>${(amount / 100).toFixed(2)}</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Header scope="row">Refunded amount</Table.Header>
+              <Table.Cell>
+                ${((refunded ? refunded_amount : 0) / 100).toFixed(2)}
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Header scope="row">Date created</Table.Header>
+              <Table.Cell>
+                <time dateTime={updated_at || inserted_at}>
+                  {format(
+                    new Date(updated_at || inserted_at),
+                    "dd MMM yyyy — HH:mm:ss"
+                  )}
+                </time>
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Header scope="row">Provider</Table.Header>
+              <Table.Cell>
+                {paymentProviderLabel(gatewayAccount.payment_provider)}
+              </Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Header scope="row">Provider ID</Table.Header>
+              <Table.Cell>{optional(gateway_transaction_id)}</Table.Cell>
+            </Table.Row>
+            <Table.Row>
+              <Table.Header scope="row">Pay.gov.au payment ID</Table.Header>
+              <Table.Cell>{id}</Table.Cell>
+            </Table.Row>
+          </tbody>
+        </Table.Table>
+      </Table.ResponsiveWrapper>
       {card_details && (
         <>
           <H2>Payment method</H2>
-          <Table.Table>
-            <tbody>
-              <Table.Row>
-                <Table.Header scope="row">Type</Table.Header>
-                <Table.Cell>{optional(card_details.card_brand)}</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Header scope="row">Name on card</Table.Header>
-                <Table.Cell>
-                  {optional(card_details.cardholder_name)}
-                </Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Header scope="row">Card number</Table.Header>
-                <Table.Cell>
-                  {card_details.first_digits_card_number}** ****{" "}
-                  {card_details.last_digits_card_number}
-                </Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Header scope="row">Card expiry date</Table.Header>
-                <Table.Cell>{optional(card_details.expiry_date)}</Table.Cell>
-              </Table.Row>
-              <Table.Row>
-                <Table.Header scope="row">Email</Table.Header>
-                <Table.Cell>{optional(email)}</Table.Cell>
-              </Table.Row>
-            </tbody>
-          </Table.Table>
+          <Table.ResponsiveWrapper>
+            <Table.Table>
+              <tbody>
+                <Table.Row>
+                  <Table.Header scope="row">Type</Table.Header>
+                  <Table.Cell>{optional(card_details.card_brand)}</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Header scope="row">Name on card</Table.Header>
+                  <Table.Cell>
+                    {optional(card_details.cardholder_name)}
+                  </Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Header scope="row">Card number</Table.Header>
+                  <Table.Cell>
+                    {card_details.first_digits_card_number}** ****{" "}
+                    {card_details.last_digits_card_number}
+                  </Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Header scope="row">Card expiry date</Table.Header>
+                  <Table.Cell>{optional(card_details.expiry_date)}</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Header scope="row">Email</Table.Header>
+                  <Table.Cell>{optional(email)}</Table.Cell>
+                </Table.Row>
+              </tbody>
+            </Table.Table>
+          </Table.ResponsiveWrapper>
         </>
       )}
       {events.length > 0 && (
         <>
           <H2>Transaction events</H2>
-          <Table.Table>
-            <tbody>
-              {events.map(({ id, inserted_at, updated_at, type, status }) => (
-                <Table.Row key={id}>
-                  <Table.Cell>{paymentStatusLabel(status)}</Table.Cell>
-                  <Table.Cell>
-                    {type === PaymentEventType.Refund ? "-" : ""}$
-                    {(amount / 100).toFixed(2)}
-                  </Table.Cell>
-                  <Table.NumericCell>
-                    <time dateTime={updated_at || inserted_at}>
-                      {format(
-                        new Date(updated_at || inserted_at),
-                        "dd MMM yyyy — HH:mm:ss"
-                      )}
-                    </time>
-                  </Table.NumericCell>
-                </Table.Row>
-              ))}
-            </tbody>
-          </Table.Table>
+          <Table.ResponsiveWrapper>
+            <Table.Table>
+              <tbody>
+                {events.map(({ id, inserted_at, updated_at, type, status }) => (
+                  <Table.Row key={id}>
+                    <Table.Cell>{paymentStatusLabel(status)}</Table.Cell>
+                    <Table.NumericCell>
+                      {type === PaymentEventType.Refund ? "-" : ""}$
+                      {(amount / 100).toFixed(2)}
+                    </Table.NumericCell>
+                    <Table.NumericCell>
+                      <time dateTime={updated_at || inserted_at}>
+                        {format(
+                          new Date(updated_at || inserted_at),
+                          "dd MMM yyyy — HH:mm:ss"
+                        )}
+                      </time>
+                    </Table.NumericCell>
+                  </Table.Row>
+                ))}
+              </tbody>
+            </Table.Table>
+          </Table.ResponsiveWrapper>
         </>
       )}
     </>
