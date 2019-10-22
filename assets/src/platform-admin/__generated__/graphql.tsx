@@ -76,12 +76,14 @@ export type Payment = {
   __typename?: "Payment";
   id: Scalars["ID"];
   inserted_at: Scalars["String"];
+  updated_at: Scalars["String"];
   status: PaymentStatus;
   amount: Scalars["Int"];
   reference: Scalars["String"];
   description: Scalars["String"];
   email: Scalars["String"];
   card_details?: Maybe<CardDetails>;
+  gateway_transaction_id?: Maybe<Scalars["ID"]>;
   gateway_account: GatewayAccount;
 };
 

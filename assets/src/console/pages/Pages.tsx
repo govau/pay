@@ -23,9 +23,14 @@ export const Services = {
     fallback: <Loader />
   }),
   GatewayAccounts: {
-    PaymentsPage: loadable(() => import("./gateway-accounts/PaymentsPage"), {
-      fallback: <Loader />
-    }),
+    Payments: {
+      ListPage: loadable(() => import("./payments/ListPage"), {
+        fallback: <Loader />
+      }),
+      DetailPage: loadable(() => import("./payments/DetailPage"), {
+        fallback: <Loader />
+      })
+    },
     CredentialsPage: loadable(
       () => import("./gateway-accounts/CredentialsPage"),
       {

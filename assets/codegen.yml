@@ -1,19 +1,20 @@
 overwrite: true
 generates:
+  # TODO: see if we can use a different apollo-cache for each of the apps
+  # These introspection results fail to generate because both console and
+  # products apps have a type named Payment. Normally, products would be
+  # isolated anyway, so would be good to use a different cache per app.
   src/__generated__/graphql-introspection-result.ts:
     schema:
       - "src/gql/payments.graphql"
-      - "src/gql/products.graphql"
       - "src/gql/services.graphql"
       - "src/auth/gql/schema.graphql"
       - "src/console/gql/schema.graphql"
       - "src/platform-admin/gql/schema.graphql"
-      - "src/products/gql/schema.graphql"
     documents:
       - "src/auth/gql/queries.graphql"
       - "src/console/gql/queries.graphql"
       - "src/platform-admin/gql/queries.graphql"
-      - "src/products/gql/queries.graphql"
     plugins:
       - "fragment-matcher"
   src/__generated__/schema.ts:

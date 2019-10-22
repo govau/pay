@@ -5,6 +5,7 @@ type Query {
   gatewayAccount(id: ID!): GatewayAccount!
   products(gatewayAccountId: ID!): [Product!]!
   payments(gatewayAccountId: ID!): [Payment!]!
+  payment(id: ID!): Payment!
 }
 
 input CreateServiceService {

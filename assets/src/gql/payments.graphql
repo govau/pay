@@ -68,11 +68,13 @@ enum PaymentStatus {
 type Payment {
   id: ID!
   inserted_at: String!
+  updated_at: String!
   status: PaymentStatus!
   amount: Int!
   reference: String!
   description: String!
   email: String!
   card_details: CardDetails
+  gateway_transaction_id: ID
   gateway_account: GatewayAccount!
 }

@@ -5,7 +5,7 @@ import { Pages as CorePages, PageContent } from "@pay/web";
 import * as Pages from "./pages/Pages";
 import DefaultLayout from "../layout";
 import RestrictedPage from "../auth/pages/RestrictedPage";
-import ServicesRoutes from "./ServicesRoutes";
+import ServiceRoutes from "./ServiceRoutes";
 
 const Routes: React.FC = () => {
   const match = useRouteMatch();
@@ -25,7 +25,7 @@ const Routes: React.FC = () => {
               path={`${url}/services/:serviceId([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})`}
               strict
             >
-              <ServicesRoutes />
+              <ServiceRoutes />
             </Route>
             <Route path={`${url}/services/create`} exact strict>
               <Pages.Services.CreatePage />

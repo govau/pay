@@ -309,7 +309,6 @@ defmodule Pay.Payments do
     %Payment{
       external_id: Ecto.UUID.generate(),
       external_metadata: %{},
-      card_details: %{},
       status: Pay.Payments.Payment.Status.Created.value().name
     }
     |> Payment.create_changeset(attrs)

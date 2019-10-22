@@ -62,8 +62,11 @@ const Payments: React.FC<{
               </Table.Cell>
               <Table.Cell>{paymentStatusLabel(p.status)}</Table.Cell>
               <Table.NumericCell>
-                <time dateTime={p.inserted_at}>
-                  {format(new Date(p.inserted_at), "dd MMM yyyy — HH:mm:ss")}
+                <time dateTime={p.updated_at || p.inserted_at}>
+                  {format(
+                    new Date(p.updated_at || p.inserted_at),
+                    "dd MMM yyyy — HH:mm:ss"
+                  )}
                 </time>
               </Table.NumericCell>
             </Table.LinkRow>
@@ -80,7 +83,7 @@ interface Props {
   gatewayAccount: GatewayAccountFragment;
 }
 
-const PaymentsPage: React.FC<Props> = ({ path, service, gatewayAccount }) => {
+const ListPage: React.FC<Props> = ({ path, service, gatewayAccount }) => {
   const { loading, error, data } = useGetPaymentsQuery({
     variables: {
       gatewayAccountId: gatewayAccount.id
@@ -109,4 +112,4 @@ const PaymentsPage: React.FC<Props> = ({ path, service, gatewayAccount }) => {
   );
 };
 
-export default PaymentsPage;
+export default ListPage;

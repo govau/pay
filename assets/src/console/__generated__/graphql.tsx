@@ -119,12 +119,14 @@ export type Payment = {
   __typename?: "Payment";
   id: Scalars["ID"];
   inserted_at: Scalars["String"];
+  updated_at: Scalars["String"];
   status: PaymentStatus;
   amount: Scalars["Int"];
   reference: Scalars["String"];
   description: Scalars["String"];
   email: Scalars["String"];
   card_details?: Maybe<CardDetails>;
+  gateway_transaction_id?: Maybe<Scalars["ID"]>;
   gateway_account: GatewayAccount;
 };
 
@@ -179,6 +181,7 @@ export type Query = {
   gatewayAccount: GatewayAccount;
   products: Array<Product>;
   payments: Array<Payment>;
+  payment: Payment;
 };
 
 export type QueryUserServicesArgs = {
@@ -203,6 +206,10 @@ export type QueryProductsArgs = {
 
 export type QueryPaymentsArgs = {
   gatewayAccountId: Scalars["ID"];
+};
+
+export type QueryPaymentArgs = {
+  id: Scalars["ID"];
 };
 
 export type Role = {
@@ -283,19 +290,22 @@ export type PaymentFragment = { __typename?: "Payment" } & Pick<
   Payment,
   | "id"
   | "inserted_at"
+  | "updated_at"
   | "status"
   | "amount"
   | "reference"
   | "description"
   | "email"
+  | "gateway_transaction_id"
 > & {
     card_details: Maybe<
       { __typename?: "CardDetails" } & Pick<
         CardDetails,
         | "cardholder_name"
-        | "card_brand"
         | "last_digits_card_number"
         | "first_digits_card_number"
+        | "expiry_date"
+        | "card_brand"
       >
     >;
   };
@@ -405,6 +415,14 @@ export type GetPaymentsQuery = { __typename?: "Query" } & {
   payments: Array<{ __typename?: "Payment" } & PaymentFragment>;
 };
 
+export type GetPaymentQueryVariables = {
+  id: Scalars["ID"];
+};
+
+export type GetPaymentQuery = { __typename?: "Query" } & {
+  payment: { __typename?: "Payment" } & PaymentFragment;
+};
+
 export const ServiceFragmentDoc = gql`
   fragment Service on Service {
     id
@@ -438,16 +456,19 @@ export const PaymentFragmentDoc = gql`
   fragment Payment on Payment {
     id
     inserted_at
+    updated_at
     status
     amount
     reference
     description
     email
+    gateway_transaction_id
     card_details {
       cardholder_name
-      card_brand
       last_digits_card_number
       first_digits_card_number
+      expiry_date
+      card_brand
     }
   }
 `;
@@ -1327,4 +1348,75 @@ export type GetPaymentsLazyQueryHookResult = ReturnType<
 export type GetPaymentsQueryResult = ApolloReactCommon.QueryResult<
   GetPaymentsQuery,
   GetPaymentsQueryVariables
+>;
+export const GetPaymentDocument = gql`
+  query GetPayment($id: ID!) {
+    payment(id: $id)
+      @rest(type: "Payment", path: "/internal/payments/payments/{args.id}") {
+      ...Payment
+    }
+  }
+  ${PaymentFragmentDoc}
+`;
+export type GetPaymentComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    GetPaymentQuery,
+    GetPaymentQueryVariables
+  >,
+  "query"
+> &
+  ({ variables: GetPaymentQueryVariables; skip?: boolean } | { skip: boolean });
+
+export const GetPaymentComponent = (props: GetPaymentComponentProps) => (
+  <ApolloReactComponents.Query<GetPaymentQuery, GetPaymentQueryVariables>
+    query={GetPaymentDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useGetPaymentQuery__
+ *
+ * To run a query within a React component, call `useGetPaymentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPaymentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPaymentQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetPaymentQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetPaymentQuery,
+    GetPaymentQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<GetPaymentQuery, GetPaymentQueryVariables>(
+    GetPaymentDocument,
+    baseOptions
+  );
+}
+export function useGetPaymentLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetPaymentQuery,
+    GetPaymentQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetPaymentQuery,
+    GetPaymentQueryVariables
+  >(GetPaymentDocument, baseOptions);
+}
+export type GetPaymentQueryHookResult = ReturnType<typeof useGetPaymentQuery>;
+export type GetPaymentLazyQueryHookResult = ReturnType<
+  typeof useGetPaymentLazyQuery
+>;
+export type GetPaymentQueryResult = ApolloReactCommon.QueryResult<
+  GetPaymentQuery,
+  GetPaymentQueryVariables
 >;
