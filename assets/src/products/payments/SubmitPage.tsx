@@ -26,12 +26,14 @@ const SubmitPage: React.FC<Props> = ({ path, payment }) => {
     errorPolicy: "all"
   });
 
+  React.useEffect(() => {
+    if (!called) {
+      submitPaymentMutation();
+    }
+  }, [called, submitPaymentMutation]);
+
   if (payment.status === ProductPaymentStatus.Submitted) {
     return <Redirect to={payment.next_url} />;
-  }
-
-  if (!called) {
-    submitPaymentMutation();
   }
 
   return (

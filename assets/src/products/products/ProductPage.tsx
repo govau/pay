@@ -24,9 +24,11 @@ const ProductPage: React.FC = () => {
     errorPolicy: "all"
   });
 
-  if (!called) {
-    createPaymentMutation();
-  }
+  React.useEffect(() => {
+    if (!called) {
+      createPaymentMutation();
+    }
+  }, [called, createPaymentMutation]);
 
   const is404 =
     error &&
