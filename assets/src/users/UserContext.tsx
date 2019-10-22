@@ -5,7 +5,7 @@ interface State {
   user: User;
 }
 
-export interface UserContextValues extends State {
+interface UserContextValues extends State {
   setUser(user: User): void;
   clearUser(): void;
 }
@@ -14,7 +14,7 @@ const initialState: State = {
   user: emptyUser
 };
 
-export const userContextDefaults: UserContextValues = {
+const userContextDefaults: UserContextValues = {
   ...initialState,
   setUser: (user: User) => {},
   clearUser: () => {}
