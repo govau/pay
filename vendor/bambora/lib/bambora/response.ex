@@ -1,4 +1,4 @@
-defmodule Bambora.Client.Response do
+defmodule Bambora.Response do
   import SweetXml
 
   @type decoder :: atom | {atom, decoder | [decoder]} | [decoder] | %{optional(atom) => decoder}

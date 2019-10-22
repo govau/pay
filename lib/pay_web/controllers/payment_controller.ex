@@ -30,11 +30,18 @@ defmodule PayWeb.PaymentController do
     render(conn, "show.json", payment: payment)
   end
 
-  def update(conn, %{"id" => id, "payment" => payment_params}) do
-    payment = Payments.get_payment_by_external_id!(id)
-
-    with {:ok, %Payment{} = payment} <- Payments.update_payment(payment, payment_params) do
-      render(conn, "show.json", payment: payment)
+  def update(conn, %{
+        "id" => id,
+        "transition" => transition,
+        "payment" => payment_params
+      }) do
+    with payment <- Payments.get_payment_by_external_id!(id),
+         payment <- Pay.Repo.preload(payment, :gateway_account),
+         gateway <- Payments.GatewayAccount.payment_provider(payment.gateway_account),
+         gateway_changes <- Payments.Gateway.submit_payment(gateway, payment, payment_params),
+         {:ok, updated_payment} <-
+           Payments.update_payment(payment, transition, gateway_changes) do
+      render(conn, "show.json", payment: updated_payment)
     end
   end
 
@@ -44,21 +51,5 @@ defmodule PayWeb.PaymentController do
     with {:ok, %Payment{}} <- Payments.delete_payment(payment) do
       send_resp(conn, :no_content, "")
     end
-  end
-
-  def make_test_payment(conn, %{"ott" => one_time_token, "amount" => amount}) do
-    response =
-      Bambora.submit_single_payment(
-        one_time_token,
-        %{
-          customer_number: "customer_number",
-          customer_ref: "customer_ref",
-          amount: amount,
-          transaction_type: Bambora.Payment.transaction_type(:purchase),
-          account_number: "account_number"
-        }
-      )
-
-    json(conn, response)
   end
 end

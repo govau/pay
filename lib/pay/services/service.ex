@@ -25,6 +25,9 @@ defmodule Pay.Services.Service do
     many_to_many :users, Pay.Services.User, join_through: Pay.Services.ServiceUser
     many_to_many :invites, Pay.Services.ServiceInvite, join_through: Pay.Services.ServiceInvite
 
+    has_many :service_gateway_accounts, Pay.Services.ServiceGatewayAccount
+    has_many :gateway_accounts, through: [:service_gateway_accounts, :gateway_account]
+
     timestamps()
   end
 

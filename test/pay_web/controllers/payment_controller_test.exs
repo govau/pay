@@ -17,23 +17,11 @@ defmodule PayWeb.PaymentControllerTest do
     gateway_transaction_id: "some gateway_transaction_id",
     reference: "some reference",
     return_url: "some return_url",
-    status: "some status",
+    status: "created",
     wallet: "some wallet"
   }
   @update_attrs %{
-    amount: 43,
-    auth_3ds_details: %{},
-    card_details: %{},
-    delayed_capture: false,
-    description: "some updated description",
-    email: "some updated email",
-    external_id: "7488a646-e31f-11e4-aace-600308960668",
-    external_metadata: %{},
-    gateway_transaction_id: "some updated gateway_transaction_id",
-    reference: "some updated reference",
-    return_url: "some updated return_url",
-    status: "some updated status",
-    wallet: "some updated wallet"
+    "ott" => "ott-ott-ott-ott"
   }
   @invalid_attrs %{
     amount: nil,
@@ -56,7 +44,8 @@ defmodule PayWeb.PaymentControllerTest do
       Payments.create_gateway_account(%{
         "type" => Payments.GatewayAccount.Type.Test.value().name,
         "payment_provider" => Payments.GatewayAccount.PaymentProvider.Sandbox.value().name,
-        "service_name" => "Test service"
+        "service_name" => "Test service",
+        "credentials" => %{"account_number" => "sandbox123"}
       })
 
     gateway_account
@@ -74,9 +63,10 @@ defmodule PayWeb.PaymentControllerTest do
   end
 
   describe "index" do
-    test "lists all payments", %{conn: conn} do
-      conn = get(conn, Routes.payments_payment_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+    test "prevent listing all payments", %{conn: conn} do
+      assert_raise ArgumentError, fn ->
+        get(conn, Routes.payments_payment_path(conn, :index))
+      end
     end
   end
 
@@ -108,7 +98,7 @@ defmodule PayWeb.PaymentControllerTest do
                "gateway_transaction_id" => "some gateway_transaction_id",
                "reference" => "some reference",
                "return_url" => "some return_url",
-               "status" => "some status",
+               "status" => "created",
                "wallet" => "some wallet"
              } = json_response(conn, 200)["data"]
     end
@@ -127,47 +117,37 @@ defmodule PayWeb.PaymentControllerTest do
       payment: %Payment{external_id: id} = payment
     } do
       conn =
-        put(conn, Routes.payments_payment_path(conn, :update, payment), payment: @update_attrs)
+        patch(conn, Routes.payments_payment_path(conn, :update, payment),
+          payment: @update_attrs,
+          transition: "submit_payment"
+        )
 
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
-
       conn = get(conn, Routes.payments_payment_path(conn, :show, id))
 
-      assert %{
-               "id" => id,
-               "amount" => 43,
-               "auth_3ds_details" => %{},
-               "card_details" => %{},
-               "delayed_capture" => false,
-               "description" => "some updated description",
-               "email" => "some updated email",
-               "external_metadata" => %{},
-               "gateway_transaction_id" => "some updated gateway_transaction_id",
-               "reference" => "some updated reference",
-               "return_url" => "some updated return_url",
-               "status" => "some updated status",
-               "wallet" => "some updated wallet"
-             } = json_response(conn, 200)["data"]
+      updated_response = json_response(conn, 200)["data"]
+      assert updated_response = %{payment | status: "submitted"}
     end
 
-    test "renders errors when data is invalid", %{conn: conn, payment: payment} do
-      conn =
-        put(conn, Routes.payments_payment_path(conn, :update, payment), payment: @invalid_attrs)
-
-      assert json_response(conn, 422)["errors"] != %{}
+    test "crashes when transition is invalid", %{conn: conn, payment: payment} do
+      assert_raise FunctionClauseError, fn ->
+        patch(conn, Routes.payments_payment_path(conn, :update, payment),
+          payment: @update_attrs,
+          transition: "wrong"
+        )
+      end
     end
   end
 
   describe "delete payment" do
     setup [:create_payment]
 
-    test "deletes chosen payment", %{conn: conn, payment: payment} do
-      conn = delete(conn, Routes.payments_payment_path(conn, :delete, payment))
-      assert response(conn, 204)
-
-      assert_error_sent 404, fn ->
-        get(conn, Routes.payments_payment_path(conn, :show, payment))
+    test "refuse to delete chosen payment", %{conn: conn, payment: payment} do
+      assert_raise ArgumentError, fn ->
+        delete(conn, Routes.payments_payment_path(conn, :delete, payment))
       end
+
+      get(conn, Routes.payments_payment_path(conn, :show, payment))
     end
   end
 

@@ -223,7 +223,7 @@ defmodule Pay.PaymentsTest do
       gateway_transaction_id: "some gateway_transaction_id",
       reference: "some reference",
       return_url: "some return_url",
-      status: "some status",
+      status: "created",
       wallet: "some wallet"
     }
     @update_attrs %{
@@ -318,7 +318,7 @@ defmodule Pay.PaymentsTest do
       assert payment.gateway_transaction_id == "some gateway_transaction_id"
       assert payment.reference == "some reference"
       assert payment.return_url == "some return_url"
-      assert payment.status == "some status"
+      assert payment.status == "created"
       assert payment.wallet == "some wallet"
     end
 
@@ -326,28 +326,25 @@ defmodule Pay.PaymentsTest do
       assert {:error, %Ecto.Changeset{}} = Payments.create_payment(@invalid_attrs)
     end
 
-    test "update_payment/2 with valid data updates the payment" do
+    test "update_payment/3 changes status according to transition" do
       {_, payment} = payment_fixture()
-      assert {:ok, %Payment{} = payment} = Payments.update_payment(payment, @update_attrs)
-      assert payment.amount == 43
-      assert payment.auth_3ds_details == %{}
-      assert payment.card_details == %{}
-      assert payment.delayed_capture == false
-      assert payment.description == "some updated description"
-      assert payment.email == "some updated email"
-      assert payment.external_id == "7488a646-e31f-11e4-aace-600308960662"
-      assert payment.external_metadata == %{}
-      assert payment.gateway_transaction_id == "some updated gateway_transaction_id"
-      assert payment.reference == "some updated reference"
-      assert payment.return_url == "some updated return_url"
-      assert payment.status == "some updated status"
-      assert payment.wallet == "some updated wallet"
+
+      assert {:ok, %Payment{} = updated_payment} =
+               Payments.update_payment(payment, "submit_payment", @update_attrs)
+
+      assert updated_payment != payment
+      assert payment = %{updated_payment | status: payment.status}
     end
 
-    test "update_payment/2 with invalid data returns error changeset" do
+    test "update_payment/3 only permits specific transitions" do
       {_, payment} = payment_fixture()
-      assert {:error, %Ecto.Changeset{}} = Payments.update_payment(payment, @invalid_attrs)
-      assert payment == Payments.get_payment!(payment.id)
+      assert catch_error(Payments.update_payment(payment, "start", @update_attrs))
+      assert catch_error(Payments.update_payment(payment, "finish", @update_attrs))
+      assert catch_error(Payments.update_payment(payment, "whatever", @update_attrs))
+      assert catch_error(Payments.update_payment(payment, "end", @update_attrs))
+
+      assert {:ok, payment} = Payments.update_payment(payment, "submit_payment", @update_attrs)
+      assert {:ok, payment} = Payments.update_payment(payment, "submit_success", @update_attrs)
     end
 
     test "delete_payment/1 deletes the payment" do

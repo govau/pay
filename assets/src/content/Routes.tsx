@@ -12,6 +12,7 @@ const Routes: React.FC = () => {
   }
   let { url } = match;
   url = url.endsWith("/") ? url.slice(0, -1) : url;
+  url = ""; // what TODO: jingram?
   return (
     <DefaultLayout>
       <PageContent>

@@ -5,9 +5,9 @@ defmodule Pay.Payments do
 
   import Ecto.Query, warn: false
   alias Pay.Repo
-  alias Pay.Services.ServiceGatewayAccount
-  alias Pay.Services.Service
+  alias Pay.Payments
   alias Pay.Payments.CardType
+  alias Pay.Services.Service
 
   @doc """
   Returns the list of card_types.
@@ -127,15 +127,14 @@ defmodule Pay.Payments do
       [%GatewayAccount{}, ...]
 
   """
+  @spec list_gateway_accounts_by_service_external_id(String.t()) :: [%GatewayAccount{}]
   def list_gateway_accounts_by_service_external_id(external_id) do
-    Repo.all(
-      from ga in GatewayAccount,
-        left_join: sga in ServiceGatewayAccount,
-        on: ga.external_id == sga.gateway_account_id,
-        left_join: s in Service,
-        on: sga.service_id == s.id,
-        where: s.external_id == ^external_id
-    )
+    %{gateway_accounts: accounts} =
+      Service
+      |> Repo.get_by!(external_id: external_id)
+      |> Repo.preload(:gateway_accounts)
+
+    accounts
   end
 
   @doc """
@@ -309,28 +308,31 @@ defmodule Pay.Payments do
     %Payment{
       external_id: Ecto.UUID.generate(),
       external_metadata: %{},
-      status: Pay.Payments.Payment.Status.Created.value().name
+      status: Payments.Payment.Statuses.status(:created)
     }
     |> Payment.create_changeset(attrs)
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a payment.
-
-  ## Examples
-
-      iex> update_payment(payment, %{field: new_value})
-      {:ok, %Payment{}}
-
-      iex> update_payment(payment, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_payment(%Payment{} = payment, attrs) do
+  defp update_payment(%Payment{} = payment, attrs) do
     payment
     |> Payment.update_changeset(attrs)
     |> Repo.update()
+  end
+
+  @doc """
+  update a payment's status through a transition event
+
+  Check `Payments.Payment.Statuses` for valid transitions
+  """
+  def update_payment(%Payment{} = payment, transition, _attrs) do
+    next_status =
+      payment.status
+      |> Payments.Payment.Statuses.from_string!()
+      |> Payments.Payment.Statuses.transition(transition)
+      |> Payments.Payment.Statuses.status()
+
+    update_payment(payment, %{status: next_status})
   end
 
   @doc """

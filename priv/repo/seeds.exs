@@ -365,7 +365,11 @@ service3_live_gateway_account_external_id =
     payment_provider: "bambora",
     type: GatewayAccount.Type.Live.value().name,
     service_name: "Service 3",
-    credentials: %{}
+    credentials: %{
+      "username" => System.fetch_env!("BAMBORA_USERNAME"),
+      "password" => System.fetch_env!("BAMBORA_PASSWORD"),
+      "account_number" => System.fetch_env!("BAMBORA_ACCT_NO")
+    }
   }).external_id
 
 service3_id =

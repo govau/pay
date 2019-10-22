@@ -1,6 +1,7 @@
-defmodule Bambora.Payment do
-  alias Bambora.Client
-  alias Bambora.Client.{Request, Response}
+defmodule Bambora.Service.SubmitSinglePayment do
+  @behaviour Bambora.Service
+
+  alias Bambora.{Response, Service}
   alias XmlBuilder, as: X
 
   @tx_types %{
@@ -10,6 +11,16 @@ defmodule Bambora.Payment do
     debit: "7",
     credit: "8"
   }
+
+  @type transaction_t :: :purchase | :auth | :refund | :debit | :credit
+  @type params :: %{
+          one_time_token: String.t(),
+          customer_number: String.t(),
+          customer_ref: String.t(),
+          amount: integer,
+          transaction_type: transaction_t,
+          account_number: String.t()
+        }
 
   @spec transaction_type(:purchase | :auth | :refund | :debit | :credit) :: String.t()
   def transaction_type(label), do: @tx_types[label]
@@ -28,13 +39,18 @@ defmodule Bambora.Payment do
     }
   end
 
+  def envelope, do: "Transaction"
+  def operation, do: "SubmitSinglePayment"
+
   def decode(contents) do
     contents
     |> get_in([:SubmitSinglePaymentResponse, :SubmitSinglePaymentResult])
     |> Response.decode_response(decoder())
   end
 
-  def build_body(one_time_token, %{
+  @spec build_body(params) :: [Service.xml_data()]
+  def build_body(%{
+        one_time_token: one_time_token,
         customer_number: customer_number,
         customer_ref: customer_ref,
         amount: amount,
@@ -51,11 +67,5 @@ defmodule Bambora.Payment do
         X.element("OneTimeToken", one_time_token)
       ])
     ]
-  end
-
-  def submit_single_payment(ott, params) do
-    Request.prepare("Transaction", build_body(ott, params))
-    |> Client.make_request("SubmitSinglePayment")
-    |> decode
   end
 end
