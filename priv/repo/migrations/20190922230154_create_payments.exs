@@ -18,7 +18,7 @@ defmodule Pay.Repo.Migrations.CreatePayments do
       add :external_metadata, :map
       add :gateway_account_id, references(:gateway_accounts, on_delete: :nothing)
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create index(:payments, [:gateway_account_id])

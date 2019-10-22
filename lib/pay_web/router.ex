@@ -49,6 +49,10 @@ defmodule PayWeb.Router do
         resources("/service-users", ServiceUserController, only: [:index])
         resources("/gateway-accounts", GatewayAccountController, only: [:index])
       end
+
+      resources("/gateway-accounts", GatewayAccountController, only: [:index]) do
+        resources("/payments", PaymentController, only: [:index])
+      end
     end
 
     scope "/products", Products, as: :products do

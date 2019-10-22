@@ -1,11 +1,12 @@
-import * as React from "react";
 import styled from "../../styled-components";
-import { Field } from "react-final-form";
 
 export interface Props<FieldValue = string> {
   label: string;
   name: string;
   value?: FieldValue;
+  // First indicates this is the first radio in a set. The first radio in the
+  // set should be in charge of rendering the error.
+  first?: boolean;
 }
 
 export const Wrapper = styled.label`
@@ -46,29 +47,3 @@ export const Checkmark = styled.span`
   border-radius: 1em;
   margin-right: 0.8rem;
 `;
-
-function Radio<FieldValue = string>({ label, name, value }: Props<FieldValue>) {
-  return (
-    <Wrapper>
-      <Field
-        name={name}
-        value={value}
-        component="input"
-        type="radio"
-        parse={value => {
-          if (!value) {
-            return value;
-          }
-          if (value === "true") {
-            return true;
-          }
-          return false;
-        }}
-      />
-      <Checkmark />
-      {label}
-    </Wrapper>
-  );
-}
-
-export default Radio;

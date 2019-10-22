@@ -269,21 +269,28 @@ defmodule Pay.PaymentsTest do
         )
         |> Payments.create_payment()
 
-      payment
+      {gateway_account, payment}
     end
 
     test "list_payments/0 returns all payments" do
-      payment = payment_fixture()
+      {_, payment} = payment_fixture()
       assert Payments.list_payments() == [payment]
     end
 
+    test "list_payments_by_gateway_account_external_id/1 returns all payments" do
+      {gateway_account, payment} = payment_fixture()
+
+      assert Payments.list_payments_by_gateway_account_external_id(gateway_account.external_id) ==
+               [payment]
+    end
+
     test "get_payment!/1 returns the payment with given id" do
-      payment = payment_fixture()
+      {_, payment} = payment_fixture()
       assert Payments.get_payment!(payment.id) == payment
     end
 
     test "get_payment_by_external_id!/1 returns the payment with given external_id" do
-      payment = payment_fixture()
+      {_, payment} = payment_fixture()
       assert Payments.get_payment_by_external_id!(payment.external_id) == payment
     end
 
@@ -320,7 +327,7 @@ defmodule Pay.PaymentsTest do
     end
 
     test "update_payment/2 with valid data updates the payment" do
-      payment = payment_fixture()
+      {_, payment} = payment_fixture()
       assert {:ok, %Payment{} = payment} = Payments.update_payment(payment, @update_attrs)
       assert payment.amount == 43
       assert payment.auth_3ds_details == %{}
@@ -338,13 +345,13 @@ defmodule Pay.PaymentsTest do
     end
 
     test "update_payment/2 with invalid data returns error changeset" do
-      payment = payment_fixture()
+      {_, payment} = payment_fixture()
       assert {:error, %Ecto.Changeset{}} = Payments.update_payment(payment, @invalid_attrs)
       assert payment == Payments.get_payment!(payment.id)
     end
 
     test "delete_payment/1 deletes the payment" do
-      payment = payment_fixture()
+      {_, payment} = payment_fixture()
       assert {:ok, %Payment{}} = Payments.delete_payment(payment)
       assert_raise Ecto.NoResultsError, fn -> Payments.get_payment!(payment.id) end
     end

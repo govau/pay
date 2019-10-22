@@ -1,6 +1,7 @@
 defmodule Pay.Services.OrganisationType do
   use Ecto.Schema
   import Ecto.Changeset
+  @timestamps_opts [type: :utc_datetime_usec]
 
   @derive {Jason.Encoder, only: [:id, :name]}
   schema "organisation_types" do

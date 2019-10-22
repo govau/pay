@@ -26,8 +26,27 @@ fragment Product on Product {
   description
 }
 
+fragment Payment on Payment {
+  id
+  inserted_at
+  updated_at
+  status
+  amount
+  reference
+  description
+  email
+  gateway_transaction_id
+  card_details {
+    cardholder_name
+    last_digits_card_number
+    first_digits_card_number
+    expiry_date
+    card_brand
+  }
+}
+
 query GetUserServices($userId: ID!) {
-  services: getUserServices(userId: $userId)
+  services: userServices(userId: $userId)
     @rest(
       type: "Service"
       path: "/internal/services/users/{args.userId}/services"
@@ -37,14 +56,14 @@ query GetUserServices($userId: ID!) {
 }
 
 query GetService($id: ID!) {
-  service: getService(id: $id)
+  service(id: $id)
     @rest(type: "Service", path: "/internal/services/services/{args.id}") {
     ...Service
   }
 }
 
 query GetServiceWithUsers($id: ID!) {
-  service: getService(id: $id)
+  service(id: $id)
     @rest(type: "Service", path: "/internal/services/services/{args.id}") {
     id @export(as: "id")
     ...Service
@@ -66,7 +85,7 @@ query GetServiceWithUsers($id: ID!) {
 }
 
 query GetServiceWithGatewayAccounts($id: ID!) {
-  service: getService(id: $id)
+  service(id: $id)
     @rest(type: "Service", path: "/internal/services/services/{args.id}") {
     id @export(as: "id")
     ...Service
@@ -102,8 +121,8 @@ mutation UpdateService($id: ID!, $input: UpdateServiceInput!) {
   }
 }
 
-query GetServiceGatewayAccounts($serviceId: ID!) {
-  gatewayAccounts: getServiceGatewayAccounts(serviceId: $serviceId)
+query GetGatewayAccounts($serviceId: ID!) {
+  gatewayAccounts(serviceId: $serviceId)
     @rest(
       type: "[GatewayAccount]"
       path: "/internal/services/services/{args.serviceId}/gateway-accounts"
@@ -113,7 +132,7 @@ query GetServiceGatewayAccounts($serviceId: ID!) {
 }
 
 query GetGatewayAccount($id: ID!) {
-  gatewayAccount: getGatewayAccount(id: $id)
+  gatewayAccount(id: $id)
     @rest(
       type: "GatewayAccount"
       path: "/internal/payments/gateway-accounts/{args.id}"
@@ -122,8 +141,8 @@ query GetGatewayAccount($id: ID!) {
   }
 }
 
-query GetGatewayAccountProducts($gatewayAccountId: ID!) {
-  products: getGatewayAccountProducts(gatewayAccountId: $gatewayAccountId)
+query GetProducts($gatewayAccountId: ID!) {
+  products(gatewayAccountId: $gatewayAccountId)
     @rest(
       type: "[Product]"
       path: "/internal/products/gateway-accounts/{args.gatewayAccountId}/products"
@@ -140,5 +159,22 @@ mutation CreateProduct($gatewayAccountId: ID!, $input: CreateProductInput!) {
       method: "POST"
     ) {
     ...Service
+  }
+}
+
+query GetPayments($gatewayAccountId: ID!) {
+  payments(gatewayAccountId: $gatewayAccountId)
+    @rest(
+      type: "[Payment]"
+      path: "/internal/services/gateway-accounts/{args.gatewayAccountId}/payments"
+    ) {
+    ...Payment
+  }
+}
+
+query GetPayment($id: ID!) {
+  payment(id: $id)
+    @rest(type: "Payment", path: "/internal/payments/payments/{args.id}") {
+    ...Payment
   }
 }

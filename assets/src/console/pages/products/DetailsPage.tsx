@@ -1,30 +1,43 @@
 import * as React from "react";
+import { useHistory } from "react-router-dom";
 import slugify from "@sindresorhus/slugify";
-import {
-  PageTitle,
-  LinkButton,
-  Callout,
-  Field,
-  BasicTextInput,
-  validators,
-  P
-} from "@pay/web";
+import { PageTitle, Button, Callout, Field, BasicTextInput, P } from "@pay/web";
+import { FormElement, OnSubmitFn } from "@pay/web/components/form/Form";
 
 import { Values } from "./CreateFormPage";
 
-const DetailsPage: React.FC<{
+interface Props {
   serviceName: string;
   path: string;
   values: Pick<Values, "name">;
-}> = ({ serviceName, path, values }) => {
+  onSubmit: OnSubmitFn;
+}
+
+const DetailsPage: React.FC<Props> = ({
+  serviceName,
+  path,
+  values,
+  onSubmit
+}) => {
+  const history = useHistory();
+
   return (
-    <>
+    <FormElement
+      column
+      onSubmit={async event => {
+        const error = await onSubmit(event);
+        if (error && (error.name || error.description)) {
+          return;
+        }
+        history.push(`${path}/reference`);
+      }}
+      noValidate
+    >
       <PageTitle title="Set payment link information" />
       <Field
         name="name"
         label="Title"
         description="Briefly describe what the user is paying for. For example, “Pay for a parking permit”. This will also be your website address."
-        validate={validators.required("Enter a payment link title")}
       >
         {({ input, ariaProps, ...rest }) => (
           <BasicTextInput {...input} {...ariaProps} {...rest} />
@@ -48,8 +61,8 @@ const DetailsPage: React.FC<{
           <BasicTextInput {...input} {...ariaProps} {...rest} />
         )}
       </Field>
-      <LinkButton to={`${path}/reference`}>Continue</LinkButton>
-    </>
+      <Button type="submit">Continue</Button>
+    </FormElement>
   );
 };
 

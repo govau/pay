@@ -1,8 +1,9 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, useLocation } from "react-router-dom";
 import { ApolloError } from "apollo-client";
-import { Form, Pages as CorePages, Loader, ErrorAlert } from "@pay/web";
+import { validators, Pages as CorePages, Loader, ErrorAlert } from "@pay/web";
+import { NakedForm } from "@pay/web/components/form/Form";
 
 import {
   CreateProductMutationFn,
@@ -13,15 +14,16 @@ import DetailsPage from "./DetailsPage";
 import ReferencePage from "./ReferencePage";
 import AmountPage from "./AmountPage";
 import ReviewPage from "./ReviewPage";
+import { Location } from "history";
 
 export interface Values {
   name: string;
   description?: string;
   reference_enabled: boolean | null;
-  reference_label?: string;
-  reference_hint?: string;
+  reference_label: string;
+  reference_hint: string;
   price_fixed: boolean | null;
-  price?: string;
+  price: number;
 }
 
 const getErrorMessage = (error?: ApolloError) => {
@@ -38,17 +40,70 @@ const getErrorMessage = (error?: ApolloError) => {
 };
 
 // TODO: move to module.
-const ensureMoneyInCents = (amount: string) => {
+const ensureMoneyInCents = (amount: number) => {
   // TODO: correct calculation.
-  return Number(amount) * 100;
+  return amount * 100;
 };
 
 const handleSubmit = (
+  location: Location,
+  path: string,
   gatewayAccountId: string,
   createProduct: CreateProductMutationFn
 ) => {
   return async (values: Values) => {
+    const errors = [
+      {
+        name: "name",
+        error: validators.required("Enter a payment link title")(values.name)
+      },
+      {
+        name: "reference_enabled",
+        error: validators.isNotNull("Please choose an option")(
+          values.reference_enabled
+        )
+      },
+      {
+        name: "price_fixed",
+        error: validators.isNotNull("Please choose an option")(
+          values.price_fixed
+        )
+      },
+      values.reference_enabled
+        ? {
+            name: "reference_label",
+            error: validators.required("Enter a payment reference")(
+              values.reference_label
+            )
+          }
+        : null,
+      values.price_fixed
+        ? {
+            name: "price",
+            error: validators.isGreaterThan("Enter the amount", {
+              min: 0
+            })(values.price)
+          }
+        : null
+    ].filter(f => Boolean(f && f.error));
+
+    if (errors.length > 0) {
+      const initial: Partial<{ [key: string]: string }> = {};
+      return errors.reduce((map, f) => {
+        if (!f) {
+          return map;
+        }
+        map[f.name] = f.error;
+        return map;
+      }, initial);
+    }
+
+    if (location.pathname !== `${path}/review`) {
+      return;
+    }
+
     const { reference_enabled, price_fixed, price } = values;
+
     try {
       await createProduct({
         variables: {
@@ -67,11 +122,21 @@ const handleSubmit = (
   };
 };
 
-const CreateFormPage: React.FC<{
+interface Props {
   serviceName: string;
   gatewayAccountId: string;
+  productsPath: string;
   path: string;
-}> = ({ serviceName, gatewayAccountId, path }) => {
+}
+
+const CreateFormPage: React.FC<Props> = ({
+  serviceName,
+  gatewayAccountId,
+  productsPath,
+  path
+}) => {
+  const location = useLocation();
+
   const [createProduct, { loading, error, data }] = useCreateProductMutation({
     errorPolicy: "all"
   });
@@ -81,21 +146,24 @@ const CreateFormPage: React.FC<{
       <Helmet>
         <title>Create payment link</title>
       </Helmet>
-      <Form<Values>
-        onSubmit={handleSubmit(gatewayAccountId, createProduct)}
+      <NakedForm<Values>
+        onSubmit={handleSubmit(location, path, gatewayAccountId, createProduct)}
         column
         initialValues={{
           name: "",
           reference_enabled: null,
-          price_fixed: null
+          reference_label: "",
+          reference_hint: "",
+          price_fixed: null,
+          price: 0
         }}
       >
-        {({ values }) => (
+        {({ values, handleSubmit }) => (
           <>
             {loading ? (
               <Loader message="Creating a new payment link" />
             ) : data && data.product ? (
-              <Redirect to={path + "/TODO"} />
+              <Redirect to={productsPath} />
             ) : (
               <>
                 {error && (
@@ -111,16 +179,29 @@ const CreateFormPage: React.FC<{
                       serviceName={serviceName}
                       path={path}
                       values={values}
+                      onSubmit={handleSubmit}
                     />
                   </Route>
                   <Route path={`${path}/reference`} exact strict>
-                    <ReferencePage path={path} values={values} />
+                    <ReferencePage
+                      path={path}
+                      values={values}
+                      onSubmit={handleSubmit}
+                    />
                   </Route>
                   <Route path={`${path}/amount`} exact strict>
-                    <AmountPage path={path} values={values} />
+                    <AmountPage
+                      path={path}
+                      values={values}
+                      onSubmit={handleSubmit}
+                    />
                   </Route>
                   <Route path={`${path}/review`} exact strict>
-                    <ReviewPage path={path} values={values} />
+                    <ReviewPage
+                      path={path}
+                      values={values}
+                      onSubmit={handleSubmit}
+                    />
                   </Route>
                   <Route path="*">
                     <CorePages.NotFoundPage />
@@ -130,7 +211,7 @@ const CreateFormPage: React.FC<{
             )}
           </>
         )}
-      </Form>
+      </NakedForm>
     </>
   );
 };

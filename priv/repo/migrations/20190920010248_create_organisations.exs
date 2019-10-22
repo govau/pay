@@ -7,7 +7,7 @@ defmodule Pay.Repo.Migrations.CreateOrganisations do
       add :name, :string
       add :type_id, references(:organisation_types, on_delete: :nothing)
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create unique_index(:organisations, [:name])

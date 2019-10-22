@@ -6,14 +6,14 @@ import { PageTitle, Loader, ErrorAlert, Link, Warning, P } from "@pay/web";
 import {
   Service,
   GatewayAccountFragment,
-  useGetGatewayAccountProductsQuery
+  useGetProductsQuery
 } from "../../__generated__/graphql";
 
 const ListPage: React.FC<{
   service: Service;
   gatewayAccount: GatewayAccountFragment;
 }> = ({ service, gatewayAccount }) => {
-  const { loading, error, data } = useGetGatewayAccountProductsQuery({
+  const { loading, error, data } = useGetProductsQuery({
     variables: { gatewayAccountId: gatewayAccount.id },
     errorPolicy: "all"
   });

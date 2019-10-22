@@ -5,7 +5,7 @@ defmodule Pay.Repo.Migrations.CreateOrganisationTypes do
     create table(:organisation_types) do
       add :name, :string
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
   end
 end

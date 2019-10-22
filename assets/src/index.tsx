@@ -11,6 +11,9 @@ import { RestLink } from "apollo-link-rest";
 import ApolloClient from "apollo-client";
 
 import { cache } from "./apollo-cache";
+import { typePatchers as paymentsTypePatchers } from "./gql/payments";
+import { typePatchers as productsTypePatchers } from "./gql/products";
+import { typePatchers as servicesTypePatchers } from "./gql/services";
 import App from "./App";
 
 if (process.env.REACT_APP_SENTRY_DSN) {
@@ -84,6 +87,11 @@ const restLink = new RestLink({
       .then((text: string) =>
         Promise.reject(new Error(`Received unexpected response: ${text}`))
       );
+  },
+  typePatcher: {
+    ...paymentsTypePatchers,
+    ...productsTypePatchers,
+    ...servicesTypePatchers
   }
 });
 
@@ -95,10 +103,12 @@ const client = new ApolloClient({
 });
 
 ReactDOM.render(
-  <ApolloProvider client={client}>
-    <Router>
-      <App />
-    </Router>
-  </ApolloProvider>,
+  <React.StrictMode>
+    <ApolloProvider client={client}>
+      <Router>
+        <App />
+      </Router>
+    </ApolloProvider>
+  </React.StrictMode>,
   document.getElementById("root")
 );

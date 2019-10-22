@@ -18,7 +18,7 @@ interface Props {
 }
 
 // TODO: get from payment object.
-const succeeded = false;
+const succeeded = true;
 
 const StatusPage: React.FC<Props> = ({ payment }) =>
   succeeded ? (

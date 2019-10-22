@@ -242,6 +242,25 @@ defmodule Pay.Payments do
   end
 
   @doc """
+  Returns the list of payments for the given gateway_account external_id.
+
+  ## Examples
+
+      iex> list_payments_by_gateway_account_external_id("3bfd1a3c-0960-49da-be66-053b159df62e")
+      [%Payment{}, ...]
+
+  """
+  def list_payments_by_gateway_account_external_id(external_id) do
+    Repo.all(
+      from p in Payment,
+        left_join: ga in GatewayAccount,
+        on: p.gateway_account_id == ga.id,
+        where: ga.external_id == ^external_id,
+        order_by: [desc: p.inserted_at]
+    )
+  end
+
+  @doc """
   Gets a single payment.
 
   Raises `Ecto.NoResultsError` if the Payment does not exist.

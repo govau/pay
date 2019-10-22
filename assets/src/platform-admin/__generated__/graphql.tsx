@@ -20,6 +20,15 @@ export type BamboraCredentials = {
   api_username?: Maybe<Scalars["String"]>;
 };
 
+export type CardDetails = {
+  __typename?: "CardDetails";
+  cardholder_name: Scalars["String"];
+  last_digits_card_number: Scalars["String"];
+  first_digits_card_number: Scalars["String"];
+  expiry_date: Scalars["String"];
+  card_brand: Scalars["String"];
+};
+
 export type CardType = {
   __typename?: "CardType";
   id: Scalars["ID"];
@@ -63,6 +72,33 @@ export type Organisation = {
   name: Scalars["String"];
 };
 
+export type Payment = {
+  __typename?: "Payment";
+  id: Scalars["ID"];
+  inserted_at: Scalars["String"];
+  updated_at: Scalars["String"];
+  status: PaymentStatus;
+  amount: Scalars["Int"];
+  reference: Scalars["String"];
+  description: Scalars["String"];
+  email: Scalars["String"];
+  card_details?: Maybe<CardDetails>;
+  gateway_transaction_id?: Maybe<Scalars["ID"]>;
+  gateway_account: GatewayAccount;
+};
+
+export enum PaymentStatus {
+  Created = "created",
+  Started = "started",
+  Submitted = "submitted",
+  Capturable = "capturable",
+  Success = "success",
+  Declined = "declined",
+  TimedOut = "timed_out",
+  Cancelled = "cancelled",
+  Error = "error"
+}
+
 export type Product = {
   __typename?: "Product";
   id: Scalars["ID"];
@@ -77,6 +113,22 @@ export type Product = {
   price: Scalars["Int"];
   gateway_account: GatewayAccount;
 };
+
+export type ProductPayment = {
+  __typename?: "ProductPayment";
+  id: Scalars["ID"];
+  product: Product;
+  reference: Scalars["String"];
+  amount: Scalars["Int"];
+  status: ProductPaymentStatus;
+  next_url: Scalars["String"];
+};
+
+export enum ProductPaymentStatus {
+  Created = "created",
+  Submitted = "submitted",
+  Error = "error"
+}
 
 export type Query = {
   __typename?: "Query";

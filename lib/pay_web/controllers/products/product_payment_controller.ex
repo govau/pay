@@ -23,10 +23,22 @@ defmodule PayWeb.Products.ProductPaymentController do
     )
   end
 
+  def random_reference() do
+    digit_charset = "23456789" |> String.split("", trim: true)
+    charset = "ABCSDEFGHJKLMNPQRSTUVWXYZ23456789" |> String.split("", trim: true)
+
+    Enum.reduce(0..10, [], fn i, acc ->
+      if rem(i, 4) == 0,
+        do: [Enum.random(digit_charset) | acc],
+        else: [Enum.random(charset) | acc]
+    end)
+    |> Enum.join("")
+  end
+
   def create_by_slugs(conn, %{"service_name_slug" => service_name_slug, "name_slug" => name_slug}) do
     product = Products.get_product_by_slugs!(service_name_slug, name_slug)
 
-    reference = if product.reference_enabled, do: "", else: Ecto.UUID.generate()
+    reference = if product.reference_enabled, do: "", else: random_reference()
 
     with {:ok, %ProductPayment{} = product_payment} <-
            Products.create_product_payment(

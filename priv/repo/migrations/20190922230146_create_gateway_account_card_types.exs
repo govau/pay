@@ -6,7 +6,7 @@ defmodule Pay.Repo.Migrations.CreateGatewayAccountCardType do
       add :gateway_account_id, references(:gateway_accounts, on_delete: :nothing)
       add :card_type_id, references(:card_types, on_delete: :nothing)
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create index(:gateway_account_card_types, [:gateway_account_id])

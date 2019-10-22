@@ -11,7 +11,7 @@ defmodule Pay.Repo.Migrations.CreateUsers do
       add :disabled, :boolean, default: false, null: false
       add :last_logged_in_at, :utc_datetime_usec
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create unique_index(:users, [:email])

@@ -6,7 +6,7 @@ defmodule Pay.Repo.Migrations.CreateOrganisationDomains do
       add :domain, :string
       add :organisation_id, references(:organisations, on_delete: :nothing)
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create unique_index(:organisation_domains, [:domain])

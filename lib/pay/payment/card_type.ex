@@ -1,6 +1,7 @@
 defmodule Pay.Payments.CardType do
   use Ecto.Schema
   import Ecto.Changeset
+  @timestamps_opts [type: :utc_datetime_usec]
 
   schema "card_types" do
     field :brand, :string

@@ -10,7 +10,7 @@ defmodule Pay.Repo.Migrations.CreatePaymentFees do
       add :gateway_transaction_id, :string
       add :payment_id, references(:payments, on_delete: :nothing)
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
 
     create index(:payment_fees, [:payment_id])

@@ -1,4 +1,4 @@
-import { ServiceGoLiveStage } from "../console/__generated__/graphql";
+import { ServiceGoLiveStage } from "../__generated__/schema";
 
 export const goLiveStageLabel = (stage: ServiceGoLiveStage) => {
   switch (stage) {

@@ -30,10 +30,19 @@ const required = (errorMessage: string) =>
     (value: ValidatorValue) => value !== undefined && value !== ""
   );
 
+const isNotNull = (errorMessage: string) =>
+  validatorFactory(
+    errorMessage || errorMessages.isNotNull(),
+    (value: ValidatorValue) => value !== null
+  );
+
 const isGreaterThan = (errorMessage: string, { min }: { min: number }) =>
   validatorFactory(
     errorMessage || errorMessages.isGreaterThan(min),
     (value: ValidatorValue) => {
+      if (value === null) {
+        return false;
+      }
       value = value.toString();
       return Number(value) > min;
     }
@@ -43,6 +52,9 @@ const isMinLength = (errorMessage: string, { min }: { min: number }) =>
   validatorFactory(
     errorMessage || errorMessages.isMinLength(min),
     (value: ValidatorValue) => {
+      if (value === null) {
+        return false;
+      }
       value = value.toString();
       return value.length >= min;
     }
@@ -52,6 +64,9 @@ const isEmail = (errorMessage?: string) =>
   validatorFactory(
     errorMessage || errorMessages.isEmail(),
     (value: ValidatorValue) => {
+      if (value === null) {
+        return false;
+      }
       value = value.toString();
       return regexPatterns.email.test(value);
     }
@@ -61,6 +76,9 @@ const isLocalMobileNumber = () =>
   validatorFactory(
     "Enter a valid mobile number in the format 04xxxxxxxx",
     (value: ValidatorValue) => {
+      if (value === null) {
+        return false;
+      }
       value = value.toString();
       return regexPatterns.localMobileNumber.test(value);
     }
@@ -70,6 +88,9 @@ const isDate = () =>
   validatorFactory(
     "Enter a valid date format DD/MM/YYYY",
     (value: ValidatorValue) => {
+      if (value === null) {
+        return false;
+      }
       value = value.toString();
       return regexPatterns.date.test(value);
     }
@@ -77,6 +98,7 @@ const isDate = () =>
 
 export default {
   required,
+  isNotNull,
   isMinLength,
   isGreaterThan,
   isEmail,

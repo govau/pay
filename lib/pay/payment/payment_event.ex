@@ -1,6 +1,7 @@
 defmodule Pay.Payments.PaymentEvent do
   use Ecto.Schema
   import Ecto.Changeset
+  @timestamps_opts [type: :utc_datetime_usec]
 
   schema "payment_events" do
     field :status, :string

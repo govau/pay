@@ -5,11 +5,59 @@ import { Loader, ErrorAlert, Pages as CorePages } from "@pay/web";
 import * as Pages from "./pages/Pages";
 import {
   Service,
+  GatewayAccountFragment,
   useGetServiceWithGatewayAccountsQuery,
-  useGetGatewayAccountQuery
+  useGetGatewayAccountQuery,
+  useGetPaymentQuery
 } from "./__generated__/graphql";
 
-const GatewayAccountsRoutes: React.FC<{
+const PaymentRoutes: React.FC<{
+  service: Service;
+  gatewayAccount: GatewayAccountFragment;
+}> = ({ service, gatewayAccount }) => {
+  const { paymentId } = useParams<{ paymentId: string }>();
+
+  const { loading, error, data } = useGetPaymentQuery({
+    variables: { id: paymentId },
+    errorPolicy: "all"
+  });
+
+  const match = useRouteMatch();
+  if (!match) {
+    return null;
+  }
+  const { url } = match;
+
+  if (loading) {
+    return <Loader message="Loading payment" />;
+  }
+  if (error || !data) {
+    return (
+      <ErrorAlert
+        title="Unable to retrieve payment"
+        message={error && error.message}
+        showError
+      />
+    );
+  }
+
+  return (
+    <Switch>
+      <Route path={`${url}`} exact strict>
+        <Pages.Services.GatewayAccounts.Payments.DetailPage
+          service={service}
+          gatewayAccount={gatewayAccount}
+          payment={data.payment}
+        />
+      </Route>
+      <Route path="*">
+        <CorePages.NotFoundPage />
+      </Route>
+    </Switch>
+  );
+};
+
+const GatewayAccountRoutes: React.FC<{
   service: Service;
 }> = ({ service }) => {
   const { gatewayAccountId } = useParams<{ gatewayAccountId: string }>();
@@ -40,11 +88,28 @@ const GatewayAccountsRoutes: React.FC<{
 
   return (
     <Switch>
-      <Route path={`${url}/payments`} exact strict>
-        <Pages.Services.GatewayAccounts.PaymentsPage
-          service={service}
-          gatewayAccount={data.gatewayAccount}
-        />
+      <Route path={`${url}/payments`} strict>
+        <Switch>
+          <Route path={`${url}/payments`} exact strict>
+            <Pages.Services.GatewayAccounts.Payments.ListPage
+              path={`${url}/payments`}
+              service={service}
+              gatewayAccount={data.gatewayAccount}
+            />
+          </Route>
+          <Route
+            path={`${url}/payments/:paymentId([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})`}
+            strict
+          >
+            <PaymentRoutes
+              service={service}
+              gatewayAccount={data.gatewayAccount}
+            />
+          </Route>
+          <Route path="*">
+            <CorePages.NotFoundPage />
+          </Route>
+        </Switch>
       </Route>
       <Route path={`${url}/credentials`} exact strict>
         <Pages.Services.GatewayAccounts.CredentialsPage
@@ -69,6 +134,7 @@ const GatewayAccountsRoutes: React.FC<{
                 <Pages.Services.GatewayAccounts.Products.CreateFormPage
                   serviceName={service.name}
                   gatewayAccountId={gatewayAccountId}
+                  productsPath={`${url}/products`}
                   path={`${url}/products/create`}
                 />
               </Route>
@@ -86,7 +152,7 @@ const GatewayAccountsRoutes: React.FC<{
   );
 };
 
-const ServicesRoutes: React.FC = () => {
+const ServiceRoutes: React.FC = () => {
   const { serviceId } = useParams<{ serviceId: string }>();
 
   const { loading, error, data } = useGetServiceWithGatewayAccountsQuery({
@@ -131,7 +197,7 @@ const ServicesRoutes: React.FC = () => {
         path={`${url}/gateway-accounts/:gatewayAccountId([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})`}
         strict
       >
-        <GatewayAccountsRoutes service={data.service} />
+        <GatewayAccountRoutes service={data.service} />
       </Route>
       <Route path="*">
         <CorePages.NotFoundPage />
@@ -140,4 +206,4 @@ const ServicesRoutes: React.FC = () => {
   );
 };
 
-export default ServicesRoutes;
+export default ServiceRoutes;

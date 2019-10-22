@@ -6,7 +6,7 @@ defmodule Pay.Repo.Migrations.CreatePermissions do
       add :name, :string
       add :description, :string
 
-      timestamps()
+      timestamps(type: :utc_datetime_usec)
     end
   end
 end

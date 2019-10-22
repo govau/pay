@@ -1,6 +1,7 @@
 defmodule Pay.Services.Permission do
   use Ecto.Schema
   import Ecto.Changeset
+  @timestamps_opts [type: :utc_datetime_usec]
 
   schema "permissions" do
     field :description, :string

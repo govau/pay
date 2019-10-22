@@ -1,5 +1,5 @@
-# import Service from './services.graphql'
 # import Product from './products.graphql'
+# import Service from './services.graphql'
 
 type CardType {
   id: ID!
@@ -43,4 +43,38 @@ type GatewayAccount {
   allow_zero_amount: Boolean!
   requires_3ds: Boolean!
   products: [Product!]
+}
+
+type CardDetails {
+  cardholder_name: String!
+  last_digits_card_number: String!
+  first_digits_card_number: String!
+  expiry_date: String!
+  card_brand: String!
+}
+
+enum PaymentStatus {
+  created
+  started
+  submitted
+  capturable
+  success
+  declined
+  timed_out
+  cancelled
+  error
+}
+
+type Payment {
+  id: ID!
+  inserted_at: String!
+  updated_at: String!
+  status: PaymentStatus!
+  amount: Int!
+  reference: String!
+  description: String!
+  email: String!
+  card_details: CardDetails
+  gateway_transaction_id: ID
+  gateway_account: GatewayAccount!
 }

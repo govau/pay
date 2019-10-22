@@ -5,9 +5,9 @@ import { PageTitle, P } from "@pay/web";
 import {
   Service,
   GatewayAccountFragment,
+  GatewayAccountPaymentProvider,
   BamboraCredentials
 } from "../../__generated__/graphql";
-import { GatewayAccountPaymentProvider } from "../../../platform-admin/__generated__/graphql";
 import { isBamboraCredentials } from ".";
 
 const SandboxCredentialsPage: React.FC = () => (
