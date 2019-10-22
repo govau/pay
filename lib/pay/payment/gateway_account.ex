@@ -80,6 +80,17 @@ defmodule Pay.Payments.GatewayAccount do
       :allow_zero_amount
     ])
   end
+
+  @spec payment_provider(Pay.Payments.GatewayAccount.t()) :: Pay.Payments.Gateway.t()
+  def payment_provider(%Pay.Payments.GatewayAccount{
+        payment_provider: provider,
+        credentials: credentials
+      }) do
+    case provider do
+      "bambora" -> Pay.Payments.BamboraGateway.from_credentials(credentials)
+      "sandbox" -> Pay.Payments.BamboraGateway.sandbox()
+    end
+  end
 end
 
 defmodule Pay.Payments.GatewayAccount.Type do

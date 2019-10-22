@@ -91,6 +91,10 @@ create-service-psql:
 
 manifest-vars-%.yml:
 	echo "stg: $*" > $@
+	@echo "bambora_username: $(BAMBORA_USERNAME)" >> $@
+	@echo "bambora_password: $(BAMBORA_PASSWORD)" >> $@
+	@echo "bambora_acct_no: $(BAMBORA_ACCT_NO)" >> $@
+	# TODO: remove this asap when interface supports account credentials
 
 deploy:
 	$(CF) zero-downtime-push $(APP) -f manifest.yml --show-app-log

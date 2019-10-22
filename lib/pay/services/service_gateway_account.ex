@@ -4,9 +4,11 @@ defmodule Pay.Services.ServiceGatewayAccount do
   @timestamps_opts [type: :utc_datetime_usec]
 
   schema "service_gateway_accounts" do
-    field :gateway_account_id, Ecto.UUID
-
     belongs_to :service, Pay.Services.Service
+
+    belongs_to :gateway_account, Pay.Payments.GatewayAccount,
+      references: :external_id,
+      type: :binary_id
 
     timestamps()
   end

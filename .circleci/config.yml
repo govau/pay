@@ -4,6 +4,9 @@ references:
   elixir_image: &elixir_image
     docker:
       - image: circleci/elixir:1.9-node
+        environment:
+          MIX_ENV: test
+          POSTGRES_USER: postgres
       - image: circleci/postgres:9.4
         environment:
           POSTGRES_DB: pay_test

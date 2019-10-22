@@ -1,3 +1,6 @@
 use Mix.Config
 
-import_config "#{Mix.env()}.exs"
+config :soap,
+       :globals,
+       version: "1.1",
+       env_namespace: "soapenv"

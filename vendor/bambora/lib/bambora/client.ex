@@ -1,22 +1,12 @@
-defmodule Bambora.Client do
-  @callback make_request(String.t(), Bambora.Client.Request.t()) :: map
-
-  @spec current_client :: Bambora.Client
-  def current_client do
-    Application.get_env(:bambora, :client, Bambora.Client.SOAP)
-  end
-
-  def make_request(request, operation) do
-    current_client().make_request(operation, request)
-  end
+defprotocol Bambora.Client do
+  @spec make_request(t, Bambora.Service, params :: map) :: map
+  def make_request(t, service, params)
 end
 
 defmodule Bambora.Client.SOAP do
-  @behaviour Bambora.Client
-
-  @callback bambora_wsdl() :: map
-
   @base_url "https://demo.bambora.co.nz/interface/api/dts.asmx"
+  @enforce_keys [:username, :password]
+  defstruct [:username, :password]
 
   @spec bambora_wsdl() :: map
   defp bambora_wsdl do
@@ -25,7 +15,7 @@ defmodule Bambora.Client.SOAP do
     end
   end
 
-  def make_request(operation, request) do
+  def call(request, operation) do
     with {:ok, response} <- Soap.call(bambora_wsdl(), operation, request) do
       Soap.Response.parse(response)
     end
@@ -33,9 +23,33 @@ defmodule Bambora.Client.SOAP do
 end
 
 defmodule Bambora.Client.Static do
-  @behaviour Bambora.Client
+  defstruct response: ""
+end
 
-  def make_request(_operation, _request) do
-    %{status: "ok"}
+defimpl Bambora.Client, for: Bambora.Client.SOAP do
+  def make_request(t, service, params) do
+    service.build_body(params)
+    |> Bambora.Auth.authorise(t)
+    |> Bambora.Request.prepare(service.envelope)
+    |> Bambora.Client.SOAP.call(service.operation)
+    |> service.decode
   end
+end
+
+defimpl Bambora.Client, for: Bambora.Client.Static do
+  def make_request(t, service, params) do
+    service.build_body(params)
+    |> Bambora.Auth.authorise(t)
+    |> Bambora.Request.prepare(service.envelope)
+    |> (&%{request: &1, response: t.response}).()
+  end
+end
+
+defimpl Bambora.Auth.Authable, for: Bambora.Client.SOAP do
+  def authorisation(t), do: %Bambora.Auth{username: t.username, password: t.password}
+end
+
+defimpl Bambora.Auth.Authable, for: Bambora.Client.Static do
+  def authorisation(_t),
+    do: %Bambora.Auth{username: "static_username", password: "static_password"}
 end
