@@ -20,12 +20,6 @@ export const LinkRow = styled(Row)`
   }
 `;
 
-const numericStyle = css`
-  text-align: right;
-  font-feature-settings: normal;
-  font-variant-numeric: tabular-nums;
-`;
-
 const cellStyle = css`
   text-align: left;
   vertical-align: top;
@@ -46,9 +40,11 @@ export const Cell = styled.td`
 `;
 
 export const NumericHeader = styled(Header)`
-  ${numericStyle};
+  text-align: right;
 `;
 
 export const NumericCell = styled(Cell)`
-  ${numericStyle};
+  text-align: right;
+  font-feature-settings: normal;
+  font-variant-numeric: tabular-nums;
 `;
