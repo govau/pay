@@ -45,14 +45,21 @@ defmodule PayWeb.External.PaymentController do
           description("Request schema for create operation")
           property(:payment, Schema.ref(:Payment))
         end,
-      Error:
+      CreateResponse:
         swagger_schema do
-          title("Errors")
-          description("Error responses from the API")
+          title("CreateResponse")
+          description("Response schema for create operation")
+          property(:data, Schema.ref(:Payment))
+        end,
+      FieldError:
+        swagger_schema do
+          title("FieldError")
+        end,
+      CreateErrorResponse:
+        swagger_schema do
+          title("CreateErrorResponse")
 
-          properties do
-            error(:string, "The message of the error raised", required: true)
-          end
+          property(:errors, Schema.ref(:FieldError))
         end
     }
   end
@@ -92,8 +99,8 @@ defmodule PayWeb.External.PaymentController do
       payment(:body, Schema.ref(:CreateRequest), "", required: true)
     end
 
-    response(201, "OK", Schema.ref(:Payment))
-    response(422, "Unprocessable Entity", Schema.ref(:Error))
+    response(201, "OK", Schema.ref(:CreateResponse))
+    response(422, "Unprocessable Entity", Schema.ref(:CreateErrorResponse))
   end
 
   def create(conn, %{"payment" => payment_params}) do

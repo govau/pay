@@ -1,5 +1,14 @@
 {
   "definitions": {
+    "CreateErrorResponse": {
+      "properties": {
+        "errors": {
+          "$ref": "#/definitions/FieldError"
+        }
+      },
+      "title": "CreateErrorResponse",
+      "type": "object"
+    },
     "CreateRequest": {
       "description": "Request schema for create operation",
       "properties": {
@@ -10,18 +19,18 @@
       "title": "CreateRequest",
       "type": "object"
     },
-    "Error": {
-      "description": "Error responses from the API",
+    "CreateResponse": {
+      "description": "Response schema for create operation",
       "properties": {
-        "error": {
-          "description": "The message of the error raised",
-          "type": "string"
+        "data": {
+          "$ref": "#/definitions/Payment"
         }
       },
-      "required": [
-        "error"
-      ],
-      "title": "Errors",
+      "title": "CreateResponse",
+      "type": "object"
+    },
+    "FieldError": {
+      "title": "FieldError",
       "type": "object"
     },
     "IndexResponse": {
@@ -125,13 +134,13 @@
           "201": {
             "description": "OK",
             "schema": {
-              "$ref": "#/definitions/Payment"
+              "$ref": "#/definitions/CreateResponse"
             }
           },
           "422": {
             "description": "Unprocessable Entity",
             "schema": {
-              "$ref": "#/definitions/Error"
+              "$ref": "#/definitions/CreateErrorResponse"
             }
           }
         },
