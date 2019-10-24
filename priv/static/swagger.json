@@ -1,0 +1,185 @@
+{
+  "definitions": {
+    "CreateRequest": {
+      "description": "Request schema for create operation",
+      "properties": {
+        "payment": {
+          "$ref": "#/definitions/Payment"
+        }
+      },
+      "title": "CreateRequest",
+      "type": "object"
+    },
+    "Error": {
+      "description": "Error responses from the API",
+      "properties": {
+        "error": {
+          "description": "The message of the error raised",
+          "type": "string"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "title": "Errors",
+      "type": "object"
+    },
+    "IndexResponse": {
+      "description": "Response schema for index operation",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/Payments"
+        }
+      },
+      "title": "IndexResponse",
+      "type": "object"
+    },
+    "Payment": {
+      "example": {
+        "id": "5adc6f55-5b86-45be-b9d7-e70029e2d534"
+      },
+      "properties": {
+        "id": {
+          "description": "The ID of the payment",
+          "format": "uuid",
+          "type": "string"
+        }
+      },
+      "title": "Payment",
+      "type": "object"
+    },
+    "Payments": {
+      "items": {
+        "$ref": "#/definitions/Payment"
+      },
+      "title": "Payments",
+      "type": "array"
+    },
+    "ShowResponse": {
+      "description": "Response schema for show operation",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/Payment"
+        }
+      },
+      "title": "ShowResponse",
+      "type": "object"
+    }
+  },
+  "host": "localhost:4000",
+  "info": {
+    "title": "Pay.gov.au",
+    "version": "0.0.1"
+  },
+  "paths": {
+    "/api/v1/payments": {
+      "get": {
+        "description": "See parameters for available search filters.",
+        "operationId": "PayWeb.External.PaymentController.index",
+        "parameters": [
+          {
+            "description": "Payment reference to search (exact match, case insensitive)",
+            "in": "query",
+            "name": "reference",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/IndexResponse"
+            }
+          }
+        },
+        "summary": "List payments",
+        "tags": [
+          "Payment"
+        ]
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "description": "The payment will be associated with the account in the authentication token.",
+        "operationId": "PayWeb.External.PaymentController.create",
+        "parameters": [
+          {
+            "description": "",
+            "in": "body",
+            "name": "payment",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreateRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Payment"
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "summary": "Create payment",
+        "tags": [
+          "Payment"
+        ]
+      }
+    },
+    "/api/v1/payments/{id}": {
+      "get": {
+        "description": "Retrieve information about the payment with the given ID.",
+        "operationId": "PayWeb.External.PaymentController.show",
+        "parameters": [
+          {
+            "description": "Payment ID",
+            "format": "uuid",
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+            "x-example": "5adc6f55-5b86-45be-b9d7-e70029e2d529"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "examples": {
+              "application/json": {
+                "data": {
+                  "id": "5adc6f55-5b86-45be-b9d7-e70029e2d529"
+                }
+              }
+            },
+            "schema": {
+              "$ref": "#/definitions/ShowResponse"
+            }
+          }
+        },
+        "summary": "Show payment",
+        "tags": [
+          "Payment"
+        ]
+      }
+    }
+  },
+  "swagger": "2.0"
+}
