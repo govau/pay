@@ -37,6 +37,8 @@ config :soap,
        version: "1.1",
        env_namespace: "soapenv"
 
+config :phoenix_swagger, json_library: Jason
+
 config :pay, :phoenix_swagger,
   swagger_files: %{
     "priv/static/swagger.json" => [router: PayWeb.Router, endpoint: PayWeb.Endpoint]
