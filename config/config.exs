@@ -24,6 +24,7 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+config :phoenix_swagger, :json_library, Jason
 
 config :sentry,
   dsn: System.get_env("SENTRY_DSN"),
@@ -36,8 +37,6 @@ config :soap,
        :globals,
        version: "1.1",
        env_namespace: "soapenv"
-
-config :phoenix_swagger, json_library: Jason
 
 config :pay, :phoenix_swagger,
   swagger_files: %{

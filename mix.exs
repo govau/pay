@@ -33,10 +33,10 @@ defmodule Pay.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "1.4.6"},
+      {:phoenix, "~> 1.4.9"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
-      {:phoenix_swagger, "~> 0.8"},
+      {:phoenix_swagger, git: "https://github.com/xerions/phoenix_swagger", branch: "master"},
       {:ex_json_schema, "~> 0.5"},
       {:ecto_sql, "~> 3.1"},
       {:postgrex, ">= 0.0.0"},
