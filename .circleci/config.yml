@@ -43,6 +43,9 @@ jobs:
       - run: mix deps.get --only prod
       - run: make -C assets setup
       - run: MIX_ENV=prod make build-release
+      - run: ls -la priv/static/
+      - run: mix swagger
+      - run: ls -la priv/static/
       - run: make test
       - *cf_install
       - *cf_login

@@ -20,7 +20,7 @@ defmodule Pay.MixProject do
   def application do
     [
       mod: {Pay.Application, []},
-      extra_applications: [:logger, :runtime_tools, :phoenix_swagger]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -36,8 +36,10 @@ defmodule Pay.MixProject do
       {:phoenix, "~> 1.4.9"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
+      # Latest master fixes a compatibility issue with Phoenix, not released yet
+      # https://github.com/xerions/phoenix_swagger/issues/232
       {:phoenix_swagger, git: "https://github.com/xerions/phoenix_swagger", branch: "master"},
-      {:ex_json_schema, "~> 0.5"},
+      {:ex_json_schema, "~> 0.6"},
       {:ecto_sql, "~> 3.1"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
