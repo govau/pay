@@ -37,6 +37,11 @@ config :soap,
        version: "1.1",
        env_namespace: "soapenv"
 
+config :pay, :phoenix_swagger,
+  swagger_files: %{
+    "priv/static/swagger.json" => [router: PayWeb.Router, endpoint: PayWeb.Endpoint]
+  }
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

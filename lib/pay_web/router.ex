@@ -2,6 +2,7 @@ defmodule PayWeb.Router do
   use PayWeb, :router
   use Plug.ErrorHandler
   use Sentry.Plug
+  alias PhoenixSwagger.Plug.Validate
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -13,6 +14,7 @@ defmodule PayWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug(Validate, validation_failed_status: 422)
     plug PayWeb.Plugs.SetCurrentUser
   end
 
@@ -20,6 +22,10 @@ defmodule PayWeb.Router do
     pipe_through(:api)
 
     resources "/payments", PaymentController, only: [:index, :show, :create]
+  end
+
+  scope "/api/swagger" do
+    forward "/", PhoenixSwagger.Plug.SwaggerUI, otp_app: :pay, swagger_file: "swagger.json"
   end
 
   scope "/api/v1/internal", PayWeb do
@@ -84,5 +90,14 @@ defmodule PayWeb.Router do
 
     get "/_status", PageController, :status
     get "/*path", ReactController, :index
+  end
+
+  def swagger_info do
+    %{
+      info: %{
+        version: "0.0.1",
+        title: "Pay.gov.au"
+      }
+    }
   end
 end
