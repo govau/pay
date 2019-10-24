@@ -20,7 +20,7 @@ defmodule Pay.MixProject do
   def application do
     [
       mod: {Pay.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :phoenix_swagger]
     ]
   end
 
