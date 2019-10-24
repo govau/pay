@@ -76,7 +76,7 @@ defmodule PayWeb.External.PaymentController do
     response(200, "OK", Schema.ref(:IndexResponse))
   end
 
-  def index(conn, %{"reference" => _reference}) do
+  def index(conn, _params) do
     payments = Payments.list_payments()
     render(conn, "index.json", payments: payments)
   end
