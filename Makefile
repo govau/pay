@@ -77,6 +77,7 @@ setup:
 
 build-release:
 	$(MAKE) frontend
+	$(MIX) swagger
 	$(MIX) release
 
 cf-login:
