@@ -76,8 +76,6 @@ setup:
 	$(MAKE) -C assets $@
 
 build-release:
-	$(MAKE) frontend
-
 	ENDPOINT_HOST=pay-$(STG).apps.y.cld.gov.au $(MIX) swagger
 
 	$(MIX) release
