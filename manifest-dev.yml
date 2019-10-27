@@ -12,5 +12,7 @@ applications:
     <<: *defaults
     command: pay/bin/pay eval "Pay.Release.reset_database"; pay/bin/pay start
     path: _build/prod/rel
+    env:
+      <<: *defaults_env
     services:
       - pay-psql-((stg))
