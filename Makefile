@@ -78,7 +78,9 @@ setup:
 build-release:
 	$(MAKE) frontend
 	$(MIX) swagger
+	ls -la priv/static/
 	$(MIX) release
+	ls -la _build/prod/lib/pay/priv/static/
 
 cf-login:
 	@$(CF) login\
