@@ -42,7 +42,7 @@ jobs:
       - run: mix local.rebar --force
       - run: mix deps.get --only prod
       - run: make -C assets setup
-      - run: make test
+      # - run: make test
       - run: MIX_ENV=prod make build-release
       - *cf_install
       - *cf_login
