@@ -77,7 +77,9 @@ setup:
 
 build-release:
 	$(MAKE) frontend
-	$(MIX) swagger
+
+	ENDPOINT_HOST=pay-$(STG).apps.y.cld.gov.au $(MIX) swagger
+
 	$(MIX) release
 
 cf-login:
