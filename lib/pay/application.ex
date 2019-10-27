@@ -6,6 +6,12 @@ defmodule Pay.Application do
   use Application
 
   def start(_type, _args) do
+    if !File.exists?("priv/static/swagger.json") do
+      IO.puts("Swagger.json file does NOT exist")
+    else
+      IO.puts("Swagger.json file does exist")
+    end
+
     PhoenixSwagger.Validator.parse_swagger_schema("priv/static/swagger.json")
 
     # List all child processes to be supervised
