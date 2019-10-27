@@ -12,6 +12,12 @@ defmodule Pay.Application do
       IO.puts("Swagger.json file does exist")
     end
 
+    if !File.exists?("priv/static/index.html") do
+      IO.puts("index.html file does NOT exist")
+    else
+      IO.puts("index.html file does exist")
+    end
+
     PhoenixSwagger.Validator.parse_swagger_schema("priv/static/swagger.json")
 
     # List all child processes to be supervised
