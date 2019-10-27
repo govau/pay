@@ -4,7 +4,7 @@ defaults: &defaults
   instances: 1
   memory: 128M
   disk_quota: 128MB
-  env:
+  env: &defaults_env
     ENDPOINT_HOST: pay-((stg)).apps.y.cld.gov.au
 
 applications:
