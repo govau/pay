@@ -6,7 +6,11 @@ defmodule Pay.Application do
   use Application
 
   def start(_type, _args) do
-    if !File.exists?("priv/static/swagger.json") do
+    swagger_path = Path.join(:code.priv_dir(:my_app), "static/swagger.json")
+
+    IO.inspect(swagger_path)
+
+    if !File.exists?(swagger_path) do
       IO.puts("Swagger.json file does NOT exist")
     else
       IO.puts("Swagger.json file does exist")
@@ -18,7 +22,7 @@ defmodule Pay.Application do
       IO.puts("index.html file does exist")
     end
 
-    PhoenixSwagger.Validator.parse_swagger_schema("priv/static/swagger.json")
+    PhoenixSwagger.Validator.parse_swagger_schema(swagger_path)
 
     # List all child processes to be supervised
     children = [
