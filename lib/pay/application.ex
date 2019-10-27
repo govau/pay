@@ -6,7 +6,7 @@ defmodule Pay.Application do
   use Application
 
   def start(_type, _args) do
-    swagger_path = Path.join(:code.priv_dir(:my_app), "static/swagger.json")
+    swagger_path = Path.join(:code.priv_dir(:pay), "static/swagger.json")
 
     IO.inspect(swagger_path)
 
@@ -16,7 +16,7 @@ defmodule Pay.Application do
       IO.puts("Swagger.json file does exist")
     end
 
-    if !File.exists?("priv/static/index.html") do
+    if !File.exists?(Path.join(:code.priv_dir(:pay), "static/index.html")) do
       IO.puts("index.html file does NOT exist")
     else
       IO.puts("index.html file does exist")
