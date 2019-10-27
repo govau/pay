@@ -57,9 +57,8 @@ defmodule Pay.Release do
     seed_script = priv_path_for(repo, "seeds.exs")
 
     if File.exists?(seed_script) do
-      IO.puts("Running seed script...")
+      IO.puts("Running seed script..")
       Code.eval_file(seed_script)
-      IO.puts("Finished running seed script")
     end
   end
 
