@@ -1,6 +1,5 @@
 use Mix.Config
 
-IO.inspect(System.get_env("PORT"))
 IO.inspect(System.get_env("ENDPOINT_HOST"))
 
 # Do not print debug messages in production
@@ -15,7 +14,7 @@ secret_key_base =
 
 config :pay, PayWeb.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [host: {:system, "ENDPOINT_HOST"}, port: 80],
+  url: [host: "TODO.com", port: 80],
   secret_key_base: secret_key_base
 
 config :bambora,
