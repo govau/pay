@@ -1,5 +1,8 @@
 use Mix.Config
 
+IO.inspect(System.get_env("PORT"))
+IO.inspect(System.get_env("ENDPOINT_HOST"))
+
 # Do not print debug messages in production
 config :logger, level: :info
 
