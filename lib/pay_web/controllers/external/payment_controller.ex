@@ -14,7 +14,14 @@ defmodule PayWeb.External.PaymentController do
           title("Payment")
 
           properties do
-            id(:string, "The ID of the payment", format: "uuid")
+            # TODO: remove gateway_account_id (will come from auth token)
+            gateway_account_id(:string, "The gateway_account_id of the payment", format: "uuid")
+            id(:string, "ID of the payment", format: "uuid")
+            amount(:integer, "Payment amount (in cents)", format: "int32")
+            reference(:string, "Reference to associate with the payment")
+            description(:string, "Description of the goods being paid for")
+            email(:string, "Email address to associate with the payment")
+            return_url(:string, "URL to redirect to after payment")
           end
 
           example(%{

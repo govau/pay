@@ -48,9 +48,35 @@
         "id": "5adc6f55-5b86-45be-b9d7-e70029e2d534"
       },
       "properties": {
-        "id": {
-          "description": "The ID of the payment",
+        "amount": {
+          "description": "Payment amount (in cents)",
+          "format": "int32",
+          "type": "integer"
+        },
+        "description": {
+          "description": "Description of the goods being paid for",
+          "type": "string"
+        },
+        "email": {
+          "description": "Email address to associate with the payment",
+          "type": "string"
+        },
+        "gateway_account_id": {
+          "description": "The gateway_account_id of the payment",
           "format": "uuid",
+          "type": "string"
+        },
+        "id": {
+          "description": "ID of the payment",
+          "format": "uuid",
+          "type": "string"
+        },
+        "reference": {
+          "description": "Reference to associate with the payment",
+          "type": "string"
+        },
+        "return_url": {
+          "description": "URL to redirect to after payment",
           "type": "string"
         }
       },
