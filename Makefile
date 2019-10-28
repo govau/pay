@@ -37,7 +37,7 @@ endif
 STG           ?= dev
 PSQL_SVC_PLAN ?= shared
 PSQL_SVC_NAME ?= pay-psql-$(STG)
-export ENDPOINT_HOST ?= pay-$(STG).$(CLD_HOST)
+export ENDPOINT_HOST ?= pay-$(STG).apps.$(CLD_HOST)
 
 run:
 	$(MIX) phx.server
