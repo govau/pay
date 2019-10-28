@@ -13,10 +13,42 @@
       "description": "Request schema for create operation",
       "properties": {
         "payment": {
-          "$ref": "#/definitions/Payment"
+          "$ref": "#/definitions/CreateRequestPayment"
         }
       },
       "title": "CreateRequest",
+      "type": "object"
+    },
+    "CreateRequestPayment": {
+      "properties": {
+        "amount": {
+          "description": "Payment amount (in cents)",
+          "format": "int32",
+          "type": "integer"
+        },
+        "description": {
+          "description": "Description of the goods being paid for",
+          "type": "string"
+        },
+        "email": {
+          "description": "Email address to associate with the payment",
+          "type": "string"
+        },
+        "gateway_account_id": {
+          "description": "The gateway_account_id of the payment",
+          "format": "int32",
+          "type": "integer"
+        },
+        "reference": {
+          "description": "Reference to associate with the payment",
+          "type": "string"
+        },
+        "return_url": {
+          "description": "URL to redirect user to after payment",
+          "type": "string"
+        }
+      },
+      "title": "CreateRequestPayment",
       "type": "object"
     },
     "CreateResponse": {
@@ -61,11 +93,6 @@
           "description": "Email address to associate with the payment",
           "type": "string"
         },
-        "gateway_account_id": {
-          "description": "The gateway_account_id of the payment",
-          "format": "uuid",
-          "type": "string"
-        },
         "id": {
           "description": "ID of the payment",
           "format": "uuid",
@@ -76,7 +103,7 @@
           "type": "string"
         },
         "return_url": {
-          "description": "URL to redirect to after payment",
+          "description": "URL to redirect user to after payment",
           "type": "string"
         }
       },

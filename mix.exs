@@ -50,6 +50,7 @@ defmodule Pay.MixProject do
       {:sentry, "~> 7.0"},
       {:slugger, "~> 0.3"},
       {:stripity_stripe, "~> 2.4.0"},
+      {:pay_gov_au, path: "./clients/pay-client"},
       {:bambora, path: "./vendor/bambora"},
 
       # TODO: hackney is a transitive dep of sentry that broke;

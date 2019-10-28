@@ -83,24 +83,26 @@ defmodule PayWeb.Products.ProductPaymentController do
 
     service = Services.get_service_by_gateway_account_external_id!(gateway_account.external_id)
 
-    # Simulate hitting the public payments API to create a payment.
-    with {:ok, %Payments.Payment{} = payment} <-
-           Payments.create_payment(%{
-             # We pass the gateway account ID.
-             # Normally you'd pass your product's token as auth (which has the
-             # gateway account implied in it).
-             "gateway_account_id" => gateway_account.id,
-             "reference" => product_payment.reference,
-             "amount" => product_payment.amount,
-             "description" => product_payment.product.name,
-             # We pass a URL here so that the pay page knows how to redirect
-             # back to the products page to show a confirmation page.
-             "return_url" => "/products/pay/#{product_payment.external_id}/status"
+    with {:ok, resp} <-
+           PayWeb.Products.PayClient.new()
+           |> PayGovAu.Api.Payment.create_payment(%PayGovAu.Model.CreateRequest{
+             payment: %{
+               # TODO: we pass the gateway account ID.
+               # Eventually we will pass the product's token as auth (which has
+               # the gateway account implied in it).
+               gateway_account_id: gateway_account.id,
+               reference: product_payment.reference,
+               amount: product_payment.amount,
+               description: product_payment.product.name,
+               # We pass a URL here so that the pay page knows how to redirect
+               # back to the products page to show a confirmation page.
+               return_url: "/products/pay/#{product_payment.external_id}/status"
+             }
            }),
          {:ok, %ProductPayment{} = product_payment} <-
            Products.submit_product_payment(
              product_payment,
-             payment.external_id,
+             resp.data.id,
              # We will use this to allow the frontend to redirect to the pay
              # page URL. We'll get this from the payment response directly above.
              "TODO some next_url"

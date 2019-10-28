@@ -14,14 +14,12 @@ defmodule PayWeb.External.PaymentController do
           title("Payment")
 
           properties do
-            # TODO: remove gateway_account_id (will come from auth token)
-            gateway_account_id(:string, "The gateway_account_id of the payment", format: "uuid")
             id(:string, "ID of the payment", format: "uuid")
             amount(:integer, "Payment amount (in cents)", format: "int32")
             reference(:string, "Reference to associate with the payment")
             description(:string, "Description of the goods being paid for")
             email(:string, "Email address to associate with the payment")
-            return_url(:string, "URL to redirect to after payment")
+            return_url(:string, "URL to redirect user to after payment")
           end
 
           example(%{
@@ -46,11 +44,26 @@ defmodule PayWeb.External.PaymentController do
           description("Response schema for show operation")
           property(:data, Schema.ref(:Payment))
         end,
+      CreateRequestPayment:
+        swagger_schema do
+          title("CreateRequestPayment")
+
+          properties do
+            # TODO: remove gateway_account_id (will come from auth token)
+            gateway_account_id(:integer, "The gateway_account_id of the payment", format: "int32")
+
+            amount(:integer, "Payment amount (in cents)", format: "int32")
+            reference(:string, "Reference to associate with the payment")
+            description(:string, "Description of the goods being paid for")
+            email(:string, "Email address to associate with the payment")
+            return_url(:string, "URL to redirect user to after payment")
+          end
+        end,
       CreateRequest:
         swagger_schema do
           title("CreateRequest")
           description("Request schema for create operation")
-          property(:payment, Schema.ref(:Payment))
+          property(:payment, Schema.ref(:CreateRequestPayment))
         end,
       CreateResponse:
         swagger_schema do
@@ -113,19 +126,13 @@ defmodule PayWeb.External.PaymentController do
   end
 
   def create(conn, %{"payment" => payment_params}) do
-    # TODO: just getting one for tests to pass but this should be autoset from
-    # the auth token.
-    gateway_accounts = Payments.list_gateway_accounts()
-    gateway_account = List.first(gateway_accounts)
-
     with {:ok, %Payment{} = payment} <-
            Payments.create_payment(
              Map.merge(payment_params, %{
-               "gateway_account_id" => gateway_account.id,
-               "status" => "TODO",
+               # TODO: should be autoset from the auth token.
+               #  "gateway_account_id" => gateway_account.id,
                "auth_3ds_details" => %{},
-               "external_metadata" => %{},
-               "wallet" => "TODO"
+               "external_metadata" => %{}
              })
            ) do
       conn
