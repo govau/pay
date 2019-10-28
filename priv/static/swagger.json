@@ -84,7 +84,7 @@
     "/api/v1/payments": {
       "get": {
         "description": "See parameters for available search filters.",
-        "operationId": "PayWeb.External.PaymentController.index",
+        "operationId": "ListPayments",
         "parameters": [
           {
             "description": "Payment reference to search (exact match, case insensitive)",
@@ -115,7 +115,7 @@
           "application/json"
         ],
         "description": "The payment will be associated with the account in the authentication token.",
-        "operationId": "PayWeb.External.PaymentController.create",
+        "operationId": "CreatePayment",
         "parameters": [
           {
             "description": "",
@@ -153,7 +153,7 @@
     "/api/v1/payments/{id}": {
       "get": {
         "description": "Retrieve information about the payment with the given ID.",
-        "operationId": "PayWeb.External.PaymentController.show",
+        "operationId": "GetPayment",
         "parameters": [
           {
             "description": "Payment ID",

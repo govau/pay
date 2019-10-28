@@ -66,6 +66,7 @@ defmodule PayWeb.External.PaymentController do
 
   swagger_path(:index) do
     get("/api/v1/payments")
+    operation_id("ListPayments")
     summary("List payments")
 
     description("See parameters for available search filters.")
@@ -90,6 +91,7 @@ defmodule PayWeb.External.PaymentController do
 
   swagger_path(:create) do
     post("/api/v1/payments")
+    operation_id("CreatePayment")
     summary("Create payment")
     description("The payment will be associated with the account in the authentication token.")
     consumes("application/json")
@@ -128,6 +130,7 @@ defmodule PayWeb.External.PaymentController do
 
   swagger_path(:show) do
     get("/api/v1/payments/{id}")
+    operation_id("GetPayment")
     summary("Show payment")
     description("Retrieve information about the payment with the given ID.")
     produces("application/json")
