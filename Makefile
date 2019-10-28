@@ -37,7 +37,7 @@ endif
 STG           ?= dev
 PSQL_SVC_PLAN ?= shared
 PSQL_SVC_NAME ?= pay-psql-$(STG)
-
+export ENDPOINT_HOST ?= pay-$(STG).$(CLD_HOST)
 
 run:
 	$(MIX) phx.server
@@ -75,9 +75,6 @@ setup:
 	$(MAKE) install
 	$(MAKE) -C assets $@
 
-export ENDPOINT_HOST ?=
-
-build-release: ENDPOINT_HOST=pay-$(STG).apps.y.cld.gov.au
 build-release:
 	$(MIX) release
 
