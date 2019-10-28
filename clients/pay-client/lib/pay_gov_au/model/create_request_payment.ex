@@ -2,7 +2,7 @@
 # https://openapi-generator.tech
 # Do not edit the class manually.
 
-defmodule PayGovAu.Model.Payment do
+defmodule PayGovAu.Model.CreateRequestPayment do
   @moduledoc """
 
   """
@@ -12,7 +12,7 @@ defmodule PayGovAu.Model.Payment do
     :amount,
     :description,
     :email,
-    :id,
+    :gateway_account_id,
     :reference,
     :return_url
   ]
@@ -21,13 +21,13 @@ defmodule PayGovAu.Model.Payment do
           :amount => integer() | nil,
           :description => String.t() | nil,
           :email => String.t() | nil,
-          :id => String.t() | nil,
+          :gateway_account_id => integer() | nil,
           :reference => String.t() | nil,
           :return_url => String.t() | nil
         }
 end
 
-defimpl Poison.Decoder, for: PayGovAu.Model.Payment do
+defimpl Poison.Decoder, for: PayGovAu.Model.CreateRequestPayment do
   def decode(value, _options) do
     value
   end

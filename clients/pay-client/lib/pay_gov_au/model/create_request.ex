@@ -13,7 +13,7 @@ defmodule PayGovAu.Model.CreateRequest do
   ]
 
   @type t :: %__MODULE__{
-          :payment => Payment | nil
+          :payment => CreateRequestPayment | nil
         }
 end
 
@@ -22,6 +22,6 @@ defimpl Poison.Decoder, for: PayGovAu.Model.CreateRequest do
 
   def decode(value, options) do
     value
-    |> deserialize(:payment, :struct, PayGovAu.Model.Payment, options)
+    |> deserialize(:payment, :struct, PayGovAu.Model.CreateRequestPayment, options)
   end
 end

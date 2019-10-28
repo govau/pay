@@ -17,7 +17,7 @@ defmodule PayGovAu.Api.Payment do
   ## Parameters
 
   - connection (PayGovAu.Connection): Connection to server
-  - payment (CreateRequest):
+  - payment (CreateRequest): 
   - opts (KeywordList): [optional] Optional parameters
   ## Returns
 
