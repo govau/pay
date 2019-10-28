@@ -75,10 +75,9 @@ setup:
 	$(MAKE) install
 	$(MAKE) -C assets $@
 
+build-release: ENDPOINT_HOST ?= pay-$(STG).apps.y.cld.gov.au
 build-release:
-	ENDPOINT_HOST=pay-$(STG).apps.y.cld.gov.au $(MIX) release
-
-	cat _build/prod/lib/pay/priv/static/swagger.json
+	$(MIX) release
 
 cf-login:
 	@$(CF) login\

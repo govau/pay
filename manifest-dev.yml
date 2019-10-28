@@ -4,15 +4,11 @@ defaults: &defaults
   instances: 1
   memory: 128M
   disk_quota: 128MB
-  env: &defaults_env
-    ENDPOINT_HOST: pay-((stg)).apps.y.cld.gov.au
 
 applications:
   - name: pay-((stg))
     <<: *defaults
     command: pay/bin/pay eval "Pay.Release.reset_database"; pay/bin/pay start
     path: _build/prod/rel
-    env:
-      <<: *defaults_env
     services:
       - pay-psql-((stg))

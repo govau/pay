@@ -12,7 +12,6 @@ secret_key_base =
 
 config :pay, PayWeb.Endpoint,
   http: [port: {:system, "PORT"}],
-  # TODO: we need this at build time, but does this break things at runtime?
   url: [host: System.get_env("ENDPOINT_HOST"), port: 80],
   secret_key_base: secret_key_base
 
