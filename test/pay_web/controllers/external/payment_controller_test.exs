@@ -86,10 +86,19 @@ defmodule PayWeb.External.PaymentControllerTest do
   describe "create payment" do
     setup [:create_gateway_account]
 
-    test "renders payment when data is valid", %{conn: conn, swagger_schema: schema} do
+    test "renders payment when data is valid", %{
+      conn: conn,
+      swagger_schema: schema,
+      gateway_account: %Payments.GatewayAccount{id: gateway_account_id} = _gateway_account
+    } do
       response =
         conn
-        |> post(Routes.external_payment_path(conn, :create), payment: @create_attrs)
+        |> post(Routes.external_payment_path(conn, :create),
+          payment:
+            Map.merge(@create_attrs, %{
+              "gateway_account_id" => gateway_account_id
+            })
+        )
         |> validate_resp_schema(schema, "CreateResponse")
         |> json_response(201)
 
