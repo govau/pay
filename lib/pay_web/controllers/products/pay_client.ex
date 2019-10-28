@@ -4,6 +4,7 @@ defmodule PayWeb.Products.PayClient do
     token = "TODO"
 
     middleware = [
+      {Tesla.Middleware.Timeout, timeout: 5_000},
       {Tesla.Middleware.BaseUrl, PayWeb.Endpoint.url()},
       {Tesla.Middleware.EncodeJson, engine: Poison},
       {Tesla.Middleware.Headers,
