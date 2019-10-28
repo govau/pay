@@ -82,6 +82,8 @@ build-release:
 
 	$(MIX) release
 
+	cat _build/prod/rel/priv/static/swagger.json
+
 cf-login:
 	@$(CF) login\
 		-a "${CF_API}"\

@@ -1,7 +1,5 @@
 use Mix.Config
 
-IO.inspect(System.get_env("ENDPOINT_HOST"))
-
 # Do not print debug messages in production
 config :logger, level: :info
 
@@ -14,6 +12,7 @@ secret_key_base =
 
 config :pay, PayWeb.Endpoint,
   http: [port: {:system, "PORT"}],
+  # TODO: we need this at build time, but does this break things at runtime?
   url: [host: System.get_env("ENDPOINT_HOST"), port: 80],
   secret_key_base: secret_key_base
 
