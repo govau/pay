@@ -1,5 +1,6 @@
 defmodule PayWeb.External.PaymentControllerTest do
   use PayWeb.ConnCase
+  use PhoenixSwagger.SchemaTest, "priv/static/swagger.json"
 
   alias Pay.Payments
 
@@ -71,18 +72,37 @@ defmodule PayWeb.External.PaymentControllerTest do
   end
 
   describe "index" do
-    test "lists all payments", %{conn: conn} do
-      conn = get(conn, Routes.external_payment_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+    test "lists all payments", %{conn: conn, swagger_schema: schema} do
+      response =
+        conn
+        |> get(Routes.external_payment_path(conn, :index))
+        |> validate_resp_schema(schema, "IndexResponse")
+        |> json_response(200)
+
+      assert response["data"] == []
     end
   end
 
   describe "create payment" do
     setup [:create_gateway_account]
 
-    test "renders payment when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.external_payment_path(conn, :create), payment: @create_attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+    test "renders payment when data is valid", %{
+      conn: conn,
+      swagger_schema: schema,
+      gateway_account: %Payments.GatewayAccount{id: gateway_account_id} = _gateway_account
+    } do
+      response =
+        conn
+        |> post(Routes.external_payment_path(conn, :create),
+          payment:
+            Map.merge(@create_attrs, %{
+              "gateway_account_id" => gateway_account_id
+            })
+        )
+        |> validate_resp_schema(schema, "CreateResponse")
+        |> json_response(201)
+
+      assert %{"id" => id} = response["data"]
 
       conn = get(conn, Routes.external_payment_path(conn, :show, id))
 
@@ -114,9 +134,14 @@ defmodule PayWeb.External.PaymentControllerTest do
              } = json_response(conn, 200)["data"]
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.external_payment_path(conn, :create), payment: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
+    test "renders errors when data is invalid", %{conn: conn, swagger_schema: schema} do
+      response =
+        conn
+        |> post(Routes.external_payment_path(conn, :create), payment: @invalid_attrs)
+        |> validate_resp_schema(schema, "CreateErrorResponse")
+        |> json_response(422)
+
+      assert response["errors"] != %{}
     end
   end
 

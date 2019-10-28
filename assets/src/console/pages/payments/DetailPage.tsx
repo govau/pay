@@ -114,7 +114,10 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
               </Table.Cell>
             </Table.Row>
             <Table.Row>
-              <Table.Header scope="row">Provider ID</Table.Header>
+              <Table.Header scope="row">
+                {paymentProviderLabel(gatewayAccount.payment_provider)}{" "}
+                transaction ID
+              </Table.Header>
               <Table.Cell>{optional(gateway_transaction_id)}</Table.Cell>
             </Table.Row>
             <Table.Row>

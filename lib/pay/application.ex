@@ -6,6 +6,10 @@ defmodule Pay.Application do
   use Application
 
   def start(_type, _args) do
+    swagger_path = Path.join(:code.priv_dir(:pay), "static/swagger.json")
+
+    PhoenixSwagger.Validator.parse_swagger_schema(swagger_path)
+
     # List all child processes to be supervised
     children = [
       # Start the Ecto repository

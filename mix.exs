@@ -7,7 +7,7 @@ defmodule Pay.MixProject do
       version: "0.1.0",
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env()),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers() ++ [:phoenix_swagger],
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
@@ -36,6 +36,10 @@ defmodule Pay.MixProject do
       {:phoenix, "~> 1.4.9"},
       {:phoenix_pubsub, "~> 1.1"},
       {:phoenix_ecto, "~> 4.0"},
+      # Latest master fixes a compatibility issue with Phoenix, not released yet
+      # https://github.com/xerions/phoenix_swagger/issues/232
+      {:phoenix_swagger, git: "https://github.com/xerions/phoenix_swagger", branch: "master"},
+      {:ex_json_schema, "~> 0.6"},
       {:ecto_sql, "~> 3.1"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.11"},
@@ -46,6 +50,7 @@ defmodule Pay.MixProject do
       {:sentry, "~> 7.0"},
       {:slugger, "~> 0.3"},
       {:stripity_stripe, "~> 2.4.0"},
+      {:pay_gov_au, path: "./clients/pay-client"},
       {:bambora, path: "./vendor/bambora"},
 
       # TODO: hackney is a transitive dep of sentry that broke;
@@ -64,7 +69,8 @@ defmodule Pay.MixProject do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      swagger: ["phx.swagger.generate"],
+      test: ["ecto.create --quiet", "ecto.migrate", "swagger", "test"]
     ]
   end
 end

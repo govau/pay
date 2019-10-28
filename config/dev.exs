@@ -52,7 +52,8 @@ config :pay, PayWeb.Endpoint,
       ~r"lib/pay_web/{live,views}/.*(ex)$",
       ~r"lib/pay_web/templates/.*(eex)$"
     ]
-  ]
+  ],
+  reloadable_compilers: [:gettext, :phoenix, :elixir, :phoenix_swagger]
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
