@@ -7,6 +7,9 @@ defmodule PayWeb.Products.PayClient do
       {Tesla.Middleware.Headers, [{"user-agent", "Elixir"}]}
     ]
 
+    IO.inspect(PayWeb.Endpoint.url())
+    IO.inspect(middleware)
+
     Tesla.client(middleware)
   end
 end
