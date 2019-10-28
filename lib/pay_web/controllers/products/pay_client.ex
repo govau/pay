@@ -11,9 +11,6 @@ defmodule PayWeb.Products.PayClient do
        [{"authorization", "token: " <> token}, {"user-agent", "Elixir"}]}
     ]
 
-    IO.inspect(PayWeb.Endpoint.url())
-    IO.inspect(middleware)
-
     Tesla.client(middleware)
   end
 end
