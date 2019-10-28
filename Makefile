@@ -82,7 +82,7 @@ build-release:
 
 	$(MIX) release
 
-	cat _build/prod/rel/priv/static/swagger.json
+	cat _build/prod/lib/pay/priv/static/swagger.json
 
 cf-login:
 	@$(CF) login\
