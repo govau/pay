@@ -12,7 +12,7 @@ secret_key_base =
 
 config :pay, PayWeb.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [scheme: "https", host: System.get_env("ENDPOINT_HOST")],
+  url: [scheme: "https", host: System.get_env("ENDPOINT_HOST"), port: 80],
   secret_key_base: secret_key_base
 
 config :bambora,
