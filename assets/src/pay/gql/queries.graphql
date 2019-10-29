@@ -1,0 +1,38 @@
+# import SubmitPaymentInput from "./schema.graphql"
+
+fragment Payment on Payment {
+  id
+  inserted_at
+  updated_at
+  status
+  amount
+  reference
+  description
+  email
+  gateway_transaction_id
+  card_details {
+    cardholder_name
+    last_digits_card_number
+    first_digits_card_number
+    expiry_date
+    card_brand
+  }
+}
+
+mutation SubmitPayment($paymentId: ID!, $input: SubmitPaymentInput!) {
+  payment: submitPayment(paymentId: $paymentId, input: $input)
+    @rest(
+      type: "Payment"
+      path: "/internal/payments/payments/{args.paymentId}"
+      method: "PATCH"
+    ) {
+    ...Payment
+  }
+}
+
+query GetPayment($id: ID!) {
+  payment(id: $id)
+    @rest(type: "Payment", path: "/internal/payments/payments/{args.id}") {
+    ...Payment
+  }
+}

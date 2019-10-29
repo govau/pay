@@ -50,6 +50,20 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
+  src/pay/__generated__/graphql.tsx:
+    config:
+      noNamespaces: true
+      withHOC: false
+      withHooks: true
+    schema:
+      - "src/gql/payments.graphql"
+      - "src/pay/gql/schema.graphql"
+    documents:
+      - "src/pay/gql/queries.graphql"
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
   src/platform-admin/__generated__/graphql.tsx:
     config:
       noNamespaces: true

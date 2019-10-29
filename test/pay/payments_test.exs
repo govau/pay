@@ -349,7 +349,7 @@ defmodule Pay.PaymentsTest do
       assert catch_error(Payments.update_payment(payment, "end", @update_attrs))
 
       assert {:ok, payment} = Payments.update_payment(payment, "submit_payment", @update_attrs)
-      assert {:ok, payment} = Payments.update_payment(payment, "submit_success", @update_attrs)
+      assert {:ok, payment} = Payments.update_payment(payment, "payment_succeeded", @update_attrs)
     end
 
     test "delete_payment/1 deletes the payment" do

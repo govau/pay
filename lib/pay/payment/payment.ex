@@ -89,28 +89,44 @@ end
 
 defmodule Pay.Payments.Payment.Statuses do
   @behaviour StateMachine
-  @type t :: :created | :submitted | :cancelled | :successful | :failed
+  @type t ::
+          :created
+          | :started
+          | :submitted
+          | :capturable
+          | :success
+          | :declined
+          | :timed_out
+          | :cancelled
+          | :error
 
   @states %{
     "created" => :created,
+    "started" => :started,
     "submitted" => :submitted,
+    "capturable" => :capturable,
+    "success" => :success,
+    "declined" => :declined,
+    "timed_out" => :timed_out,
     "cancelled" => :cancelled,
-    "successful" => :successful,
-    "failed" => :failed
+    "error" => :error
   }
 
   @spec initial :: t
   def initial, do: :created
 
   @spec final(t) :: boolean
-  def final(:successful), do: true
+  def final(:success), do: true
   def final(_), do: false
 
   @spec transition(t, event :: String.t()) :: t
   def transition(:created, "submit_payment"), do: :submitted
   def transition(:created, "cancel_payment"), do: :cancelled
-  def transition(:submitted, "submit_success"), do: :successful
-  def transition(:submitted, "rejected"), do: :failed
+
+  def transition(:created, "payment_succeeded"), do: :success
+  def transition(:submitted, "payment_succeeded"), do: :success
+
+  def transition(:submitted, "reject"), do: :declined
 
   @spec status(t) :: String.t()
   def status(t), do: Atom.to_string(t)

@@ -306,7 +306,7 @@ Repo.insert!(%ServiceUser{
   role_id: view_only_role_id
 })
 
-service2_gateway_account_external_id =
+service2_test_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
     external_id: Ecto.UUID.generate(),
     payment_provider: "sandbox",
@@ -315,17 +315,35 @@ service2_gateway_account_external_id =
     credentials: %{}
   }).external_id
 
+service2_live_gateway_account_external_id =
+  Repo.insert!(%GatewayAccount{
+    external_id: Ecto.UUID.generate(),
+    payment_provider: "bambora",
+    type: GatewayAccount.type(:live),
+    service_name: "Service 2",
+    credentials: %{
+      "username" => System.fetch_env!("BAMBORA_USERNAME"),
+      "password" => System.fetch_env!("BAMBORA_PASSWORD"),
+      "account_number" => System.fetch_env!("BAMBORA_ACCT_NO")
+    }
+  }).external_id
+
 service2_id =
   Repo.insert!(%Service{
     external_id: Ecto.UUID.generate(),
     organisation_id: dfat_id,
     name: "Australian Passport Office",
-    current_go_live_stage: Pay.Services.Service.GoLiveStage.NotStarted.value().name,
+    current_go_live_stage: Pay.Services.Service.GoLiveStage.Live.value().name,
     custom_branding: %{}
   }).id
 
 Repo.insert!(%ServiceGatewayAccount{
-  gateway_account_id: service2_gateway_account_external_id,
+  gateway_account_id: service2_test_gateway_account_external_id,
+  service_id: service2_id
+})
+
+Repo.insert!(%ServiceGatewayAccount{
+  gateway_account_id: service2_live_gateway_account_external_id,
   service_id: service2_id
 })
 
@@ -337,7 +355,22 @@ Repo.insert!(%ServiceUser{
 
 Repo.insert!(%Product{
   external_id: Ecto.UUID.generate(),
-  gateway_account_id: service2_gateway_account_external_id,
+  gateway_account_id: service2_test_gateway_account_external_id,
+  name: "New adult passport (test)",
+  name_slug: "new-adult-passport-test",
+  service_name_slug: "australian-passport-office",
+  description: "Pay for your adult Australian passport, valid for 10 years.",
+  price_fixed: true,
+  price: 29300,
+  reference_enabled: true,
+  reference_label: "Passport application number",
+  reference_hint:
+    "You can find your application number on the top right hand side of your application form."
+})
+
+Repo.insert!(%Product{
+  external_id: Ecto.UUID.generate(),
+  gateway_account_id: service2_live_gateway_account_external_id,
   name: "New adult passport",
   name_slug: "new-adult-passport",
   service_name_slug: "australian-passport-office",
