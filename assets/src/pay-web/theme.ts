@@ -23,6 +23,9 @@ const colors = {
   payPink: "#DE0D79",
   payDarkerBlue: "#011628",
   payHeaderBar: "#1d70b8",
+  payDarkGrey: "#222222",
+  payLightGrey: "#F3F2F1",
+  payLightBlack: "#757575",
   links: "#1d70b8"
 };
 

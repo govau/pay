@@ -1,0 +1,17 @@
+type Query {
+  payment(id: ID!): Payment!
+}
+
+# TODO: make this less specific when we support other payment providers
+input PaymentInput {
+  ott: String!
+}
+
+input SubmitPaymentInput {
+  transition: String!
+  payment: PaymentInput!
+}
+
+type Mutation {
+  submitPayment(paymentId: ID!, input: SubmitPaymentInput!): Payment!
+}

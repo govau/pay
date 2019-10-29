@@ -14,3 +14,9 @@ export const PrivacyPage = loadable(() => import("./PrivacyPage"), {
 export const PaymentPage = loadable(() => import("./PaymentPage"), {
   fallback: <Loader />
 });
+export const PaymentSuccessPage = loadable(
+  () => import("./PaymentSuccessPage"),
+  {
+    fallback: <Loader />
+  }
+);

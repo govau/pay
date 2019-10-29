@@ -11,21 +11,21 @@ export const BasicTextInput = styled("input")<{ error?: boolean }>`
   padding: 10px;
   margin-top: 3px;
   box-shadow: none;
-  border: 3px solid ${props => props.theme.colors.darkGray};
-  border-radius: 3px;
+  border: 2px solid ${props => props.theme.colors.payDarkGrey};
   font-size: 1em;
   @media ${tablet} {
     width: auto;
   }
   ${props => props.error && `border-color: ${props.theme.colors.red};`}
   &:focus {
-    outline: 3px solid ${props => props.theme.colors.orange};
+    outline: 2px solid ${props => props.theme.colors.orange};
     outline-offset: 0px;
     border-radius: 0;
   }
 `;
 
 export const Label = styled.label`
+  font-weight: 700;
   display: block;
 
   * + & {
@@ -34,5 +34,5 @@ export const Label = styled.label`
 `;
 
 export const Description = styled.div`
-  color: ${props => props.theme.colors.darkGray};
+  color: ${props => props.theme.colors.payLightBlack};
 `;
