@@ -30,8 +30,8 @@ defmodule Pay.Fixtures do
     Repo.insert!(%GatewayAccount{
       external_id: "7488a646-e31f-11e4-aace-600308960500",
       credentials: %{},
-      type: GatewayAccount.Type.Test.value().name,
-      payment_provider: GatewayAccount.PaymentProvider.Sandbox.value().name,
+      type: GatewayAccount.type(:test),
+      payment_provider: GatewayAccount.provider(:sandbox),
       service_name: "some name"
     })
   end

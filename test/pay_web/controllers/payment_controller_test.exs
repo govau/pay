@@ -42,8 +42,8 @@ defmodule PayWeb.PaymentControllerTest do
   def fixture(:gateway_account) do
     {:ok, gateway_account} =
       Payments.create_gateway_account(%{
-        "type" => Payments.GatewayAccount.Type.Test.value().name,
-        "payment_provider" => Payments.GatewayAccount.PaymentProvider.Sandbox.value().name,
+        "type" => Payments.GatewayAccount.type(:test),
+        "payment_provider" => Payments.GatewayAccount.provider(:sandbox),
         "service_name" => "Test service",
         "credentials" => %{"account_number" => "sandbox123"}
       })
@@ -114,7 +114,7 @@ defmodule PayWeb.PaymentControllerTest do
 
     test "renders payment when data is valid", %{
       conn: conn,
-      payment: %Payment{external_id: id} = payment
+      payment: %Payment{external_id: id, status: starting_status} = payment
     } do
       conn =
         patch(conn, Routes.payments_payment_path(conn, :update, payment),
@@ -123,10 +123,13 @@ defmodule PayWeb.PaymentControllerTest do
         )
 
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
-      conn = get(conn, Routes.payments_payment_path(conn, :show, id))
 
+      conn = get(conn, Routes.payments_payment_path(conn, :show, id))
       updated_response = json_response(conn, 200)["data"]
-      assert updated_response = %{payment | status: "submitted"}
+
+      assert_raise MatchError, fn ->
+        %{"status" => ^starting_status} = updated_response
+      end
     end
 
     test "crashes when transition is invalid", %{conn: conn, payment: payment} do

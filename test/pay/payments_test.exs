@@ -333,7 +333,12 @@ defmodule Pay.PaymentsTest do
                Payments.update_payment(payment, "submit_payment", @update_attrs)
 
       assert updated_payment != payment
-      assert payment = %{updated_payment | status: payment.status}
+
+      assert payment == %{
+               updated_payment
+               | status: payment.status,
+                 updated_at: payment.updated_at
+             }
     end
 
     test "update_payment/3 only permits specific transitions" do

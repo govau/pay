@@ -81,60 +81,34 @@ defmodule Pay.Payments.GatewayAccount do
     ])
   end
 
+  defmodule Type do
+    @type t :: :test | :live
+
+    def from_string("test"), do: :test
+    def from_string("live"), do: :live
+  end
+
+  defmodule Provider do
+    @type t :: :sandbox | :bambora
+
+    def from_string("sandbox"), do: :sandbox
+    def from_string("bambora"), do: :bambora
+  end
+
+  @spec type(Type.t()) :: String.t()
+  def type(t), do: Atom.to_string(t)
+
+  @spec provider(Provider.t()) :: String.t()
+  def provider(t), do: Atom.to_string(t)
+
   @spec payment_provider(Pay.Payments.GatewayAccount.t()) :: Pay.Payments.Gateway.t()
   def payment_provider(%Pay.Payments.GatewayAccount{
         payment_provider: provider,
         credentials: credentials
       }) do
-    case provider do
-      "bambora" -> Pay.Payments.BamboraGateway.from_credentials(credentials)
-      "sandbox" -> Pay.Payments.BamboraGateway.sandbox()
+    case Provider.from_string(provider) do
+      :bambora -> Pay.Payments.BamboraGateway.from_credentials(credentials)
+      :sandbox -> Pay.Payments.BamboraGateway.sandbox()
     end
   end
-end
-
-defmodule Pay.Payments.GatewayAccount.Type do
-  alias Pay.Payments.GatewayAccount.Type
-
-  defstruct [:name]
-
-  @type t :: %Type{}
-  @callback value :: Type.t()
-end
-
-defmodule Pay.Payments.GatewayAccount.Type.Test do
-  alias Pay.Payments.GatewayAccount.Type
-
-  @behaviour Type
-  def value, do: %Type{name: "test"}
-end
-
-defmodule Pay.Payments.GatewayAccount.Type.Live do
-  alias Pay.Payments.GatewayAccount.Type
-
-  @behaviour Type
-  def value, do: %Type{name: "live"}
-end
-
-defmodule Pay.Payments.GatewayAccount.PaymentProvider do
-  alias Pay.Payments.GatewayAccount.PaymentProvider
-
-  defstruct [:name]
-
-  @type t :: %PaymentProvider{}
-  @callback value :: PaymentProvider.t()
-end
-
-defmodule Pay.Payments.GatewayAccount.PaymentProvider.Sandbox do
-  alias Pay.Payments.GatewayAccount.PaymentProvider
-
-  @behaviour PaymentProvider
-  def value, do: %PaymentProvider{name: "sandbox"}
-end
-
-defmodule Pay.Payments.GatewayAccount.PaymentProvider.Bambora do
-  alias Pay.Payments.GatewayAccount.PaymentProvider
-
-  @behaviour PaymentProvider
-  def value, do: %PaymentProvider{name: "bambora"}
 end
