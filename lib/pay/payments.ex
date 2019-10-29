@@ -7,6 +7,7 @@ defmodule Pay.Payments do
   alias Pay.Repo
   alias Pay.Payments
   alias Pay.Payments.CardType
+  alias Pay.Services.ServiceGatewayAccount
   alias Pay.Services.Service
 
   @doc """
@@ -129,12 +130,14 @@ defmodule Pay.Payments do
   """
   @spec list_gateway_accounts_by_service_external_id(String.t()) :: [%GatewayAccount{}]
   def list_gateway_accounts_by_service_external_id(external_id) do
-    %{gateway_accounts: accounts} =
-      Service
-      |> Repo.get_by!(external_id: external_id)
-      |> Repo.preload(:gateway_accounts)
-
-    accounts
+    Repo.all(
+      from ga in GatewayAccount,
+        left_join: sga in ServiceGatewayAccount,
+        on: ga.external_id == sga.gateway_account_id,
+        left_join: s in Service,
+        on: sga.service_id == s.id,
+        where: s.external_id == ^external_id
+    )
   end
 
   @doc """
