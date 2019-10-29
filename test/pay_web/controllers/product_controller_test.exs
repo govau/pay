@@ -54,8 +54,8 @@ defmodule PayWeb.ProductControllerTest do
   def fixture(:gateway_account) do
     {:ok, gateway_account} =
       Payments.create_gateway_account(%{
-        "type" => Payments.GatewayAccount.Type.Test.value().name,
-        "payment_provider" => Payments.GatewayAccount.PaymentProvider.Sandbox.value().name,
+        "type" => Payments.GatewayAccount.type(:test),
+        "payment_provider" => Payments.GatewayAccount.provider(:sandbox),
         "service_name" => "Test service"
       })
 

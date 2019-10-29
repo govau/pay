@@ -670,9 +670,8 @@ defmodule Pay.Services do
           {:ok, _serviceUser} ->
             case Payments.create_gateway_account(%{
                    "service_name" => service.name,
-                   "type" => Payments.GatewayAccount.Type.Test.value().name,
-                   "payment_provider" =>
-                     Payments.GatewayAccount.PaymentProvider.Sandbox.value().name
+                   "type" => Payments.GatewayAccount.type(:test),
+                   "payment_provider" => Payments.GatewayAccount.provider(:sandbox)
                  }) do
               {:ok, gatewayAccount} ->
                 case Repo.insert(%ServiceGatewayAccount{

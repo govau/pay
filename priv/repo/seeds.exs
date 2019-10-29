@@ -281,7 +281,7 @@ service1_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
     external_id: Ecto.UUID.generate(),
     payment_provider: "sandbox",
-    type: GatewayAccount.Type.Test.value().name,
+    type: GatewayAccount.type(:test),
     service_name: "Service 1",
     credentials: %{}
   }).external_id
@@ -310,7 +310,7 @@ service2_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
     external_id: Ecto.UUID.generate(),
     payment_provider: "sandbox",
-    type: GatewayAccount.Type.Test.value().name,
+    type: GatewayAccount.type(:test),
     service_name: "Service 2",
     credentials: %{}
   }).external_id
@@ -354,7 +354,7 @@ service3_test_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
     external_id: Ecto.UUID.generate(),
     payment_provider: "sandbox",
-    type: GatewayAccount.Type.Test.value().name,
+    type: GatewayAccount.type(:test),
     service_name: "Service 3",
     credentials: %{}
   }).external_id
@@ -363,7 +363,7 @@ service3_live_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
     external_id: Ecto.UUID.generate(),
     payment_provider: "bambora",
-    type: GatewayAccount.Type.Live.value().name,
+    type: GatewayAccount.type(:live),
     service_name: "Service 3",
     credentials: %{
       "username" => System.fetch_env!("BAMBORA_USERNAME"),
