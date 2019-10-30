@@ -11,6 +11,7 @@ import { UserProvider } from "./users/UserContext";
 import * as Content from "./content";
 import * as Auth from "./auth";
 import * as Console from "./console";
+import * as Pay from "./pay";
 import * as PlatformAdmin from "./platform-admin";
 import * as Products from "./products";
 
@@ -18,7 +19,12 @@ const { ThemeProvider } = styledComponents;
 
 const defaultClient = new ApolloClient({
   link: defaultLink,
-  cache: defaultCache
+  cache: defaultCache,
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: "no-cache"
+    }
+  }
 });
 
 const App: React.FC = () => {
@@ -27,6 +33,11 @@ const App: React.FC = () => {
       <>
         <GlobalStyle />
         <Switch>
+          <Route path="/pay" strict>
+            <ApolloProvider client={Pay.apolloClient}>
+              <Pay.Routes />
+            </ApolloProvider>
+          </Route>
           <Route path="/products" strict>
             <ApolloProvider client={Products.apolloClient}>
               <Products.Routes />

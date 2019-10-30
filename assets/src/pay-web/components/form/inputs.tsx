@@ -3,24 +3,38 @@
  */
 
 import spacing from "../spacing";
-import styled from "../../styled-components";
+import styled, { css } from "../../styled-components";
 import { tablet } from "../../media";
 
-export const BasicTextInput = styled("input")<{ error?: boolean }>`
-  width: 100%;
-  padding: 10px;
-  margin-top: 3px;
-  box-shadow: none;
-  border: 2px solid ${props => props.theme.colors.payDarkGrey};
-  font-size: 1em;
-  @media ${tablet} {
-    width: auto;
-  }
-  ${props => props.error && `border-color: ${props.theme.colors.red};`}
-  &:focus {
+export const textInputStyles = {
+  base: css`
+    padding: 1rem;
+    margin-top: 3px;
+    box-shadow: none;
+    border: 2px solid ${props => props.theme.colors.payDarkGrey};
+  `,
+  focus: css`
     outline: 2px solid ${props => props.theme.colors.orange};
     outline-offset: 0px;
     border-radius: 0;
+  `,
+  error: css`
+    border-color: ${props => props.theme.colors.red};
+  `
+};
+
+export const BasicTextInput = styled("input")<{ error?: boolean }>`
+  ${textInputStyles.base};
+  width: 100%;
+  font-size: 1em;
+  ${props => (props.error ? textInputStyles.error : "")};
+
+  @media ${tablet} {
+    width: auto;
+  }
+
+  &:focus {
+    ${textInputStyles.focus};
   }
 `;
 

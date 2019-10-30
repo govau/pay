@@ -61,6 +61,7 @@ export const Text = styled.span<{ variant?: "gray" }>`
 export const P = styled.p`
   max-width: 70rem;
   margin-bottom: ${spacing.small};
+  line-height: 1.3;
 
   * + & {
     margin-top: ${spacing.relative(1)};

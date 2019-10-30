@@ -76,6 +76,7 @@ type Payment {
   email: String!
   card_details: CardDetails
   gateway_transaction_id: ID
+  gateway_account_id: ID!
   gateway_account: GatewayAccount!
 }
 

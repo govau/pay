@@ -1,4 +1,9 @@
-# import SubmitPaymentInput from "./schema.graphql"
+fragment GatewayAccount on GatewayAccount {
+  id
+  type
+  payment_provider
+  service_name
+}
 
 fragment Payment on Payment {
   id
@@ -9,18 +14,35 @@ fragment Payment on Payment {
   reference
   description
   email
-  gateway_transaction_id
-  card_details {
-    cardholder_name
-    last_digits_card_number
-    first_digits_card_number
-    expiry_date
-    card_brand
+  gateway_account_id
+  gateway_account {
+    ...GatewayAccount
   }
 }
 
-mutation SubmitPayment($paymentId: ID!, $input: SubmitPaymentInput!) {
-  payment: submitPayment(paymentId: $paymentId, input: $input)
+# These mutations hit the same endpoint. This is required because GraphQL does
+# not support input union types.
+# See https://github.com/graphql/graphql-spec/issues/488
+
+mutation SubmitSandboxPayment(
+  $paymentId: ID!
+  $input: SubmitSandboxPaymentInput!
+) {
+  payment: submitSandboxPayment(paymentId: $paymentId, input: $input)
+    @rest(
+      type: "Payment"
+      path: "/internal/payments/payments/{args.paymentId}"
+      method: "PATCH"
+    ) {
+    ...Payment
+  }
+}
+
+mutation SubmitBamboraPayment(
+  $paymentId: ID!
+  $input: SubmitBamboraPaymentInput!
+) {
+  payment: submitBamboraPayment(paymentId: $paymentId, input: $input)
     @rest(
       type: "Payment"
       path: "/internal/payments/payments/{args.paymentId}"
@@ -33,6 +55,14 @@ mutation SubmitPayment($paymentId: ID!, $input: SubmitPaymentInput!) {
 query GetPayment($id: ID!) {
   payment(id: $id)
     @rest(type: "Payment", path: "/internal/payments/payments/{args.id}") {
+    gateway_account_id @export(as: "gatewayAccountId")
     ...Payment
+    gateway_account
+      @rest(
+        type: "GatewayAccount"
+        path: "/internal/payments/gateway-accounts/{exportVariables.gatewayAccountId}"
+      ) {
+      ...GatewayAccount
+    }
   }
 }

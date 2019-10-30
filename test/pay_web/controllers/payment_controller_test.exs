@@ -75,11 +75,13 @@ defmodule PayWeb.PaymentControllerTest do
 
     test "renders payment when data is valid", %{
       conn: conn,
-      gateway_account: %GatewayAccount{} = gateway_account
+      gateway_account:
+        %GatewayAccount{id: gateway_account_id, external_id: _gateway_account_external_id} =
+          _gateway_account
     } do
       conn =
         post(conn, Routes.payments_payment_path(conn, :create),
-          payment: Map.merge(@create_attrs, %{gateway_account_id: gateway_account.id})
+          payment: Map.merge(@create_attrs, %{gateway_account_id: gateway_account_id})
         )
 
       assert %{"id" => id} = json_response(conn, 201)["data"]
@@ -95,6 +97,7 @@ defmodule PayWeb.PaymentControllerTest do
                "description" => "some description",
                "email" => "some email",
                "external_metadata" => %{},
+               "gateway_account_id" => gateway_account_external_id,
                "gateway_transaction_id" => "some gateway_transaction_id",
                "reference" => "some reference",
                "return_url" => "some return_url",

@@ -21,9 +21,11 @@ export const typePatchers = {
     return data;
   },
   Payment: (data: any): any => {
-    if (data.card_details) {
-      data.card_details = { __typename: "CardDetails", ...data.card_details };
-    }
+    data.card_details = { __typename: "CardDetails", ...data.card_details };
+    data.gateway_account = {
+      __typename: "GatewayAccount",
+      ...data.gateway_account
+    };
     return data;
   }
 };
