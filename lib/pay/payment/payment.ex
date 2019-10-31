@@ -21,6 +21,7 @@ defmodule Pay.Payments.Payment do
     field :wallet, :string
 
     belongs_to :gateway_account, Pay.Payments.GatewayAccount
+    has_many :events, Pay.Payments.PaymentEvent
 
     timestamps()
   end

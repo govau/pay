@@ -14,7 +14,8 @@ defmodule Pay.Payments.PaymentEvent do
   @doc false
   def changeset(payment_event, attrs) do
     payment_event
-    |> cast(attrs, [:status])
-    |> validate_required([:status])
+    |> cast(attrs, [:status, :payment_id])
+    |> validate_required([:status, :payment_id])
+    |> foreign_key_constraint(:payment_id)
   end
 end
