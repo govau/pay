@@ -4,11 +4,20 @@ defmodule Pay.Payments do
   """
 
   import Ecto.Query, warn: false
+  alias Ecto.Multi
   alias Pay.Repo
   alias Pay.Payments
-  alias Pay.Payments.CardType
-  alias Pay.Services.ServiceGatewayAccount
-  alias Pay.Services.Service
+  alias Pay.Services.{ServiceGatewayAccount, Service}
+
+  alias Pay.Payments.{
+    Payment,
+    PaymentEvent,
+    GatewayAccount,
+    CardType,
+    PaymentFee,
+    PaymentRefund,
+    GatewayAccountCardType
+  }
 
   @doc """
   Returns the list of card_types.
@@ -103,8 +112,6 @@ defmodule Pay.Payments do
   def change_card_type(%CardType{} = card_type) do
     CardType.changeset(card_type, %{})
   end
-
-  alias Pay.Payments.GatewayAccount
 
   @doc """
   Returns the list of gateway_accounts.
@@ -228,8 +235,6 @@ defmodule Pay.Payments do
     Repo.delete(gateway_account)
   end
 
-  alias Pay.Payments.Payment
-
   @doc """
   Returns the list of payments.
 
@@ -317,9 +322,13 @@ defmodule Pay.Payments do
     |> Repo.insert()
   end
 
-  defp update_payment(%Payment{} = payment, attrs) do
+  defp update_payment_changeset(%Payment{} = payment, attrs) do
     payment
     |> Payment.update_changeset(attrs)
+  end
+
+  defp update_payment(%Payment{} = payment, attrs) do
+    update_payment_changeset(payment, attrs)
     |> Repo.update()
   end
 
@@ -335,7 +344,18 @@ defmodule Pay.Payments do
       |> Payments.Payment.Statuses.transition(transition)
       |> Payments.Payment.Statuses.status()
 
-    update_payment(payment, %{status: next_status})
+    result =
+      Multi.new()
+      |> Multi.update(:payment, update_payment_changeset(payment, %{status: next_status}))
+      |> Multi.insert(
+        :payment_event,
+        create_payment_event_changeset(%{payment_id: payment.id, status: next_status})
+      )
+      |> Repo.transaction()
+
+    with {:ok, %{payment: payment}} <- result do
+      {:ok, payment}
+    end
   end
 
   @doc """
@@ -353,8 +373,6 @@ defmodule Pay.Payments do
   def delete_payment(%Payment{} = payment) do
     Repo.delete(payment)
   end
-
-  alias Pay.Payments.PaymentFee
 
   @doc """
   Returns the list of payment_fees.
@@ -452,8 +470,6 @@ defmodule Pay.Payments do
     PaymentFee.changeset(payment_fee, %{})
   end
 
-  alias Pay.Payments.PaymentEvent
-
   @doc """
   Returns the list of payment_events.
 
@@ -465,6 +481,14 @@ defmodule Pay.Payments do
   """
   def list_payment_events do
     Repo.all(PaymentEvent)
+  end
+
+  @spec list_payment_events(Pay.Payments.Payment.t()) :: [PaymentEvent]
+  def list_payment_events(%Payment{} = payment) do
+    with %{events: events} <-
+           Repo.preload(payment, events: from(PaymentEvent, order_by: [desc: :inserted_at])) do
+      events
+    end
   end
 
   @doc """
@@ -483,6 +507,10 @@ defmodule Pay.Payments do
   """
   def get_payment_event!(id), do: Repo.get!(PaymentEvent, id)
 
+  defp create_payment_event_changeset(attrs) do
+    %PaymentEvent{} |> PaymentEvent.changeset(attrs)
+  end
+
   @doc """
   Creates a payment_event.
 
@@ -496,8 +524,8 @@ defmodule Pay.Payments do
 
   """
   def create_payment_event(attrs \\ %{}) do
-    %PaymentEvent{}
-    |> PaymentEvent.changeset(attrs)
+    attrs
+    |> create_payment_event_changeset()
     |> Repo.insert()
   end
 
@@ -547,8 +575,6 @@ defmodule Pay.Payments do
   def change_payment_event(%PaymentEvent{} = payment_event) do
     PaymentEvent.changeset(payment_event, %{})
   end
-
-  alias Pay.Payments.PaymentRefund
 
   @doc """
   Returns the list of payment_refunds.
@@ -645,8 +671,6 @@ defmodule Pay.Payments do
   def change_payment_refund(%PaymentRefund{} = payment_refund) do
     PaymentRefund.changeset(payment_refund, %{})
   end
-
-  alias Pay.Payments.GatewayAccountCardType
 
   @doc """
   Returns the list of gateway_account_card_types.

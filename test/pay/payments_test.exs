@@ -5,6 +5,40 @@ defmodule Pay.PaymentsTest do
 
   alias Pay.Payments
 
+  defp create_gateway_account(_context) do
+    gateway_account = fixture(:gateway_account)
+    [gateway_account: gateway_account]
+  end
+
+  defp create_payment(%{gateway_account: gateway_account}) do
+    {:ok, payment} =
+      Payments.create_payment(%{
+        amount: 42,
+        auth_3ds_details: %{},
+        card_details: %{},
+        delayed_capture: true,
+        description: "some description",
+        email: "some email",
+        external_id: "7488a646-e31f-11e4-aace-600308960662",
+        external_metadata: %{},
+        gateway_account_id: gateway_account.id,
+        gateway_transaction_id: "some gateway_transaction_id",
+        reference: "some reference",
+        return_url: "some return_url",
+        status: "created",
+        wallet: "some wallet"
+      })
+
+    [payment: payment]
+  end
+
+  defp create_payment_event(%{payment: payment}) do
+    {:ok, payment_event} =
+      Payments.create_payment_event(%{payment_id: payment.id, status: "created"})
+
+    [payment_event: payment_event]
+  end
+
   describe "card_types" do
     alias Pay.Payments.CardType
 
@@ -210,6 +244,7 @@ defmodule Pay.PaymentsTest do
 
   describe "payments" do
     alias Pay.Payments.Payment
+    setup [:create_gateway_account, :create_payment]
 
     @valid_attrs %{
       amount: 42,
@@ -272,31 +307,29 @@ defmodule Pay.PaymentsTest do
       {gateway_account, payment}
     end
 
-    test "list_payments/0 returns all payments" do
-      {_, payment} = payment_fixture()
+    test "list_payments/0 returns all payments", %{payment: payment} do
       assert Payments.list_payments() == [payment]
     end
 
-    test "list_payments_by_gateway_account_external_id/1 returns all payments" do
-      {gateway_account, payment} = payment_fixture()
-
+    test "list_payments_by_gateway_account_external_id/1 returns all payments", %{
+      gateway_account: gateway_account,
+      payment: payment
+    } do
       assert Payments.list_payments_by_gateway_account_external_id(gateway_account.external_id) ==
                [payment]
     end
 
-    test "get_payment!/1 returns the payment with given id" do
-      {_, payment} = payment_fixture()
+    test "get_payment!/1 returns the payment with given id", %{payment: payment} do
       assert Payments.get_payment!(payment.id) == payment
     end
 
-    test "get_payment_by_external_id!/1 returns the payment with given external_id" do
-      {_, payment} = payment_fixture()
+    test "get_payment_by_external_id!/1 returns the payment with given external_id", %{
+      payment: payment
+    } do
       assert Payments.get_payment_by_external_id!(payment.external_id) == payment
     end
 
-    test "create_payment/1 with valid data creates a payment" do
-      gateway_account = fixture(:gateway_account)
-
+    test "create_payment/1 with valid data creates a payment", %{gateway_account: gateway_account} do
       assert {:ok, %Payment{} = payment} =
                Payments.create_payment(
                  Map.merge(
@@ -326,9 +359,7 @@ defmodule Pay.PaymentsTest do
       assert {:error, %Ecto.Changeset{}} = Payments.create_payment(@invalid_attrs)
     end
 
-    test "update_payment/3 changes status according to transition" do
-      {_, payment} = payment_fixture()
-
+    test "update_payment/3 changes status according to transition", %{payment: payment} do
       assert {:ok, %Payment{} = updated_payment} =
                Payments.update_payment(payment, "submit_payment", @update_attrs)
 
@@ -341,8 +372,7 @@ defmodule Pay.PaymentsTest do
              }
     end
 
-    test "update_payment/3 only permits specific transitions" do
-      {_, payment} = payment_fixture()
+    test "update_payment/3 only permits specific transitions", %{payment: payment} do
       assert catch_error(Payments.update_payment(payment, "start", @update_attrs))
       assert catch_error(Payments.update_payment(payment, "finish", @update_attrs))
       assert catch_error(Payments.update_payment(payment, "whatever", @update_attrs))
@@ -352,8 +382,17 @@ defmodule Pay.PaymentsTest do
       assert {:ok, payment} = Payments.update_payment(payment, "payment_succeeded", @update_attrs)
     end
 
-    test "delete_payment/1 deletes the payment" do
-      {_, payment} = payment_fixture()
+    test "update_payment/3 creates a payment event when updated", %{payment: payment} do
+      assert {:ok, payment} = Payments.update_payment(payment, "submit_payment", @update_attrs)
+      [event] = Payments.list_payment_events(payment)
+      assert Payments.list_payment_events() == [event]
+
+      assert {:ok, payment} = Payments.update_payment(payment, "payment_succeeded", @update_attrs)
+      [event2, ^event] = Payments.list_payment_events(payment)
+      assert Payments.list_payment_events() == [event, event2]
+    end
+
+    test "delete_payment/1 deletes the payment", %{payment: payment} do
       assert {:ok, %Payment{}} = Payments.delete_payment(payment)
       assert_raise Ecto.NoResultsError, fn -> Payments.get_payment!(payment.id) end
     end
@@ -457,33 +496,28 @@ defmodule Pay.PaymentsTest do
   end
 
   describe "payment_events" do
+    setup [:create_gateway_account, :create_payment, :create_payment_event]
+
     alias Pay.Payments.PaymentEvent
 
     @valid_attrs %{status: "some status"}
     @update_attrs %{status: "some updated status"}
     @invalid_attrs %{status: nil}
 
-    def payment_event_fixture(attrs \\ %{}) do
-      {:ok, payment_event} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Payments.create_payment_event()
-
-      payment_event
-    end
-
-    test "list_payment_events/0 returns all payment_events" do
-      payment_event = payment_event_fixture()
+    test "list_payment_events/0 returns all payment_events", context do
+      payment_event = context[:payment_event]
       assert Payments.list_payment_events() == [payment_event]
     end
 
-    test "get_payment_event!/1 returns the payment_event with given id" do
-      payment_event = payment_event_fixture()
+    test "get_payment_event!/1 returns the payment_event with given id", context do
+      payment_event = context[:payment_event]
       assert Payments.get_payment_event!(payment_event.id) == payment_event
     end
 
-    test "create_payment_event/1 with valid data creates a payment_event" do
-      assert {:ok, %PaymentEvent{} = payment_event} = Payments.create_payment_event(@valid_attrs)
+    test "create_payment_event/1 with valid data creates a payment_event", %{payment: payment} do
+      assert {:ok, %PaymentEvent{} = payment_event} =
+               Payments.create_payment_event(Map.merge(@valid_attrs, %{payment_id: payment.id}))
+
       assert payment_event.status == "some status"
     end
 
@@ -491,8 +525,8 @@ defmodule Pay.PaymentsTest do
       assert {:error, %Ecto.Changeset{}} = Payments.create_payment_event(@invalid_attrs)
     end
 
-    test "update_payment_event/2 with valid data updates the payment_event" do
-      payment_event = payment_event_fixture()
+    test "update_payment_event/2 with valid data updates the payment_event", context do
+      payment_event = context[:payment_event]
 
       assert {:ok, %PaymentEvent{} = payment_event} =
                Payments.update_payment_event(payment_event, @update_attrs)
@@ -500,8 +534,8 @@ defmodule Pay.PaymentsTest do
       assert payment_event.status == "some updated status"
     end
 
-    test "update_payment_event/2 with invalid data returns error changeset" do
-      payment_event = payment_event_fixture()
+    test "update_payment_event/2 with invalid data returns error changeset", context do
+      payment_event = context[:payment_event]
 
       assert {:error, %Ecto.Changeset{}} =
                Payments.update_payment_event(payment_event, @invalid_attrs)
@@ -509,14 +543,14 @@ defmodule Pay.PaymentsTest do
       assert payment_event == Payments.get_payment_event!(payment_event.id)
     end
 
-    test "delete_payment_event/1 deletes the payment_event" do
-      payment_event = payment_event_fixture()
+    test "delete_payment_event/1 deletes the payment_event", context do
+      payment_event = context[:payment_event]
       assert {:ok, %PaymentEvent{}} = Payments.delete_payment_event(payment_event)
       assert_raise Ecto.NoResultsError, fn -> Payments.get_payment_event!(payment_event.id) end
     end
 
-    test "change_payment_event/1 returns a payment_event changeset" do
-      payment_event = payment_event_fixture()
+    test "change_payment_event/1 returns a payment_event changeset", context do
+      payment_event = context[:payment_event]
       assert %Ecto.Changeset{} = Payments.change_payment_event(payment_event)
     end
   end
