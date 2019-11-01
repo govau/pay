@@ -301,7 +301,7 @@ defmodule Pay.Payments do
     do: Repo.get_by!(Payment, external_id: external_id)
 
   @doc """
-  Creates a payment.
+  Creates a payment and an associated payment_event.
 
   ## Examples
 
@@ -313,10 +313,15 @@ defmodule Pay.Payments do
 
   """
   def create_payment(attrs \\ %{}) do
+    created = Payments.Payment.Statuses.status(:created)
+
     %Payment{
       external_id: Ecto.UUID.generate(),
       external_metadata: %{},
-      status: Payments.Payment.Statuses.status(:created)
+      status: created,
+      events: [
+        %{status: created}
+      ]
     }
     |> Payment.create_changeset(attrs)
     |> Repo.insert()
@@ -332,6 +337,21 @@ defmodule Pay.Payments do
     |> Repo.update()
   end
 
+  defp update_payment_status(%Payment{} = payment, status) do
+    result =
+      Multi.new()
+      |> Multi.update(:payment, update_payment_changeset(payment, %{status: status}))
+      |> Multi.insert(
+        :payment_event,
+        create_payment_event_changeset(%{payment_id: payment.id, status: status})
+      )
+      |> Repo.transaction()
+
+    with {:ok, %{payment: payment}} <- result do
+      {:ok, payment}
+    end
+  end
+
   @doc """
   update a payment's status through a transition event
 
@@ -344,34 +364,7 @@ defmodule Pay.Payments do
       |> Payments.Payment.Statuses.transition(transition)
       |> Payments.Payment.Statuses.status()
 
-    result =
-      Multi.new()
-      |> Multi.update(:payment, update_payment_changeset(payment, %{status: next_status}))
-      |> Multi.insert(
-        :payment_event,
-        create_payment_event_changeset(%{payment_id: payment.id, status: next_status})
-      )
-      |> Repo.transaction()
-
-    with {:ok, %{payment: payment}} <- result do
-      {:ok, payment}
-    end
-  end
-
-  @doc """
-  Deletes a Payment.
-
-  ## Examples
-
-      iex> delete_payment(payment)
-      {:ok, %Payment{}}
-
-      iex> delete_payment(payment)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_payment(%Payment{} = payment) do
-    Repo.delete(payment)
+    update_payment_status(payment, next_status)
   end
 
   @doc """

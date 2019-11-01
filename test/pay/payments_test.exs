@@ -4,6 +4,7 @@ defmodule Pay.PaymentsTest do
   import Pay.Fixtures
 
   alias Pay.Payments
+  alias Pay.Support.Associations
 
   defp create_gateway_account(_context) do
     gateway_account = fixture(:gateway_account)
@@ -29,7 +30,7 @@ defmodule Pay.PaymentsTest do
         wallet: "some wallet"
       })
 
-    [payment: payment]
+    [payment: Associations.clear(payment)]
   end
 
   defp create_payment_event(%{payment: payment}) do
@@ -384,17 +385,12 @@ defmodule Pay.PaymentsTest do
 
     test "update_payment/3 creates a payment event when updated", %{payment: payment} do
       assert {:ok, payment} = Payments.update_payment(payment, "submit_payment", @update_attrs)
-      [event] = Payments.list_payment_events(payment)
-      assert Payments.list_payment_events() == [event]
+      [event, created] = Payments.list_payment_events(payment)
+      assert Payments.list_payment_events() == [created, event]
 
       assert {:ok, payment} = Payments.update_payment(payment, "payment_succeeded", @update_attrs)
-      [event2, ^event] = Payments.list_payment_events(payment)
-      assert Payments.list_payment_events() == [event, event2]
-    end
-
-    test "delete_payment/1 deletes the payment", %{payment: payment} do
-      assert {:ok, %Payment{}} = Payments.delete_payment(payment)
-      assert_raise Ecto.NoResultsError, fn -> Payments.get_payment!(payment.id) end
+      [event2, ^event, ^created] = Payments.list_payment_events(payment)
+      assert Payments.list_payment_events() == [created, event, event2]
     end
   end
 
@@ -506,7 +502,7 @@ defmodule Pay.PaymentsTest do
 
     test "list_payment_events/0 returns all payment_events", context do
       payment_event = context[:payment_event]
-      assert Payments.list_payment_events() == [payment_event]
+      assert [_created, ^payment_event] = Payments.list_payment_events()
     end
 
     test "get_payment_event!/1 returns the payment_event with given id", context do

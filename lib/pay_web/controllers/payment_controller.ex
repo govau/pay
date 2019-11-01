@@ -44,12 +44,4 @@ defmodule PayWeb.PaymentController do
       render(conn, "show.json", payment: updated_payment)
     end
   end
-
-  def delete(conn, %{"id" => id}) do
-    payment = Payments.get_payment_by_external_id!(id)
-
-    with {:ok, %Payment{}} <- Payments.delete_payment(payment) do
-      send_resp(conn, :no_content, "")
-    end
-  end
 end
