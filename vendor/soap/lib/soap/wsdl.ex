@@ -24,7 +24,7 @@ defmodule Soap.Wsdl do
     parse(wsdl, path, opts)
   end
 
-  @spec parse(String.t(), String.t()) :: {:ok, map()}
+  @spec parse(wsdl :: String.t(), file_path :: String.t(), keyword) :: {:ok, map()}
   def parse(wsdl, file_path, opts \\ []) do
     protocol_namespace = get_protocol_namespace(wsdl)
     soap_namespace = get_soap_namespace(wsdl, opts)
@@ -35,14 +35,18 @@ defmodule Soap.Wsdl do
       endpoint: get_endpoint(wsdl, protocol_namespace, soap_namespace),
       service: get_service(wsdl, protocol_namespace, soap_namespace),
       complex_types: get_complex_types(wsdl, schema_namespace, protocol_namespace),
-      nested_complex_types: get_nested_complex_types(wsdl, schema_namespace, protocol_namespace),
       operations: get_operations(wsdl, protocol_namespace, soap_namespace),
       schema_attributes: get_schema_attributes(wsdl),
-      validation_types:
-        get_validation_types(wsdl, file_path, protocol_namespace, schema_namespace),
+      validation_types: get_validation_types(wsdl, file_path, protocol_namespace, schema_namespace),
       soap_version: soap_version(opts),
       messages: get_messages(wsdl, protocol_namespace)
     }
+
+    parsed_response =
+      case get_nested_complex_types(wsdl, schema_namespace, protocol_namespace) do
+        {:ok, nested_types} -> Map.put(parsed_response, :nested_complex_types, nested_types)
+        {:error, _} -> parsed_response
+      end
 
     {:ok, parsed_response}
   end
@@ -64,7 +68,7 @@ defmodule Soap.Wsdl do
     |> Enum.into(%{}, &get_namespace(&1, wsdl, schema_namespace, protocol_ns))
   end
 
-  @spec get_namespace(map(), String.t(), String.t(), String.t()) :: tuple()
+  @spec get_namespace(tuple(), String.t(), String.t(), String.t()) :: tuple()
   defp get_namespace(namespaces_node, wsdl, schema_namespace, protocol_ns) do
     {_, _, _, key, value} = namespaces_node
     string_key = key |> to_string
@@ -76,9 +80,9 @@ defmodule Soap.Wsdl do
 
       xpath(
         wsdl,
-        ~x"//#{ns("types", protocol_ns)}/#{ns("schema", schema_namespace)}/#{
-          ns("import", schema_namespace)
-        }[@namespace='#{value}']"
+        ~x"//#{ns("types", protocol_ns)}/#{ns("schema", schema_namespace)}/#{ns("import", schema_namespace)}[@namespace='#{
+          value
+        }']"
       ) ->
         {string_key, %{value: value, type: :xsd}}
 
@@ -91,9 +95,9 @@ defmodule Soap.Wsdl do
   def get_endpoint(wsdl, protocol_ns, soap_ns) do
     wsdl
     |> xpath(
-      ~x"//#{ns("definitions", protocol_ns)}/#{ns("service", protocol_ns)}/#{
-        ns("port", protocol_ns)
-      }/#{ns("address", soap_ns)}/@location"s
+      ~x"//#{ns("definitions", protocol_ns)}/#{ns("service", protocol_ns)}/#{ns("port", protocol_ns)}/#{
+        ns("address", soap_ns)
+      }/@location"s
     )
   end
 
@@ -116,14 +120,19 @@ defmodule Soap.Wsdl do
     )
   end
 
-  @spec get_nested_complex_types(String.t(), String.t(), String.t()) :: list()
+  @spec get_nested_complex_types(String.t(), String.t(), String.t()) :: {:ok, list()} | {:error, String.t()}
   defp get_nested_complex_types(wsdl, namespace, protocol_ns) do
-    xpath(
-      wsdl,
-      ~x"//#{ns("types", protocol_ns)}/#{ns("schema", namespace)}/#{ns("element", namespace)}"l,
-      name: ~x"./@name"s,
-      nested: [~x".//*[@name]", name: ~x"./@name"s, type: ~x"./@type"s]
-    )
+    try do
+      {:ok,
+       xpath(
+         wsdl,
+         ~x"//#{ns("types", protocol_ns)}/#{ns("schema", namespace)}/#{ns("element", namespace)}"l,
+         name: ~x"./@name"s,
+         nested: [~x".//*[@name]", name: ~x"./@name"s, type: ~x"./@type"s]
+       )}
+    rescue
+      _e -> {:error, "cannot parse complex types"}
+    end
   end
 
   @spec get_validation_types(String.t(), String.t(), String.t(), String.t()) :: map()
@@ -169,11 +178,7 @@ defmodule Soap.Wsdl do
 
   defp get_operations(wsdl, protocol_ns, soap_ns) do
     wsdl
-    |> xpath(
-      ~x"//#{ns("definitions", protocol_ns)}/#{ns("binding", protocol_ns)}/#{
-        ns("operation", protocol_ns)
-      }"l
-    )
+    |> xpath(~x"//#{ns("definitions", protocol_ns)}/#{ns("binding", protocol_ns)}/#{ns("operation", protocol_ns)}"l)
     |> Enum.map(fn node ->
       node
       |> xpath(~x".",

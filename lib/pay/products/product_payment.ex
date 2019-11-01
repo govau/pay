@@ -20,7 +20,7 @@ defmodule Pay.Products.ProductPayment do
     timestamps()
   end
 
-  @spec normalize_amount(Ecto.Changeset.t(), Pay.Products.Product.t()) :: Ecto.Changeset.t()
+  @spec normalize_amount(Ecto.Changeset.t(), %Product{}) :: Ecto.Changeset.t()
   def normalize_amount(changeset, %Product{} = product) do
     # If the product's price is fixed, the payment amount should always be the
     # product's price, so put a new value in the changeset. Otherwise, the price
@@ -31,7 +31,7 @@ defmodule Pay.Products.ProductPayment do
     end
   end
 
-  @spec normalize_reference(Ecto.Changeset.t(), Pay.Products.Product.t()) :: Ecto.Changeset.t()
+  @spec normalize_reference(Ecto.Changeset.t(), %Product{}) :: Ecto.Changeset.t()
   def normalize_reference(changeset, %Product{} = product) do
     # If the product's reference field is enabled, the payment reference can be
     # manually provided, so return the existing changeset. Otherwise, delete the

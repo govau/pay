@@ -88,7 +88,7 @@ defmodule Soap do
   @spec call(
           wsdl :: map(),
           operation :: String.t(),
-          params :: map(),
+          params :: Request.Params.t(),
           headers :: any(),
           opts :: any()
         ) :: any()
@@ -126,8 +126,7 @@ defmodule Soap do
             status_code: status_code
           }}
        ) do
-    {:ok,
-     %Response{body: body, headers: headers, request_url: request_url, status_code: status_code}}
+    {:ok, %Response{body: body, headers: headers, request_url: request_url, status_code: status_code}}
   end
 
   defp handle_response({:error, %HTTPoison.Error{reason: reason}}) do

@@ -331,17 +331,33 @@ defmodule Pay.Payments do
   end
 
   defp update_payment_changeset(%Payment{} = payment, attrs) do
-    payment
-    |> Payment.update_changeset(attrs)
+    Payment.update_changeset(payment, attrs)
   end
 
-  defp update_payment_status(%Payment{} = payment, status) do
+  @doc """
+  update a payment's status through a transition event
+
+  Check `Payments.Payment.Statuses` for valid transitions
+  """
+  def update_payment(%Payment{} = payment, transition, attrs) do
+    next_status =
+      payment.status
+      |> Payments.Payment.Statuses.from_string!()
+      |> Payments.Payment.Statuses.transition(transition)
+      |> Payments.Payment.Statuses.status()
+
     result =
       Multi.new()
-      |> Multi.update(:payment, update_payment_changeset(payment, %{status: status}))
+      |> Multi.update(
+        :payment,
+        update_payment_changeset(
+          payment,
+          Map.merge(attrs, %{status: next_status})
+        )
+      )
       |> Multi.insert(
         :payment_event,
-        create_payment_event_changeset(%{payment_id: payment.id, status: status})
+        create_payment_event_changeset(%{payment_id: payment.id, status: next_status})
       )
       |> Multi.run(:preload, fn _repo, %{payment: payment} ->
         case Repo.preload(payment, [:gateway_account]) do
@@ -354,21 +370,6 @@ defmodule Pay.Payments do
     with {:ok, %{payment: payment}} <- result do
       {:ok, payment}
     end
-  end
-
-  @doc """
-  update a payment's status through a transition event
-
-  Check `Payments.Payment.Statuses` for valid transitions
-  """
-  def update_payment(%Payment{} = payment, transition, _attrs) do
-    next_status =
-      payment.status
-      |> Payments.Payment.Statuses.from_string!()
-      |> Payments.Payment.Statuses.transition(transition)
-      |> Payments.Payment.Statuses.status()
-
-    update_payment_status(payment, next_status)
   end
 
   @doc """
@@ -480,7 +481,7 @@ defmodule Pay.Payments do
     Repo.all(PaymentEvent)
   end
 
-  @spec list_payment_events(Pay.Payments.Payment.t()) :: [PaymentEvent]
+  @spec list_payment_events(%Payment{}) :: [PaymentEvent]
   def list_payment_events(%Payment{} = payment) do
     with %{events: events} <-
            Repo.preload(payment, events: from(PaymentEvent, order_by: [desc: :inserted_at])) do

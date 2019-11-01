@@ -1,4 +1,4 @@
-defmodule BamboraTest do
+defmodule Bambora.SOAPTest do
   use ExUnit.Case
   doctest Bambora
 
@@ -8,13 +8,13 @@ defmodule BamboraTest do
              customer_number: "cust_number",
              customer_ref: "cust_ref",
              amount: 1500,
-             transaction_type: "tx_type",
+             transaction_type: :purchase,
              account_number: "acct_no"
            }) == [
              {"CustNumber", nil, "cust_number"},
              {"CustRef", nil, "cust_ref"},
              {"Amount", nil, 1500},
-             {"TrnType", nil, "tx_type"},
+             {"TrnType", nil, "1"},
              {"AccountNumber", nil, "acct_no"},
              {"CreditCard", %{"Registered" => "False"}, [{"OneTimeToken", nil, "one-time-token"}]}
            ]
@@ -43,11 +43,13 @@ defmodule BamboraTest do
   test "end to end smoke test" do
     response = Bambora.query_todays_payments(%Bambora.Client.Static{response: "OK"})
 
-    assert response == %{
-             request:
-               {:cdata,
-                "<QueryTransaction><Criteria><TrnStartTimestamp>2019-09-09 00:00:00</TrnStartTimestamp><TrnEndTimestamp>2019-10-24 00:00:00</TrnEndTimestamp></Criteria><AdditionalData><Core>Amount</Core><Core>CustRef</Core><Core>CustNumber</Core><Core>TrnTypeID</Core><Core>TrnStatusID</Core></AdditionalData><Security><UserName>static_username</UserName><Password>static_password</Password></Security></QueryTransaction>"},
-             response: "OK"
-           }
+    assert response ==
+             {:ok,
+              %{
+                request:
+                  {:cdata,
+                   "<QueryTransaction><Criteria><TrnStartTimestamp>2019-09-09 00:00:00</TrnStartTimestamp><TrnEndTimestamp>2019-10-24 00:00:00</TrnEndTimestamp></Criteria><AdditionalData><Core>Amount</Core><Core>CustRef</Core><Core>CustNumber</Core><Core>TrnTypeID</Core><Core>TrnStatusID</Core></AdditionalData><Security><UserName>static_username</UserName><Password>static_password</Password></Security></QueryTransaction>"},
+                response: "OK"
+              }}
   end
 end

@@ -10,25 +10,24 @@ defmodule Bambora.Response do
   @spec decode_response(String.t(), decoder) :: map
   def decode_response(response_body, {selector, decoders}) do
     %{
-      selector => xpath(response_body, ~x"//#{camelize(selector)}", decode_response(decoders))
+      selector => xpath(response_body, ~x"//#{camelize(selector)}", build_spec(decoders))
     }
   end
 
-  @spec decode_response(decoder) :: sweet_spec
-
-  def decode_response({selector, decoder}) when is_list(decoder) do
-    [{selector, [~x"./#{camelize(selector)}"l | decode_response(decoder)]}]
+  @spec build_spec(decoder) :: sweet_spec
+  def build_spec({selector, decoder}) when is_list(decoder) do
+    [{selector, [~x"./#{camelize(selector)}"l | build_spec(decoder)]}]
   end
 
-  def decode_response({selector, decoder}) do
-    [{selector, [~x"./#{camelize(selector)}", decode_response(decoder)]}]
+  def build_spec({selector, decoder}) do
+    [{selector, [~x"./#{camelize(selector)}", build_spec(decoder)]}]
   end
 
-  def decode_response(decoders) when is_map(decoders) or is_list(decoders) do
-    Enum.flat_map(decoders, &decode_response/1)
+  def build_spec(decoders) when is_map(decoders) or is_list(decoders) do
+    Enum.flat_map(decoders, &build_spec/1)
   end
 
-  def decode_response(term) when is_atom(term) do
+  def build_spec(term) when is_atom(term) do
     [{term, ~x"./#{camelize(term)}/text()"s}]
   end
 
