@@ -14,9 +14,11 @@ import { isServerError } from "../apollo-rest-utils";
 import {
   PaymentFragment,
   useGetPaymentQuery,
-  PaymentStatus
+  PaymentStatus,
+  GatewayAccountPaymentProvider
 } from "./__generated__/graphql";
-import PayPage from "./pages/PayPage";
+import BamboraPayPage from "./pages/BamboraPayPage";
+import SandboxPayPage from "./pages/SandboxPayPage";
 import SuccessPage from "./pages/SuccessPage";
 
 interface Props {
@@ -79,7 +81,14 @@ const PaymentRoutes: React.FC<Props> = ({ onReceivePayment }) => {
   return (
     <Switch>
       <Route path={`${path}`} exact strict>
-        <PayPage path={path} payment={payment} />
+        {payment.gateway_account.payment_provider ===
+          GatewayAccountPaymentProvider.Bambora && (
+          <BamboraPayPage path={path} payment={payment} />
+        )}
+        {payment.gateway_account.payment_provider ===
+          GatewayAccountPaymentProvider.Sandbox && (
+          <SandboxPayPage path={path} payment={payment} />
+        )}
       </Route>
       <Route path={`${path}/success`} exact strict>
         <SuccessPage payment={payment} />

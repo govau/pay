@@ -40,9 +40,7 @@ const ReferencePage: React.FC<Props> = ({ path, payment, onSubmit }) => {
         description={payment.product.reference_hint}
       >
         {({ input, ariaProps, ...rest }) => (
-          <>
-            <BasicTextInput {...input} {...ariaProps} {...rest} />
-          </>
+          <BasicTextInput {...input} {...ariaProps} {...rest} />
         )}
       </Field>
       <Button type="submit">Continue</Button>
