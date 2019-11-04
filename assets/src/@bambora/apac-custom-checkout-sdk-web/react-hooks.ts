@@ -2,6 +2,54 @@ import * as React from "react";
 
 import CustomCheckout, { TokenResultError } from "./";
 
+interface useLoadCheckoutArgs {
+  src: string;
+  onLoad: (checkout: CustomCheckout) => void;
+}
+
+export const useLoadCheckout = ({ src, onLoad }: useLoadCheckoutArgs) => {
+  interface State {
+    loading: boolean;
+    error?: Error;
+    checkout?: CustomCheckout;
+  }
+
+  const [state, setState] = React.useState<State>({ loading: false });
+
+  React.useEffect(() => {
+    const handleLoad = () => {
+      const checkout = customcheckout();
+
+      setState({ loading: false, checkout });
+
+      onLoad(checkout);
+    };
+
+    const handleError = () => {
+      const error = new Error("Could not connect to the payment gateway");
+      setState({ loading: false, error });
+    };
+
+    const script = document.createElement("script");
+
+    script.src = src;
+    script.async = true;
+    script.addEventListener("load", handleLoad);
+    script.addEventListener("error", handleError);
+
+    document.body.appendChild(script);
+
+    return () => {
+      script.removeEventListener("load", handleLoad);
+      script.removeEventListener("error", handleError);
+
+      document.body.removeChild(script);
+    };
+  }, [src, onLoad]);
+
+  return React.useMemo(() => state, [state]);
+};
+
 export const useCreateOTT = (merchantID: string, checkout?: CustomCheckout) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<null | Error | TokenResultError>(
