@@ -8,7 +8,6 @@ import { tablet } from "../../media";
 
 export const textInputStyles = {
   base: css`
-    padding: 1rem;
     margin-top: 3px;
     box-shadow: none;
     border: 2px solid ${props => props.theme.colors.payDarkGrey};
@@ -25,6 +24,7 @@ export const textInputStyles = {
 
 export const BasicTextInput = styled("input")<{ error?: boolean }>`
   ${textInputStyles.base};
+  padding: 1rem;
   width: 100%;
   font-size: 1em;
   ${props => (props.error ? textInputStyles.error : "")};

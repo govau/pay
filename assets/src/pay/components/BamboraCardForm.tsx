@@ -47,7 +47,10 @@ const Form = styled.form`
     ${textInputStyles.base};
 
     iframe {
-      vertical-align: text-bottom;
+      vertical-align: text-top;
+      /* Bambora's iframe height is set dynamically and takes a moment to be set
+         so ensure that the height has a minimum to avoid a flicker. */
+      min-height: 4.1rem;
     }
   }
 
