@@ -17,9 +17,11 @@ import AmountPage from "./AmountPage";
 import SubmitPage from "./SubmitPage";
 import StatusPage from "./StatusPage";
 
-const PaymentRoutes: React.FC<{
+interface Props {
   onReceiveProduct(product: ProductFragment): void;
-}> = ({ onReceiveProduct }) => {
+}
+
+const PaymentRoutes: React.FC<Props> = ({ onReceiveProduct }) => {
   const { productPaymentId: id } = useParams<{ productPaymentId: string }>();
 
   const { loading, error, data } = useGetPaymentQuery({
@@ -63,7 +65,7 @@ const PaymentRoutes: React.FC<{
     );
   }
 
-  const payment = data.payment;
+  const { payment } = data;
 
   onReceiveProduct(payment.product);
 

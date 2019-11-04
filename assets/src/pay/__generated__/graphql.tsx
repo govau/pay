@@ -20,6 +20,13 @@ export type BamboraCredentials = {
   api_username?: Maybe<Scalars["String"]>;
 };
 
+export type BamboraPaymentInput = {
+  ott: Scalars["String"];
+  last4: Scalars["String"];
+  expiryMonth: Scalars["String"];
+  expiryYear: Scalars["String"];
+};
+
 export type CardDetails = {
   __typename?: "CardDetails";
   cardholder_name: Scalars["String"];
@@ -68,12 +75,18 @@ export enum GatewayAccountType {
 
 export type Mutation = {
   __typename?: "Mutation";
-  submitPayment: Payment;
+  submitSandboxPayment: Payment;
+  submitBamboraPayment: Payment;
 };
 
-export type MutationSubmitPaymentArgs = {
+export type MutationSubmitSandboxPaymentArgs = {
   paymentId: Scalars["ID"];
-  input: SubmitPaymentInput;
+  input: SubmitSandboxPaymentInput;
+};
+
+export type MutationSubmitBamboraPaymentArgs = {
+  paymentId: Scalars["ID"];
+  input: SubmitBamboraPaymentInput;
 };
 
 export type Payment = {
@@ -88,6 +101,7 @@ export type Payment = {
   email: Scalars["String"];
   card_details?: Maybe<CardDetails>;
   gateway_transaction_id?: Maybe<Scalars["ID"]>;
+  gateway_account_id: Scalars["ID"];
   gateway_account: GatewayAccount;
 };
 
@@ -104,10 +118,6 @@ export enum PaymentEventType {
   Payment = "payment",
   Refund = "refund"
 }
-
-export type PaymentInput = {
-  ott: Scalars["String"];
-};
 
 export enum PaymentStatus {
   Created = "created",
@@ -157,6 +167,10 @@ export type SandboxCredentials = {
   dummy?: Maybe<Scalars["String"]>;
 };
 
+export type SandboxPaymentInput = {
+  dummy?: Maybe<Scalars["String"]>;
+};
+
 export type Service = {
   __typename?: "Service";
   id: Scalars["ID"];
@@ -178,9 +192,14 @@ export type ServiceUser = {
   role: Role;
 };
 
-export type SubmitPaymentInput = {
+export type SubmitBamboraPaymentInput = {
   transition: Scalars["String"];
-  payment: PaymentInput;
+  payment: BamboraPaymentInput;
+};
+
+export type SubmitSandboxPaymentInput = {
+  transition: Scalars["String"];
+  payment: SandboxPaymentInput;
 };
 
 export type User = {
@@ -194,6 +213,11 @@ export type User = {
   telephone_number?: Maybe<Scalars["String"]>;
 };
 
+export type GatewayAccountFragment = { __typename?: "GatewayAccount" } & Pick<
+  GatewayAccount,
+  "id" | "type" | "payment_provider" | "service_name"
+>;
+
 export type PaymentFragment = { __typename?: "Payment" } & Pick<
   Payment,
   | "id"
@@ -204,26 +228,26 @@ export type PaymentFragment = { __typename?: "Payment" } & Pick<
   | "reference"
   | "description"
   | "email"
-  | "gateway_transaction_id"
+  | "gateway_account_id"
 > & {
-    card_details: Maybe<
-      { __typename?: "CardDetails" } & Pick<
-        CardDetails,
-        | "cardholder_name"
-        | "last_digits_card_number"
-        | "first_digits_card_number"
-        | "expiry_date"
-        | "card_brand"
-      >
-    >;
+    gateway_account: { __typename?: "GatewayAccount" } & GatewayAccountFragment;
   };
 
-export type SubmitPaymentMutationVariables = {
+export type SubmitSandboxPaymentMutationVariables = {
   paymentId: Scalars["ID"];
-  input: SubmitPaymentInput;
+  input: SubmitSandboxPaymentInput;
 };
 
-export type SubmitPaymentMutation = { __typename?: "Mutation" } & {
+export type SubmitSandboxPaymentMutation = { __typename?: "Mutation" } & {
+  payment: { __typename?: "Payment" } & PaymentFragment;
+};
+
+export type SubmitBamboraPaymentMutationVariables = {
+  paymentId: Scalars["ID"];
+  input: SubmitBamboraPaymentInput;
+};
+
+export type SubmitBamboraPaymentMutation = { __typename?: "Mutation" } & {
   payment: { __typename?: "Payment" } & PaymentFragment;
 };
 
@@ -232,9 +256,21 @@ export type GetPaymentQueryVariables = {
 };
 
 export type GetPaymentQuery = { __typename?: "Query" } & {
-  payment: { __typename?: "Payment" } & PaymentFragment;
+  payment: { __typename?: "Payment" } & Pick<Payment, "gateway_account_id"> & {
+      gateway_account: {
+        __typename?: "GatewayAccount";
+      } & GatewayAccountFragment;
+    } & PaymentFragment;
 };
 
+export const GatewayAccountFragmentDoc = gql`
+  fragment GatewayAccount on GatewayAccount {
+    id
+    type
+    payment_provider
+    service_name
+  }
+`;
 export const PaymentFragmentDoc = gql`
   fragment Payment on Payment {
     id
@@ -245,19 +281,19 @@ export const PaymentFragmentDoc = gql`
     reference
     description
     email
-    gateway_transaction_id
-    card_details {
-      cardholder_name
-      last_digits_card_number
-      first_digits_card_number
-      expiry_date
-      card_brand
+    gateway_account_id
+    gateway_account {
+      ...GatewayAccount
     }
   }
+  ${GatewayAccountFragmentDoc}
 `;
-export const SubmitPaymentDocument = gql`
-  mutation SubmitPayment($paymentId: ID!, $input: SubmitPaymentInput!) {
-    payment: submitPayment(paymentId: $paymentId, input: $input)
+export const SubmitSandboxPaymentDocument = gql`
+  mutation SubmitSandboxPayment(
+    $paymentId: ID!
+    $input: SubmitSandboxPaymentInput!
+  ) {
+    payment: submitSandboxPayment(paymentId: $paymentId, input: $input)
       @rest(
         type: "Payment"
         path: "/internal/payments/payments/{args.paymentId}"
@@ -268,75 +304,165 @@ export const SubmitPaymentDocument = gql`
   }
   ${PaymentFragmentDoc}
 `;
-export type SubmitPaymentMutationFn = ApolloReactCommon.MutationFunction<
-  SubmitPaymentMutation,
-  SubmitPaymentMutationVariables
+export type SubmitSandboxPaymentMutationFn = ApolloReactCommon.MutationFunction<
+  SubmitSandboxPaymentMutation,
+  SubmitSandboxPaymentMutationVariables
 >;
-export type SubmitPaymentComponentProps = Omit<
+export type SubmitSandboxPaymentComponentProps = Omit<
   ApolloReactComponents.MutationComponentOptions<
-    SubmitPaymentMutation,
-    SubmitPaymentMutationVariables
+    SubmitSandboxPaymentMutation,
+    SubmitSandboxPaymentMutationVariables
   >,
   "mutation"
 >;
 
-export const SubmitPaymentComponent = (props: SubmitPaymentComponentProps) => (
+export const SubmitSandboxPaymentComponent = (
+  props: SubmitSandboxPaymentComponentProps
+) => (
   <ApolloReactComponents.Mutation<
-    SubmitPaymentMutation,
-    SubmitPaymentMutationVariables
+    SubmitSandboxPaymentMutation,
+    SubmitSandboxPaymentMutationVariables
   >
-    mutation={SubmitPaymentDocument}
+    mutation={SubmitSandboxPaymentDocument}
     {...props}
   />
 );
 
 /**
- * __useSubmitPaymentMutation__
+ * __useSubmitSandboxPaymentMutation__
  *
- * To run a mutation, you first call `useSubmitPaymentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSubmitPaymentMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useSubmitSandboxPaymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitSandboxPaymentMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [submitPaymentMutation, { data, loading, error }] = useSubmitPaymentMutation({
+ * const [submitSandboxPaymentMutation, { data, loading, error }] = useSubmitSandboxPaymentMutation({
  *   variables: {
  *      paymentId: // value for 'paymentId'
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useSubmitPaymentMutation(
+export function useSubmitSandboxPaymentMutation(
   baseOptions?: ApolloReactHooks.MutationHookOptions<
-    SubmitPaymentMutation,
-    SubmitPaymentMutationVariables
+    SubmitSandboxPaymentMutation,
+    SubmitSandboxPaymentMutationVariables
   >
 ) {
   return ApolloReactHooks.useMutation<
-    SubmitPaymentMutation,
-    SubmitPaymentMutationVariables
-  >(SubmitPaymentDocument, baseOptions);
+    SubmitSandboxPaymentMutation,
+    SubmitSandboxPaymentMutationVariables
+  >(SubmitSandboxPaymentDocument, baseOptions);
 }
-export type SubmitPaymentMutationHookResult = ReturnType<
-  typeof useSubmitPaymentMutation
+export type SubmitSandboxPaymentMutationHookResult = ReturnType<
+  typeof useSubmitSandboxPaymentMutation
 >;
-export type SubmitPaymentMutationResult = ApolloReactCommon.MutationResult<
-  SubmitPaymentMutation
+export type SubmitSandboxPaymentMutationResult = ApolloReactCommon.MutationResult<
+  SubmitSandboxPaymentMutation
 >;
-export type SubmitPaymentMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  SubmitPaymentMutation,
-  SubmitPaymentMutationVariables
+export type SubmitSandboxPaymentMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  SubmitSandboxPaymentMutation,
+  SubmitSandboxPaymentMutationVariables
+>;
+export const SubmitBamboraPaymentDocument = gql`
+  mutation SubmitBamboraPayment(
+    $paymentId: ID!
+    $input: SubmitBamboraPaymentInput!
+  ) {
+    payment: submitBamboraPayment(paymentId: $paymentId, input: $input)
+      @rest(
+        type: "Payment"
+        path: "/internal/payments/payments/{args.paymentId}"
+        method: "PATCH"
+      ) {
+      ...Payment
+    }
+  }
+  ${PaymentFragmentDoc}
+`;
+export type SubmitBamboraPaymentMutationFn = ApolloReactCommon.MutationFunction<
+  SubmitBamboraPaymentMutation,
+  SubmitBamboraPaymentMutationVariables
+>;
+export type SubmitBamboraPaymentComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    SubmitBamboraPaymentMutation,
+    SubmitBamboraPaymentMutationVariables
+  >,
+  "mutation"
+>;
+
+export const SubmitBamboraPaymentComponent = (
+  props: SubmitBamboraPaymentComponentProps
+) => (
+  <ApolloReactComponents.Mutation<
+    SubmitBamboraPaymentMutation,
+    SubmitBamboraPaymentMutationVariables
+  >
+    mutation={SubmitBamboraPaymentDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useSubmitBamboraPaymentMutation__
+ *
+ * To run a mutation, you first call `useSubmitBamboraPaymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitBamboraPaymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitBamboraPaymentMutation, { data, loading, error }] = useSubmitBamboraPaymentMutation({
+ *   variables: {
+ *      paymentId: // value for 'paymentId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSubmitBamboraPaymentMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    SubmitBamboraPaymentMutation,
+    SubmitBamboraPaymentMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    SubmitBamboraPaymentMutation,
+    SubmitBamboraPaymentMutationVariables
+  >(SubmitBamboraPaymentDocument, baseOptions);
+}
+export type SubmitBamboraPaymentMutationHookResult = ReturnType<
+  typeof useSubmitBamboraPaymentMutation
+>;
+export type SubmitBamboraPaymentMutationResult = ApolloReactCommon.MutationResult<
+  SubmitBamboraPaymentMutation
+>;
+export type SubmitBamboraPaymentMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  SubmitBamboraPaymentMutation,
+  SubmitBamboraPaymentMutationVariables
 >;
 export const GetPaymentDocument = gql`
   query GetPayment($id: ID!) {
     payment(id: $id)
       @rest(type: "Payment", path: "/internal/payments/payments/{args.id}") {
+      gateway_account_id @export(as: "gatewayAccountId")
       ...Payment
+      gateway_account
+        @rest(
+          type: "GatewayAccount"
+          path: "/internal/payments/gateway-accounts/{exportVariables.gatewayAccountId}"
+        ) {
+        ...GatewayAccount
+      }
     }
   }
   ${PaymentFragmentDoc}
+  ${GatewayAccountFragmentDoc}
 `;
 export type GetPaymentComponentProps = Omit<
   ApolloReactComponents.QueryComponentOptions<

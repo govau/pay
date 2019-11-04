@@ -23,6 +23,7 @@ defmodule Pay.PaymentsTest do
         external_id: "7488a646-e31f-11e4-aace-600308960662",
         external_metadata: %{},
         gateway_account_id: gateway_account.id,
+        gateway_account: gateway_account,
         gateway_transaction_id: "some gateway_transaction_id",
         reference: "some reference",
         return_url: "some return_url",
@@ -30,7 +31,7 @@ defmodule Pay.PaymentsTest do
         wallet: "some wallet"
       })
 
-    [payment: Associations.clear(payment)]
+    [payment: Associations.clear(payment, :events)]
   end
 
   defp create_payment_event(%{payment: payment}) do

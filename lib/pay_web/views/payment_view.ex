@@ -16,6 +16,9 @@ defmodule PayWeb.PaymentView do
       inserted_at: payment.inserted_at,
       amount: payment.amount,
       status: payment.status,
+      gateway_account:
+        render_one(payment.gateway_account, PayWeb.GatewayAccountView, "gateway_account.json"),
+      gateway_account_id: payment.gateway_account.external_id,
       gateway_transaction_id: payment.gateway_transaction_id,
       return_url: payment.return_url,
       email: payment.email,

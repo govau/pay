@@ -11,12 +11,3 @@ export const TermsPage = loadable(() => import("./TermsPage"), {
 export const PrivacyPage = loadable(() => import("./PrivacyPage"), {
   fallback: <Loader />
 });
-export const PaymentPage = loadable(() => import("./PaymentPage"), {
-  fallback: <Loader />
-});
-export const PaymentSuccessPage = loadable(
-  () => import("./PaymentSuccessPage"),
-  {
-    fallback: <Loader />
-  }
-);

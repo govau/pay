@@ -78,6 +78,7 @@ export type Payment = {
   email: Scalars["String"];
   card_details?: Maybe<CardDetails>;
   gateway_transaction_id?: Maybe<Scalars["ID"]>;
+  gateway_account_id: Scalars["ID"];
   gateway_account: GatewayAccount;
 };
 

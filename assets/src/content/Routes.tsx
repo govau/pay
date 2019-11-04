@@ -19,12 +19,6 @@ const Routes: React.FC = () => {
           <Route path="/privacy" exact strict>
             <Pages.PrivacyPage />
           </Route>
-          <Route path="/pay/:paymentId" exact strict>
-            <Pages.PaymentPage />
-          </Route>
-          <Route path="/pay/:paymentId/success" exact strict>
-            <Pages.PaymentSuccessPage />
-          </Route>
           <Route path="*">
             <CorePages.NotFoundPage />
           </Route>
