@@ -168,7 +168,9 @@ export type SandboxCredentials = {
 };
 
 export type SandboxPaymentInput = {
-  dummy?: Maybe<Scalars["String"]>;
+  last4: Scalars["String"];
+  expiryMonth: Scalars["String"];
+  expiryYear: Scalars["String"];
 };
 
 export type Service = {

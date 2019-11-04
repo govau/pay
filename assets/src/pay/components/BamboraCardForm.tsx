@@ -74,7 +74,7 @@ const Form = styled.form`
   }
 `;
 
-const CardNumber = styled.div`
+const Number = styled.div`
   &.${classNames.number.base} {
     width: 100%;
   }
@@ -85,7 +85,7 @@ const CVV = styled.div`
   }
 `;
 
-const CardExpiry = styled.div`
+const Expiry = styled.div`
   &.${classNames.expiry.base} {
   }
 `;
@@ -97,7 +97,7 @@ interface Props {
   expiryId: string;
 }
 
-const CardForm: React.FC<Props> = ({
+const BamboraCardForm: React.FC<Props> = ({
   children,
   onSubmit,
   numberId,
@@ -111,14 +111,14 @@ const CardForm: React.FC<Props> = ({
     }}
   >
     <Label>Card number</Label>
-    <CardNumber id={numberId}></CardNumber>
+    <Number id={numberId}></Number>
 
     <Label>Expiry date</Label>
     <Description>
       For example, 10/
       {String(new Date().getFullYear() + 1).substring(2)}
     </Description>
-    <CardExpiry id={expiryId}></CardExpiry>
+    <Expiry id={expiryId}></Expiry>
 
     <Label>Card security code</Label>
     <Description>The last 3 digits on the back of the card</Description>
@@ -132,4 +132,4 @@ const CardForm: React.FC<Props> = ({
   </Form>
 );
 
-export default CardForm;
+export default BamboraCardForm;

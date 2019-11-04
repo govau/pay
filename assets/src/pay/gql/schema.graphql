@@ -3,7 +3,9 @@ type Query {
 }
 
 input SandboxPaymentInput {
-  dummy: String
+  last4: String!
+  expiryMonth: String!
+  expiryYear: String!
 }
 
 input BamboraPaymentInput {

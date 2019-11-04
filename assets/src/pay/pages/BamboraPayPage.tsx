@@ -5,8 +5,8 @@ import CustomCheckout, {
   isTokenResultError
 } from "@bambora/apac-custom-checkout-sdk-web";
 import { useCreateOTT } from "@bambora/apac-custom-checkout-sdk-web/react-hooks";
-import { ErrorAlert, PageTitle, P, Button, H2, tablet, Loader } from "@pay/web";
-import styled, { useTheme } from "@pay/web/styled-components";
+import { ErrorAlert, PageTitle, Button, Loader } from "@pay/web";
+import { useTheme } from "@pay/web/styled-components";
 import { Theme } from "@pay/web/theme";
 import { generateId } from "@pay/web/lib/utils";
 
@@ -14,46 +14,11 @@ import {
   PaymentFragment,
   useSubmitBamboraPaymentMutation
 } from "../__generated__/graphql";
+import Split, { Content } from "../components/Split";
 import CardForm, {
   classNames as cardFormClassNames
-} from "../components/CardForm";
-
-const Split = styled.div`
-  @media ${tablet} {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: start;
-    justify-content: space-between;
-  }
-`;
-
-const Content = styled.section`
-  @media ${tablet} {
-    flex-basis: 50%;
-  }
-`;
-
-const Summary = styled.div`
-  margin-top: 3rem;
-  padding: 1.5rem;
-  position: sticky;
-  top: 2em;
-  right: 0;
-  font-size: 1.2em;
-  background-color: ${props => props.theme.colors.payLightGrey};
-  border-top: 2px solid ${props => props.theme.colors.payBlue};
-
-  @media ${tablet} {
-    flex-basis: 33.3333%;
-    margin-top: 0;
-  }
-`;
-
-const Amount = styled.span`
-  display: block;
-  font-weight: 700;
-  font-size: 2em;
-`;
+} from "../components/BamboraCardForm";
+import Summary from "../components/Summary";
 
 const merchantID = "ec5ab889-842b-4d62-890b-e53ab84f91f4";
 
@@ -100,7 +65,7 @@ interface Props {
   payment: PaymentFragment;
 }
 
-const PayPage: React.FC<Props> = ({ path, payment }) => {
+const BamboraPayPage: React.FC<Props> = ({ path, payment }) => {
   const history = useHistory();
   const theme = useTheme();
 
@@ -241,16 +206,10 @@ const PayPage: React.FC<Props> = ({ path, payment }) => {
             <Button variant="link">Cancel</Button>
           </CardForm>
         </Content>
-        <Summary>
-          <H2>Payment summary</H2>
-          <P>{payment.description}</P>
-          <P>
-            Total amount: <Amount>${(payment.amount / 100).toFixed(2)}</Amount>
-          </P>
-        </Summary>
+        <Summary payment={payment} />
       </Split>
     </>
   );
 };
 
-export default PayPage;
+export default BamboraPayPage;
