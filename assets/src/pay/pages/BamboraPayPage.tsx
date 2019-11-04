@@ -32,6 +32,7 @@ const mountFields = (
 ) => {
   const style = {
     base: {
+      padding: "10px", // TODO: equal to 1rem. Pull from theme?
       fontFamily: theme.fontFamily,
       fontSize: "16px",
       ":focus": {
