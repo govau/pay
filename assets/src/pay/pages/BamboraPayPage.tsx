@@ -4,7 +4,10 @@ import { useHistory } from "react-router-dom";
 import CustomCheckout, {
   isTokenResultError
 } from "@bambora/apac-custom-checkout-sdk-web";
-import { useCreateOTT } from "@bambora/apac-custom-checkout-sdk-web/react-hooks";
+import {
+  useLoadCheckout,
+  useCreateOTT
+} from "@bambora/apac-custom-checkout-sdk-web/react-hooks";
 import { ErrorAlert, PageTitle, Button, Loader } from "@pay/web";
 import { useTheme } from "@pay/web/styled-components";
 import { Theme } from "@pay/web/theme";
@@ -22,7 +25,7 @@ import Summary from "../components/Summary";
 
 const merchantID = "ec5ab889-842b-4d62-890b-e53ab84f91f4";
 
-const mountCustomCheckout = (
+const mountFields = (
   checkout: CustomCheckout,
   theme: Theme,
   ids: { number: string; cvv: string; expiry: string }
@@ -69,60 +72,33 @@ const BamboraPayPage: React.FC<Props> = ({ path, payment }) => {
   const history = useHistory();
   const theme = useTheme();
 
-  const [submitError, setSubmitError] = React.useState<null | Error>(null);
-  const [loadCheckout, setCustomCheckout] = React.useState<{
-    loading: boolean;
-    error?: Error;
-    checkout?: CustomCheckout;
-  }>({ loading: false });
-
-  const createOTT = useCreateOTT(merchantID, loadCheckout.checkout);
-
-  const [
-    submitPayment,
-    { loading: submitting }
-  ] = useSubmitBamboraPaymentMutation();
-
   const [cardNumberId] = React.useState(generateId("card-number-"));
   const [cardCVVId] = React.useState(generateId("card-cvv-"));
   const [cardExpiryId] = React.useState(generateId("card-expiry-"));
 
-  React.useEffect(() => {
-    const handleLoad = () => {
-      const checkout = customcheckout();
-
-      setCustomCheckout({ loading: false, checkout });
-
-      mountCustomCheckout(checkout, theme, {
+  const onCheckoutLoad = React.useCallback(
+    (checkout: CustomCheckout) => {
+      mountFields(checkout, theme, {
         number: cardNumberId,
         cvv: cardCVVId,
         expiry: cardExpiryId
       });
-    };
+    },
+    [theme, cardNumberId, cardCVVId, cardExpiryId]
+  );
 
-    const handleError = () => {
-      const error = new Error("Could not connect to the payment gateway");
-      setCustomCheckout({ loading: false, error });
-    };
-
-    const script = document.createElement("script");
-
+  const loadCheckout = useLoadCheckout({
     // TODO: different script for demo/test or prod environment
-    script.src =
-      "https://customcheckout-uat.bambora.net.au/1.0.0/customcheckout.js";
-    script.async = true;
-    script.addEventListener("load", handleLoad);
-    script.addEventListener("error", handleError);
+    src: "https://customcheckout-uat.bambora.net.au/1.0.0/customcheckout.js",
+    onLoad: onCheckoutLoad
+  });
+  const createOTT = useCreateOTT(merchantID, loadCheckout.checkout);
 
-    document.body.appendChild(script);
-
-    return () => {
-      script.removeEventListener("load", handleLoad);
-      script.removeEventListener("error", handleError);
-
-      document.body.removeChild(script);
-    };
-  }, [theme, cardNumberId, cardCVVId, cardExpiryId]);
+  const [submitError, setSubmitError] = React.useState<null | Error>(null);
+  const [
+    submitPayment,
+    { loading: submitting }
+  ] = useSubmitBamboraPaymentMutation();
 
   const handleSubmit = React.useCallback(async () => {
     try {
