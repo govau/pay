@@ -196,6 +196,7 @@ export type Query = {
   gatewayAccount: GatewayAccount;
   products: Array<Product>;
   payments: Array<Payment>;
+  paymentEvents: Array<PaymentEvent>;
   payment: Payment;
 };
 
@@ -221,6 +222,10 @@ export type QueryProductsArgs = {
 
 export type QueryPaymentsArgs = {
   gatewayAccountId: Scalars["ID"];
+};
+
+export type QueryPaymentEventsArgs = {
+  paymentId: Scalars["ID"];
 };
 
 export type QueryPaymentArgs = {
@@ -441,6 +446,14 @@ export type GetPaymentQueryVariables = {
 
 export type GetPaymentQuery = { __typename?: "Query" } & {
   payment: { __typename?: "Payment" } & PaymentFragment;
+};
+
+export type GetPaymentEventsQueryVariables = {
+  paymentId: Scalars["ID"];
+};
+
+export type GetPaymentEventsQuery = { __typename?: "Query" } & {
+  events: Array<{ __typename?: "PaymentEvent" } & PaymentEventFragment>;
 };
 
 export const ServiceFragmentDoc = gql`
@@ -1448,4 +1461,87 @@ export type GetPaymentLazyQueryHookResult = ReturnType<
 export type GetPaymentQueryResult = ApolloReactCommon.QueryResult<
   GetPaymentQuery,
   GetPaymentQueryVariables
+>;
+export const GetPaymentEventsDocument = gql`
+  query GetPaymentEvents($paymentId: ID!) {
+    events: paymentEvents(paymentId: $paymentId)
+      @rest(
+        type: "[PaymentEvent]"
+        path: "/internal/payments/payments/{args.paymentId}/events"
+      ) {
+      ...PaymentEvent
+    }
+  }
+  ${PaymentEventFragmentDoc}
+`;
+export type GetPaymentEventsComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    GetPaymentEventsQuery,
+    GetPaymentEventsQueryVariables
+  >,
+  "query"
+> &
+  (
+    | { variables: GetPaymentEventsQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const GetPaymentEventsComponent = (
+  props: GetPaymentEventsComponentProps
+) => (
+  <ApolloReactComponents.Query<
+    GetPaymentEventsQuery,
+    GetPaymentEventsQueryVariables
+  >
+    query={GetPaymentEventsDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useGetPaymentEventsQuery__
+ *
+ * To run a query within a React component, call `useGetPaymentEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPaymentEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPaymentEventsQuery({
+ *   variables: {
+ *      paymentId: // value for 'paymentId'
+ *   },
+ * });
+ */
+export function useGetPaymentEventsQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetPaymentEventsQuery,
+    GetPaymentEventsQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<
+    GetPaymentEventsQuery,
+    GetPaymentEventsQueryVariables
+  >(GetPaymentEventsDocument, baseOptions);
+}
+export function useGetPaymentEventsLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetPaymentEventsQuery,
+    GetPaymentEventsQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetPaymentEventsQuery,
+    GetPaymentEventsQueryVariables
+  >(GetPaymentEventsDocument, baseOptions);
+}
+export type GetPaymentEventsQueryHookResult = ReturnType<
+  typeof useGetPaymentEventsQuery
+>;
+export type GetPaymentEventsLazyQueryHookResult = ReturnType<
+  typeof useGetPaymentEventsLazyQuery
+>;
+export type GetPaymentEventsQueryResult = ApolloReactCommon.QueryResult<
+  GetPaymentEventsQuery,
+  GetPaymentEventsQueryVariables
 >;

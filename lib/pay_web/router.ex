@@ -37,7 +37,10 @@ defmodule PayWeb.Router do
     pipe_through(:api)
 
     scope "/payments", as: :payments do
-      resources("/payments", PaymentController, except: [:index, :edit, :delete])
+      resources("/payments", PaymentController, except: [:index, :edit, :delete]) do
+        resources("/events", PaymentEventController, only: [:index])
+      end
+
       resources("/card-types", CardTypeController, except: [:new, :edit])
       resources("/gateway-accounts", GatewayAccountController, except: [:new, :edit])
     end

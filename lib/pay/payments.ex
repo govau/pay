@@ -489,6 +489,25 @@ defmodule Pay.Payments do
   end
 
   @doc """
+  Returns the list of payment_events by the given payment external_id.
+
+  ## Examples
+
+      iex> list_payment_events_by_payment_external_id("3bfd1a3c-0960-49da-be66-053b159df62e")
+      [%PaymentEvent{}, ...]
+
+  """
+  @spec list_payment_events_by_payment_external_id(String.t()) :: [%PaymentEvent{}]
+  def list_payment_events_by_payment_external_id(external_id) do
+    Repo.all(
+      from pe in PaymentEvent,
+        left_join: p in Payment,
+        on: p.id == pe.payment_id,
+        where: p.external_id == ^external_id
+    )
+  end
+
+  @doc """
   Gets a single payment_event.
 
   Raises `Ecto.NoResultsError` if the Payment event does not exist.

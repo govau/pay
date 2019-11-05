@@ -5,6 +5,7 @@ defmodule Pay.Fixtures do
   alias Pay.Services.User
   alias Pay.Products.Product
   alias Pay.Payments.GatewayAccount
+  alias Pay.Payments.Payment
 
   def fixture(:admin_role) do
     Repo.insert!(%Role{
@@ -33,6 +34,12 @@ defmodule Pay.Fixtures do
       type: GatewayAccount.type(:test),
       payment_provider: GatewayAccount.provider(:sandbox),
       service_name: "some name"
+    })
+  end
+
+  def fixture(:payment) do
+    Repo.insert!(%Payment{
+      external_id: "7488a646-e31f-11e4-aace-600308960200"
     })
   end
 

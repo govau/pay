@@ -70,7 +70,7 @@ mix phx.gen.schema $PAYMENTS_CTX.PaymentFee payment_fees \
 
 mix ecto.migrate
 
-mix phx.gen.schema $PAYMENTS_CTX.PaymentEvent payment_events \
+mix phx.gen.json $PAYMENTS_CTX PaymentEvent payment_events \
     payment_id:references:payments \
     status:string
 
