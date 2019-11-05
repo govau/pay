@@ -15,6 +15,7 @@ import { Container, PageInfo } from "../layout/Header/PrimaryNav";
 import { HamburgerIcon } from "../components/icons/HamburgerIcon";
 import { CrossIcon } from "../components/icons/CrossIcon";
 import PaymentContext from "./PaymentContext";
+import { GatewayAccountType } from "../__generated__/schema";
 
 const { ThemeProvider } = styledComponents;
 
@@ -58,7 +59,12 @@ const Header: React.FC<Props> = () => {
           <Container>
             <PageInfo>
               {payment ? (
-                <Strong>{payment.gateway_account.service_name}</Strong>
+                <>
+                  <Strong>{payment.gateway_account.service_name}</Strong>{" "}
+                  {payment.gateway_account.type === GatewayAccountType.Test && (
+                    <Lozenge variant="flair">Test</Lozenge>
+                  )}
+                </>
               ) : null}
             </PageInfo>
           </Container>
