@@ -186,3 +186,13 @@ query GetPayment($id: ID!) {
     ...Payment
   }
 }
+
+query GetPaymentEvents($paymentId: ID!) {
+  events: paymentEvents(paymentId: $paymentId)
+    @rest(
+      type: "[PaymentEvent]"
+      path: "/internal/payments/payments/{args.paymentId}/events"
+    ) {
+    ...PaymentEvent
+  }
+}

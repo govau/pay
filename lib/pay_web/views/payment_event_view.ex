@@ -11,6 +11,11 @@ defmodule PayWeb.PaymentEventView do
   end
 
   def render("payment_event.json", %{payment_event: payment_event}) do
-    %{id: payment_event.id, status: payment_event.status}
+    %{
+      id: payment_event.id,
+      inserted_at: payment_event.inserted_at,
+      updated_at: payment_event.updated_at,
+      status: payment_event.status
+    }
   end
 end

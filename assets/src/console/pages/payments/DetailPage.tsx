@@ -1,20 +1,19 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
 import { format } from "date-fns";
-import { PageTitle, H2 } from "@pay/web";
+import { PageTitle, H2, Loader, ErrorAlert } from "@pay/web";
 import * as Table from "@pay/web/components/Table";
 
 import { paymentProviderLabel, paymentStatusLabel } from "../../payments";
 import {
   Service,
   GatewayAccountType,
-  PaymentStatus,
   PaymentEventType
 } from "../../../__generated__/schema";
 import {
   GatewayAccountFragment,
   PaymentFragment,
-  PaymentEventFragment
+  useGetPaymentEventsQuery
 } from "../../__generated__/graphql";
 
 interface Props {
@@ -26,6 +25,11 @@ interface Props {
 const optional = (v: string | null | undefined) => v || "Data unavailable";
 
 const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
+  const paymentEventsQuery = useGetPaymentEventsQuery({
+    variables: { paymentId: payment.id },
+    errorPolicy: "all"
+  });
+
   const {
     id,
     inserted_at,
@@ -41,24 +45,6 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
 
   const refunded = false; // TODO: from payment
   const refunded_amount = 0; // TODO: from payment
-
-  // TODO: from API
-  const events: PaymentEventFragment[] = [
-    {
-      id: "1",
-      inserted_at: String(new Date()),
-      updated_at: String(new Date()),
-      type: PaymentEventType.Payment,
-      status: PaymentStatus.Created
-    },
-    {
-      id: "2",
-      inserted_at: String(new Date()),
-      updated_at: String(new Date()),
-      type: PaymentEventType.Refund,
-      status: PaymentStatus.Created
-    }
-  ];
 
   return (
     <>
@@ -163,33 +149,44 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
           </Table.ResponsiveWrapper>
         </>
       )}
-      {events.length > 0 && (
-        <>
-          <H2>Transaction events</H2>
+
+      <H2>Transaction events</H2>
+      {paymentEventsQuery.loading ? (
+        <Loader />
+      ) : paymentEventsQuery.error || !paymentEventsQuery.data ? (
+        <ErrorAlert
+          title="Unable to retrieve events"
+          message={paymentEventsQuery.error && paymentEventsQuery.error.message}
+          showError
+        />
+      ) : (
+        paymentEventsQuery.data.events.length > 0 && (
           <Table.ResponsiveWrapper>
             <Table.Table>
               <tbody>
-                {events.map(({ id, inserted_at, updated_at, type, status }) => (
-                  <Table.Row key={id}>
-                    <Table.Cell>{paymentStatusLabel(status)}</Table.Cell>
-                    <Table.NumericCell>
-                      {type === PaymentEventType.Refund ? "-" : ""}$
-                      {(amount / 100).toFixed(2)}
-                    </Table.NumericCell>
-                    <Table.NumericCell>
-                      <time dateTime={updated_at || inserted_at}>
-                        {format(
-                          new Date(updated_at || inserted_at),
-                          "dd MMM yyyy — HH:mm:ss"
-                        )}
-                      </time>
-                    </Table.NumericCell>
-                  </Table.Row>
-                ))}
+                {paymentEventsQuery.data.events.map(
+                  ({ id, inserted_at, updated_at, type, status }) => (
+                    <Table.Row key={id}>
+                      <Table.Cell>{paymentStatusLabel(status)}</Table.Cell>
+                      <Table.NumericCell>
+                        {type === PaymentEventType.Refund ? "-" : ""}$
+                        {(amount / 100).toFixed(2)}
+                      </Table.NumericCell>
+                      <Table.NumericCell>
+                        <time dateTime={updated_at || inserted_at}>
+                          {format(
+                            new Date(updated_at || inserted_at),
+                            "dd MMM yyyy — HH:mm:ss"
+                          )}
+                        </time>
+                      </Table.NumericCell>
+                    </Table.Row>
+                  )
+                )}
               </tbody>
             </Table.Table>
           </Table.ResponsiveWrapper>
-        </>
+        )
       )}
     </>
   );
