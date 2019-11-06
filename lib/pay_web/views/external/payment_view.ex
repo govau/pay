@@ -18,9 +18,14 @@ defmodule PayWeb.External.PaymentView do
       fee: 42,
       total_amount: 42,
       net_amount: 42,
-      state: %{},
+      state: %{
+        status: payment.status,
+        # TODO: determine based off status
+        finished: false
+      },
       gateway_transaction_id: payment.gateway_transaction_id,
       return_url: payment.return_url,
+      next_url: "#{Application.get_env(:pay, :checkout_endpoint)}/pay/#{payment.external_id}",
       email: payment.email,
       telephone_number: "some telephone_number",
       description: payment.description,

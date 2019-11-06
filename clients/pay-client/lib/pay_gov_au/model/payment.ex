@@ -13,6 +13,7 @@ defmodule PayGovAu.Model.Payment do
     :description,
     :email,
     :id,
+    :next_url,
     :reference,
     :return_url
   ]
@@ -22,6 +23,7 @@ defmodule PayGovAu.Model.Payment do
           :description => String.t() | nil,
           :email => String.t() | nil,
           :id => String.t() | nil,
+          :next_url => String.t() | nil,
           :reference => String.t() | nil,
           :return_url => String.t() | nil
         }

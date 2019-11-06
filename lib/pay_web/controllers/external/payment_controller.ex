@@ -20,6 +20,7 @@ defmodule PayWeb.External.PaymentController do
             description(:string, "Description of the goods being paid for")
             email(:string, "Email address to associate with the payment")
             return_url(:string, "URL to redirect user to after payment")
+            next_url(:string, "URL where your service should direct your user next")
           end
 
           example(%{

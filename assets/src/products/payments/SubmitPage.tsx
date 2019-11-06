@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Redirect } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { PageTitle, Loader, ErrorAlert } from "@pay/web";
 
@@ -30,33 +29,32 @@ const SubmitPage: React.FC<Props> = ({ path, payment }) => {
     if (!called) {
       submitPaymentMutation();
     }
-  }, [called, submitPaymentMutation]);
+    if (payment.status === ProductPaymentStatus.Submitted) {
+      window.location.href = payment.next_url;
+    }
+  }, [called, submitPaymentMutation, payment.status, payment.next_url]);
 
-  if (payment.status === ProductPaymentStatus.Submitted) {
-    return <Redirect to={payment.next_url} />;
+  if (loading) {
+    return <Loader />;
   }
 
-  return (
-    <>
-      {loading ? (
-        <Loader />
-      ) : error || !data ? (
-        <>
-          <Helmet>
-            <title>Something went wrong</title>
-          </Helmet>
-          <PageTitle title="Something went wrong" />
-          <ErrorAlert
-            title="Unable to create payment"
-            message={error && error.message}
-            showError
-          />
-        </>
-      ) : (
-        <Redirect to={data.payment.next_url} />
-      )}
-    </>
-  );
+  if (error || !data) {
+    return (
+      <>
+        <Helmet>
+          <title>Something went wrong</title>
+        </Helmet>
+        <PageTitle title="Something went wrong" />
+        <ErrorAlert
+          title="Unable to create payment"
+          message={error && error.message}
+          showError
+        />
+      </>
+    );
+  }
+
+  return null;
 };
 
 export default SubmitPage;
