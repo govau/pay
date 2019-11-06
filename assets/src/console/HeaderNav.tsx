@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useParams, useRouteMatch } from "react-router-dom";
+import { Location } from "history";
+import { useParams, useRouteMatch, match } from "react-router-dom";
 import { Lozenge, Strong } from "@pay/web";
 import {
   Container,
@@ -17,7 +18,11 @@ import { goLiveStageLabel } from "../services";
 
 // ServiceInfoNav is shown when in console, inside the context of a service.
 export const ServiceInfoNav: React.FC = () => {
-  const { serviceId } = useParams<{ serviceId: string }>();
+  interface Params {
+    serviceId: string;
+  }
+
+  const { serviceId } = useParams<Params>();
 
   const { loading, error, data } = useGetServiceWithGatewayAccountsQuery({
     variables: { id: serviceId },
@@ -47,6 +52,19 @@ export const ServiceInfoNav: React.FC = () => {
     } else {
       gatewayAccount = data.service.gateway_accounts[0];
     }
+  }
+
+  function isActive<Params>(match: match<Params>, location: Location) {
+    return (
+      [`${url}/settings`, `${url}/edit-name`, `${url}/team`].includes(
+        location.pathname
+      ) ||
+      (gatewayAccount
+        ? location.pathname.startsWith(
+            `${url}/gateway-accounts/${gatewayAccount.id}/credentials`
+          )
+        : false)
+    );
   }
 
   return (
@@ -83,20 +101,7 @@ export const ServiceInfoNav: React.FC = () => {
             </>
           )}
           <li>
-            <NavLink
-              to={`${url}/settings`}
-              exact
-              isActive={(match, location) =>
-                [`${url}/settings`, `${url}/edit-name`, `${url}/team`].includes(
-                  location.pathname
-                ) ||
-                (gatewayAccount
-                  ? location.pathname.startsWith(
-                      `${url}/gateway-accounts/${gatewayAccount.id}/credentials`
-                    )
-                  : false)
-              }
-            >
+            <NavLink to={`${url}/settings`} exact isActive={isActive}>
               Settings
             </NavLink>
           </li>
