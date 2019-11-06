@@ -98,6 +98,10 @@
           "format": "uuid",
           "type": "string"
         },
+        "next_url": {
+          "description": "URL where your service should direct your user next",
+          "type": "string"
+        },
         "reference": {
           "description": "Reference to associate with the payment",
           "type": "string"

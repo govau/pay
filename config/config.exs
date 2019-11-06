@@ -17,6 +17,8 @@ config :pay, PayWeb.Endpoint,
   render_errors: [view: PayWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Pay.PubSub, adapter: Phoenix.PubSub.PG2]
 
+config :pay, :checkout_endpoint, "http://localhost:3000"
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

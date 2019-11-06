@@ -15,6 +15,8 @@ config :pay, PayWeb.Endpoint,
   url: [scheme: "https", host: System.get_env("ENDPOINT_HOST"), port: 443],
   secret_key_base: secret_key_base
 
+config :pay, :checkout_endpoint, "https://#{System.get_env("ENDPOINT_HOST")}"
+
 config :bambora,
   api_username: System.get_env("BAMBORA_USERNAME"),
   api_password: System.get_env("BAMBORA_PASSWORD")

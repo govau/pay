@@ -103,8 +103,7 @@ defmodule PayWeb.Products.ProductPaymentController do
            Products.submit_product_payment(
              product_payment,
              resp.data.id,
-             # Allow the frontend to redirect to the pay page URL.
-             "/pay/#{resp.data.id}"
+             resp.data.next_url
            ) do
       render(conn, "show.json",
         product_payment: product_payment,
