@@ -36,6 +36,10 @@ export const BasicTextInput = styled("input")<{ error?: boolean }>`
   &:focus {
     ${textInputStyles.focus};
   }
+
+  &:invalid {
+    ${textInputStyles.error};
+  }
 `;
 
 export const Label = styled.label`
