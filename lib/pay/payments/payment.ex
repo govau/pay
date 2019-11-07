@@ -22,6 +22,7 @@ defmodule Pay.Payments.Payment do
 
     belongs_to :gateway_account, Pay.Payments.GatewayAccount
     has_many :events, Pay.Payments.PaymentEvent
+    has_many :refunds, Pay.Payments.PaymentRefund
 
     timestamps()
   end
@@ -62,8 +63,8 @@ defmodule Pay.Payments.Payment do
   @doc false
   def update_changeset(payment, attrs) do
     payment
-    |> cast(attrs, [:status, :gateway_account_id])
-    |> validate_required([:status, :gateway_account_id])
+    |> cast(attrs, [:status, :gateway_transaction_id])
+    |> validate_required([:status])
   end
 end
 

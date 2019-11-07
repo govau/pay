@@ -76,4 +76,39 @@ defmodule Pay.Fixtures do
       reference_hint: "some reference_hint"
     })
   end
+
+  def fixture(:payment, gateway_account) do
+    {:ok, payment} =
+      Pay.Payments.create_payment(%{
+        amount: 42,
+        auth_3ds_details: %{},
+        card_details: %{},
+        delayed_capture: true,
+        description: "some description",
+        email: "some email",
+        external_id: "7488a646-e31f-11e4-aace-600308960662",
+        external_metadata: %{},
+        gateway_account_id: gateway_account.id,
+        gateway_transaction_id: "some gateway_transaction_id",
+        reference: "some reference",
+        return_url: "some return_url",
+        status: "created",
+        wallet: "some wallet"
+      })
+
+    payment
+  end
+
+  def fixture(:payment_refund, %{payment: payment, user: user}) do
+    {:ok, payment_refund} =
+      Pay.Payments.create_payment_refund(payment, %{
+        payment_id: payment.id,
+        amount: 512,
+        gateway_transaction_id: "7488a646-e31f-11e4-aace-600308960662",
+        reference: "reference123456",
+        user_external_id: user.external_id
+      })
+
+    payment_refund
+  end
 end

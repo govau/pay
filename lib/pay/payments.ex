@@ -481,7 +481,7 @@ defmodule Pay.Payments do
     Repo.all(PaymentEvent)
   end
 
-  @spec list_payment_events(%Payment{}) :: [PaymentEvent]
+  @spec list_payment_events(%Payment{}) :: [%PaymentEvent{}]
   def list_payment_events(%Payment{} = payment) do
     with %{events: events} <-
            Repo.preload(payment, events: from(PaymentEvent, order_by: [desc: :inserted_at])) do
@@ -587,6 +587,17 @@ defmodule Pay.Payments do
     Repo.all(PaymentRefund)
   end
 
+  @spec list_payment_refunds(%Payment{}) :: [%PaymentRefund{}]
+  def list_payment_refunds(%Payment{} = payment) do
+    with %{refunds: refunds} <-
+           Repo.preload(
+             payment,
+             refunds: from(PaymentRefund, order_by: [desc: :inserted_at])
+           ) do
+      refunds
+    end
+  end
+
   @doc """
   Gets a single payment_refund.
 
@@ -603,23 +614,15 @@ defmodule Pay.Payments do
   """
   def get_payment_refund!(id), do: Repo.get!(PaymentRefund, id)
 
-  @doc """
-  Creates a payment_refund.
+  def create_payment_refund(%Payment{} = payment, attrs) do
+    created = PaymentRefund.Statuses.status(:created)
 
-  ## Examples
-
-      iex> create_payment_refund(%{field: value})
-      {:ok, %PaymentRefund{}}
-
-      iex> create_payment_refund(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_payment_refund(attrs \\ %{}) do
     %PaymentRefund{
-      external_id: Ecto.UUID.generate()
+      payment_id: payment.id,
+      external_id: Ecto.UUID.generate(),
+      status: created
     }
-    |> PaymentRefund.changeset(attrs)
+    |> PaymentRefund.create_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -637,7 +640,7 @@ defmodule Pay.Payments do
   """
   def update_payment_refund(%PaymentRefund{} = payment_refund, attrs) do
     payment_refund
-    |> PaymentRefund.changeset(attrs)
+    |> PaymentRefund.update_changeset(attrs)
     |> Repo.update()
   end
 
@@ -667,7 +670,7 @@ defmodule Pay.Payments do
 
   """
   def change_payment_refund(%PaymentRefund{} = payment_refund) do
-    PaymentRefund.changeset(payment_refund, %{})
+    PaymentRefund.update_changeset(payment_refund, %{})
   end
 
   @doc """

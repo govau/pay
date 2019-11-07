@@ -39,6 +39,7 @@ defmodule PayWeb.Router do
     scope "/payments", as: :payments do
       resources("/payments", PaymentController, except: [:index, :edit, :delete]) do
         resources("/events", PaymentEventController, only: [:index])
+        resources("/refunds", PaymentRefundController, only: [:create, :edit, :index, :show])
       end
 
       resources("/card-types", CardTypeController, except: [:new, :edit])

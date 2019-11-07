@@ -12,25 +12,7 @@ defmodule Pay.PaymentsTest do
   end
 
   defp create_payment(%{gateway_account: gateway_account}) do
-    {:ok, payment} =
-      Payments.create_payment(%{
-        amount: 42,
-        auth_3ds_details: %{},
-        card_details: %{},
-        delayed_capture: true,
-        description: "some description",
-        email: "some email",
-        external_id: "7488a646-e31f-11e4-aace-600308960662",
-        external_metadata: %{},
-        gateway_account_id: gateway_account.id,
-        gateway_account: gateway_account,
-        gateway_transaction_id: "some gateway_transaction_id",
-        reference: "some reference",
-        return_url: "some return_url",
-        status: "created",
-        wallet: "some wallet"
-      })
-
+    payment = fixture(:payment, gateway_account)
     [payment: Associations.clear(payment, :events)]
   end
 
@@ -39,6 +21,21 @@ defmodule Pay.PaymentsTest do
       Payments.create_payment_event(%{payment_id: payment.id, status: "created"})
 
     [payment_event: payment_event]
+  end
+
+  defp create_payment_refund(%{payment: payment}) do
+    {:ok, payment_refund} =
+      Payments.create_payment_refund(payment, %{
+        payment_id: payment.id,
+        amount: 42,
+        external_id: "7488a646-e31f-11e4-aace-600308960662",
+        gateway_transaction_id: "7488a646-e31f-11e4-aace-600308960662",
+        reference: "some reference",
+        status: "some status",
+        user_external_id: "7488a646-e31f-11e4-aace-600308960662"
+      })
+
+    [payment_refund: payment_refund]
   end
 
   describe "card_types" do
@@ -362,15 +359,25 @@ defmodule Pay.PaymentsTest do
     end
 
     test "update_payment/3 changes status according to transition", %{payment: payment} do
+      submit_payment = "submit_payment"
+
       assert {:ok, %Payment{} = updated_payment} =
-               Payments.update_payment(payment, "submit_payment", @update_attrs)
+               Payments.update_payment(payment, submit_payment, @update_attrs)
 
       assert updated_payment != payment
 
-      assert payment == %{
-               updated_payment
-               | status: payment.status,
-                 updated_at: payment.updated_at
+      payment_status = Payment.Statuses.from_string!(payment.status)
+
+      expected_status =
+        payment_status
+        |> Pay.Payments.Payment.Statuses.transition(submit_payment)
+        |> Pay.Payments.Payment.Statuses.status()
+
+      assert updated_payment == %{
+               payment
+               | status: expected_status,
+                 gateway_transaction_id: @update_attrs.gateway_transaction_id,
+                 updated_at: updated_payment.updated_at
              }
     end
 
@@ -553,16 +560,10 @@ defmodule Pay.PaymentsTest do
   end
 
   describe "payment_refunds" do
+    setup [:create_gateway_account, :create_payment, :create_payment_refund]
+
     alias Pay.Payments.PaymentRefund
 
-    @valid_attrs %{
-      amount: 42,
-      external_id: "7488a646-e31f-11e4-aace-600308960662",
-      gateway_transaction_id: "7488a646-e31f-11e4-aace-600308960662",
-      reference: "some reference",
-      status: "some status",
-      user_external_id: "7488a646-e31f-11e4-aace-600308960662"
-    }
     @update_attrs %{
       amount: 43,
       external_id: "7488a646-e31f-11e4-aace-600308960668",
@@ -580,72 +581,63 @@ defmodule Pay.PaymentsTest do
       user_external_id: nil
     }
 
-    def payment_refund_fixture(attrs \\ %{}) do
-      {:ok, payment_refund} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Payments.create_payment_refund()
-
-      payment_refund
-    end
-
-    test "list_payment_refunds/0 returns all payment_refunds" do
-      payment_refund = payment_refund_fixture()
+    test "list_payment_refunds/0 returns all payment_refunds", %{payment_refund: payment_refund} do
       assert Payments.list_payment_refunds() == [payment_refund]
     end
 
-    test "get_payment_refund!/1 returns the payment_refund with given id" do
-      payment_refund = payment_refund_fixture()
+    test "get_payment_refund!/1 returns the payment_refund with given id", %{
+      payment_refund: payment_refund
+    } do
       assert Payments.get_payment_refund!(payment_refund.id) == payment_refund
     end
 
-    test "create_payment_refund/1 with valid data creates a payment_refund" do
-      assert {:ok, %PaymentRefund{} = payment_refund} =
-               Payments.create_payment_refund(@valid_attrs)
-
+    test "create_payment_refund/1 with valid data creates a payment_refund", %{
+      payment_refund: payment_refund
+    } do
       assert payment_refund.amount == 42
-      assert payment_refund.external_id == "7488a646-e31f-11e4-aace-600308960662"
       assert payment_refund.gateway_transaction_id == "7488a646-e31f-11e4-aace-600308960662"
       assert payment_refund.reference == "some reference"
-      assert payment_refund.status == "some status"
+      assert payment_refund.status == "created"
       assert payment_refund.user_external_id == "7488a646-e31f-11e4-aace-600308960662"
     end
 
-    test "create_payment_refund/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Payments.create_payment_refund(@invalid_attrs)
+    test "create_payment_refund/1 with invalid data returns error changeset", %{payment: payment} do
+      assert {:error, %Ecto.Changeset{}} = Payments.create_payment_refund(payment, @invalid_attrs)
     end
 
-    test "update_payment_refund/2 with valid data updates the payment_refund" do
-      payment_refund = payment_refund_fixture()
-
+    test "update_payment_refund/2 with valid data updates the payment_refund", %{
+      payment_refund: fixture_payment_refund
+    } do
       assert {:ok, %PaymentRefund{} = payment_refund} =
-               Payments.update_payment_refund(payment_refund, @update_attrs)
+               Payments.update_payment_refund(fixture_payment_refund, @update_attrs)
 
-      assert payment_refund.amount == 43
-      assert payment_refund.external_id == "7488a646-e31f-11e4-aace-600308960668"
-      assert payment_refund.gateway_transaction_id == "7488a646-e31f-11e4-aace-600308960668"
-      assert payment_refund.reference == "some updated reference"
+      # ensure does not change
+      assert payment_refund.amount == 42
+      assert payment_refund.external_id == fixture_payment_refund.external_id
+      assert payment_refund.gateway_transaction_id == "7488a646-e31f-11e4-aace-600308960662"
+      assert payment_refund.reference == "some reference"
+      assert payment_refund.user_external_id == "7488a646-e31f-11e4-aace-600308960662"
+
       assert payment_refund.status == "some updated status"
-      assert payment_refund.user_external_id == "7488a646-e31f-11e4-aace-600308960668"
     end
 
-    test "update_payment_refund/2 with invalid data returns error changeset" do
-      payment_refund = payment_refund_fixture()
-
+    test "update_payment_refund/2 with invalid data returns error changeset", %{
+      payment_refund: payment_refund
+    } do
       assert {:error, %Ecto.Changeset{}} =
                Payments.update_payment_refund(payment_refund, @invalid_attrs)
 
       assert payment_refund == Payments.get_payment_refund!(payment_refund.id)
     end
 
-    test "delete_payment_refund/1 deletes the payment_refund" do
-      payment_refund = payment_refund_fixture()
+    test "delete_payment_refund/1 deletes the payment_refund", %{payment_refund: payment_refund} do
       assert {:ok, %PaymentRefund{}} = Payments.delete_payment_refund(payment_refund)
       assert_raise Ecto.NoResultsError, fn -> Payments.get_payment_refund!(payment_refund.id) end
     end
 
-    test "change_payment_refund/1 returns a payment_refund changeset" do
-      payment_refund = payment_refund_fixture()
+    test "change_payment_refund/1 returns a payment_refund changeset", %{
+      payment_refund: payment_refund
+    } do
       assert %Ecto.Changeset{} = Payments.change_payment_refund(payment_refund)
     end
   end
