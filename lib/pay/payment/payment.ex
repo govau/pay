@@ -62,8 +62,8 @@ defmodule Pay.Payments.Payment do
   @doc false
   def update_changeset(payment, attrs) do
     payment
-    |> cast(attrs, [:status])
-    |> validate_required([:status])
+    |> cast(attrs, [:status, :gateway_account_id])
+    |> validate_required([:status, :gateway_account_id])
   end
 end
 

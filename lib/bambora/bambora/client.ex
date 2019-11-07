@@ -1,5 +1,5 @@
 defprotocol Bambora.Client do
-  @spec make_request(t, Bambora.Service, params :: map) :: map
+  @spec make_request(term, Bambora.Service.t(), params :: map) :: Bambora.Service.response()
   def make_request(t, service, params)
 end
 
@@ -15,9 +15,10 @@ defmodule Bambora.Client.SOAP do
     end
   end
 
+  @spec call(Soap.Request.Params.t(), String.t()) :: {:ok, map()} | {:error, String.t()}
   def call(request, operation) do
     with {:ok, response} <- Soap.call(bambora_wsdl(), operation, request) do
-      Soap.Response.parse(response)
+      {:ok, Soap.Response.parse(response)}
     end
   end
 end
@@ -27,12 +28,17 @@ defmodule Bambora.Client.Static do
 end
 
 defimpl Bambora.Client, for: Bambora.Client.SOAP do
+  @spec make_request(
+          %Bambora.Client.SOAP{},
+          Bambora.Service,
+          Bambora.Service.SubmitSinglePayment.params()
+        ) :: Bambora.Service.response()
   def make_request(t, service, params) do
     service.build_body(params)
     |> Bambora.Auth.authorise(t)
     |> Bambora.Request.prepare(service.envelope)
     |> Bambora.Client.SOAP.call(service.operation)
-    |> service.decode
+    |> Bambora.Service.decode(service)
   end
 end
 
@@ -41,7 +47,7 @@ defimpl Bambora.Client, for: Bambora.Client.Static do
     service.build_body(params)
     |> Bambora.Auth.authorise(t)
     |> Bambora.Request.prepare(service.envelope)
-    |> (&%{request: &1, response: t.response}).()
+    |> (&{:ok, %{request: &1, response: t.response}}).()
   end
 end
 

@@ -13,7 +13,7 @@ defmodule Pay.Services.Role do
   end
 
   # @type t :: %Role{}
-  @callback value :: Role.t()
+  @callback value :: %__MODULE__{}
 
   @doc false
   def changeset(role, attrs) do

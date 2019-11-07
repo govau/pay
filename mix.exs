@@ -51,11 +51,12 @@ defmodule Pay.MixProject do
       {:slugger, "~> 0.3"},
       {:stripity_stripe, "~> 2.4.0"},
       {:pay_gov_au, path: "./clients/pay-client"},
-      {:bambora, path: "./vendor/bambora"},
+      {:soap, path: "./vendor/soap"},
 
       # TODO: hackney is a transitive dep of sentry that broke;
       # unpin it once sentry sorts themselves out
-      {:hackney, "~> 1.15.2"}
+      {:hackney, "~> 1.15.2"},
+      {:dialyxir, "~> 1.0.0-rc.7", only: [:dev], runtime: false}
     ]
   end
 

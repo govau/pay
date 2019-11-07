@@ -16,6 +16,7 @@ defmodule Soap.Request.Params do
   }
   @date_type_regex "[0-9]{4}-[0-9]{2}-[0-9]{2}"
   @date_time_type_regex "[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}"
+  @type t :: map() | {:cdata, String.t()}
 
   @doc """
   Parsing parameters map and generate body xml by given soap action name and body params(Map).
@@ -25,7 +26,7 @@ defmodule Soap.Request.Params do
   @spec build_body(
           wsdl :: map(),
           operation :: String.t() | atom(),
-          params :: map(),
+          params :: t,
           headers :: map()
         ) :: String.t()
   def build_body(wsdl, operation, params, headers) do
@@ -164,18 +165,16 @@ defmodule Soap.Request.Params do
     "Element #{k} has wrong format. Expects #{regex} format."
   end
 
-  @spec construct_xml_request_body(params :: map() | list()) :: list()
+  @spec construct_xml_request_body(params :: map() | list() | tuple() | String.t() | atom | number) :: list()
   defp construct_xml_request_body(params) when is_map(params) or is_list(params) do
     params |> Enum.map(&construct_xml_request_body/1)
   end
 
   # OUR_CHANGE
-  @spec construct_xml_request_body(params :: {:cdata, term()}) :: tuple()
   defp construct_xml_request_body({:cdata, _cdata} = params) when is_tuple(params) do
     params
   end
 
-  @spec construct_xml_request_body(params :: tuple()) :: tuple()
   defp construct_xml_request_body(params) when is_tuple(params) do
     params
     |> Tuple.to_list()
@@ -184,7 +183,6 @@ defmodule Soap.Request.Params do
     |> List.to_tuple()
   end
 
-  @spec construct_xml_request_body(params :: String.t() | atom() | number()) :: String.t()
   defp construct_xml_request_body(params) when is_atom(params) or is_number(params),
     do: params |> to_string
 
@@ -253,14 +251,15 @@ defmodule Soap.Request.Params do
 
   defp handle_element_form_default(_schema_attributes), do: %{}
 
-  defp prepare_action_tag(%{service: %{name: service_name}} = _wsdl, action_tag, _operation) do
+  def prepare_action_tag(%{service: %{name: service_name}} = _wsdl, action_tag, _operation) do
     "#{service_name}:#{action_tag}"
   end
 
   defp prepare_action_tag("", operation), do: operation
   defp prepare_action_tag(action_tag, _operation), do: action_tag
 
-  @spec get_action_with_namespace(wsdl :: map(), operation :: String.t()) :: String.t()
+  @spec get_nested_action(wsdl :: map(), operation :: String.t()) ::
+          {name :: String.t(), nested_name :: String.t(), type :: String.t()}
   defp get_nested_action(wsdl, operation) do
     find_by_name = fn x -> x[:name] == operation end
 
@@ -278,7 +277,7 @@ defmodule Soap.Request.Params do
     |> handle_action_extractor_result(wsdl, operation)
   end
 
-  @spec get_header_with_namespace(wsdl :: map(), operation :: String.t()) :: String.t()
+  @spec get_header_with_namespace(wsdl :: map(), operation :: String.t()) :: String.t() | nil
   defp get_header_with_namespace(wsdl, operation) do
     with %{input: %{header: %{message: message, part: part}}} <-
            Enum.find(wsdl[:operations], &(&1[:name] == operation)),

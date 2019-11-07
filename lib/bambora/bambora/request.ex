@@ -3,7 +3,7 @@ defmodule Bambora.Request do
 
   @type t :: {:cdata, String.t()}
 
-  @spec cdata(Bambora.Auth.xml_data()) :: t
+  @spec cdata(Bambora.Service.xml_data()) :: t
   def cdata(element) do
     {:cdata, X.generate(element, format: :none)}
   end
