@@ -10,8 +10,8 @@ import { AuthProvider } from "./auth/AuthContext";
 import { UserProvider } from "./users/UserContext";
 import * as Content from "./content";
 import * as Auth from "./auth";
+import * as Checkout from "./checkout";
 import * as Console from "./console";
-import * as Pay from "./pay";
 import * as PlatformAdmin from "./platform-admin";
 import * as Products from "./products";
 
@@ -34,8 +34,8 @@ const App: React.FC = () => {
         <GlobalStyle />
         <Switch>
           <Route path="/pay" strict>
-            <ApolloProvider client={Pay.apolloClient}>
-              <Pay.Routes />
+            <ApolloProvider client={Checkout.apolloClient}>
+              <Checkout.Routes />
             </ApolloProvider>
           </Route>
           <Route path="/products" strict>
