@@ -22,6 +22,7 @@ defmodule Pay.Payments.Payment do
 
     belongs_to :gateway_account, Pay.Payments.GatewayAccount
     has_many :events, Pay.Payments.PaymentEvent
+    has_many :refunds, Pay.Payments.PaymentRefund
 
     timestamps()
   end

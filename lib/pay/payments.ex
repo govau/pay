@@ -587,6 +587,14 @@ defmodule Pay.Payments do
     Repo.all(PaymentRefund)
   end
 
+  @spec list_payment_refunds(%Payment{}) :: [PaymentRefund]
+  def list_payment_refunds(%Payment{} = payment) do
+    with %{events: events} <-
+           Repo.preload(payment, refunds: from(PaymentRefund, order_by: [desc: :inserted_at])) do
+      events
+    end
+  end
+
   @doc """
   Gets a single payment_refund.
 
