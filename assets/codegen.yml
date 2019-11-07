@@ -50,24 +50,24 @@ generates:
       - "typescript"
       - "typescript-operations"
       - "typescript-react-apollo"
-  src/pay/__generated__/graphql-introspection-result.ts:
+  src/checkout/__generated__/graphql-introspection-result.ts:
     schema:
       - "src/gql/payments.graphql"
-      - "src/pay/gql/schema.graphql"
+      - "src/checkout/gql/schema.graphql"
     documents:
-      - "src/pay/gql/queries.graphql"
+      - "src/checkout/gql/queries.graphql"
     plugins:
       - "fragment-matcher"
-  src/pay/__generated__/graphql.tsx:
+  src/checkout/__generated__/graphql.tsx:
     config:
       noNamespaces: true
       withHOC: false
       withHooks: true
     schema:
       - "src/gql/payments.graphql"
-      - "src/pay/gql/schema.graphql"
+      - "src/checkout/gql/schema.graphql"
     documents:
-      - "src/pay/gql/queries.graphql"
+      - "src/checkout/gql/queries.graphql"
     plugins:
       - "typescript"
       - "typescript-operations"
