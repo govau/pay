@@ -112,8 +112,6 @@ defmodule PayWeb.PaymentControllerTest do
     end
   end
 
-  # TODO: re-enable after we can stub out payment provider calls
-  @tag :skip
   describe "update payment" do
     setup [:create_payment]
 
@@ -138,7 +136,7 @@ defmodule PayWeb.PaymentControllerTest do
     end
 
     test "crashes when transition is invalid", %{conn: conn, payment: payment} do
-      assert_raise ArgumentError, fn ->
+      assert_raise FunctionClauseError, fn ->
         patch(conn, Routes.payments_payment_path(conn, :update, payment),
           payment: @update_attrs,
           transition: "wrong"

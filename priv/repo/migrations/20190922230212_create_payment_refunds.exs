@@ -8,7 +8,7 @@ defmodule Pay.Repo.Migrations.CreatePaymentRefunds do
       add :amount, :integer
       add :status, :string
       add :user_external_id, :uuid
-      add :gateway_transaction_id, :uuid
+      add :gateway_transaction_id, :string
       add :payment_id, references(:payments, on_delete: :nothing)
 
       timestamps(type: :utc_datetime_usec)

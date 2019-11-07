@@ -8,7 +8,7 @@ defmodule Pay.Payments.PaymentRefund do
   schema "payment_refunds" do
     field :amount, :integer
     field :external_id, Ecto.UUID
-    field :gateway_transaction_id, Ecto.UUID
+    field :gateway_transaction_id, :string
     field :reference, :string
     field :status, :string
     field :user_external_id, Ecto.UUID
@@ -19,23 +19,54 @@ defmodule Pay.Payments.PaymentRefund do
   end
 
   @doc false
-  def changeset(payment_refund, attrs) do
+  def create_changeset(payment_refund, attrs) do
     payment_refund
     |> cast(attrs, [
-      :external_id,
       :reference,
       :amount,
-      :status,
       :user_external_id,
       :gateway_transaction_id
     ])
     |> validate_required([
-      :external_id,
       :reference,
       :amount,
-      :status,
       :user_external_id,
       :gateway_transaction_id
     ])
+    |> foreign_key_constraint(:payment_id)
+  end
+
+  @doc false
+  def update_changeset(payment_refund, attrs) do
+    payment_refund
+    |> cast(attrs, [:status])
+    |> validate_required([:status])
+  end
+end
+
+defmodule Pay.Payments.PaymentRefund.Statuses do
+  # @behaviour StateMachine
+
+  @type t :: :created | :submitted | :success | :error
+
+  @states %{
+    "created" => :created,
+    "submitted" => :submitted,
+    "success" => :success,
+    "error" => :error
+  }
+
+  @spec initial :: t
+  def initial, do: :created
+
+  @spec status(t) :: String.t()
+  def status(t), do: Atom.to_string(t)
+
+  @spec from_string!(String.t()) :: t
+  def from_string!(status) do
+    case @states[status] do
+      nil -> raise(KeyError, key: status, term: @states)
+      internal_state -> internal_state
+    end
   end
 end

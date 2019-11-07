@@ -102,13 +102,15 @@ defmodule Pay.Payments.GatewayAccount do
   def provider(t), do: Atom.to_string(t)
 
   @spec payment_provider(%Pay.Payments.GatewayAccount{}) :: Pay.Payments.Gateway.t()
-  def payment_provider(%Pay.Payments.GatewayAccount{
-        payment_provider: provider,
-        credentials: credentials
-      }) do
+  def payment_provider(
+        %Pay.Payments.GatewayAccount{
+          payment_provider: provider,
+          credentials: credentials
+        } = gateway_account
+      ) do
     case Provider.from_string(provider) do
       :bambora -> Pay.Payments.Gateway.BamboraGateway.from_credentials(credentials)
-      :sandbox -> Pay.Payments.Gateway.BamboraGateway.sandbox()
+      :sandbox -> Pay.Payments.Gateway.Sandbox.from_gateway_account(gateway_account)
     end
   end
 end
