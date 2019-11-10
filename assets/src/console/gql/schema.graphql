@@ -25,6 +25,19 @@ input UpdateServiceInput {
   service: UpdateServiceService!
 }
 
+input UpdateGatewayAccountBamboraCredentials {
+  merchant_id: String!
+  account_number: String
+  api_username: String!
+}
+
+input UpdateGatewayAccountCredentialsInput {
+  # Normally this would be an input union type but GraphQL doesn't support them
+  # and we only have Bambora so this is fine for now.
+  # See https://github.com/graphql/graphql-spec/issues/488
+  credentials: UpdateGatewayAccountBamboraCredentials!
+}
+
 input CreateProductProduct {
   name: String!
   description: String
@@ -42,5 +55,9 @@ input CreateProductInput {
 type Mutation {
   createService(input: CreateServiceInput!): Service!
   updateService(id: ID!, input: UpdateServiceInput!): Service!
+  updateGatewayAccountCredentials(
+    gatewayAccountId: ID!
+    input: UpdateGatewayAccountCredentialsInput!
+  ): GatewayAccountCredentials!
   createProduct(gatewayAccountId: ID!, input: CreateProductInput!): Service!
 }

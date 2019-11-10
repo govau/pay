@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
-import { PageTitle, P } from "@pay/web";
+import { PageTitle, P, Link } from "@pay/web";
 
 import {
   Service,
@@ -8,7 +8,7 @@ import {
   GatewayAccountPaymentProvider,
   BamboraCredentials
 } from "../../__generated__/graphql";
-import { isBamboraCredentials } from ".";
+import { isBamboraCredentials } from "../../../payments";
 
 const SandboxCredentialsPage: React.FC = () => (
   <P>
@@ -18,48 +18,56 @@ const SandboxCredentialsPage: React.FC = () => (
 );
 
 const BamboraCredentialsPage: React.FC<{
+  path: string;
   credentials: BamboraCredentials;
-}> = ({ credentials }) => (
+}> = ({ path, credentials }) => (
   <>
     <table>
       <caption>Your Bambora credentials</caption>
       <tbody>
         <tr>
+          <th>Merchant ID</th>
+          <td>{credentials.merchant_id}</td>
+        </tr>
+        <tr>
           <th>Account number</th>
           <td>{credentials.account_number}</td>
         </tr>
         <tr>
-          <th>Username</th>
+          <th>API username</th>
           <td>{credentials.api_username}</td>
         </tr>
         <tr>
-          <th>Password</th>
+          <th>API password</th>
           <td>{credentials.api_username && "●●●●●●●●"}</td>
         </tr>
       </tbody>
     </table>
+    <Link to={`${path}/edit`}>Edit credentials</Link>
   </>
 );
 
 const CredentialsPage: React.FC<{
+  path: string;
   service: Service;
   gatewayAccount: GatewayAccountFragment;
-}> = ({ service, gatewayAccount }) => {
-  return (
-    <>
-      <Helmet>
-        <title>Account credentials - {service.name}</title>
-      </Helmet>
-      <PageTitle title="Account credentials" />
-      {gatewayAccount.payment_provider ===
-        GatewayAccountPaymentProvider.Sandbox && <SandboxCredentialsPage />}
-      {gatewayAccount.payment_provider ===
-        GatewayAccountPaymentProvider.Bambora &&
-        isBamboraCredentials(gatewayAccount, gatewayAccount.credentials) && (
-          <BamboraCredentialsPage credentials={gatewayAccount.credentials} />
-        )}
-    </>
-  );
-};
+}> = ({ path, service, gatewayAccount }) => (
+  <>
+    <Helmet>
+      <title>Account credentials - {service.name}</title>
+    </Helmet>
+    <PageTitle title="Account credentials" />
+    {gatewayAccount.payment_provider ===
+      GatewayAccountPaymentProvider.Sandbox && <SandboxCredentialsPage />}
+    {gatewayAccount.payment_provider ===
+      GatewayAccountPaymentProvider.Bambora &&
+      isBamboraCredentials(gatewayAccount, gatewayAccount.credentials) && (
+        <BamboraCredentialsPage
+          path={path}
+          credentials={gatewayAccount.credentials}
+        />
+      )}
+  </>
+);
 
 export default CredentialsPage;

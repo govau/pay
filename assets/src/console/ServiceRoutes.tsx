@@ -57,6 +57,39 @@ const PaymentRoutes: React.FC<{
   );
 };
 
+const GatewayAccountCredentialsRoutes: React.FC<{
+  service: Service;
+  gatewayAccount: GatewayAccountFragment;
+}> = ({ service, gatewayAccount }) => {
+  const match = useRouteMatch();
+  if (!match) {
+    return null;
+  }
+  const { url: path } = match;
+
+  return (
+    <Switch>
+      <Route path={`${path}`} exact strict>
+        <Pages.Services.GatewayAccounts.Credentials.IndexPage
+          path={path}
+          service={service}
+          gatewayAccount={gatewayAccount}
+        />
+      </Route>
+      <Route path={`${path}/edit`} exact strict>
+        <Pages.Services.GatewayAccounts.Credentials.EditPage
+          path={path}
+          service={service}
+          gatewayAccount={gatewayAccount}
+        />
+      </Route>
+      <Route path="*">
+        <CorePages.NotFoundPage />
+      </Route>
+    </Switch>
+  );
+};
+
 const GatewayAccountRoutes: React.FC<{
   service: Service;
 }> = ({ service }) => {
@@ -111,8 +144,8 @@ const GatewayAccountRoutes: React.FC<{
           </Route>
         </Switch>
       </Route>
-      <Route path={`${url}/credentials`} exact strict>
-        <Pages.Services.GatewayAccounts.CredentialsPage
+      <Route path={`${url}/credentials`} strict>
+        <GatewayAccountCredentialsRoutes
           service={service}
           gatewayAccount={data.gatewayAccount}
         />

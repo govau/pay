@@ -16,6 +16,7 @@ export type Scalars = {
 
 export type BamboraCredentials = {
   __typename?: "BamboraCredentials";
+  merchant_id?: Maybe<Scalars["String"]>;
   account_number?: Maybe<Scalars["String"]>;
   api_username?: Maybe<Scalars["String"]>;
 };
@@ -219,7 +220,14 @@ export type User = {
 export type GatewayAccountFragment = { __typename?: "GatewayAccount" } & Pick<
   GatewayAccount,
   "id" | "type" | "payment_provider" | "service_name"
->;
+> & {
+    credentials:
+      | { __typename?: "SandboxCredentials" }
+      | ({ __typename?: "BamboraCredentials" } & Pick<
+          BamboraCredentials,
+          "merchant_id"
+        >);
+  };
 
 export type PaymentFragment = { __typename?: "Payment" } & Pick<
   Payment,
@@ -272,6 +280,11 @@ export const GatewayAccountFragmentDoc = gql`
     type
     payment_provider
     service_name
+    credentials {
+      ... on BamboraCredentials {
+        merchant_id
+      }
+    }
   }
 `;
 export const PaymentFragmentDoc = gql`

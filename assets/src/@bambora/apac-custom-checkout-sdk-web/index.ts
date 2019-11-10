@@ -85,7 +85,7 @@ export interface TokenResult {
 export default interface CustomCheckout {
   create: (field: Field, options?: FieldOptions) => Element;
   createOneTimeToken: (
-    merchantID: string,
+    merchantId: string,
     callback: (result: TokenResult) => void
   ) => void;
 }

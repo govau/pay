@@ -45,7 +45,7 @@ defmodule PayWeb.PaymentControllerTest do
         "type" => Payments.GatewayAccount.type(:test),
         "payment_provider" => Payments.GatewayAccount.provider(:sandbox),
         "service_name" => "Test service",
-        "credentials" => %{"account_number" => "sandbox123"}
+        "credentials" => %{}
       })
 
     gateway_account

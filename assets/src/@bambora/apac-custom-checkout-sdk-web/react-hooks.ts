@@ -50,7 +50,10 @@ export const useLoadCheckout = ({ src, onLoad }: useLoadCheckoutArgs) => {
   return React.useMemo(() => state, [state]);
 };
 
-export const useCreateOTT = (merchantID: string, checkout?: CustomCheckout) => {
+export const useCreateOTT = (
+  merchantId?: null | string,
+  checkout?: CustomCheckout
+) => {
   const [loading, setLoading] = React.useState<boolean>(false);
   const [error, setError] = React.useState<null | Error | TokenResultError>(
     null
@@ -71,9 +74,15 @@ export const useCreateOTT = (merchantID: string, checkout?: CustomCheckout) => {
       expiryMonth: string;
       expiryYear: string;
     }>((resolve, reject) => {
+      if (!merchantId) {
+        const err = new Error("Merchant ID is not set");
+        setError(err);
+        return reject(err);
+      }
+
       setLoading(true);
 
-      checkout.createOneTimeToken(merchantID, result => {
+      checkout.createOneTimeToken(merchantId, result => {
         setLoading(false);
 
         const {
@@ -104,7 +113,7 @@ export const useCreateOTT = (merchantID: string, checkout?: CustomCheckout) => {
         return resolve({ token, last4, expiryMonth, expiryYear });
       });
     });
-  }, [merchantID, checkout]);
+  }, [merchantId, checkout]);
 
   return React.useMemo(
     () => ({

@@ -10,9 +10,6 @@ applications:
     <<: *defaults
     command: pay/bin/pay eval "Pay.Release.reset_database"; pay/bin/pay start
     path: _build/prod/rel
-    env:
-      BAMBORA_USERNAME: ((bambora_username))
-      BAMBORA_PASSWORD: ((bambora_password))
-      BAMBORA_ACCT_NO: ((bambora_acct_no))
     services:
       - pay-psql-((stg))
+      - pay-bambora
