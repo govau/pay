@@ -1,22 +1,26 @@
 import { GatewayAccountPaymentProvider } from "../__generated__/schema";
 
+const withCredentialsTypeName = (gatewayAccount: any) => {
+  switch (gatewayAccount.payment_provider) {
+    case GatewayAccountPaymentProvider.Sandbox:
+      return {
+        __typename: "SandboxCredentials",
+        ...gatewayAccount.credentials
+      };
+    case GatewayAccountPaymentProvider.Bambora:
+      return {
+        __typename: "BamboraCredentials",
+        ...gatewayAccount.credentials
+      };
+    default:
+      return gatewayAccount.credentials;
+  }
+};
+
 export const typePatchers = {
   GatewayAccount: (data: any): any => {
     if (data.credentials) {
-      switch (data.payment_provider) {
-        case GatewayAccountPaymentProvider.Sandbox:
-          data.credentials = {
-            __typename: "SandboxCredentials",
-            ...data.credentials
-          };
-          break;
-        case GatewayAccountPaymentProvider.Bambora:
-          data.credentials = {
-            __typename: "BamboraCredentials",
-            ...data.credentials
-          };
-          break;
-      }
+      data.credentials = withCredentialsTypeName(data);
     }
     return data;
   },
@@ -24,7 +28,10 @@ export const typePatchers = {
     data.card_details = { __typename: "CardDetails", ...data.card_details };
     data.gateway_account = {
       __typename: "GatewayAccount",
-      ...data.gateway_account
+      ...data.gateway_account,
+      credentials: data.gateway_account.credentials
+        ? withCredentialsTypeName(data.gateway_account)
+        : data.gateway_account.credentials
     };
     return data;
   }

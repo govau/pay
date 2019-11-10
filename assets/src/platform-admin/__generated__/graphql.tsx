@@ -16,6 +16,7 @@ export type Scalars = {
 
 export type BamboraCredentials = {
   __typename?: "BamboraCredentials";
+  merchant_id?: Maybe<Scalars["String"]>;
   account_number?: Maybe<Scalars["String"]>;
   api_username?: Maybe<Scalars["String"]>;
 };

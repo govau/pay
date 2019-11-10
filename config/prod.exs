@@ -17,10 +17,6 @@ config :pay, PayWeb.Endpoint,
 
 config :pay, :checkout_endpoint, "https://#{System.get_env("ENDPOINT_HOST")}"
 
-config :bambora,
-  api_username: System.get_env("BAMBORA_USERNAME"),
-  api_password: System.get_env("BAMBORA_PASSWORD")
-
 config :stripity_stripe,
   api_key: System.get_env("STRIPE_API_KEY")
 

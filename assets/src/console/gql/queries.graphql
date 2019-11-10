@@ -12,9 +12,18 @@ fragment GatewayAccount on GatewayAccount {
   payment_provider
   credentials {
     ... on BamboraCredentials {
+      merchant_id
       account_number
       api_username
     }
+  }
+}
+
+fragment GatewayAccountCredentials on GatewayAccountCredentials {
+  ... on BamboraCredentials {
+    merchant_id
+    account_number
+    api_username
   }
 }
 
@@ -147,6 +156,23 @@ query GetGatewayAccount($id: ID!) {
       path: "/internal/payments/gateway-accounts/{args.id}"
     ) {
     ...GatewayAccount
+  }
+}
+
+mutation UpdateGatewayAccountCredentials(
+  $gatewayAccountId: ID!
+  $input: UpdateGatewayAccountCredentialsInput!
+) {
+  credentials: updateGatewayAccountCredentials(
+    gatewayAccountId: $gatewayAccountId
+    input: $input
+  )
+    @rest(
+      type: "GatewayAccountCredentials"
+      path: "/internal/payments/gateway-accounts/{args.gatewayAccountId}/credentials"
+      method: "PUT"
+    ) {
+    ...GatewayAccountCredentials
   }
 }
 

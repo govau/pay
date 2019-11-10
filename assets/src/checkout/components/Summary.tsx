@@ -27,7 +27,7 @@ const Amount = styled.span`
 `;
 
 interface Props {
-  payment: PaymentFragment;
+  payment: Pick<PaymentFragment, "description" | "amount">;
 }
 
 const Summary: React.FC<Props> = ({ payment }) => (

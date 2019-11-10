@@ -43,7 +43,13 @@ defmodule PayWeb.Router do
       end
 
       resources("/card-types", CardTypeController, except: [:new, :edit])
-      resources("/gateway-accounts", GatewayAccountController, except: [:new, :edit])
+
+      resources("/gateway-accounts", GatewayAccountController, except: [:new, :edit]) do
+        resources("/credentials", GatewayAccountCredentialsController,
+          only: [:update],
+          singleton: true
+        )
+      end
     end
 
     scope "/services", as: :services do

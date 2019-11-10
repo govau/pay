@@ -280,7 +280,7 @@ service1_view_only_user_id =
 service1_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
     external_id: Ecto.UUID.generate(),
-    payment_provider: "sandbox",
+    payment_provider: GatewayAccount.provider(:sandbox),
     type: GatewayAccount.type(:test),
     service_name: "Service 1",
     credentials: %{}
@@ -309,7 +309,7 @@ Repo.insert!(%ServiceUser{
 service2_test_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
     external_id: Ecto.UUID.generate(),
-    payment_provider: "sandbox",
+    payment_provider: GatewayAccount.provider(:sandbox),
     type: GatewayAccount.type(:test),
     service_name: "Service 2",
     credentials: %{}
@@ -318,14 +318,43 @@ service2_test_gateway_account_external_id =
 service2_live_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
     external_id: Ecto.UUID.generate(),
-    payment_provider: "bambora",
+    payment_provider: GatewayAccount.provider(:bambora),
     type: GatewayAccount.type(:live),
     service_name: "Service 2",
-    credentials: %{
-      "username" => System.fetch_env!("BAMBORA_USERNAME"),
-      "password" => System.fetch_env!("BAMBORA_PASSWORD"),
-      "account_number" => System.fetch_env!("BAMBORA_ACCT_NO")
-    }
+    credentials:
+      with {:ok, merchant_id} <-
+             Pay.VCAP.user_provided(
+               "pay-bambora",
+               "MERCHANT_ID",
+               System.get_env("BAMBORA_MERCHANT_ID", "")
+             ),
+           {:ok, account_number} <-
+             Pay.VCAP.user_provided(
+               "pay-bambora",
+               "ACCOUNT_NUMBER",
+               System.get_env("BAMBORA_ACCOUNT_NUMBER", "")
+             ),
+           {:ok, api_username} <-
+             Pay.VCAP.user_provided(
+               "pay-bambora",
+               "API_USERNAME",
+               System.get_env("BAMBORA_API_USERNAME", "")
+             ),
+           {:ok, api_password} <-
+             Pay.VCAP.user_provided(
+               "pay-bambora",
+               "API_PASSWORD",
+               System.get_env("BAMBORA_API_PASSWORD", "")
+             ) do
+        %{
+          "merchant_id" => merchant_id,
+          "account_number" => account_number,
+          "api_username" => api_username,
+          "api_password" => api_password
+        }
+      else
+        _ -> %{}
+      end
   }).external_id
 
 service2_id =
@@ -386,7 +415,7 @@ Repo.insert!(%Product{
 service3_test_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
     external_id: Ecto.UUID.generate(),
-    payment_provider: "sandbox",
+    payment_provider: GatewayAccount.provider(:sandbox),
     type: GatewayAccount.type(:test),
     service_name: "Service 3",
     credentials: %{}
@@ -395,14 +424,43 @@ service3_test_gateway_account_external_id =
 service3_live_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
     external_id: Ecto.UUID.generate(),
-    payment_provider: "bambora",
+    payment_provider: GatewayAccount.provider(:bambora),
     type: GatewayAccount.type(:live),
     service_name: "Service 3",
-    credentials: %{
-      "username" => System.fetch_env!("BAMBORA_USERNAME"),
-      "password" => System.fetch_env!("BAMBORA_PASSWORD"),
-      "account_number" => System.fetch_env!("BAMBORA_ACCT_NO")
-    }
+    credentials:
+      with {:ok, merchant_id} <-
+             Pay.VCAP.user_provided(
+               "pay-bambora",
+               "MERCHANT_ID",
+               System.get_env("BAMBORA_MERCHANT_ID", "")
+             ),
+           {:ok, account_number} <-
+             Pay.VCAP.user_provided(
+               "pay-bambora",
+               "ACCOUNT_NUMBER",
+               System.get_env("BAMBORA_ACCOUNT_NUMBER", "")
+             ),
+           {:ok, api_username} <-
+             Pay.VCAP.user_provided(
+               "pay-bambora",
+               "API_USERNAME",
+               System.get_env("BAMBORA_API_USERNAME", "")
+             ),
+           {:ok, api_password} <-
+             Pay.VCAP.user_provided(
+               "pay-bambora",
+               "API_PASSWORD",
+               System.get_env("BAMBORA_API_PASSWORD", "")
+             ) do
+        %{
+          "merchant_id" => merchant_id,
+          "account_number" => account_number,
+          "api_username" => api_username,
+          "api_password" => api_password
+        }
+      else
+        _ -> %{}
+      end
   }).external_id
 
 service3_id =

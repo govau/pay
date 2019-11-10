@@ -6,8 +6,8 @@ defmodule Pay.Payments.Gateway.BamboraGateway do
   def from_credentials(credentials) do
     %__MODULE__{
       client: %Bambora.Client.SOAP{
-        username: credentials["username"],
-        password: credentials["password"]
+        username: credentials["api_username"],
+        password: credentials["api_password"]
       }
     }
   end

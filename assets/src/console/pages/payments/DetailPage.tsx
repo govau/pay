@@ -5,16 +5,13 @@ import { PageTitle, H2, Loader, ErrorAlert } from "@pay/web";
 import * as Table from "@pay/web/components/Table";
 
 import { paymentProviderLabel, paymentStatusLabel } from "../../payments";
-import {
-  Service,
-  GatewayAccountType,
-  PaymentEventType
-} from "../../../__generated__/schema";
+import { Service, PaymentEventType } from "../../../__generated__/schema";
 import {
   GatewayAccountFragment,
   PaymentFragment,
   useGetPaymentEventsQuery
 } from "../../__generated__/graphql";
+import { gatewayAccountFullType } from "../../../payments";
 
 interface Props {
   service: Service;
@@ -51,9 +48,7 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
       <Helmet>
         <title>
           Transaction details {reference} - {service.name}{" "}
-          {gatewayAccount.type === GatewayAccountType.Test
-            ? [gatewayAccount.payment_provider, gatewayAccount.type].join(" ")
-            : gatewayAccount.type}
+          {gatewayAccountFullType(gatewayAccount)}
         </title>
       </Helmet>
       <PageTitle title="Transaction detail" />

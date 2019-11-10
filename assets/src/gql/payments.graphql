@@ -24,6 +24,7 @@ type SandboxCredentials {
 }
 
 type BamboraCredentials {
+  merchant_id: String
   account_number: String
   api_username: String
 }

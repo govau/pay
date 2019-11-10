@@ -14,7 +14,9 @@ import { Theme } from "@pay/web/theme";
 import { generateId } from "@pay/web/lib/utils";
 
 import {
+  GatewayAccountFragment,
   PaymentFragment,
+  BamboraCredentials,
   useSubmitBamboraPaymentMutation
 } from "../__generated__/graphql";
 import Split, { Content } from "../components/Split";
@@ -22,8 +24,6 @@ import CardForm, {
   classNames as cardFormClassNames
 } from "../components/BamboraCardForm";
 import Summary from "../components/Summary";
-
-const merchantID = "ec5ab889-842b-4d62-890b-e53ab84f91f4";
 
 const mountFields = (
   checkout: CustomCheckout,
@@ -66,10 +66,13 @@ const mountFields = (
 
 interface Props {
   path: string;
-  payment: PaymentFragment;
+  gatewayAccount: Omit<GatewayAccountFragment, "credentials"> & {
+    credentials: BamboraCredentials;
+  };
+  payment: Omit<PaymentFragment, "gateway_account">;
 }
 
-const BamboraPayPage: React.FC<Props> = ({ path, payment }) => {
+const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
   const history = useHistory();
   const theme = useTheme();
 
@@ -93,7 +96,10 @@ const BamboraPayPage: React.FC<Props> = ({ path, payment }) => {
     src: "https://customcheckout-uat.bambora.net.au/1.0.0/customcheckout.js",
     onLoad: onCheckoutLoad
   });
-  const createOTT = useCreateOTT(merchantID, loadCheckout.checkout);
+  const createOTT = useCreateOTT(
+    gatewayAccount.credentials.merchant_id,
+    loadCheckout.checkout
+  );
 
   const [submitError, setSubmitError] = React.useState<null | Error>(null);
   const [

@@ -31,12 +31,17 @@ export const Services = {
         fallback: <Loader />
       })
     },
-    CredentialsPage: loadable(
-      () => import("./gateway-accounts/CredentialsPage"),
-      {
+    Credentials: {
+      IndexPage: loadable(() => import("./gateway-accounts/CredentialsPage"), {
         fallback: <Loader />
-      }
-    ),
+      }),
+      EditPage: loadable(
+        () => import("./gateway-accounts/EditCredentialsPage"),
+        {
+          fallback: <Loader />
+        }
+      )
+    },
     Products: {
       ListPage: loadable(() => import("./products/ListPage"), {
         fallback: <Loader />

@@ -16,6 +16,7 @@ export type Scalars = {
 
 export type BamboraCredentials = {
   __typename?: "BamboraCredentials";
+  merchant_id?: Maybe<Scalars["String"]>;
   account_number?: Maybe<Scalars["String"]>;
   api_username?: Maybe<Scalars["String"]>;
 };
@@ -93,6 +94,7 @@ export type Mutation = {
   __typename?: "Mutation";
   createService: Service;
   updateService: Service;
+  updateGatewayAccountCredentials: GatewayAccountCredentials;
   createProduct: Service;
 };
 
@@ -103,6 +105,11 @@ export type MutationCreateServiceArgs = {
 export type MutationUpdateServiceArgs = {
   id: Scalars["ID"];
   input: UpdateServiceInput;
+};
+
+export type MutationUpdateGatewayAccountCredentialsArgs = {
+  gatewayAccountId: Scalars["ID"];
+  input: UpdateGatewayAccountCredentialsInput;
 };
 
 export type MutationCreateProductArgs = {
@@ -266,6 +273,21 @@ export type ServiceUser = {
   role: Role;
 };
 
+export type UpdateGatewayAccountBamboraCredentials = {
+  merchant_id: Scalars["String"];
+  account_number?: Maybe<Scalars["String"]>;
+  api_username: Scalars["String"];
+};
+
+export type UpdateGatewayAccountCredentialsInput = {
+  /**
+   * Normally this would be an input union type but GraphQL doesn't support them
+   * and we only have Bambora so this is fine for now.
+   * See https://github.com/graphql/graphql-spec/issues/488
+   **/
+  credentials: UpdateGatewayAccountBamboraCredentials;
+};
+
 export type UpdateServiceInput = {
   service: UpdateServiceService;
 };
@@ -298,9 +320,21 @@ export type GatewayAccountFragment = { __typename?: "GatewayAccount" } & Pick<
       | { __typename?: "SandboxCredentials" }
       | ({ __typename?: "BamboraCredentials" } & Pick<
           BamboraCredentials,
-          "account_number" | "api_username"
+          "merchant_id" | "account_number" | "api_username"
         >);
   };
+
+type GatewayAccountCredentials_SandboxCredentials_Fragment = {
+  __typename?: "SandboxCredentials";
+};
+
+type GatewayAccountCredentials_BamboraCredentials_Fragment = {
+  __typename?: "BamboraCredentials";
+} & Pick<BamboraCredentials, "merchant_id" | "account_number" | "api_username">;
+
+export type GatewayAccountCredentialsFragment =
+  | GatewayAccountCredentials_SandboxCredentials_Fragment
+  | GatewayAccountCredentials_BamboraCredentials_Fragment;
 
 export type ProductFragment = { __typename?: "Product" } & Pick<
   Product,
@@ -417,6 +451,23 @@ export type GetGatewayAccountQuery = { __typename?: "Query" } & {
   gatewayAccount: { __typename?: "GatewayAccount" } & GatewayAccountFragment;
 };
 
+export type UpdateGatewayAccountCredentialsMutationVariables = {
+  gatewayAccountId: Scalars["ID"];
+  input: UpdateGatewayAccountCredentialsInput;
+};
+
+export type UpdateGatewayAccountCredentialsMutation = {
+  __typename?: "Mutation";
+} & {
+  credentials:
+    | ({
+        __typename?: "SandboxCredentials";
+      } & GatewayAccountCredentials_SandboxCredentials_Fragment)
+    | ({
+        __typename?: "BamboraCredentials";
+      } & GatewayAccountCredentials_BamboraCredentials_Fragment);
+};
+
 export type GetProductsQueryVariables = {
   gatewayAccountId: Scalars["ID"];
 };
@@ -472,9 +523,19 @@ export const GatewayAccountFragmentDoc = gql`
     payment_provider
     credentials {
       ... on BamboraCredentials {
+        merchant_id
         account_number
         api_username
       }
+    }
+  }
+`;
+export const GatewayAccountCredentialsFragmentDoc = gql`
+  fragment GatewayAccountCredentials on GatewayAccountCredentials {
+    ... on BamboraCredentials {
+      merchant_id
+      account_number
+      api_username
     }
   }
 `;
@@ -538,7 +599,8 @@ export type GetUserServicesComponentProps = Omit<
 > &
   (
     | { variables: GetUserServicesQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetUserServicesComponent = (
   props: GetUserServicesComponentProps
@@ -704,7 +766,8 @@ export type GetServiceWithUsersComponentProps = Omit<
 > &
   (
     | { variables: GetServiceWithUsersQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetServiceWithUsersComponent = (
   props: GetServiceWithUsersComponentProps
@@ -793,7 +856,8 @@ export type GetServiceWithGatewayAccountsComponentProps = Omit<
 > &
   (
     | { variables: GetServiceWithGatewayAccountsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetServiceWithGatewayAccountsComponent = (
   props: GetServiceWithGatewayAccountsComponentProps
@@ -1023,7 +1087,8 @@ export type GetGatewayAccountsComponentProps = Omit<
 > &
   (
     | { variables: GetGatewayAccountsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetGatewayAccountsComponent = (
   props: GetGatewayAccountsComponentProps
@@ -1106,7 +1171,8 @@ export type GetGatewayAccountComponentProps = Omit<
 > &
   (
     | { variables: GetGatewayAccountQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetGatewayAccountComponent = (
   props: GetGatewayAccountComponentProps
@@ -1168,6 +1234,88 @@ export type GetGatewayAccountQueryResult = ApolloReactCommon.QueryResult<
   GetGatewayAccountQuery,
   GetGatewayAccountQueryVariables
 >;
+export const UpdateGatewayAccountCredentialsDocument = gql`
+  mutation UpdateGatewayAccountCredentials(
+    $gatewayAccountId: ID!
+    $input: UpdateGatewayAccountCredentialsInput!
+  ) {
+    credentials: updateGatewayAccountCredentials(
+      gatewayAccountId: $gatewayAccountId
+      input: $input
+    )
+      @rest(
+        type: "GatewayAccountCredentials"
+        path: "/internal/payments/gateway-accounts/{args.gatewayAccountId}/credentials"
+        method: "PUT"
+      ) {
+      ...GatewayAccountCredentials
+    }
+  }
+  ${GatewayAccountCredentialsFragmentDoc}
+`;
+export type UpdateGatewayAccountCredentialsMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateGatewayAccountCredentialsMutation,
+  UpdateGatewayAccountCredentialsMutationVariables
+>;
+export type UpdateGatewayAccountCredentialsComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    UpdateGatewayAccountCredentialsMutation,
+    UpdateGatewayAccountCredentialsMutationVariables
+  >,
+  "mutation"
+>;
+
+export const UpdateGatewayAccountCredentialsComponent = (
+  props: UpdateGatewayAccountCredentialsComponentProps
+) => (
+  <ApolloReactComponents.Mutation<
+    UpdateGatewayAccountCredentialsMutation,
+    UpdateGatewayAccountCredentialsMutationVariables
+  >
+    mutation={UpdateGatewayAccountCredentialsDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useUpdateGatewayAccountCredentialsMutation__
+ *
+ * To run a mutation, you first call `useUpdateGatewayAccountCredentialsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGatewayAccountCredentialsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGatewayAccountCredentialsMutation, { data, loading, error }] = useUpdateGatewayAccountCredentialsMutation({
+ *   variables: {
+ *      gatewayAccountId: // value for 'gatewayAccountId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateGatewayAccountCredentialsMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    UpdateGatewayAccountCredentialsMutation,
+    UpdateGatewayAccountCredentialsMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    UpdateGatewayAccountCredentialsMutation,
+    UpdateGatewayAccountCredentialsMutationVariables
+  >(UpdateGatewayAccountCredentialsDocument, baseOptions);
+}
+export type UpdateGatewayAccountCredentialsMutationHookResult = ReturnType<
+  typeof useUpdateGatewayAccountCredentialsMutation
+>;
+export type UpdateGatewayAccountCredentialsMutationResult = ApolloReactCommon.MutationResult<
+  UpdateGatewayAccountCredentialsMutation
+>;
+export type UpdateGatewayAccountCredentialsMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateGatewayAccountCredentialsMutation,
+  UpdateGatewayAccountCredentialsMutationVariables
+>;
 export const GetProductsDocument = gql`
   query GetProducts($gatewayAccountId: ID!) {
     products(gatewayAccountId: $gatewayAccountId)
@@ -1189,7 +1337,8 @@ export type GetProductsComponentProps = Omit<
 > &
   (
     | { variables: GetProductsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetProductsComponent = (props: GetProductsComponentProps) => (
   <ApolloReactComponents.Query<GetProductsQuery, GetProductsQueryVariables>
@@ -1339,7 +1488,8 @@ export type GetPaymentsComponentProps = Omit<
 > &
   (
     | { variables: GetPaymentsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetPaymentsComponent = (props: GetPaymentsComponentProps) => (
   <ApolloReactComponents.Query<GetPaymentsQuery, GetPaymentsQueryVariables>
@@ -1486,7 +1636,8 @@ export type GetPaymentEventsComponentProps = Omit<
 > &
   (
     | { variables: GetPaymentEventsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetPaymentEventsComponent = (
   props: GetPaymentEventsComponentProps

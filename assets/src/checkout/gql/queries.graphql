@@ -3,6 +3,11 @@ fragment GatewayAccount on GatewayAccount {
   type
   payment_provider
   service_name
+  credentials {
+    ... on BamboraCredentials {
+      merchant_id
+    }
+  }
 }
 
 fragment Payment on Payment {
