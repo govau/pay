@@ -64,7 +64,30 @@ defimpl Pay.Payments.Gateway, for: Pay.Payments.Gateway.BamboraGateway do
     end
   end
 
-  def refund_payment(_gateway, _payment, _params) do
-    {:error, "refund payment not supported for this gateway"}
+  @spec refund_payment(
+          %Pay.Payments.Gateway.BamboraGateway{},
+          %Pay.Payments.Payment{},
+          map
+        ) :: {:ok, %Pay.Payments.Gateway.RefundPaymentResponse{}} | {:error, String.t()}
+  def refund_payment(
+        %Pay.Payments.Gateway.BamboraGateway{client: client},
+        %Pay.Payments.Payment{gateway_transaction_id: transaction_id} = _payment,
+        %{amount: amount}
+      ) do
+    refund_response =
+      Bambora.submit_single_refund(client, %{
+        amount: amount,
+        receipt: transaction_id
+      })
+
+    with {:ok, response} <- refund_response do
+      case Bambora.Service.SubmitSingleRefund.response_code(response.response_code) do
+        :approved ->
+          {:ok, %Pay.Payments.Gateway.RefundPaymentResponse{reference: response.receipt}}
+
+        :not_approved ->
+          {:error, "refund not approved: #{response.declined_message}"}
+      end
+    end
   end
 end
