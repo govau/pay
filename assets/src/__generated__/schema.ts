@@ -17,6 +17,7 @@ export type BamboraCredentials = {
 export type CardDetails = {
   __typename?: "CardDetails";
   cardholder_name: Scalars["String"];
+  card_number?: Maybe<Scalars["String"]>;
   last_digits_card_number: Scalars["String"];
   first_digits_card_number: Scalars["String"];
   expiry_date: Scalars["String"];

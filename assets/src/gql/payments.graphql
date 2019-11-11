@@ -47,6 +47,7 @@ type GatewayAccount {
 
 type CardDetails {
   cardholder_name: String!
+  card_number: String
   last_digits_card_number: String!
   first_digits_card_number: String!
   expiry_date: String!

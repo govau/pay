@@ -38,6 +38,7 @@ fragment Payment on Payment {
   gateway_transaction_id
   card_details {
     cardholder_name
+    card_number
     last_digits_card_number
     first_digits_card_number
     expiry_date
