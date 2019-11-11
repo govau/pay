@@ -11,20 +11,39 @@ defmodule Bambora.SOAPTest do
              transaction_type: :purchase,
              account_number: "acct_no"
            }) == [
+             {"CustomerStorageNumber", nil, "VAULT1"},
              {"CustNumber", nil, "cust_number"},
              {"CustRef", nil, "cust_ref"},
              {"Amount", nil, 1500},
              {"TrnType", nil, "1"},
              {"AccountNumber", nil, "acct_no"},
-             {"CreditCard", %{"Registered" => "False"}, [{"OneTimeToken", nil, "one-time-token"}]}
+             {"CreditCard", %{"Registered" => "False"},
+              [
+                {"TokeniseAlgorithmID", nil, "2"},
+                {"OneTimeToken", nil, "one-time-token"}
+              ]}
            ]
   end
 
   test "decodes a payment response" do
     response = %{
       SubmitSinglePaymentResponse: %{
-        SubmitSinglePaymentResult:
-          "<Response><ResponseCode>0</ResponseCode><Timestamp>21-Oct-2019 16:36:21</Timestamp><Receipt>13949236</Receipt><SettlementDate>21-Oct-2019</SettlementDate><DeclinedCode></DeclinedCode><DeclinedMessage></DeclinedMessage></Response>"
+        SubmitSinglePaymentResult: """
+        <Response>
+          <ResponseCode>0</ResponseCode>
+          <Timestamp>21-Oct-2019 16:36:21</Timestamp>
+          <Receipt>13949236</Receipt>
+          <SettlementDate>21-Oct-2019</SettlementDate>
+          <DeclinedCode></DeclinedCode>
+          <DeclinedMessage></DeclinedMessage>
+          <CreditCardToken>9762517381658055</CreditCardToken>
+          <TruncatedCard>424242******4242</TruncatedCard>
+          <ExpM>10</ExpM>
+          <ExpY>2025</ExpY>
+          <CardType>Visa</CardType>
+          <RetryIndicator>N</RetryIndicator>
+        </Response>
+        """
       }
     }
 
@@ -35,7 +54,15 @@ defmodule Bambora.SOAPTest do
                receipt: "13949236",
                response_code: "0",
                settlement_date: "21-Oct-2019",
-               timestamp: "21-Oct-2019 16:36:21"
+               timestamp: "21-Oct-2019 16:36:21",
+               amount: "",
+               surcharge_amount: "",
+               card_type: "Visa",
+               credit_card_token: "9762517381658055",
+               exp_m: "10",
+               exp_y: "2025",
+               retry_indicator: "N",
+               truncated_card: "424242******4242"
              }
            }
   end

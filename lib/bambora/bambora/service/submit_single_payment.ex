@@ -31,7 +31,15 @@ defmodule Bambora.Service.SubmitSinglePayment do
           receipt: String.t(),
           settlement_date: String.t(),
           declined_code: String.t(),
-          declined_message: String.t()
+          declined_message: String.t(),
+          amount: String.t(),
+          surcharge_amount: String.t(),
+          credit_card_token: String.t(),
+          truncated_card: String.t(),
+          exp_m: String.t(),
+          exp_y: String.t(),
+          card_type: String.t(),
+          retry_indicator: String.t()
         }
 
   @spec transaction_type(transaction_t) :: String.t()
@@ -49,7 +57,19 @@ defmodule Bambora.Service.SubmitSinglePayment do
         :receipt,
         :settlement_date,
         :declined_code,
-        :declined_message
+        :declined_message,
+
+        # payment summary
+        :amount,
+        :surcharge_amount,
+
+        # card details
+        :credit_card_token,
+        :truncated_card,
+        :exp_m,
+        :exp_y,
+        :card_type,
+        :retry_indicator
       ]
     }
   end
@@ -73,12 +93,14 @@ defmodule Bambora.Service.SubmitSinglePayment do
         account_number: account_number
       }) do
     [
+      X.element("CustomerStorageNumber", "VAULT1"),
       X.element("CustNumber", customer_number),
       X.element("CustRef", customer_ref),
       X.element("Amount", amount),
       X.element("TrnType", transaction_type(t_type)),
       X.element("AccountNumber", account_number),
       X.element("CreditCard", %{"Registered" => "False"}, [
+        X.element("TokeniseAlgorithmID", "2"),
         X.element("OneTimeToken", one_time_token)
       ])
     ]

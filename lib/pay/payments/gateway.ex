@@ -1,5 +1,10 @@
 defmodule Pay.Payments.Gateway.SubmitPaymentResponse do
-  defstruct [:reference]
+  defstruct [
+    :reference,
+    :card_brand,
+    :card_number,
+    :card_expiry
+  ]
 end
 
 defmodule Pay.Payments.Gateway.RefundPaymentResponse do

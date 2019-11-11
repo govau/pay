@@ -132,8 +132,9 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
                 <Table.Row>
                   <Table.Header scope="row">Card number</Table.Header>
                   <Table.Cell>
-                    {card_details.first_digits_card_number}** ****{" "}
-                    {card_details.last_digits_card_number}
+                    {card_details.card_number
+                      ? card_details.card_number
+                      : `${card_details.first_digits_card_number}** **** ${card_details.last_digits_card_number}`}
                   </Table.Cell>
                 </Table.Row>
                 <Table.Row>

@@ -50,7 +50,13 @@ defimpl Pay.Payments.Gateway, for: Pay.Payments.Gateway.BamboraGateway do
     with {:ok, response} <- payment_response do
       case Bambora.Service.SubmitSinglePayment.response_code(response.response_code) do
         :approved ->
-          {:ok, %Pay.Payments.Gateway.SubmitPaymentResponse{reference: response.receipt}}
+          {:ok,
+           %Pay.Payments.Gateway.SubmitPaymentResponse{
+             reference: response.receipt,
+             card_brand: response.card_type,
+             card_number: response.truncated_card,
+             card_expiry: "#{response.exp_m}/#{response.exp_y}"
+           }}
 
         :not_approved ->
           {:error, "payment not approved: #{response.declined_message}"}

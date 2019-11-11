@@ -38,11 +38,16 @@ defmodule PayWeb.PaymentController do
     with payment <- Payments.get_payment_by_external_id!(id),
          payment <- Pay.Repo.preload(payment, :gateway_account),
          gateway <- Payments.GatewayAccount.payment_provider(payment.gateway_account),
-         {:ok, %{reference: payment_reference}} <-
+         {:ok, %{reference: payment_reference} = payment_response} <-
            Payments.Gateway.submit_payment(gateway, payment, payment_params),
          {:ok, updated_payment} <-
            Payments.update_payment(payment, transition, %{
-             gateway_transaction_id: payment_reference
+             gateway_transaction_id: payment_reference,
+             card_details: %{
+               card_brand: payment_response.card_brand,
+               card_number: payment_response.card_number,
+               expiry_date: payment_response.card_expiry
+             }
            }) do
       render(conn, "show.json", payment: updated_payment)
     end
