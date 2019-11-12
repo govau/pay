@@ -63,6 +63,15 @@ fragment PaymentEvent on PaymentEvent {
   status
 }
 
+fragment PaymentRefund on PaymentRefund {
+  id
+  reference
+  amount
+  status
+  user_external_id
+  gateway_transaction_id
+}
+
 query GetUserServices($userId: ID!) {
   services: userServices(userId: $userId)
     @rest(
@@ -136,6 +145,17 @@ mutation UpdateService($id: ID!, $input: UpdateServiceInput!) {
       method: "PUT"
     ) {
     ...Service
+  }
+}
+
+mutation SubmitRefund($paymentId: ID!, $input: SubmitRefundInput!) {
+  refund: submitRefund(paymentId: $paymentId, input: $input)
+    @rest(
+      type: "PaymentRefund"
+      path: "/internal/payments/payments/{args.paymentId}/refunds"
+      method: "POST"
+    ) {
+    ...PaymentRefund
   }
 }
 

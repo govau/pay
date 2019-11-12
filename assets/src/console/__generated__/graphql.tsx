@@ -96,6 +96,7 @@ export type Mutation = {
   updateService: Service;
   updateGatewayAccountCredentials: GatewayAccountCredentials;
   createProduct: Service;
+  submitRefund: PaymentRefund;
 };
 
 export type MutationCreateServiceArgs = {
@@ -115,6 +116,11 @@ export type MutationUpdateGatewayAccountCredentialsArgs = {
 export type MutationCreateProductArgs = {
   gatewayAccountId: Scalars["ID"];
   input: CreateProductInput;
+};
+
+export type MutationSubmitRefundArgs = {
+  paymentId: Scalars["ID"];
+  input: SubmitRefundInput;
 };
 
 export type Organisation = {
@@ -151,6 +157,28 @@ export type PaymentEvent = {
 export enum PaymentEventType {
   Payment = "payment",
   Refund = "refund"
+}
+
+export type PaymentRefund = {
+  __typename?: "PaymentRefund";
+  id: Scalars["ID"];
+  reference: Scalars["String"];
+  amount: Scalars["Int"];
+  status: PaymentRefundStatus;
+  user_external_id: Scalars["ID"];
+  gateway_transaction_id: Scalars["ID"];
+};
+
+export type PaymentRefundInput = {
+  amount: Scalars["Int"];
+  reference?: Maybe<Scalars["String"]>;
+};
+
+export enum PaymentRefundStatus {
+  Created = "created",
+  Submitted = "submitted",
+  Success = "success",
+  Error = "error"
 }
 
 export enum PaymentStatus {
@@ -273,6 +301,10 @@ export type ServiceUser = {
   role: Role;
 };
 
+export type SubmitRefundInput = {
+  payment_refund: PaymentRefundInput;
+};
+
 export type UpdateGatewayAccountBamboraCredentials = {
   merchant_id: Scalars["String"];
   account_number?: Maybe<Scalars["String"]>;
@@ -371,6 +403,16 @@ export type PaymentEventFragment = { __typename?: "PaymentEvent" } & Pick<
   "id" | "inserted_at" | "updated_at" | "type" | "status"
 >;
 
+export type PaymentRefundFragment = { __typename?: "PaymentRefund" } & Pick<
+  PaymentRefund,
+  | "id"
+  | "reference"
+  | "amount"
+  | "status"
+  | "user_external_id"
+  | "gateway_transaction_id"
+>;
+
 export type GetUserServicesQueryVariables = {
   userId: Scalars["ID"];
 };
@@ -431,6 +473,15 @@ export type UpdateServiceMutationVariables = {
 
 export type UpdateServiceMutation = { __typename?: "Mutation" } & {
   service: { __typename?: "Service" } & ServiceFragment;
+};
+
+export type SubmitRefundMutationVariables = {
+  paymentId: Scalars["ID"];
+  input: SubmitRefundInput;
+};
+
+export type SubmitRefundMutation = { __typename?: "Mutation" } & {
+  refund: { __typename?: "PaymentRefund" } & PaymentRefundFragment;
 };
 
 export type GetGatewayAccountsQueryVariables = {
@@ -578,6 +629,16 @@ export const PaymentEventFragmentDoc = gql`
     status
   }
 `;
+export const PaymentRefundFragmentDoc = gql`
+  fragment PaymentRefund on PaymentRefund {
+    id
+    reference
+    amount
+    status
+    user_external_id
+    gateway_transaction_id
+  }
+`;
 export const GetUserServicesDocument = gql`
   query GetUserServices($userId: ID!) {
     services: userServices(userId: $userId)
@@ -599,8 +660,7 @@ export type GetUserServicesComponentProps = Omit<
 > &
   (
     | { variables: GetUserServicesQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetUserServicesComponent = (
   props: GetUserServicesComponentProps
@@ -766,8 +826,7 @@ export type GetServiceWithUsersComponentProps = Omit<
 > &
   (
     | { variables: GetServiceWithUsersQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetServiceWithUsersComponent = (
   props: GetServiceWithUsersComponentProps
@@ -856,8 +915,7 @@ export type GetServiceWithGatewayAccountsComponentProps = Omit<
 > &
   (
     | { variables: GetServiceWithGatewayAccountsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetServiceWithGatewayAccountsComponent = (
   props: GetServiceWithGatewayAccountsComponentProps
@@ -1066,6 +1124,80 @@ export type UpdateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions
   UpdateServiceMutation,
   UpdateServiceMutationVariables
 >;
+export const SubmitRefundDocument = gql`
+  mutation SubmitRefund($paymentId: ID!, $input: SubmitRefundInput!) {
+    refund: submitRefund(paymentId: $paymentId, input: $input)
+      @rest(
+        type: "PaymentRefund"
+        path: "/internal/payments/payments/{args.paymentId}/refunds"
+        method: "POST"
+      ) {
+      ...PaymentRefund
+    }
+  }
+  ${PaymentRefundFragmentDoc}
+`;
+export type SubmitRefundMutationFn = ApolloReactCommon.MutationFunction<
+  SubmitRefundMutation,
+  SubmitRefundMutationVariables
+>;
+export type SubmitRefundComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    SubmitRefundMutation,
+    SubmitRefundMutationVariables
+  >,
+  "mutation"
+>;
+
+export const SubmitRefundComponent = (props: SubmitRefundComponentProps) => (
+  <ApolloReactComponents.Mutation<
+    SubmitRefundMutation,
+    SubmitRefundMutationVariables
+  >
+    mutation={SubmitRefundDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useSubmitRefundMutation__
+ *
+ * To run a mutation, you first call `useSubmitRefundMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitRefundMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitRefundMutation, { data, loading, error }] = useSubmitRefundMutation({
+ *   variables: {
+ *      paymentId: // value for 'paymentId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSubmitRefundMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    SubmitRefundMutation,
+    SubmitRefundMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    SubmitRefundMutation,
+    SubmitRefundMutationVariables
+  >(SubmitRefundDocument, baseOptions);
+}
+export type SubmitRefundMutationHookResult = ReturnType<
+  typeof useSubmitRefundMutation
+>;
+export type SubmitRefundMutationResult = ApolloReactCommon.MutationResult<
+  SubmitRefundMutation
+>;
+export type SubmitRefundMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  SubmitRefundMutation,
+  SubmitRefundMutationVariables
+>;
 export const GetGatewayAccountsDocument = gql`
   query GetGatewayAccounts($serviceId: ID!) {
     gatewayAccounts(serviceId: $serviceId)
@@ -1087,8 +1219,7 @@ export type GetGatewayAccountsComponentProps = Omit<
 > &
   (
     | { variables: GetGatewayAccountsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetGatewayAccountsComponent = (
   props: GetGatewayAccountsComponentProps
@@ -1171,8 +1302,7 @@ export type GetGatewayAccountComponentProps = Omit<
 > &
   (
     | { variables: GetGatewayAccountQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetGatewayAccountComponent = (
   props: GetGatewayAccountComponentProps
@@ -1337,8 +1467,7 @@ export type GetProductsComponentProps = Omit<
 > &
   (
     | { variables: GetProductsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetProductsComponent = (props: GetProductsComponentProps) => (
   <ApolloReactComponents.Query<GetProductsQuery, GetProductsQueryVariables>
@@ -1488,8 +1617,7 @@ export type GetPaymentsComponentProps = Omit<
 > &
   (
     | { variables: GetPaymentsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetPaymentsComponent = (props: GetPaymentsComponentProps) => (
   <ApolloReactComponents.Query<GetPaymentsQuery, GetPaymentsQueryVariables>
@@ -1636,8 +1764,7 @@ export type GetPaymentEventsComponentProps = Omit<
 > &
   (
     | { variables: GetPaymentEventsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetPaymentEventsComponent = (
   props: GetPaymentEventsComponentProps

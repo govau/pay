@@ -94,3 +94,19 @@ type PaymentEvent {
   type: PaymentEventType!
   status: PaymentStatus!
 }
+
+enum PaymentRefundStatus {
+  created
+  submitted
+  success
+  error
+}
+
+type PaymentRefund {
+  id: ID!
+  reference: String!
+  amount: Int!
+  status: PaymentRefundStatus!
+  user_external_id: ID!
+  gateway_transaction_id: ID!
+}

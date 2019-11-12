@@ -29,6 +29,9 @@ export const Services = {
       }),
       DetailPage: loadable(() => import("./payments/DetailPage"), {
         fallback: <Loader />
+      }),
+      RefundPage: loadable(() => import("./payments/RefundPage"), {
+        fallback: <Loader />
       })
     },
     Credentials: {

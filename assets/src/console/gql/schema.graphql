@@ -52,6 +52,15 @@ input CreateProductInput {
   product: CreateProductProduct!
 }
 
+input PaymentRefundInput {
+  amount: Int!
+  reference: String
+}
+
+input SubmitRefundInput {
+  payment_refund: PaymentRefundInput!
+}
+
 type Mutation {
   createService(input: CreateServiceInput!): Service!
   updateService(id: ID!, input: UpdateServiceInput!): Service!
@@ -60,4 +69,5 @@ type Mutation {
     input: UpdateGatewayAccountCredentialsInput!
   ): GatewayAccountCredentials!
   createProduct(gatewayAccountId: ID!, input: CreateProductInput!): Service!
+  submitRefund(paymentId: ID!, input: SubmitRefundInput!): PaymentRefund!
 }

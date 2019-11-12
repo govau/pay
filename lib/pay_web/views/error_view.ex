@@ -14,6 +14,10 @@ defmodule PayWeb.ErrorView do
     Phoenix.Controller.status_message_from_template(template)
   end
 
+  def render("error.json", %{message: message}) do
+    %{error: %{message: message}}
+  end
+
   def render("500.json", _assigns) do
     %{errors: %{detail: "Internal Server Error"}}
   end
