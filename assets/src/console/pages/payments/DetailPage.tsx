@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
 import { format } from "date-fns";
-import { PageTitle, H2, Loader, ErrorAlert } from "@pay/web";
+import { PageTitle, H2, Loader, ErrorAlert, styled, Link } from "@pay/web";
 import * as Table from "@pay/web/components/Table";
 
 import { paymentProviderLabel, paymentStatusLabel } from "../../payments";
@@ -12,6 +12,7 @@ import {
   useGetPaymentEventsQuery
 } from "../../__generated__/graphql";
 import { gatewayAccountFullType } from "../../../payments";
+import { useLocation } from "react-router-dom";
 
 interface Props {
   service: Service;
@@ -20,6 +21,18 @@ interface Props {
 }
 
 const optional = (v: string | null | undefined) => v || "Data unavailable";
+
+// TODO: this is temporary. move to be in line with breadcrumb once we've built it
+const MenuTitle = styled.div`
+  display: flex;
+  align-items: center;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+
+  & *:first-child {
+    margin-right: auto;
+  }
+`;
 
 const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
   const paymentEventsQuery = useGetPaymentEventsQuery({
@@ -40,6 +53,8 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
     gateway_transaction_id
   } = payment;
 
+  const location = useLocation();
+
   const refunded = false; // TODO: from payment
   const refunded_amount = 0; // TODO: from payment
 
@@ -51,7 +66,12 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
           {gatewayAccountFullType(gatewayAccount)}
         </title>
       </Helmet>
-      <PageTitle title="Transaction detail" />
+
+      <MenuTitle>
+        <PageTitle title="Transaction detail" />
+        <Link to={`${location.pathname}/refund`}>Refund payment</Link>
+      </MenuTitle>
+
       <Table.ResponsiveWrapper>
         <Table.Table>
           <tbody>

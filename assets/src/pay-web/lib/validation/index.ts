@@ -48,6 +48,18 @@ const isGreaterThan = (errorMessage: string, { min }: { min: number }) =>
     }
   );
 
+const isLessThan = (errorMessage: string, { max }: { max: number }) =>
+  validatorFactory(
+    errorMessage || errorMessages.isLessThan(max),
+    (value: ValidatorValue) => {
+      if (value === null) {
+        return false;
+      }
+      value = value.toString();
+      return Number(value) <= max;
+    }
+  );
+
 const isMinLength = (errorMessage: string, { min }: { min: number }) =>
   validatorFactory(
     errorMessage || errorMessages.isMinLength(min),
@@ -101,6 +113,7 @@ export default {
   isNotNull,
   isMinLength,
   isGreaterThan,
+  isLessThan,
   isEmail,
   isLocalMobileNumber,
   isDate,

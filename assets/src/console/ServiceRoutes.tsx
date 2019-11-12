@@ -50,6 +50,14 @@ const PaymentRoutes: React.FC<{
           payment={data.payment}
         />
       </Route>
+      <Route path={`${url}/refund`} exact strict>
+        <Pages.Services.GatewayAccounts.Payments.RefundPage
+          service={service}
+          gatewayAccount={gatewayAccount}
+          payment={data.payment}
+          redirectURL={url}
+        />
+      </Route>
       <Route path="*">
         <CorePages.NotFoundPage />
       </Route>

@@ -121,6 +121,23 @@ export enum PaymentEventType {
   Refund = "refund"
 }
 
+export type PaymentRefund = {
+  __typename?: "PaymentRefund";
+  id: Scalars["ID"];
+  reference: Scalars["String"];
+  amount: Scalars["Int"];
+  status: PaymentRefundStatus;
+  user_external_id: Scalars["ID"];
+  gateway_transaction_id: Scalars["ID"];
+};
+
+export enum PaymentRefundStatus {
+  Created = "created",
+  Submitted = "submitted",
+  Success = "success",
+  Error = "error"
+}
+
 export enum PaymentStatus {
   Created = "created",
   Started = "started",
