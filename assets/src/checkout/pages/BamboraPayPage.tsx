@@ -2,7 +2,8 @@ import * as React from "react";
 import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
 import CustomCheckout, {
-  isTokenResultError
+  isTokenResultError,
+  Field
 } from "@bambora/apac-custom-checkout-sdk-web";
 import {
   useLoadCheckout,
@@ -28,7 +29,7 @@ import Summary from "../components/Summary";
 const mountFields = (
   checkout: CustomCheckout,
   theme: Theme,
-  ids: { number: string; cvv: string; expiry: string }
+  ids: Record<Field, string>
 ) => {
   const style = {
     base: {
@@ -49,7 +50,7 @@ const mountFields = (
       style,
       classes: cardFormClassNames.number
     })
-    .mount(`#${ids.number}`);
+    .mount(`#${ids["card-number"]}`);
   checkout
     .create("cvv", {
       style,
@@ -64,6 +65,25 @@ const mountFields = (
     .mount(`#${ids.expiry}`);
 };
 
+const bindEventListeners = (
+  checkout: CustomCheckout,
+  setCardErrors: React.Dispatch<React.SetStateAction<Record<Field, string>>>
+) => {
+  checkout.on("error", event => {
+    setCardErrors(errors => ({ ...errors, [event.field]: event.message }));
+  });
+  checkout.on("complete", event => {
+    if (event.complete) {
+      setCardErrors(errors => ({ ...errors, [event.field]: "" }));
+    }
+  });
+  checkout.on("empty", event => {
+    if (event.empty) {
+      setCardErrors(errors => ({ ...errors, [event.field]: "" }));
+    }
+  });
+};
+
 interface Props {
   path: string;
   gatewayAccount: Omit<GatewayAccountFragment, "credentials"> & {
@@ -76,19 +96,24 @@ const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
   const history = useHistory();
   const theme = useTheme();
 
-  const [cardNumberId] = React.useState(generateId("card-number-"));
-  const [cardCVVId] = React.useState(generateId("card-cvv-"));
-  const [cardExpiryId] = React.useState(generateId("card-expiry-"));
+  const [cardFieldIds] = React.useState<Record<Field, string>>({
+    "card-number": generateId("card-number-"),
+    cvv: generateId("card-cvv-"),
+    expiry: generateId("card-expiry-")
+  });
+
+  const [cardErrors, setCardErrors] = React.useState<Record<Field, string>>({
+    "card-number": "",
+    cvv: "",
+    expiry: ""
+  });
 
   const onCheckoutLoad = React.useCallback(
     (checkout: CustomCheckout) => {
-      mountFields(checkout, theme, {
-        number: cardNumberId,
-        cvv: cardCVVId,
-        expiry: cardExpiryId
-      });
+      mountFields(checkout, theme, cardFieldIds);
+      bindEventListeners(checkout, setCardErrors);
     },
-    [theme, cardNumberId, cardCVVId, cardExpiryId]
+    [theme, cardFieldIds]
   );
 
   const loadCheckout = useLoadCheckout({
@@ -176,9 +201,8 @@ const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
           )}
           <CardForm
             onSubmit={handleSubmit}
-            numberId={cardNumberId}
-            cvvId={cardCVVId}
-            expiryId={cardExpiryId}
+            fieldIds={cardFieldIds}
+            errors={cardErrors}
           >
             <Button
               disabled={createOTT.loading || submitting}
