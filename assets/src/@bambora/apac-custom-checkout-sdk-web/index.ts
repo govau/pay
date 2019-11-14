@@ -37,11 +37,30 @@ export interface FieldOptions {
   classes?: FieldClasses;
 }
 
-export type Field = "card-number" | "cvv" | "expiry";
+type CardNumberField = "card-number";
+type CVVField = "cvv";
+type ExpiryField = "expiry";
+
+export type Field = CardNumberField | CVVField | ExpiryField;
+
+export type Brand =
+  | "amex"
+  | "diners"
+  | "discover"
+  | "jcb"
+  | "mastercard"
+  | "visa"
+  | "maestro";
 
 export interface Element {
   mount: (domID: string) => void;
 }
+
+type InputValidationErrorType =
+  | "CardNumberInvalid"
+  | "CvvNotSet"
+  | "ExpiryIsInThePast"
+  | "ExpiryIsNotSet";
 
 type TokenResultErrorType =
   | "TokenizationValidationFailed"
@@ -82,8 +101,38 @@ export interface TokenResult {
   expiryYear?: string;
 }
 
+interface eventListenerFn {
+  // Fired when input loses or gains focus.
+  (error: "blur" | "focus", callback: (event: { field: Field }) => void): void;
+  // Fired when input switches to or from an empty state.
+  (
+    error: "empty",
+    callback: (event: { field: Field; empty: boolean }) => void
+  ): void;
+  // Fired when input becomes complete and valid.
+  (
+    error: "complete",
+    callback: (event: { field: Field; complete: boolean }) => void
+  ): void;
+  // Fired when card brand changes.
+  (
+    error: "brand",
+    callback: (event: { field: CardNumberField; brand: Brand }) => void
+  ): void;
+  // Fired when input becomes invalid.
+  (
+    error: "error",
+    callback: (event: {
+      field: Field;
+      type: InputValidationErrorType;
+      message: string;
+    }) => void
+  ): void;
+}
+
 export default interface CustomCheckout {
   create: (field: Field, options?: FieldOptions) => Element;
+  on: eventListenerFn;
   createOneTimeToken: (
     merchantId: string,
     callback: (result: TokenResult) => void

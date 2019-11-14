@@ -4,10 +4,11 @@ import { generateId } from "@pay/web/lib/utils";
 import styled from "@pay/web/styled-components";
 import {
   Label,
+  FieldError,
   Description,
   BasicTextInput,
   textInputStyles
-} from "@pay/web/components/form/inputs";
+} from "@pay/web/components/form";
 
 export const classNames: {
   number: CustomCheckout.FieldClasses;
@@ -95,44 +96,57 @@ const Expiry = styled.div`
 
 interface Props {
   onSubmit(): void;
-  numberId: string;
-  cvvId: string;
-  expiryId: string;
+  fieldIds: Record<CustomCheckout.Field, string>;
+  errors: Record<CustomCheckout.Field, string>;
 }
 
 const BamboraCardForm: React.FC<Props> = ({
   children,
   onSubmit,
-  numberId,
-  cvvId,
-  expiryId
-}) => (
-  <Form
-    onSubmit={e => {
-      e.preventDefault();
-      onSubmit();
-    }}
-  >
-    <Label>Card number</Label>
-    <Number id={numberId}></Number>
+  fieldIds = {},
+  errors = {}
+}) => {
+  const [numberErrorId] = React.useState(generateId("card-number-error-"));
+  const [cvvErrorId] = React.useState(generateId("card-cvv-error-"));
+  const [expiryErrorId] = React.useState(generateId("card-expiry-error-"));
 
-    <Label>Expiry date</Label>
-    <Description>
-      For example, 10/
-      {String(new Date().getFullYear() + 1).substring(2)}
-    </Description>
-    <Expiry id={expiryId}></Expiry>
+  return (
+    <Form
+      onSubmit={e => {
+        e.preventDefault();
+        onSubmit();
+      }}
+    >
+      <Label>Card number</Label>
+      {errors["card-number"] && (
+        <FieldError id={numberErrorId}>{errors["card-number"]}</FieldError>
+      )}
+      <Number id={fieldIds["card-number"]}></Number>
 
-    <Label>Card security code</Label>
-    <Description>The last 3 digits on the back of the card</Description>
-    <CVV id={cvvId}></CVV>
+      <Label>Expiry date</Label>
+      <Description>
+        For example, 10/
+        {String(new Date().getFullYear() + 1).substring(2)}
+      </Description>
+      {errors["expiry"] && (
+        <FieldError id={expiryErrorId}>{errors["expiry"]}</FieldError>
+      )}
+      <Expiry id={fieldIds.expiry}></Expiry>
 
-    <Label>Email</Label>
-    <Description>We’ll send your payment confirmation here</Description>
-    <BasicTextInput type="email" />
+      <Label>Card security code</Label>
+      <Description>The last 3 digits on the back of the card</Description>
+      {errors["cvv"] && (
+        <FieldError id={cvvErrorId}>{errors["cvv"]}</FieldError>
+      )}
+      <CVV id={fieldIds.cvv}></CVV>
 
-    {children}
-  </Form>
-);
+      <Label>Email</Label>
+      <Description>We’ll send your payment confirmation here</Description>
+      <BasicTextInput type="email" />
+
+      {children}
+    </Form>
+  );
+};
 
 export default BamboraCardForm;
