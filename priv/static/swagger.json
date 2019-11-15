@@ -39,6 +39,10 @@
           "format": "int32",
           "type": "integer"
         },
+        "metadata": {
+          "description": "Additional metadata to associate with the payment",
+          "type": "object"
+        },
         "reference": {
           "description": "Reference to associate with the payment",
           "type": "string"
@@ -97,6 +101,10 @@
           "description": "ID of the payment",
           "format": "uuid",
           "type": "string"
+        },
+        "metadata": {
+          "description": "Additional metadata to associate with the payment",
+          "type": "object"
         },
         "next_url": {
           "description": "URL where your service should direct your user next",

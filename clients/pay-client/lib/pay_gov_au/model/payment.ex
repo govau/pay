@@ -13,6 +13,7 @@ defmodule PayGovAu.Model.Payment do
     :description,
     :email,
     :id,
+    :metadata,
     :next_url,
     :reference,
     :return_url
@@ -23,6 +24,7 @@ defmodule PayGovAu.Model.Payment do
           :description => String.t() | nil,
           :email => String.t() | nil,
           :id => String.t() | nil,
+          :metadata => Map | nil,
           :next_url => String.t() | nil,
           :reference => String.t() | nil,
           :return_url => String.t() | nil
@@ -30,7 +32,10 @@ defmodule PayGovAu.Model.Payment do
 end
 
 defimpl Poison.Decoder, for: PayGovAu.Model.Payment do
-  def decode(value, _options) do
+  import PayGovAu.Deserializer
+
+  def decode(value, options) do
     value
+    |> deserialize(:metadata, :struct, PayGovAu.Model.Map, options)
   end
 end
