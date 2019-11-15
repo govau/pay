@@ -21,6 +21,7 @@ defmodule PayWeb.External.PaymentController do
             email(:string, "Email address to associate with the payment")
             return_url(:string, "URL to redirect user to after payment")
             next_url(:string, "URL where your service should direct your user next")
+            metadata(:object, "Additional metadata to associate with the payment")
           end
 
           example(%{
@@ -58,6 +59,7 @@ defmodule PayWeb.External.PaymentController do
             description(:string, "Description of the goods being paid for")
             email(:string, "Email address to associate with the payment")
             return_url(:string, "URL to redirect user to after payment")
+            metadata(:object, "Additional metadata to associate with the payment")
           end
         end,
       CreateRequest:
@@ -133,7 +135,7 @@ defmodule PayWeb.External.PaymentController do
                # TODO: should be autoset from the auth token.
                #  "gateway_account_id" => gateway_account.id,
                "auth_3ds_details" => %{},
-               "external_metadata" => %{}
+               "external_metadata" => payment_params["metadata"] || %{}
              })
            ) do
       conn

@@ -6,54 +6,21 @@ defmodule PayWeb.External.PaymentControllerTest do
 
   @create_attrs %{
     amount: 42,
-    authorised_at: "2010-04-17T14:00:00.000000Z",
-    card_brand: "some card_brand",
-    card_details: %{},
-    created_at: "2010-04-17T14:00:00.000000Z",
-    delayed_capture: true,
     description: "some description",
-    email: "some email",
-    fee: 42,
-    gateway_transaction_id: "some gateway_transaction_id",
-    metadata: %{},
-    net_amount: 42,
-    payment_outcome: %{},
-    payment_provider: "some payment_provider",
-    processor_id: "some processor_id",
-    provider_id: "some provider_id",
+    email: "user@example.com",
+    metadata: %{
+      "tracking_id" => "123",
+      "application_ids" => [123, 456, 789]
+    },
     reference: "some reference",
-    refund_summary: %{},
-    return_url: "some return_url",
-    settlement_summary: %{},
-    state: %{},
-    telephone_number: "some telephone_number",
-    total_amount: 42
+    return_url: "some return_url"
   }
   @invalid_attrs %{
     amount: nil,
-    authorised_at: nil,
-    card_brand: nil,
-    card_details: nil,
-    created_at: nil,
-    delayed_capture: nil,
     description: nil,
     email: nil,
-    fee: nil,
-    gateway_account_id: nil,
-    gateway_transaction_id: nil,
-    metadata: nil,
-    net_amount: nil,
-    payment_outcome: nil,
-    payment_provider: nil,
-    processor_id: nil,
-    provider_id: nil,
     reference: nil,
-    refund_summary: nil,
-    return_url: nil,
-    settlement_summary: nil,
-    state: nil,
-    telephone_number: nil,
-    total_amount: nil
+    return_url: nil
   }
 
   def fixture(:gateway_account) do
@@ -106,19 +73,25 @@ defmodule PayWeb.External.PaymentControllerTest do
 
       conn = get(conn, Routes.external_payment_path(conn, :show, id))
 
+      next_url = "http://localhost:3000/pay/#{id}"
+
       assert %{
                "amount" => 42,
                "authorised_at" => "2010-04-17T14:00:00.000000Z",
                "card_brand" => "some card_brand",
-               "card_details" => %{},
+               "card_details" => nil,
                "created_at" => "2010-04-17T14:00:00.000000Z",
-               "delayed_capture" => true,
+               "delayed_capture" => false,
                "description" => "some description",
-               "email" => "some email",
+               "email" => "user@example.com",
                "fee" => 42,
-               "gateway_transaction_id" => "some gateway_transaction_id",
-               "metadata" => %{},
+               "gateway_transaction_id" => nil,
+               "metadata" => %{
+                 "tracking_id" => "123",
+                 "application_ids" => [123, 456, 789]
+               },
                "net_amount" => 42,
+               "next_url" => ^next_url,
                "id" => id,
                "payment_outcome" => %{},
                "payment_provider" => "some payment_provider",
@@ -128,7 +101,10 @@ defmodule PayWeb.External.PaymentControllerTest do
                "refund_summary" => %{},
                "return_url" => "some return_url",
                "settlement_summary" => %{},
-               "state" => %{},
+               "state" => %{
+                 "status" => "created",
+                 "finished" => false
+               },
                "telephone_number" => "some telephone_number",
                "total_amount" => 42
              } = json_response(conn, 200)["data"]
