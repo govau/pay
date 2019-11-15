@@ -96,7 +96,10 @@ defmodule PayWeb.Products.ProductPaymentController do
                description: product_payment.product.name,
                # We pass a URL here so that the pay page knows how to redirect
                # back to the products page to show a confirmation page.
-               return_url: "/products/pay/#{product_payment.external_id}/status"
+               return_url: "/products/pay/#{product_payment.external_id}/status",
+               metadata: %{
+                 "product_id" => id
+               }
              }
            }),
          {:ok, %ProductPayment{} = product_payment} <-
