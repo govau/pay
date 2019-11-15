@@ -40,7 +40,17 @@
           "type": "integer"
         },
         "metadata": {
+          "additionalProperties": true,
           "description": "Additional metadata to associate with the payment",
+          "example": {
+            "application_ids": [
+              123,
+              456,
+              789
+            ],
+            "tracking_id": "123"
+          },
+          "maxProperties": 10,
           "type": "object"
         },
         "reference": {
@@ -103,7 +113,17 @@
           "type": "string"
         },
         "metadata": {
+          "additionalProperties": true,
           "description": "Additional metadata to associate with the payment",
+          "example": {
+            "application_ids": [
+              123,
+              456,
+              789
+            ],
+            "tracking_id": "123"
+          },
+          "maxProperties": 10,
           "type": "object"
         },
         "next_url": {
