@@ -21,7 +21,15 @@ defmodule PayWeb.External.PaymentController do
             email(:string, "Email address to associate with the payment")
             return_url(:string, "URL to redirect user to after payment")
             next_url(:string, "URL where your service should direct your user next")
-            metadata(:object, "Additional metadata to associate with the payment")
+
+            metadata(:object, "Additional metadata to associate with the payment",
+              additionalProperties: true,
+              maxProperties: 10,
+              example: %{
+                "tracking_id" => "123",
+                "application_ids" => [123, 456, 789]
+              }
+            )
           end
 
           example(%{
@@ -59,7 +67,15 @@ defmodule PayWeb.External.PaymentController do
             description(:string, "Description of the goods being paid for")
             email(:string, "Email address to associate with the payment")
             return_url(:string, "URL to redirect user to after payment")
-            metadata(:object, "Additional metadata to associate with the payment")
+
+            metadata(:object, "Additional metadata to associate with the payment",
+              additionalProperties: true,
+              maxProperties: 10,
+              example: %{
+                "tracking_id" => "123",
+                "application_ids" => [123, 456, 789]
+              }
+            )
           end
         end,
       CreateRequest:
