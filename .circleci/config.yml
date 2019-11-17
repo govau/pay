@@ -44,6 +44,7 @@ jobs:
       - run: mix local.hex --force
       - run: mix local.rebar --force
       - run: mix deps.get --only prod
+      - run: make -C clients/pay-client install
       - run: make -C assets setup
       - run: make frontend
       - run: make test

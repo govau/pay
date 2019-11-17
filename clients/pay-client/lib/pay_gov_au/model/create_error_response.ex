@@ -22,6 +22,6 @@ defimpl Poison.Decoder, for: PayGovAu.Model.CreateErrorResponse do
 
   def decode(value, options) do
     value
-    |> deserialize(:errors, :struct, PayGovAu.Model.Map, options)
+    |> deserialize(:errors, :map, options)
   end
 end
