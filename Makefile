@@ -56,6 +56,7 @@ install:
 
 test:
 	$(MIX) test
+	$(MAKE) -C clients/pay-client test
 	CI=true $(MAKE) -C assets $@
 
 assets/build/index.html: assets/public/index.html $(ASSETS_SRC) $(ASSETS_PUB)

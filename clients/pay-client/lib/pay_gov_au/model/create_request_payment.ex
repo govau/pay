@@ -34,6 +34,6 @@ defimpl Poison.Decoder, for: PayGovAu.Model.CreateRequestPayment do
 
   def decode(value, options) do
     value
-    |> deserialize(:metadata, :struct, PayGovAu.Model.Map, options)
+    |> deserialize(:metadata, :map, options)
   end
 end
