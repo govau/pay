@@ -14,6 +14,7 @@ defmodule Pay.Payments.PaymentRefund do
     field :user_external_id, Ecto.UUID
 
     belongs_to :payment, Pay.Payments.Payment
+    has_many :events, Pay.Payments.PaymentEvent
 
     timestamps()
   end
@@ -45,7 +46,7 @@ defmodule Pay.Payments.PaymentRefund do
 end
 
 defmodule Pay.Payments.PaymentRefund.Statuses do
-  # @behaviour StateMachine
+  @behaviour StateMachine
 
   @type t :: :created | :submitted | :success | :error
 
@@ -58,6 +59,18 @@ defmodule Pay.Payments.PaymentRefund.Statuses do
 
   @spec initial :: t
   def initial, do: :created
+
+  @spec final(t) :: boolean
+  def final(:success), do: true
+  def final(_), do: false
+
+  @spec transition(t, event :: String.t()) :: t
+  def transition(:created, "submit_refund"), do: :submitted
+  def transition(:created, "cancel_refund"), do: :cancelled
+  def transition(:created, "refund_succeeded"), do: :success
+  def transition(:submitted, "refund_succeeded"), do: :success
+  def transition(:created, "failure"), do: :error
+  def transition(:submitted, "failure"), do: :error
 
   @spec status(t) :: String.t()
   def status(t), do: Atom.to_string(t)

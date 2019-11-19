@@ -35,7 +35,7 @@ defmodule Pay.PaymentsTest do
         user_external_id: "7488a646-e31f-11e4-aace-600308960662"
       })
 
-    [payment_refund: payment_refund]
+    [payment_refund: Associations.clear(payment_refund)]
   end
 
   describe "card_types" do
@@ -601,6 +601,16 @@ defmodule Pay.PaymentsTest do
       assert payment_refund.user_external_id == "7488a646-e31f-11e4-aace-600308960662"
     end
 
+    test "create_payment_refund/1 also creates a refund event", %{
+      payment: payment,
+      payment_refund: payment_refund
+    } do
+      [refund_event, _created] = Payments.list_payment_events(payment)
+      assert refund_event.status == "created"
+      assert refund_event.payment_id == payment.id
+      assert refund_event.payment_refund_id == payment_refund.id
+    end
+
     test "create_payment_refund/1 with invalid data returns error changeset", %{payment: payment} do
       assert {:error, %Ecto.Changeset{}} = Payments.create_payment_refund(payment, @invalid_attrs)
     end
@@ -609,7 +619,11 @@ defmodule Pay.PaymentsTest do
       payment_refund: fixture_payment_refund
     } do
       assert {:ok, %PaymentRefund{} = payment_refund} =
-               Payments.update_payment_refund(fixture_payment_refund, @update_attrs)
+               Payments.update_payment_refund(
+                 fixture_payment_refund,
+                 "refund_succeeded",
+                 @update_attrs
+               )
 
       # ensure does not change
       assert payment_refund.amount == 42
@@ -618,19 +632,40 @@ defmodule Pay.PaymentsTest do
       assert payment_refund.reference == "some reference"
       assert payment_refund.user_external_id == "7488a646-e31f-11e4-aace-600308960662"
 
-      assert payment_refund.status == "some updated status"
+      assert payment_refund.status == "success"
     end
 
-    test "update_payment_refund/2 with invalid data returns error changeset", %{
+    test "update_payment_refund/2 with dodgy data only changes status", %{
       payment_refund: payment_refund
     } do
-      assert {:error, %Ecto.Changeset{}} =
-               Payments.update_payment_refund(payment_refund, @invalid_attrs)
+      assert {:ok, refund} =
+               Payments.update_payment_refund(
+                 payment_refund,
+                 "refund_succeeded",
+                 @invalid_attrs
+               )
 
+      # only these two fields should change
+      payment_refund = %{payment_refund | status: "success", updated_at: refund.updated_at}
+
+      assert refund == payment_refund
       assert payment_refund == Payments.get_payment_refund!(payment_refund.id)
     end
 
-    test "delete_payment_refund/1 deletes the payment_refund", %{payment_refund: payment_refund} do
+    test "delete_payment_refund/1 fails while event exists the payment_refund", %{
+      payment_refund: payment_refund
+    } do
+      payment_refund_id = payment_refund.id
+      assert_raise Ecto.ConstraintError, fn -> Payments.delete_payment_refund(payment_refund) end
+      assert %{id: ^payment_refund_id} = Payments.get_payment_refund!(payment_refund_id)
+
+      [refund_event, _create_event] =
+        payment_refund.payment_id
+        |> Payments.get_payment!()
+        |> Payments.list_payment_events()
+
+      assert {:ok, _event} = Payments.delete_payment_event(refund_event)
+
       assert {:ok, %PaymentRefund{}} = Payments.delete_payment_refund(payment_refund)
       assert_raise Ecto.NoResultsError, fn -> Payments.get_payment_refund!(payment_refund.id) end
     end

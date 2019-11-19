@@ -18,6 +18,8 @@ defmodule Pay.Payments.GatewayAccount do
     field :service_name, :string
     field :type, :string
 
+    has_many :payments, Pay.Payments.Payment
+
     many_to_many :card_types, Pay.Payments.CardType,
       join_through: Pay.Payments.GatewayAccountCardType
 

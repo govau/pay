@@ -1,22 +1,23 @@
 defmodule Pay.Support.Associations do
-  def clear(%{__struct__: _struct} = schema, repo_name) when is_atom(repo_name) do
-    clear(schema, [repo_name])
+  def clear(%{__struct__: struct} = schema) do
+    clear(schema, struct.__schema__(:associations))
   end
 
-  def clear(%{__struct__: struct} = schema, repo_name) when is_list(repo_name) do
-    struct.__schema__(:associations)
-    |> Enum.reduce(schema, fn association, schema ->
-      case Enum.member?(repo_name, association) do
-        true ->
-          %{schema | association => do_clear(struct, association)}
-
-        false ->
-          schema
+  def clear(%{__struct__: _} = schema, associations) when is_list(associations) do
+    Enum.reduce(
+      associations,
+      schema,
+      fn association, schema ->
+        clear(schema, association)
       end
-    end)
+    )
   end
 
-  defp do_clear(struct, association) do
+  def clear(%{__struct__: struct} = schema, association) do
+    %{schema | association => clear_association(struct, association)}
+  end
+
+  defp clear_association(struct, association) do
     %{
       cardinality: cardinality,
       field: field,
