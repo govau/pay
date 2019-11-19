@@ -7,6 +7,7 @@ defmodule Pay.Payments.PaymentEvent do
     field :status, :string
 
     belongs_to :payment, Pay.Payments.Payment
+    belongs_to :payment_refund, Pay.Payments.PaymentRefund
 
     timestamps()
   end
@@ -14,8 +15,9 @@ defmodule Pay.Payments.PaymentEvent do
   @doc false
   def changeset(payment_event, attrs) do
     payment_event
-    |> cast(attrs, [:status, :payment_id])
+    |> cast(attrs, [:status, :payment_id, :payment_refund_id])
     |> validate_required([:status, :payment_id])
     |> foreign_key_constraint(:payment_id)
+    |> foreign_key_constraint(:payment_refund_id)
   end
 end

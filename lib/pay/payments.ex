@@ -235,6 +235,10 @@ defmodule Pay.Payments do
     Repo.delete(gateway_account)
   end
 
+  defp query_payments() do
+    from(Payment, preload: :gateway_account)
+  end
+
   @doc """
   Returns the list of payments.
 
@@ -245,7 +249,7 @@ defmodule Pay.Payments do
 
   """
   def list_payments do
-    Enum.map(Repo.all(Payment), fn p -> Repo.preload(p, [:gateway_account]) end)
+    Repo.all(query_payments())
   end
 
   @doc """
@@ -282,7 +286,7 @@ defmodule Pay.Payments do
       ** (Ecto.NoResultsError)
 
   """
-  def get_payment!(id), do: Repo.get!(Payment, id) |> Repo.preload([:gateway_account])
+  def get_payment!(id), do: Repo.get!(query_payments(), id)
 
   @doc """
   Gets a single payment by the given external ID.
@@ -299,7 +303,24 @@ defmodule Pay.Payments do
 
   """
   def get_payment_by_external_id!(external_id),
-    do: Repo.get_by!(Payment, external_id: external_id) |> Repo.preload([:gateway_account])
+    do: Repo.get_by!(query_payments(), external_id: external_id)
+
+  defp create_payment_changeset(attrs) do
+    alias Payments.Payment.Statuses
+    created = Statuses.initial() |> Statuses.status()
+
+    Payment.create_changeset(
+      %Payment{
+        external_id: Ecto.UUID.generate(),
+        external_metadata: %{},
+        status: created,
+        events: [
+          %{status: created}
+        ]
+      },
+      attrs
+    )
+  end
 
   @doc """
   Creates a payment and an associated payment_event.
@@ -310,21 +331,7 @@ defmodule Pay.Payments do
       {:error, %Ecto.Changeset{}}
   """
   def create_payment(attrs \\ %{}) do
-    created = Payments.Payment.Statuses.status(:created)
-
-    case Repo.insert(
-           Payment.create_changeset(
-             %Payment{
-               external_id: Ecto.UUID.generate(),
-               external_metadata: %{},
-               status: created,
-               events: [
-                 %{status: created}
-               ]
-             },
-             attrs
-           )
-         ) do
+    case Repo.insert(create_payment_changeset(attrs)) do
       {:ok, p} -> {:ok, Repo.preload(p, [:gateway_account])}
       {:error, changeset} -> {:error, changeset}
     end
@@ -334,40 +341,34 @@ defmodule Pay.Payments do
     Payment.update_changeset(payment, attrs)
   end
 
-  @doc """
-  update a payment's status through a transition event
-
-  Check `Payments.Payment.Statuses` for valid transitions
-  """
-  def update_payment(%Payment{} = payment, transition, attrs) do
+  defp update_payment_changeset(%Payment{} = payment, transition, attrs) do
     next_status =
       payment.status
       |> Payments.Payment.Statuses.from_string!()
       |> Payments.Payment.Statuses.transition(transition)
       |> Payments.Payment.Statuses.status()
 
-    result =
-      Multi.new()
-      |> Multi.update(
-        :payment,
-        update_payment_changeset(
-          payment,
-          Map.merge(attrs, %{status: next_status})
-        )
-      )
-      |> Multi.insert(
-        :payment_event,
-        create_payment_event_changeset(%{payment_id: payment.id, status: next_status})
-      )
-      |> Multi.run(:preload, fn _repo, %{payment: payment} ->
-        case Repo.preload(payment, [:gateway_account]) do
-          %Payment{} = payment -> {:ok, payment}
-          nil -> {:error, Ecto.NoResultsError}
-        end
-      end)
-      |> Repo.transaction()
+    Multi.new()
+    |> Multi.update(
+      :payment,
+      update_payment_changeset(payment, Map.merge(attrs, %{status: next_status}))
+    )
+    |> Multi.insert(
+      :payment_event,
+      create_payment_event_changeset(%{payment_id: payment.id, status: next_status})
+    )
+  end
 
-    with {:ok, %{payment: payment}} <- result do
+  @doc """
+  update a payment's status through a transition event
+
+  Check `Payments.Payment.Statuses` for valid transitions
+  """
+  def update_payment(%Payment{} = payment, transition, attrs) do
+    changes = update_payment_changeset(payment, transition, attrs)
+
+    with {:ok, %{payment: payment}} <- Repo.transaction(changes),
+         payment <- Repo.preload(payment, :gateway_account) do
       {:ok, payment}
     end
   end
@@ -484,7 +485,9 @@ defmodule Pay.Payments do
   @spec list_payment_events(%Payment{}) :: [%PaymentEvent{}]
   def list_payment_events(%Payment{} = payment) do
     with %{events: events} <-
-           Repo.preload(payment, events: from(PaymentEvent, order_by: [desc: :inserted_at])) do
+           Repo.preload(payment,
+             events: from(PaymentEvent, order_by: [desc: :inserted_at])
+           ) do
       events
     end
   end
@@ -614,16 +617,51 @@ defmodule Pay.Payments do
   """
   def get_payment_refund!(id), do: Repo.get!(PaymentRefund, id)
 
-  def create_payment_refund(%Payment{} = payment, attrs) do
-    created = PaymentRefund.Statuses.status(:created)
+  defp create_payment_refund_changeset(%Payment{} = payment, attrs) do
+    alias PaymentRefund.Statuses
+    created = Statuses.initial() |> Statuses.status()
 
-    %PaymentRefund{
-      payment_id: payment.id,
-      external_id: Ecto.UUID.generate(),
-      status: created
-    }
-    |> PaymentRefund.create_changeset(attrs)
-    |> Repo.insert()
+    PaymentRefund.create_changeset(
+      %PaymentRefund{
+        payment_id: payment.id,
+        external_id: Ecto.UUID.generate(),
+        status: created,
+        events: [
+          %{payment_id: payment.id, status: created}
+        ]
+      },
+      attrs
+    )
+  end
+
+  defp update_payment_refund_changeset(%PaymentRefund{} = payment_refund, attrs) do
+    PaymentRefund.update_changeset(payment_refund, attrs)
+  end
+
+  defp update_payment_refund_changeset(%PaymentRefund{} = payment_refund, transition, attrs) do
+    next_status =
+      payment_refund.status
+      |> Payments.PaymentRefund.Statuses.from_string!()
+      |> Payments.PaymentRefund.Statuses.transition(transition)
+      |> Payments.PaymentRefund.Statuses.status()
+
+    Multi.new()
+    |> Multi.update(
+      :payment_refund,
+      update_payment_refund_changeset(payment_refund, Map.merge(attrs, %{status: next_status}))
+    )
+    |> Multi.insert(
+      :payment_event,
+      create_payment_event_changeset(%{
+        payment_id: payment_refund.payment_id,
+        status: next_status,
+        payment_refund_id: payment_refund.id
+      })
+    )
+  end
+
+  def create_payment_refund(%Payment{} = payment, attrs) do
+    create_payment_refund_changeset(payment, attrs) |> Repo.insert()
   end
 
   @doc """
@@ -631,17 +669,19 @@ defmodule Pay.Payments do
 
   ## Examples
 
-      iex> update_payment_refund(payment_refund, %{field: new_value})
+      iex> update_payment_refund(payment_refund, transition, %{field: new_value})
       {:ok, %PaymentRefund{}}
 
-      iex> update_payment_refund(payment_refund, %{field: bad_value})
+      iex> update_payment_refund(payment_refund, transition, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_payment_refund(%PaymentRefund{} = payment_refund, attrs) do
-    payment_refund
-    |> PaymentRefund.update_changeset(attrs)
-    |> Repo.update()
+  def update_payment_refund(%PaymentRefund{} = payment_refund, transition, attrs) do
+    changes = update_payment_refund_changeset(payment_refund, transition, attrs)
+
+    with {:ok, %{payment_refund: refund}} <- Repo.transaction(changes) do
+      {:ok, refund}
+    end
   end
 
   @doc """
