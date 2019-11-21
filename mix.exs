@@ -50,6 +50,8 @@ defmodule Pay.MixProject do
       {:sentry, "~> 7.0"},
       {:slugger, "~> 0.3"},
       {:stripity_stripe, "~> 2.4.0"},
+      {:absinthe, "~> 1.4"},
+      {:absinthe_plug, "~> 1.4"},
       {:pay_gov_au, path: "./clients/pay-client"},
       {:soap, path: "./vendor/soap"},
 
