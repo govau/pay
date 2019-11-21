@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
-import { PageTitle, Loader, ErrorAlert } from "@pay/web";
+import { TODO, PageTitle, Loader, ErrorAlert } from "@pay/web";
 
 import { useOrganisationsQuery } from "../__generated__/graphql";
 
@@ -15,21 +15,23 @@ const OrganisationsPage: React.FC = () => {
         <title>Organisations</title>
       </Helmet>
       <PageTitle title="Organisations" />
-      {loading ? (
-        <Loader message="Loading organisations" />
-      ) : error || !data ? (
-        <ErrorAlert
-          title="Unable to retrieve organisations"
-          message={error && error.message}
-          showError
-        />
-      ) : (
-        <ul>
-          {data.organisations.map(o => (
-            <li key={o.id}>{o.name}</li>
-          ))}
-        </ul>
-      )}
+      <TODO>
+        {loading ? (
+          <Loader message="Loading organisations" />
+        ) : error || !data ? (
+          <ErrorAlert
+            title="Unable to retrieve organisations"
+            message={error && error.message}
+            showError
+          />
+        ) : (
+          <ul>
+            {data.organisations.map(o => (
+              <li key={o.id}>{o.name}</li>
+            ))}
+          </ul>
+        )}
+      </TODO>
     </>
   );
 };

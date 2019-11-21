@@ -1,7 +1,15 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
 import { format } from "date-fns";
-import { PageTitle, H2, Loader, ErrorAlert, styled, Link } from "@pay/web";
+import {
+  TODO,
+  PageTitle,
+  H2,
+  Loader,
+  ErrorAlert,
+  styled,
+  Link
+} from "@pay/web";
 import * as Table from "@pay/web/components/Table";
 
 import { paymentProviderLabel, paymentStatusLabel } from "../../payments";
@@ -71,6 +79,8 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
         <PageTitle title="Transaction detail" />
         <Link to={`${location.pathname}/refund`}>Refund payment</Link>
       </MenuTitle>
+
+      <TODO />
 
       <Table.ResponsiveWrapper>
         <Table.Table>
