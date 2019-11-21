@@ -252,6 +252,13 @@ defmodule Pay.Payments do
     Repo.all(query_payments())
   end
 
+  def list_payments_for_gateway_account(%GatewayAccount{} = gateway_account) do
+    with %{payments: payments} <-
+           Repo.preload(gateway_account, payments: from(Payment, order_by: [desc: :inserted_at])) do
+      payments
+    end
+  end
+
   @doc """
   Returns the list of payments for the given gateway_account external_id.
 
@@ -492,6 +499,13 @@ defmodule Pay.Payments do
     end
   end
 
+  @spec list_payment_events(%PaymentRefund{}) :: [%PaymentEvent{}]
+  def list_payment_events(%PaymentRefund{} = payment_refund) do
+    with %{events: events} <- Repo.preload(payment_refund, :events) do
+      events
+    end
+  end
+
   @doc """
   Gets a single payment_event.
 
@@ -724,6 +738,12 @@ defmodule Pay.Payments do
   """
   def list_gateway_account_card_types do
     Repo.all(GatewayAccountCardType)
+  end
+
+  def list_gateway_account_card_types(%GatewayAccount{} = gateway_account) do
+    with %{card_types: card_types} <- Repo.preload(gateway_account, :card_types) do
+      card_types
+    end
   end
 
   @doc """
