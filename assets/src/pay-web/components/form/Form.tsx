@@ -3,7 +3,7 @@ import {
   Form as ReactFinalForm,
   FormProps as ReactFinalFormProps
 } from "react-final-form";
-import createDecorator from "final-form-focus";
+
 import styled, { css } from "../../styled-components";
 import ErrorAlert from "../ErrorAlert";
 
@@ -32,8 +32,6 @@ export const FormElement = styled("form")<{ column?: boolean }>`
     `}
 `;
 
-const focusOnErrors = createDecorator();
-
 const formatGraphqlError = (message?: string | null) =>
   message ? message.replace("GraphQL error: ", "") : "";
 
@@ -45,7 +43,7 @@ function Form<FormValues = AnyObject>({
   ...rest
 }: Props<FormValues>) {
   return (
-    <ReactFinalForm {...rest} decorators={[focusOnErrors]}>
+    <ReactFinalForm {...rest}>
       {({ handleSubmit, ...renderRest }) => (
         <>
           <ErrorAlert
@@ -63,24 +61,6 @@ function Form<FormValues = AnyObject>({
           </FormElement>
         </>
       )}
-    </ReactFinalForm>
-  );
-}
-
-// NakedForm lets the caller provide their own FormElement. This is useful for
-// multi-page forms / wizards where you want to have a submit button on each
-// page of the form that submits the form naturally.
-// NakedForm is a very thin wrapper around Final Form's Form element.
-export function NakedForm<FormValues = AnyObject>({
-  children,
-  submitError,
-  submitErrorTitle,
-  column,
-  ...rest
-}: Props<FormValues>) {
-  return (
-    <ReactFinalForm {...rest} decorators={[focusOnErrors]}>
-      {children}
     </ReactFinalForm>
   );
 }

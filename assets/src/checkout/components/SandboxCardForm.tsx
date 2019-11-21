@@ -1,4 +1,5 @@
 import * as React from "react";
+import createDecorator from "final-form-focus";
 import { Form, Field } from "@pay/web";
 import styled from "@pay/web/styled-components";
 import { BasicTextInput } from "@pay/web/components/form/inputs";
@@ -11,12 +12,14 @@ const ExpiryInputWrapper = styled.div`
   width: 6em;
 `;
 
+const decorators = [createDecorator()];
+
 interface Props {
   onSubmit(): void;
 }
 
 const SandboxCardForm: React.FC<Props> = ({ children, onSubmit }) => (
-  <Form onSubmit={onSubmit} column>
+  <Form onSubmit={onSubmit} column decorators={decorators}>
     <Field name="cardNumber" label="Card number">
       {({ input, ariaProps, ...rest }) => (
         <BasicTextInput

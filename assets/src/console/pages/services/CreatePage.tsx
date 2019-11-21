@@ -2,6 +2,7 @@ import * as React from "react";
 import { Helmet } from "react-helmet";
 import { Redirect } from "react-router-dom";
 import { ApolloError } from "apollo-client";
+import createDecorator from "final-form-focus";
 import {
   PageTitle,
   Form,
@@ -45,6 +46,8 @@ const handleSubmit = (createService: CreateServiceMutationFn) => {
   };
 };
 
+const decorators = [createDecorator<FormValues>()];
+
 const CreatePage = () => {
   const [createService, { loading, error, data }] = useCreateServiceMutation({
     errorPolicy: "all"
@@ -56,7 +59,11 @@ const CreatePage = () => {
         <title>Create service</title>
       </Helmet>
       <PageTitle title="What service will you be taking payments for?" />
-      <Form onSubmit={handleSubmit(createService)} column>
+      <Form<FormValues>
+        onSubmit={handleSubmit(createService)}
+        column
+        decorators={decorators}
+      >
         {loading ? (
           <Loader message="Creating a new service" />
         ) : data && data.service ? (
