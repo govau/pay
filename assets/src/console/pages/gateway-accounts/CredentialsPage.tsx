@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
-import { PageTitle, P, Link } from "@pay/web";
+import { TODO, PageTitle, P, Link } from "@pay/web";
 
 import {
   Service,
@@ -21,7 +21,7 @@ const BamboraCredentialsPage: React.FC<{
   path: string;
   credentials: BamboraCredentials;
 }> = ({ path, credentials }) => (
-  <>
+  <TODO>
     <table>
       <caption>Your Bambora credentials</caption>
       <tbody>
@@ -44,7 +44,7 @@ const BamboraCredentialsPage: React.FC<{
       </tbody>
     </table>
     <Link to={`${path}/edit`}>Edit credentials</Link>
-  </>
+  </TODO>
 );
 
 const CredentialsPage: React.FC<{
