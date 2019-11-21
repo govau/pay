@@ -1,8 +1,11 @@
 import * as React from "react";
 import { ApolloError } from "apollo-client";
+import {
+  Form as FinalForm,
+  FormRenderProps as FinalFormRenderProps
+} from "react-final-form";
+import createDecorator from "final-form-focus";
 import { Loader, ErrorAlert, validators } from "@pay/web";
-import { FormRenderProps } from "react-final-form";
-import { NakedForm } from "@pay/web/components/form/Form";
 
 import {
   UpdatePaymentMutationFn,
@@ -92,8 +95,10 @@ const handleSubmit = (
   };
 };
 
+const decorators = [createDecorator<Values>()];
+
 interface Props {
-  children: (props: FormRenderProps<Values>) => React.ReactNode;
+  children: (props: FinalFormRenderProps<Values>) => React.ReactNode;
   payment: ProductPaymentFragment;
 }
 
@@ -103,13 +108,13 @@ const Form: React.FC<Props> = ({ children, payment }) => {
   });
 
   return (
-    <NakedForm<Values>
+    <FinalForm<Values>
       onSubmit={handleSubmit(payment, updatePayment)}
-      column
       initialValues={{
         reference: payment.reference || "",
         amount: payment.amount ? payment.amount / 100 : 0
       }}
+      decorators={decorators}
     >
       {renderProps =>
         loading ? (
@@ -127,7 +132,7 @@ const Form: React.FC<Props> = ({ children, payment }) => {
           </>
         )
       }
-    </NakedForm>
+    </FinalForm>
   );
 };
 

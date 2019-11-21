@@ -2,6 +2,7 @@ import * as React from "react";
 import { Redirect } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { ApolloError } from "apollo-client";
+import createDecorator from "final-form-focus";
 import {
   PageTitle,
   Form,
@@ -48,6 +49,8 @@ const handleSubmit = (id: string, updateService: UpdateServiceMutationFn) => {
   };
 };
 
+const decorators = [createDecorator<FormValues>()];
+
 const EditNamePage: React.FC<{
   service: Service;
 }> = ({ service }) => {
@@ -61,10 +64,11 @@ const EditNamePage: React.FC<{
         <title>Edit name - {service.name}</title>
       </Helmet>
       <PageTitle title="Edit service name" />
-      <Form
+      <Form<FormValues>
         onSubmit={handleSubmit(service.id, updateService)}
         initialValues={{ name: service.name }}
         column
+        decorators={decorators}
       >
         {updateMutation.loading ? (
           <Loader message="Updating service name" />

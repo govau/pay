@@ -2,6 +2,7 @@ import * as React from "react";
 import { Helmet } from "react-helmet";
 import { format } from "date-fns";
 import { useHistory } from "react-router-dom";
+import createDecorator from "final-form-focus";
 import {
   PageTitle,
   H2,
@@ -14,6 +15,7 @@ import {
   ErrorAlert
 } from "@pay/web";
 import * as Table from "@pay/web/components/Table";
+import * as money from "@pay/web/lib/money";
 
 import { paymentProviderLabel, paymentStatusLabel } from "../../payments";
 import { Service } from "../../../__generated__/schema";
@@ -22,8 +24,14 @@ import {
   PaymentFragment,
   useSubmitRefundMutation
 } from "../../__generated__/graphql";
-import * as money from "@pay/web/lib/money";
 import { gatewayAccountFullType } from "../../../payments";
+
+interface FormValues {
+  refund_amount: number;
+  full_refund: boolean;
+}
+
+const decorators = [createDecorator<FormValues>()];
 
 interface Props {
   service: Service;
@@ -74,7 +82,7 @@ const RefundPage: React.FC<Props> = ({
         />
       ) : null}
 
-      <Form
+      <Form<FormValues>
         initialValues={{ full_refund: true, refund_amount: 0 }}
         onSubmit={async values => {
           const partialRefund = money.parse(String(values.refund_amount));
@@ -98,6 +106,7 @@ const RefundPage: React.FC<Props> = ({
           history.push(redirectURL);
         }}
         column
+        decorators={decorators}
       >
         {params => (
           <React.Fragment>

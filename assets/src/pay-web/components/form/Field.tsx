@@ -28,7 +28,11 @@ export interface ChildRenderProps<FieldValue = any>
 }
 
 interface FieldProps<FieldValue = any>
-  extends FinalFormFieldProps<FieldValue, HTMLInputElement> {
+  extends FinalFormFieldProps<
+    FieldValue,
+    FieldRenderProps<any, HTMLElement>,
+    HTMLInputElement
+  > {
   children: (props: ChildRenderProps) => React.ReactNode;
   name: string;
   label: string;

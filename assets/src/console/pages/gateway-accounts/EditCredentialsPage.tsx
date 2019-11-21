@@ -2,6 +2,7 @@ import * as React from "react";
 import { Redirect } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { ApolloError } from "apollo-client";
+import createDecorator from "final-form-focus";
 import {
   PageTitle,
   Form,
@@ -64,6 +65,8 @@ const handleSubmit = (
   };
 };
 
+const decorators = [createDecorator<FormValues>()];
+
 const EditBamboraCredentialsPage: React.FC<{
   path: string;
   service: Service;
@@ -87,7 +90,7 @@ const EditBamboraCredentialsPage: React.FC<{
         </title>
       </Helmet>
       <PageTitle title="Account credentials" />
-      <Form
+      <Form<FormValues>
         onSubmit={handleSubmit(gatewayAccount.id, updateCredentials)}
         initialValues={{
           merchant_id: gatewayAccount.credentials.merchant_id || "",
@@ -96,6 +99,7 @@ const EditBamboraCredentialsPage: React.FC<{
           api_password: gatewayAccount.credentials.api_password || ""
         }}
         column
+        decorators={decorators}
       >
         {updateMutation.loading ? (
           <Loader message="Updating account credentials" />

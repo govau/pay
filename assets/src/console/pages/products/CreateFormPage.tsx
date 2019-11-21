@@ -2,8 +2,9 @@ import * as React from "react";
 import { Helmet } from "react-helmet";
 import { Route, Switch, Redirect, useLocation } from "react-router-dom";
 import { ApolloError } from "apollo-client";
+import { Form as FinalForm } from "react-final-form";
+import createDecorator from "final-form-focus";
 import { validators, Pages as CorePages, Loader, ErrorAlert } from "@pay/web";
-import { NakedForm } from "@pay/web/components/form/Form";
 
 import {
   CreateProductMutationFn,
@@ -122,6 +123,8 @@ const handleSubmit = (
   };
 };
 
+const decorators = [createDecorator<Values>()];
+
 interface Props {
   serviceName: string;
   gatewayAccountId: string;
@@ -146,9 +149,8 @@ const CreateFormPage: React.FC<Props> = ({
       <Helmet>
         <title>Create payment link</title>
       </Helmet>
-      <NakedForm<Values>
+      <FinalForm<Values>
         onSubmit={handleSubmit(location, path, gatewayAccountId, createProduct)}
-        column
         initialValues={{
           name: "",
           reference_enabled: null,
@@ -157,6 +159,7 @@ const CreateFormPage: React.FC<Props> = ({
           price_fixed: null,
           price: 0
         }}
+        decorators={decorators}
       >
         {({ values, handleSubmit }) => (
           <>
@@ -211,7 +214,7 @@ const CreateFormPage: React.FC<Props> = ({
             )}
           </>
         )}
-      </NakedForm>
+      </FinalForm>
     </>
   );
 };
