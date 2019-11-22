@@ -84,6 +84,7 @@ export type Product = {
 
 export type Query = {
   __typename?: "Query";
+  users: Array<User>;
   user?: Maybe<User>;
   checkAuth: CheckAuthResponse;
 };
@@ -143,6 +144,12 @@ export type UserFragment = { __typename?: "User" } & Pick<
   | "telephone_number"
 >;
 
+export type GetUsersQueryVariables = {};
+
+export type GetUsersQuery = { __typename?: "Query" } & {
+  users: Array<{ __typename?: "User" } & UserFragment>;
+};
+
 export type CheckAuthQueryVariables = {};
 
 export type CheckAuthQuery = { __typename?: "Query" } & {
@@ -170,6 +177,74 @@ export const UserFragmentDoc = gql`
     telephone_number
   }
 `;
+export const GetUsersDocument = gql`
+  query GetUsers {
+    users @rest(type: "User", path: "/internal/services/users") {
+      ...User
+    }
+  }
+  ${UserFragmentDoc}
+`;
+export type GetUsersComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    GetUsersQuery,
+    GetUsersQueryVariables
+  >,
+  "query"
+>;
+
+export const GetUsersComponent = (props: GetUsersComponentProps) => (
+  <ApolloReactComponents.Query<GetUsersQuery, GetUsersQueryVariables>
+    query={GetUsersDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useGetUsersQuery__
+ *
+ * To run a query within a React component, call `useGetUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUsersQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUsersQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetUsersQuery,
+    GetUsersQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<GetUsersQuery, GetUsersQueryVariables>(
+    GetUsersDocument,
+    baseOptions
+  );
+}
+export function useGetUsersLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetUsersQuery,
+    GetUsersQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<GetUsersQuery, GetUsersQueryVariables>(
+    GetUsersDocument,
+    baseOptions
+  );
+}
+export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
+export type GetUsersLazyQueryHookResult = ReturnType<
+  typeof useGetUsersLazyQuery
+>;
+export type GetUsersQueryResult = ApolloReactCommon.QueryResult<
+  GetUsersQuery,
+  GetUsersQueryVariables
+>;
 export const CheckAuthDocument = gql`
   query CheckAuth {
     checkAuth

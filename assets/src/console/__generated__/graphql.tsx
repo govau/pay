@@ -660,7 +660,8 @@ export type GetUserServicesComponentProps = Omit<
 > &
   (
     | { variables: GetUserServicesQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetUserServicesComponent = (
   props: GetUserServicesComponentProps
@@ -826,7 +827,8 @@ export type GetServiceWithUsersComponentProps = Omit<
 > &
   (
     | { variables: GetServiceWithUsersQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetServiceWithUsersComponent = (
   props: GetServiceWithUsersComponentProps
@@ -915,7 +917,8 @@ export type GetServiceWithGatewayAccountsComponentProps = Omit<
 > &
   (
     | { variables: GetServiceWithGatewayAccountsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetServiceWithGatewayAccountsComponent = (
   props: GetServiceWithGatewayAccountsComponentProps
@@ -1219,7 +1222,8 @@ export type GetGatewayAccountsComponentProps = Omit<
 > &
   (
     | { variables: GetGatewayAccountsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetGatewayAccountsComponent = (
   props: GetGatewayAccountsComponentProps
@@ -1302,7 +1306,8 @@ export type GetGatewayAccountComponentProps = Omit<
 > &
   (
     | { variables: GetGatewayAccountQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetGatewayAccountComponent = (
   props: GetGatewayAccountComponentProps
@@ -1467,7 +1472,8 @@ export type GetProductsComponentProps = Omit<
 > &
   (
     | { variables: GetProductsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetProductsComponent = (props: GetProductsComponentProps) => (
   <ApolloReactComponents.Query<GetProductsQuery, GetProductsQueryVariables>
@@ -1617,7 +1623,8 @@ export type GetPaymentsComponentProps = Omit<
 > &
   (
     | { variables: GetPaymentsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetPaymentsComponent = (props: GetPaymentsComponentProps) => (
   <ApolloReactComponents.Query<GetPaymentsQuery, GetPaymentsQueryVariables>
@@ -1764,7 +1771,8 @@ export type GetPaymentEventsComponentProps = Omit<
 > &
   (
     | { variables: GetPaymentEventsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetPaymentEventsComponent = (
   props: GetPaymentEventsComponentProps

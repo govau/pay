@@ -4,6 +4,7 @@ type CheckAuthResponse {
 }
 
 type Query {
+  users: [User!]!
   user: User
   checkAuth: CheckAuthResponse!
 }

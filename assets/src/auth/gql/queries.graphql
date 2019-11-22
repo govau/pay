@@ -8,6 +8,12 @@ fragment User on User {
   telephone_number
 }
 
+query GetUsers {
+  users @rest(type: "User", path: "/internal/services/users") {
+    ...User
+  }
+}
+
 query CheckAuth {
   checkAuth
     @rest(type: "CheckAuthResponse", path: "/internal/services/auth/check") {
