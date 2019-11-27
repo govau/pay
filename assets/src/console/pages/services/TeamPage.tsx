@@ -5,13 +5,13 @@ import { TODO, PageTitle, Loader, ErrorAlert } from "@pay/web";
 import {
   useGetServiceWithUsersQuery,
   GetServiceWithUsersQuery,
-  Service
+  ServiceUser
 } from "../../__generated__/graphql";
-import { User, partitionByRole } from "./team";
+import { partitionByRole } from "./team";
 
 const RoleTable: React.FC<{
   heading: string;
-  users: User[];
+  users: ServiceUser[];
 }> = ({ heading, users }) =>
   users.length ? (
     <>
@@ -20,7 +20,7 @@ const RoleTable: React.FC<{
       </h2>
       <ul>
         {users.map(u => (
-          <li key={u.id}>
+          <li key={u.externalId}>
             <a href={`mailto:${u.email}`}>{u.email}</a>
           </li>
         ))}
@@ -33,21 +33,23 @@ const renderRoleTables = (data: GetServiceWithUsersQuery) => {
 
   return (
     <>
-      <RoleTable heading="Administrators" users={partitioned.admin.users} />
+      <RoleTable heading="Administrators" users={partitioned.admin} />
       <RoleTable
         heading="View and refund"
-        users={partitioned.view_and_refund.users}
+        users={partitioned.view_and_refund}
       />
-      <RoleTable heading="View only" users={partitioned.view_only.users} />
+      <RoleTable heading="View only" users={partitioned.view_only} />
     </>
   );
 };
 
-const TeamPage: React.FC<{
-  service: Service;
-}> = ({ service }) => {
+export interface props {
+  service: { externalId: string };
+}
+
+const TeamPage: React.FC<props> = ({ service }) => {
   const getQuery = useGetServiceWithUsersQuery({
-    variables: { id: service.id },
+    variables: { id: service.externalId },
     errorPolicy: "all"
   });
 

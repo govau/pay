@@ -37,7 +37,7 @@ interface FieldProps<FieldValue = any>
   name: string;
   label: string;
   /** Sits below the label. Can be used to provide extra information about the field. */
-  description?: string;
+  description?: string | null;
   ariaLabel?: string;
 }
 

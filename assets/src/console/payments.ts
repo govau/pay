@@ -1,15 +1,12 @@
-import {
-  GatewayAccountPaymentProvider,
-  PaymentStatus
-} from "./__generated__/graphql";
+import { PaymentProviderLabel, PaymentStatus } from "./__generated__/graphql";
 
-export const paymentProviderLabel = (p: GatewayAccountPaymentProvider) => {
+export const paymentProviderLabel = (p: PaymentProviderLabel) => {
   switch (p) {
-    case GatewayAccountPaymentProvider.Bambora:
+    case PaymentProviderLabel.Bambora:
       return "Bambora";
-    case GatewayAccountPaymentProvider.Sandbox:
+    case PaymentProviderLabel.Sandbox:
       return "Sandbox";
-    case GatewayAccountPaymentProvider.Stripe:
+    case PaymentProviderLabel.Stripe:
       return "Stripe";
     default:
       throw new Error(`Payment provider ${p} is not implemented`);

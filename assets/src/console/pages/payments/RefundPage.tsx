@@ -18,11 +18,11 @@ import * as Table from "@pay/web/components/Table";
 import * as money from "@pay/web/lib/money";
 
 import { paymentProviderLabel, paymentStatusLabel } from "../../payments";
-import { Service } from "../../../__generated__/schema";
 import {
   GatewayAccountFragment,
   PaymentFragment,
-  useSubmitRefundMutation
+  useSubmitRefundMutation,
+  ServiceFragment
 } from "../../__generated__/graphql";
 import { gatewayAccountFullType } from "../../../payments";
 
@@ -34,7 +34,7 @@ interface FormValues {
 const decorators = [createDecorator<FormValues>()];
 
 interface Props {
-  service: Service;
+  service: ServiceFragment;
   gatewayAccount: GatewayAccountFragment;
   payment: PaymentFragment;
   redirectURL: string;
@@ -53,13 +53,13 @@ const RefundPage: React.FC<Props> = ({
 
   const {
     id,
-    inserted_at,
-    updated_at,
+    insertedAt,
+    updatedAt,
     amount,
     reference,
     description,
     status,
-    gateway_transaction_id
+    gatewayTransactionId
   } = payment;
 
   const paymentAmount = `${(amount / 100).toFixed(2)}`;
@@ -96,10 +96,9 @@ const RefundPage: React.FC<Props> = ({
 
           await submitRefund({
             variables: {
-              paymentId: payment.id,
-              input: {
-                payment_refund: { amount: refundAmount, reference: "TODO" }
-              }
+              paymentId: payment.externalId,
+              amount: refundAmount,
+              reference: "TODO"
             }
           });
 
@@ -177,9 +176,9 @@ const RefundPage: React.FC<Props> = ({
             <Table.Row>
               <Table.Header scope="row">Date created</Table.Header>
               <Table.Cell>
-                <time dateTime={updated_at || inserted_at}>
+                <time dateTime={updatedAt || insertedAt}>
                   {format(
-                    new Date(updated_at || inserted_at),
+                    new Date(updatedAt || insertedAt),
                     "dd MMM yyyy — HH:mm:ss"
                   )}
                 </time>
@@ -188,15 +187,15 @@ const RefundPage: React.FC<Props> = ({
             <Table.Row>
               <Table.Header scope="row">Provider</Table.Header>
               <Table.Cell>
-                {paymentProviderLabel(gatewayAccount.payment_provider)}
+                {paymentProviderLabel(gatewayAccount.paymentProvider)}
               </Table.Cell>
             </Table.Row>
             <Table.Row>
               <Table.Header scope="row">
-                {paymentProviderLabel(gatewayAccount.payment_provider)}{" "}
+                {paymentProviderLabel(gatewayAccount.paymentProvider)}{" "}
                 transaction ID
               </Table.Header>
-              <Table.Cell>{optional(gateway_transaction_id)}</Table.Cell>
+              <Table.Cell>{optional(gatewayTransactionId)}</Table.Cell>
             </Table.Row>
             <Table.Row>
               <Table.Header scope="row">Pay.gov.au payment ID</Table.Header>

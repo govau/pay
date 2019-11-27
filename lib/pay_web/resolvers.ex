@@ -1,16 +1,44 @@
 defmodule PayWeb.Resolvers do
   alias Pay.{Services, Payments, Products}
 
-  def services(_parent, _params, _resolution) do
+  def get_current_user(_, _params, %{context: %{current_user: user}}) do
+    {:ok, user}
+  end
+
+  def get_current_user(_, _params, _resolution) do
+    {:error, "no active user"}
+  end
+
+  def users(_parent, _params, _resolution) do
+    {:ok, Services.list_users()}
+  end
+
+  def services(%Services.User{platform_admin: true}, _params, _resolution) do
     {:ok, Services.list_services()}
   end
 
-  def service(_parent, %{service_id: service_id}, _resolution) do
+  def services(_parent, _params, %{context: %{current_user: user}}) do
+    {:ok, Services.list_services_by_user_external_id(user.external_id)}
+  end
+
+  def service(%Payments.GatewayAccount{external_id: external_id}, _params, _resolution) do
+    {:ok, Services.get_service_by_gateway_account_external_id!(external_id)}
+  end
+
+  def service(_parent, %{id: service_id}, _resolution) do
     {:ok, Services.get_service_by_external_id!(service_id)}
   end
 
   def gateway_accounts(%Services.Service{external_id: external_id}, _params, _resolution) do
     {:ok, Payments.list_gateway_accounts_by_service_external_id(external_id)}
+  end
+
+  def gateway_account(
+        _parent,
+        %{id: external_id},
+        _resolution
+      ) do
+    {:ok, Payments.get_gateway_account_by_external_id!(external_id)}
   end
 
   def gateway_account(
@@ -21,8 +49,36 @@ defmodule PayWeb.Resolvers do
     {:ok, Payments.get_gateway_account!(gateway_account_id)}
   end
 
+  def gateway_account(
+        %Products.Product{gateway_account_id: gateway_account_id},
+        _params,
+        _resolution
+      ) do
+    {:ok, Payments.get_gateway_account_by_external_id!(gateway_account_id)}
+  end
+
+  def gateway_account(
+        %Products.ProductPayment{gateway_account_id: gateway_account_id},
+        _params,
+        _resolution
+      ) do
+    {:ok, Payments.get_gateway_account_by_external_id!(gateway_account_id)}
+  end
+
+  def gateway_account_credentials(
+        %Payments.GatewayAccount{} = gateway_account,
+        _params,
+        _resolution
+      ) do
+    {:ok, Payments.GatewayAccount.credentials(gateway_account)}
+  end
+
   def card_types(%Payments.GatewayAccount{} = gateway_account, _params, _resolution) do
     {:ok, Payments.list_gateway_account_card_types(gateway_account)}
+  end
+
+  def card_types(_parent, _params, _resolution) do
+    {:ok, Payments.list_card_types()}
   end
 
   def products(%Payments.GatewayAccount{external_id: gateway_id}, _params, _resolution) do
@@ -33,6 +89,10 @@ defmodule PayWeb.Resolvers do
     {:ok, Products.get_product!(product_id)}
   end
 
+  def product_payment(_parent, %{id: external_id}, _resolution) do
+    {:ok, Products.get_product_payment_by_external_id!(external_id)}
+  end
+
   def product_payments(%Products.Product{external_id: product_id}, _params, _resolution) do
     {:ok, Products.list_product_payments_by_product_external_id(product_id)}
   end
@@ -41,12 +101,20 @@ defmodule PayWeb.Resolvers do
     {:ok, Payments.list_payments_for_gateway_account(gateway_account)}
   end
 
+  def payment(_parent, %{id: external_id}, _resolution) do
+    {:ok, Payments.get_payment_by_external_id!(external_id)}
+  end
+
   def payment(%Payments.PaymentRefund{payment_id: payment_id}, _params, _resolution) do
     {:ok, Payments.get_payment!(payment_id)}
   end
 
-  def payment(%Products.ProductPayment{payment_id: payment_id}, _params, _resolution) do
-    {:ok, Payments.get_payment!(payment_id)}
+  def payment(%Products.ProductPayment{payment_id: nil}, _params, _resolution) do
+    {:ok, nil}
+  end
+
+  def payment(%Products.ProductPayment{payment_id: external_id}, _params, _resolution) do
+    {:ok, Payments.get_payment_by_external_id!(external_id)}
   end
 
   def payment_events(%Payments.Payment{} = payment, _params, _resolution) do
@@ -66,8 +134,17 @@ defmodule PayWeb.Resolvers do
     {:ok, Payments.get_payment_refund!(payment_refund_id)}
   end
 
-  def users(%Services.Service{} = _service, _params, _resolution) do
-    {:ok, Services.list_users()}
+  def service_users(%Services.Service{external_id: external_id} = _service, _params, _resolution) do
+    service_users =
+      external_id
+      |> Services.list_service_users_by_service_external_id()
+      |> Enum.map(fn %{user: user, role: role} ->
+        user
+        |> Map.from_struct()
+        |> Map.put(:role, role)
+      end)
+
+    {:ok, service_users}
   end
 
   def user(%Payments.PaymentRefund{user_external_id: user_id}, _params, _resolution) do
@@ -76,6 +153,10 @@ defmodule PayWeb.Resolvers do
 
   def organisation(%Services.Service{organisation_id: org_id}, _params, _resolution) do
     {:ok, Services.get_organisation!(org_id)}
+  end
+
+  def organisations(%Services.User{platform_admin: true}, _params, _resolution) do
+    {:ok, Services.list_organisations()}
   end
 
   @spec organisation_type(Pay.Services.Organisation.t(), any, any) :: {:ok, String.t()}

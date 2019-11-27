@@ -13,6 +13,7 @@ const ServicesPage: React.FC = () => {
         <title>Services</title>
       </Helmet>
       <PageTitle title="Services" />
+
       <TODO>
         {loading ? (
           <Loader message="Loading services" />
@@ -24,9 +25,9 @@ const ServicesPage: React.FC = () => {
           />
         ) : (
           <ul>
-            {data.services.map(s => (
-              <li key={s.id}>
-                <Link to={`/console/services/${s.id}`}>{s.name}</Link>
+            {data.admin.services.map(s => (
+              <li key={s.externalId}>
+                <Link to={`/console/services/${s.externalId}`}>{s.name}</Link>
               </li>
             ))}
           </ul>

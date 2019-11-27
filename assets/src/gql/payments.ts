@@ -1,13 +1,13 @@
-import { GatewayAccountPaymentProvider } from "../__generated__/schema";
+import { PaymentProviderLabel } from "../__generated__/schema";
 
 const withCredentialsTypeName = (gatewayAccount: any) => {
   switch (gatewayAccount.payment_provider) {
-    case GatewayAccountPaymentProvider.Sandbox:
+    case PaymentProviderLabel.Sandbox:
       return {
         __typename: "SandboxCredentials",
         ...gatewayAccount.credentials
       };
-    case GatewayAccountPaymentProvider.Bambora:
+    case PaymentProviderLabel.Bambora:
       return {
         __typename: "BamboraCredentials",
         ...gatewayAccount.credentials

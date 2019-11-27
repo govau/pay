@@ -1,9 +1,9 @@
 import { partitionByRole } from "./team";
 
 const emptyPartitions = {
-  admin: { users: [] },
-  view_and_refund: { users: [] },
-  view_only: { users: [] }
+  admin: [],
+  view_and_refund: [],
+  view_only: []
 };
 
 const adminRole = { name: "admin" };
@@ -14,15 +14,12 @@ const user5678 = { id: "5678" };
 test.each`
   input                                       | output
   ${[]}                                       | ${emptyPartitions}
-  ${[{ user: null, role: null }]}             | ${emptyPartitions}
-  ${[{ user: {}, role: null }]}               | ${emptyPartitions}
-  ${[{ user: null, role: {} }]}               | ${emptyPartitions}
-  ${[{ user: user1234, role: adminRole }]}    | ${{ admin: { users: [user1234] }, view_and_refund: { users: [] }, view_only: { users: [] } }}
-  ${[{ user: user1234, role: viewOnlyRole }]} | ${{ admin: { users: [] }, view_and_refund: { users: [] }, view_only: { users: [user1234] } }}
+  ${[{ user: user1234, role: adminRole }]}    | ${{ admin: [{ user: user1234, role: adminRole }], view_and_refund: [], view_only: [] }}
+  ${[{ user: user1234, role: viewOnlyRole }]} | ${{ admin: [], view_and_refund: [], view_only: [{ user: user1234, role: viewOnlyRole }] }}
   ${[
   { user: user1234, role: adminRole },
   { user: user5678, role: viewOnlyRole }
-]} | ${{ admin: { users: [user1234] }, view_and_refund: { users: [] }, view_only: { users: [user5678] } }}
+]} | ${{ admin: [{ user: user1234, role: adminRole }], view_and_refund: [], view_only: [{ user: user5678, role: viewOnlyRole }] }}
 `(
   "partitionByRole should return $output when provided $input",
   ({ input, output }) => {

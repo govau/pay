@@ -15,7 +15,7 @@ import {
   PaymentFragment,
   useGetPaymentQuery,
   PaymentStatus,
-  GatewayAccountPaymentProvider
+  PaymentProviderLabel
 } from "./__generated__/graphql";
 import { isBamboraGatewayAccount } from "../payments";
 import BamboraPayPage from "./pages/BamboraPayPage";
@@ -82,17 +82,17 @@ const PaymentRoutes: React.FC<Props> = ({ onReceivePayment }) => {
   return (
     <Switch>
       <Route path={`${path}`} exact strict>
-        {payment.gateway_account.payment_provider ===
-          GatewayAccountPaymentProvider.Bambora &&
-          isBamboraGatewayAccount(payment.gateway_account) && (
+        {payment.gatewayAccount.paymentProvider ===
+          PaymentProviderLabel.Bambora &&
+          isBamboraGatewayAccount(payment.gatewayAccount) && (
             <BamboraPayPage
               path={path}
-              gatewayAccount={payment.gateway_account}
+              gatewayAccount={payment.gatewayAccount}
               payment={payment}
             />
           )}
-        {payment.gateway_account.payment_provider ===
-          GatewayAccountPaymentProvider.Sandbox && (
+        {payment.gatewayAccount.paymentProvider ===
+          PaymentProviderLabel.Sandbox && (
           <SandboxPayPage path={path} payment={payment} />
         )}
       </Route>

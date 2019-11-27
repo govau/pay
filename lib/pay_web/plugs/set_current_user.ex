@@ -18,11 +18,11 @@ defmodule PayWeb.Plugs.SetCurrentUser do
       cond do
         current_user = user_id != nil && user_id != "" && Repo.get_by(User, external_id: user_id) ->
           conn
+          |> Absinthe.Plug.put_options(context: %{current_user: current_user})
           |> assign(:current_user, current_user)
 
         true ->
-          conn
-          |> assign(:current_user, nil)
+          assign(conn, :current_user, nil)
       end
     end
   end

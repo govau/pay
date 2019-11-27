@@ -1,112 +1,60 @@
+query_config: &query_config
+  noNamespaces: true
+  withHOC: false
+  withHooks: true
+  withMutationFn: true
+
+query_plugins: &query_plugins
+  - "typescript"
+  - "typescript-operations"
+  - "typescript-react-apollo"
+
+query_options: &query_options
+  config: *query_config
+  plugins: *query_plugins
+
 overwrite: true
+schema: http://localhost:4000/api/v1/internal/graphql
 generates:
   src/__generated__/graphql-introspection-result.ts:
-    schema:
-      - "src/gql/payments.graphql"
-      - "src/gql/services.graphql"
-      - "src/auth/gql/schema.graphql"
-      - "src/console/gql/schema.graphql"
-      - "src/platform-admin/gql/schema.graphql"
     documents:
       - "src/auth/gql/queries.graphql"
       - "src/console/gql/queries.graphql"
       - "src/platform-admin/gql/queries.graphql"
     plugins:
       - "fragment-matcher"
-  src/__generated__/schema.ts:
-    schema:
-      - "src/gql/payments.graphql"
-      - "src/gql/products.graphql"
-      - "src/gql/services.graphql"
-    plugins:
-      - "typescript"
-  src/auth/__generated__/graphql.tsx:
-    config:
-      noNamespaces: true
-      withHOC: false
-      withHooks: true
-    schema:
-      - "src/gql/services.graphql"
-      - "src/auth/gql/schema.graphql"
-    documents:
-      - "src/auth/gql/queries.graphql"
-    plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-react-apollo"
-  src/console/__generated__/graphql.tsx:
-    config:
-      noNamespaces: true
-      withHOC: false
-      withHooks: true
-    schema:
-      - "src/gql/payments.graphql"
-      - "src/gql/products.graphql"
-      - "src/gql/services.graphql"
-      - "src/console/gql/schema.graphql"
-    documents:
-      - "src/console/gql/queries.graphql"
-    plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-react-apollo"
-  src/checkout/__generated__/graphql-introspection-result.ts:
-    schema:
-      - "src/gql/payments.graphql"
-      - "src/checkout/gql/schema.graphql"
-    documents:
-      - "src/checkout/gql/queries.graphql"
-    plugins:
-      - "fragment-matcher"
-  src/checkout/__generated__/graphql.tsx:
-    config:
-      noNamespaces: true
-      withHOC: false
-      withHooks: true
-    schema:
-      - "src/gql/payments.graphql"
-      - "src/checkout/gql/schema.graphql"
-    documents:
-      - "src/checkout/gql/queries.graphql"
-    plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-react-apollo"
-  src/platform-admin/__generated__/graphql.tsx:
-    config:
-      noNamespaces: true
-      withHOC: false
-      withHooks: true
-    schema:
-      - "src/gql/payments.graphql"
-      - "src/gql/products.graphql"
-      - "src/gql/services.graphql"
-      - "src/platform-admin/gql/schema.graphql"
-    documents:
-      - "src/platform-admin/gql/queries.graphql"
-    plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-react-apollo"
   src/products/__generated__/graphql-introspection-result.ts:
-    schema:
-      - "src/gql/products.graphql"
-      - "src/products/gql/schema.graphql"
     documents:
       - "src/products/gql/queries.graphql"
     plugins:
       - "fragment-matcher"
-  src/products/__generated__/graphql.tsx:
-    config:
-      noNamespaces: true
-      withHOC: false
-      withHooks: true
-    schema:
-      - "src/gql/products.graphql"
-      - "src/products/gql/schema.graphql"
+  src/checkout/__generated__/graphql-introspection-result.ts:
     documents:
-      - "src/products/gql/queries.graphql"
+      - "src/checkout/gql/queries.graphql"
+    plugins:
+      - "fragment-matcher"
+
+  src/__generated__/schema.ts:
     plugins:
       - "typescript"
-      - "typescript-operations"
-      - "typescript-react-apollo"
+
+  src/auth/__generated__/graphql.tsx:
+    documents:
+      - src/auth/gql/queries.graphql
+    <<: *query_options
+  src/console/__generated__/graphql.tsx:
+    documents:
+      - src/console/gql/queries.graphql
+    <<: *query_options
+  src/checkout/__generated__/graphql.tsx:
+    documents:
+      - src/checkout/gql/queries.graphql
+    <<: *query_options
+  src/platform-admin/__generated__/graphql.tsx:
+    documents:
+      - src/platform-admin/gql/queries.graphql
+    <<: *query_options
+  src/products/__generated__/graphql.tsx:
+    documents:
+      - src/products/gql/queries.graphql
+    <<: *query_options

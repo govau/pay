@@ -13,14 +13,13 @@ interface Props {
   payment: ProductPaymentFragment;
 }
 
-const SubmitPage: React.FC<Props> = ({ path, payment }) => {
+const SubmitPage: React.FC<Props> = ({ payment }) => {
   const [
     submitPaymentMutation,
     { data, called, loading, error }
   ] = useSubmitPaymentMutation({
     variables: {
-      id: payment.id,
-      input: {}
+      id: payment.externalId
     },
     errorPolicy: "all"
   });
@@ -29,10 +28,11 @@ const SubmitPage: React.FC<Props> = ({ path, payment }) => {
     if (!called) {
       submitPaymentMutation();
     }
-    if (payment.status === ProductPaymentStatus.Submitted) {
-      window.location.href = payment.next_url;
+
+    if (payment.status === ProductPaymentStatus.Submitted && payment.nextUrl) {
+      window.location.href = payment.nextUrl;
     }
-  }, [called, submitPaymentMutation, payment.status, payment.next_url]);
+  }, [called, submitPaymentMutation, payment.status, payment.nextUrl]);
 
   if (loading) {
     return <Loader />;

@@ -35,17 +35,14 @@ export const ServiceInfoNav: React.FC = () => {
   }
 
   let gatewayAccount: GatewayAccountFragment | null = null;
-  if (
-    data.service.gateway_accounts &&
-    data.service.gateway_accounts.length > 0
-  ) {
-    const live = data.service.gateway_accounts.filter(
+  if (data.service.gatewayAccounts && data.service.gatewayAccounts.length > 0) {
+    const live = data.service.gatewayAccounts.filter(
       ga => ga.type === GatewayAccountType.Live
     );
     if (live.length > 0) {
       gatewayAccount = live[0];
     } else {
-      gatewayAccount = data.service.gateway_accounts[0];
+      gatewayAccount = data.service.gatewayAccounts[0];
     }
   }
 
@@ -54,7 +51,7 @@ export const ServiceInfoNav: React.FC = () => {
       <PageInfo>
         <Strong>{data.service.name}</Strong>{" "}
         <Lozenge variant="flair">
-          {goLiveStageLabel(data.service.current_go_live_stage)}
+          {goLiveStageLabel(data.service.currentGoLiveStage)}
         </Lozenge>
       </PageInfo>
       <SubNav>
@@ -68,14 +65,14 @@ export const ServiceInfoNav: React.FC = () => {
             <>
               <li>
                 <NavLink
-                  to={`${url}/gateway-accounts/${gatewayAccount.id}/payments`}
+                  to={`${url}/gateway-accounts/${gatewayAccount.externalId}/payments`}
                 >
                   Transactions
                 </NavLink>
               </li>
               <li>
                 <NavLink
-                  to={`${url}/gateway-accounts/${gatewayAccount.id}/products`}
+                  to={`${url}/gateway-accounts/${gatewayAccount.externalId}/products`}
                 >
                   Payment links
                 </NavLink>
@@ -92,7 +89,7 @@ export const ServiceInfoNav: React.FC = () => {
                 ) ||
                 (gatewayAccount
                   ? location.pathname.startsWith(
-                      `${url}/gateway-accounts/${gatewayAccount.id}/credentials`
+                      `${url}/gateway-accounts/${gatewayAccount.externalId}/credentials`
                     )
                   : false)
               }

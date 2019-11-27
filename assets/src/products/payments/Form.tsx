@@ -42,17 +42,21 @@ const handleSubmit = (
   payment: ProductPaymentFragment,
   updatePayment: UpdatePaymentMutationFn
 ) => {
+  console.log("WE ARE SUBMITTING");
+  console.log({ payment, updatePayment });
   return async (values: Values) => {
+    console.log("WE ARE SUBMITTING values");
+    console.log({ values });
     const errors = [
-      payment.product.reference_enabled
+      payment.product.referenceEnabled
         ? {
             name: "reference",
             error: validators.required(
-              `${payment.product.reference_label} is required`
+              `${payment.product.referenceLabel} is required`
             )(values.reference)
           }
         : null,
-      !payment.product.price_fixed
+      !payment.product.priceFixed
         ? {
             name: "amount",
             error: validators.isGreaterThan("Enter the paymount amount", {
@@ -61,6 +65,7 @@ const handleSubmit = (
           }
         : null
     ].filter(f => Boolean(f && f.error));
+    console.log({ errors });
 
     if (errors.length > 0) {
       const initial: Partial<{ [key: string]: string }> = {};
@@ -78,16 +83,14 @@ const handleSubmit = (
     try {
       await updatePayment({
         variables: {
-          id: payment.id,
+          id: payment.externalId,
           input: {
-            payment: {
-              ...values,
-              amount: payment.product.price_fixed
-                ? null
-                : amount
-                ? ensureMoneyInCents(amount)
-                : 0
-            }
+            ...values,
+            amount: payment.product.priceFixed
+              ? null
+              : amount
+              ? ensureMoneyInCents(amount)
+              : 0
           }
         }
       });

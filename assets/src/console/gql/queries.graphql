@@ -1,66 +1,68 @@
-# import CreateServiceInput from "./schema.graphql"
-
 fragment Service on Service {
   id
+  externalId
   name
-  current_go_live_stage
+  currentGoLiveStage
 }
 
 fragment GatewayAccount on GatewayAccount {
   id
+  externalId
   type
-  payment_provider
+  paymentProvider
   credentials {
     ... on BamboraCredentials {
-      merchant_id
-      account_number
-      api_username
+      merchantId
+      accountNumber
+      apiUsername
     }
   }
 }
 
 fragment GatewayAccountCredentials on GatewayAccountCredentials {
   ... on BamboraCredentials {
-    merchant_id
-    account_number
-    api_username
+    merchantId
+    accountNumber
+    apiUsername
   }
 }
 
 fragment Product on Product {
   id
+  externalId
   name
-  name_slug
-  service_name_slug
+  nameSlug
+  serviceNameSlug
   description
 }
 
 fragment Payment on Payment {
   id
-  inserted_at
-  updated_at
+  externalId
+  insertedAt
+  updatedAt
   status
   amount
   reference
   description
   email
-  gateway_transaction_id
-  card_details {
-    cardholder_name
-    card_number
-    last_digits_card_number
-    first_digits_card_number
-    expiry_date
-    card_brand
+  gatewayTransactionId
+  cardDetails {
+    cardholderName
+    cardNumber
+    lastDigitsCardNumber
+    firstDigitsCardNumber
+    expiryDate
+    cardBrand
   }
 }
 
-fragment PaymentEvent on PaymentEvent {
+fragment PaymentEvent on TransactionEvent {
   id
-  inserted_at
-  updated_at
   type
   status
+  insertedAt
+  updatedAt
 }
 
 fragment PaymentRefund on PaymentRefund {
@@ -68,178 +70,137 @@ fragment PaymentRefund on PaymentRefund {
   reference
   amount
   status
-  user_external_id
-  gateway_transaction_id
+  gatewayTransactionId
 }
 
-query GetUserServices($userId: ID!) {
-  services: userServices(userId: $userId)
-    @rest(
-      type: "Service"
-      path: "/internal/services/users/{args.userId}/services"
-    ) {
+query GetUserServices {
+  services {
     ...Service
   }
 }
 
 query GetService($id: ID!) {
-  service(id: $id)
-    @rest(type: "Service", path: "/internal/services/services/{args.id}") {
+  service(id: $id) {
     ...Service
   }
 }
 
 query GetServiceWithUsers($id: ID!) {
-  service(id: $id)
-    @rest(type: "Service", path: "/internal/services/services/{args.id}") {
-    id @export(as: "id")
+  service(id: $id) {
     ...Service
-    users
-      @rest(
-        type: "[ServiceUser]"
-        path: "/internal/services/services/{exportVariables.id}/service-users"
-      ) {
-      user {
+    users {
+      id
+      externalId
+      insertedAt
+      updatedAt
+      name
+      email
+      role {
         id
         name
-        email
-      }
-      role {
-        name
+        description
       }
     }
   }
 }
 
 query GetServiceWithGatewayAccounts($id: ID!) {
-  service(id: $id)
-    @rest(type: "Service", path: "/internal/services/services/{args.id}") {
-    id @export(as: "id")
+  service(id: $id) {
     ...Service
-    gateway_accounts
-      @rest(
-        type: "[GatewayAccount]"
-        path: "/internal/services/services/{exportVariables.id}/gateway-accounts"
-      ) {
+    gatewayAccounts {
       ...GatewayAccount
     }
   }
 }
 
 mutation CreateService($input: CreateServiceInput!) {
-  service: createService(input: $input)
-    @rest(
-      type: "Service"
-      path: "/internal/services/services"
-      method: "POST"
-    ) {
+  service: createService(service: $input) {
     ...Service
   }
 }
 
 mutation UpdateService($id: ID!, $input: UpdateServiceInput!) {
-  service: updateService(id: $id, input: $input)
-    @rest(
-      type: "Service"
-      path: "/internal/services/services/{args.id}"
-      method: "PUT"
-    ) {
+  service: updateService(id: $id, service: $input) {
     ...Service
   }
 }
 
-mutation SubmitRefund($paymentId: ID!, $input: SubmitRefundInput!) {
-  refund: submitRefund(paymentId: $paymentId, input: $input)
-    @rest(
-      type: "PaymentRefund"
-      path: "/internal/payments/payments/{args.paymentId}/refunds"
-      method: "POST"
-    ) {
+mutation SubmitRefund($paymentId: ID!, $amount: Int!, $reference: String) {
+  refund: submitRefund(
+    paymentId: $paymentId
+    amount: $amount
+    reference: $reference
+  ) {
     ...PaymentRefund
   }
 }
 
 query GetGatewayAccounts($serviceId: ID!) {
-  gatewayAccounts(serviceId: $serviceId)
-    @rest(
-      type: "[GatewayAccount]"
-      path: "/internal/services/services/{args.serviceId}/gateway-accounts"
-    ) {
-    ...GatewayAccount
+  service(id: $serviceId) {
+    gatewayAccounts {
+      ...GatewayAccount
+    }
   }
 }
 
 query GetGatewayAccount($id: ID!) {
-  gatewayAccount(id: $id)
-    @rest(
-      type: "GatewayAccount"
-      path: "/internal/payments/gateway-accounts/{args.id}"
-    ) {
+  gatewayAccount(id: $id) {
     ...GatewayAccount
   }
 }
 
 mutation UpdateGatewayAccountCredentials(
   $gatewayAccountId: ID!
-  $input: UpdateGatewayAccountCredentialsInput!
+  $input: BamboraCredentialsInput!
 ) {
-  credentials: updateGatewayAccountCredentials(
+  gatewayAccount: updateGatewayAccountCredentials(
     gatewayAccountId: $gatewayAccountId
-    input: $input
-  )
-    @rest(
-      type: "GatewayAccountCredentials"
-      path: "/internal/payments/gateway-accounts/{args.gatewayAccountId}/credentials"
-      method: "PUT"
-    ) {
-    ...GatewayAccountCredentials
+    credentials: $input
+  ) {
+    credentials {
+      ...GatewayAccountCredentials
+    }
   }
 }
 
-query GetProducts($gatewayAccountId: ID!) {
-  products(gatewayAccountId: $gatewayAccountId)
-    @rest(
-      type: "[Product]"
-      path: "/internal/products/gateway-accounts/{args.gatewayAccountId}/products"
-    ) {
-    ...Product
+query GetProducts($serviceID: ID!) {
+  service(id: $serviceID) {
+    gatewayAccounts {
+      products {
+        ...Product
+      }
+    }
   }
 }
 
 mutation CreateProduct($gatewayAccountId: ID!, $input: CreateProductInput!) {
-  product: createProduct(gatewayAccountId: $gatewayAccountId, input: $input)
-    @rest(
-      type: "Product"
-      path: "/internal/products/gateway-accounts/{args.gatewayAccountId}/products"
-      method: "POST"
-    ) {
-    ...Service
+  product: createProduct(gatewayAccountId: $gatewayAccountId, product: $input) {
+    ...Product
   }
 }
 
-query GetPayments($gatewayAccountId: ID!) {
-  payments(gatewayAccountId: $gatewayAccountId)
-    @rest(
-      type: "[Payment]"
-      path: "/internal/services/gateway-accounts/{args.gatewayAccountId}/payments"
-    ) {
-    ...Payment
+query GetPayments($serviceID: ID!) {
+  service(id: $serviceID) {
+    gatewayAccounts {
+      ...GatewayAccount
+      payments {
+        ...Payment
+      }
+    }
   }
 }
 
 query GetPayment($id: ID!) {
-  payment(id: $id)
-    @rest(type: "Payment", path: "/internal/payments/payments/{args.id}") {
+  payment(id: $id) {
     ...Payment
   }
 }
 
-query GetPaymentEvents($paymentId: ID!) {
-  events: paymentEvents(paymentId: $paymentId)
-    @rest(
-      type: "[PaymentEvent]"
-      path: "/internal/payments/payments/{args.paymentId}/events"
-    ) {
-    ...PaymentEvent
+query GetPaymentEvents($id: ID!) {
+  payment(id: $id) {
+    ...Payment
+    events {
+      ...PaymentEvent
+    }
   }
 }

@@ -40,17 +40,17 @@ const HomePage: React.FunctionComponent = () => {
                 </thead>
                 <tbody>
                   {data.users.map(u => (
-                    <Table.Row key={u.id}>
+                    <Table.Row key={u.externalId}>
                       <Table.Cell>{u.name}</Table.Cell>
                       <Table.Cell>{u.email}</Table.Cell>
-                      <Table.Cell>{u.platform_admin ? "Yes" : "No"}</Table.Cell>
+                      <Table.Cell>{u.platformAdmin ? "Yes" : "No"}</Table.Cell>
                       <Table.Cell>
-                        {localStorage.token === u.id ? (
+                        {localStorage.token === u.externalId ? (
                           "Signed in"
                         ) : (
                           <Button
                             onClick={() => {
-                              localStorage.token = u.id;
+                              localStorage.token = u.externalId;
                               window.location.reload();
                             }}
                           >

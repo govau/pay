@@ -122,7 +122,7 @@ const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
     onLoad: onCheckoutLoad
   });
   const createOTT = useCreateOTT(
-    gatewayAccount.credentials.merchant_id,
+    gatewayAccount.credentials.merchantId,
     loadCheckout.checkout
   );
 
@@ -138,15 +138,13 @@ const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
 
       await submitPayment({
         variables: {
-          paymentId: payment.id,
+          paymentId: payment.externalId,
+          transition: "payment_succeeded",
           input: {
-            transition: "payment_succeeded",
-            payment: {
-              ott: result.token,
-              last4: result.last4,
-              expiryMonth: result.expiryMonth,
-              expiryYear: result.expiryYear
-            }
+            ott: result.token,
+            last4: result.last4,
+            expiryMonth: result.expiryMonth,
+            expiryYear: result.expiryYear
           }
         }
       });
@@ -162,7 +160,7 @@ const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
         console.error("is token result error");
       }
     }
-  }, [history, path, payment.id, createOTT, submitPayment]);
+  }, [history, path, payment.externalId, createOTT, submitPayment]);
 
   if (loadCheckout.error) {
     return (

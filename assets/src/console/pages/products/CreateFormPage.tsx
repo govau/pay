@@ -110,12 +110,10 @@ const handleSubmit = (
         variables: {
           gatewayAccountId,
           input: {
-            product: {
-              ...values,
-              reference_enabled: Boolean(reference_enabled),
-              price_fixed: Boolean(price_fixed),
-              price: price ? ensureMoneyInCents(price) : 0
-            }
+            ...values,
+            referenceEnabled: Boolean(reference_enabled),
+            priceFixed: Boolean(price_fixed),
+            price: price ? ensureMoneyInCents(price) : 0
           }
         }
       });

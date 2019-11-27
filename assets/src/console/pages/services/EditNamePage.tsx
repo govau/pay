@@ -18,13 +18,16 @@ import {
 
 import {
   UpdateServiceMutationFn,
-  useUpdateServiceMutation,
-  Service
+  useUpdateServiceMutation
 } from "../../__generated__/graphql";
 import { isServerError } from "../../../apollo-rest-utils";
 
 interface FormValues {
   name: string;
+}
+
+export interface props {
+  service: { externalId: string; name: string };
 }
 
 const getErrorMessage = (error?: ApolloError) => {
@@ -44,16 +47,14 @@ const handleSubmit = (id: string, updateService: UpdateServiceMutationFn) => {
   return async (values: FormValues) => {
     try {
       const { name } = values;
-      await updateService({ variables: { id, input: { service: { name } } } });
+      await updateService({ variables: { id, input: { name } } });
     } catch (e) {}
   };
 };
 
 const decorators = [createDecorator<FormValues>()];
 
-const EditNamePage: React.FC<{
-  service: Service;
-}> = ({ service }) => {
+const EditNamePage: React.FC<props> = ({ service }) => {
   const [updateService, updateMutation] = useUpdateServiceMutation({
     errorPolicy: "all"
   });
@@ -65,7 +66,7 @@ const EditNamePage: React.FC<{
       </Helmet>
       <PageTitle title="Edit service name" />
       <Form<FormValues>
-        onSubmit={handleSubmit(service.id, updateService)}
+        onSubmit={handleSubmit(service.externalId, updateService)}
         initialValues={{ name: service.name }}
         column
         decorators={decorators}
@@ -74,7 +75,7 @@ const EditNamePage: React.FC<{
           <Loader message="Updating service name" />
         ) : updateMutation.data && updateMutation.data.service ? (
           <Redirect
-            to={`/console/services/${updateMutation.data.service.id}`}
+            to={`/console/services/${updateMutation.data.service.externalId}`}
           />
         ) : (
           <>

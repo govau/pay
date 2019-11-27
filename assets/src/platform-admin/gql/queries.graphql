@@ -1,28 +1,33 @@
 fragment Organisation on Organisation {
   id
+  externalId
   name
 }
 
 fragment Service on Service {
   id
+  externalId
   name
 }
 
 query Organisations {
-  organisations
-    @rest(type: "Organisation", path: "/internal/services/organisations") {
-    ...Organisation
+  admin {
+    organisations {
+      ...Organisation
+    }
   }
 }
 
 query Services {
-  services @rest(type: "Service", path: "/internal/services/services") {
-    ...Service
+  admin {
+    services {
+      ...Service
+    }
   }
 }
 
 query CardTypes {
-  cardTypes @rest(type: "CardType", path: "/internal/payments/card-types") {
+  cardTypes {
     id
     brand
     label

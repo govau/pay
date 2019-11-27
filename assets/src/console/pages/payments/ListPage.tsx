@@ -7,11 +7,14 @@ import * as Table from "@pay/web/components/Table";
 
 import {
   useGetPaymentsQuery,
-  Service,
   GatewayAccountFragment,
-  PaymentFragment
+  PaymentFragment,
+  ServiceFragment
 } from "../../__generated__/graphql";
 import { paymentStatusLabel } from "../../payments";
+
+const flatMap = <X, Y>(fx: (value: X) => Y[], xs: X[]): Y[] =>
+  Array.prototype.concat(...xs.map(fx));
 
 const Payments: React.FC<{
   path: string;
@@ -48,26 +51,26 @@ const Payments: React.FC<{
           <tbody>
             {payments.map(p => (
               <Table.LinkRow
-                key={p.id}
+                key={p.externalId}
                 onClick={() => {
-                  history.push(`${path}/${p.id}`);
+                  history.push(`${path}/${p.externalId}`);
                 }}
               >
                 <Table.Cell>
-                  <Link to={`${path}/${p.id}`}>{p.reference}</Link>
+                  <Link to={`${path}/${p.externalId}`}>{p.reference}</Link>
                 </Table.Cell>
                 <Table.Cell>{p.email}</Table.Cell>
                 <Table.NumericCell>
                   ${(p.amount / 100).toFixed(2)}
                 </Table.NumericCell>
                 <Table.Cell>
-                  {p.card_details && p.card_details.card_brand}
+                  {p.cardDetails && p.cardDetails.cardBrand}
                 </Table.Cell>
                 <Table.Cell>{paymentStatusLabel(p.status)}</Table.Cell>
                 <Table.NumericCell>
-                  <time dateTime={p.updated_at || p.inserted_at}>
+                  <time dateTime={p.updatedAt || p.insertedAt}>
                     {format(
-                      new Date(p.updated_at || p.inserted_at),
+                      new Date(p.updatedAt || p.insertedAt),
                       "dd MMM yyyy — HH:mm:ss"
                     )}
                   </time>
@@ -83,14 +86,14 @@ const Payments: React.FC<{
 
 interface Props {
   path: string;
-  service: Service;
+  service: ServiceFragment;
   gatewayAccount: GatewayAccountFragment;
 }
 
 const ListPage: React.FC<Props> = ({ path, service, gatewayAccount }) => {
   const { loading, error, data } = useGetPaymentsQuery({
     variables: {
-      gatewayAccountId: gatewayAccount.id
+      serviceID: service.externalId
     },
     errorPolicy: "all"
   });
@@ -110,7 +113,13 @@ const ListPage: React.FC<Props> = ({ path, service, gatewayAccount }) => {
           showError
         />
       ) : (
-        <Payments path={path} payments={data.payments} />
+        <Payments
+          path={path}
+          payments={flatMap(
+            gatewayAccount => gatewayAccount.payments,
+            data.service.gatewayAccounts
+          )}
+        />
       )}
     </>
   );

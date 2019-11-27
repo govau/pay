@@ -60,8 +60,8 @@ const Header: React.FC<Props> = () => {
             <PageInfo>
               {payment ? (
                 <>
-                  <Strong>{payment.gateway_account.service_name}</Strong>{" "}
-                  {payment.gateway_account.type === GatewayAccountType.Test && (
+                  <Strong>{payment.gatewayAccount.serviceName}</Strong>{" "}
+                  {payment.gatewayAccount.type === GatewayAccountType.Test && (
                     <Lozenge variant="flair">Test</Lozenge>
                   )}
                 </>

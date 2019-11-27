@@ -7,20 +7,20 @@ export const fromGQLUser = (u: GQLUser | undefined): User => {
   }
   const {
     id,
-    inserted_at,
-    updated_at,
-    platform_admin,
+    insertedAt,
+    updatedAt,
+    platformAdmin,
     name,
     email,
-    telephone_number
+    telephoneNumber
   } = u;
   return {
     id: id || "",
-    insertedAt: inserted_at || "",
-    updatedAt: updated_at || "",
-    platformAdmin: platform_admin || false,
+    insertedAt: insertedAt || "",
+    updatedAt: updatedAt || "",
+    platformAdmin: platformAdmin || false,
     name: name || "",
     email: email || "",
-    telephoneNumber: telephone_number || ""
+    telephoneNumber: telephoneNumber || ""
   };
 };

@@ -1,29 +1,28 @@
 fragment User on User {
   id
-  inserted_at
-  updated_at
-  platform_admin
+  externalId
+  insertedAt
+  updatedAt
   name
   email
-  telephone_number
+  platformAdmin
+  telephoneNumber
 }
 
 query GetUsers {
-  users @rest(type: "User", path: "/internal/services/users") {
+  users {
     ...User
   }
 }
 
 query CheckAuth {
-  checkAuth
-    @rest(type: "CheckAuthResponse", path: "/internal/services/auth/check") {
-    is_authenticated
-    user @type(name: "User") {
-      ...User
-    }
+  me {
+    ...User
   }
 }
 
 mutation Signout {
-  signout
+  signout {
+    signedOut
+  }
 }

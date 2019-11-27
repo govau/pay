@@ -30,15 +30,13 @@ const SandboxPayPage: React.FC<Props> = ({ path, payment }) => {
     try {
       await submitPayment({
         variables: {
-          paymentId: payment.id,
+          paymentId: payment.externalId,
+          transition: "payment_succeeded",
           input: {
-            transition: "payment_succeeded",
-            payment: {
-              // TODO
-              last4: "TODO result.last4",
-              expiryMonth: "TODO result.expiryMonth",
-              expiryYear: "TODO result.expiryYear"
-            }
+            // TODO
+            last4: "TODO result.last4",
+            expiryMonth: "TODO result.expiryMonth",
+            expiryYear: "TODO result.expiryYear"
           }
         }
       });
@@ -49,7 +47,7 @@ const SandboxPayPage: React.FC<Props> = ({ path, payment }) => {
 
       console.error(`could not submit payment: ${e.message}`, e);
     }
-  }, [history, path, payment.id, submitPayment]);
+  }, [history, path, payment.externalId, submitPayment]);
 
   return (
     <>

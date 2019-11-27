@@ -33,11 +33,15 @@ defmodule PayWeb.Router do
     forward "/", PhoenixSwagger.Plug.SwaggerUI, otp_app: :pay, swagger_file: "swagger.json"
   end
 
-  forward "/api/v1/internal/graphiql", Absinthe.Plug.GraphiQL,
-    schema: PayWeb.Schema,
-    json_codec: Jason
+  scope "/api/v1/internal" do
+    pipe_through(:api)
 
-  forward "/api/v1/internal/graphql", Absinthe.Plug, schema: PayWeb.Schema, json_codec: Jason
+    forward "/graphiql", Absinthe.Plug.GraphiQL,
+      schema: PayWeb.Schema,
+      json_codec: Jason
+
+    forward "/graphql", Absinthe.Plug, schema: PayWeb.Schema, json_codec: Jason
+  end
 
   scope "/api/v1/internal", PayWeb do
     pipe_through(:api)
