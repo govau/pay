@@ -26,7 +26,7 @@ const RestrictedPage: React.FC<Props> = ({ children }) => {
             />
           );
         }
-        if (data.checkAuth && data.checkAuth.is_authenticated) {
+        if (data.me && data.me.email) {
           return children;
         }
         return (

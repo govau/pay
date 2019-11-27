@@ -4,15 +4,15 @@ import { Loader, ErrorAlert, Pages as CorePages } from "@pay/web";
 
 import * as Pages from "./pages/Pages";
 import {
-  Service,
   GatewayAccountFragment,
   useGetServiceWithGatewayAccountsQuery,
   useGetGatewayAccountQuery,
-  useGetPaymentQuery
+  useGetPaymentQuery,
+  ServiceFragment
 } from "./__generated__/graphql";
 
 const PaymentRoutes: React.FC<{
-  service: Service;
+  service: ServiceFragment;
   gatewayAccount: GatewayAccountFragment;
 }> = ({ service, gatewayAccount }) => {
   const { paymentId } = useParams<{ paymentId: string }>();
@@ -66,7 +66,7 @@ const PaymentRoutes: React.FC<{
 };
 
 const GatewayAccountCredentialsRoutes: React.FC<{
-  service: Service;
+  service: ServiceFragment;
   gatewayAccount: GatewayAccountFragment;
 }> = ({ service, gatewayAccount }) => {
   const match = useRouteMatch();
@@ -99,7 +99,7 @@ const GatewayAccountCredentialsRoutes: React.FC<{
 };
 
 const GatewayAccountRoutes: React.FC<{
-  service: Service;
+  service: ServiceFragment;
 }> = ({ service }) => {
   const { gatewayAccountId } = useParams<{ gatewayAccountId: string }>();
 
@@ -223,10 +223,16 @@ const ServiceRoutes: React.FC = () => {
   return (
     <Switch>
       <Route path={`${url}`} exact strict>
-        <Pages.Services.DashboardPage service={data.service} />
+        <Pages.Services.DashboardPage
+          service={data.service}
+          gatewayAccounts={data.service.gatewayAccounts}
+        />
       </Route>
       <Route path={`${url}/settings`} exact strict>
-        <Pages.Services.SettingsPage service={data.service} />
+        <Pages.Services.SettingsPage
+          service={data.service}
+          gatewayAccounts={data.service.gatewayAccounts}
+        />
       </Route>
       <Route path={`${url}/edit-name`} exact strict>
         <Pages.Services.EditNamePage service={data.service} />

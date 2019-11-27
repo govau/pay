@@ -17,14 +17,14 @@ import {
 } from "@pay/web";
 
 import {
-  Service,
-  GatewayAccountPaymentProvider,
+  PaymentProviderLabel,
   BamboraCredentials
 } from "../../../__generated__/schema";
 import {
   UpdateGatewayAccountCredentialsMutationFn,
   useUpdateGatewayAccountCredentialsMutation,
-  GatewayAccountFragment
+  GatewayAccountFragment,
+  ServiceFragment
 } from "../../__generated__/graphql";
 import { isServerError } from "../../../apollo-rest-utils";
 import {
@@ -33,10 +33,10 @@ import {
 } from "../../../payments";
 
 interface FormValues {
-  merchant_id: string;
-  account_number: string;
-  api_username: string;
-  api_password: string;
+  merchantId: string;
+  accountNumber: string;
+  apiUsername: string;
+  apiPassword: string;
 }
 
 const getErrorMessage = (error?: ApolloError) => {
@@ -59,7 +59,7 @@ const handleSubmit = (
   return async (values: FormValues) => {
     try {
       await updateCredentials({
-        variables: { gatewayAccountId: id, input: { credentials: values } }
+        variables: { gatewayAccountId: id, input: values }
       });
     } catch (e) {}
   };
@@ -69,9 +69,9 @@ const decorators = [createDecorator<FormValues>()];
 
 const EditBamboraCredentialsPage: React.FC<{
   path: string;
-  service: Service;
+  service: ServiceFragment;
   gatewayAccount: Omit<GatewayAccountFragment, "credentials"> & {
-    credentials: BamboraCredentials & { api_password?: string };
+    credentials: BamboraCredentials & { apiPassword?: string };
   };
 }> = ({ path, service, gatewayAccount }) => {
   const [
@@ -91,19 +91,20 @@ const EditBamboraCredentialsPage: React.FC<{
       </Helmet>
       <PageTitle title="Account credentials" />
       <Form<FormValues>
-        onSubmit={handleSubmit(gatewayAccount.id, updateCredentials)}
+        onSubmit={handleSubmit(gatewayAccount.externalId, updateCredentials)}
         initialValues={{
-          merchant_id: gatewayAccount.credentials.merchant_id || "",
-          account_number: gatewayAccount.credentials.account_number || "",
-          api_username: gatewayAccount.credentials.api_username || "",
-          api_password: gatewayAccount.credentials.api_password || ""
+          merchantId: gatewayAccount.credentials.merchantId || "",
+          accountNumber: gatewayAccount.credentials.accountNumber || "",
+          apiUsername: gatewayAccount.credentials.apiUsername || "",
+          apiPassword: gatewayAccount.credentials.apiPassword || ""
         }}
         column
         decorators={decorators}
       >
         {updateMutation.loading ? (
           <Loader message="Updating account credentials" />
-        ) : updateMutation.data && updateMutation.data.credentials ? (
+        ) : updateMutation.data &&
+          updateMutation.data.gatewayAccount.credentials ? (
           <Redirect to={path} />
         ) : (
           <>
@@ -170,14 +171,14 @@ const EditBamboraCredentialsPage: React.FC<{
 
 const EditCredentialsPage: React.FC<{
   path: string;
-  service: Service;
+  service: ServiceFragment;
   gatewayAccount: GatewayAccountFragment;
 }> = ({ path, service, gatewayAccount }) => (
   <>
-    {gatewayAccount.payment_provider ===
-      GatewayAccountPaymentProvider.Sandbox && <Redirect to={path} />}
-    {gatewayAccount.payment_provider ===
-      GatewayAccountPaymentProvider.Bambora &&
+    {gatewayAccount.paymentProvider === PaymentProviderLabel.Sandbox && (
+      <Redirect to={path} />
+    )}
+    {gatewayAccount.paymentProvider === PaymentProviderLabel.Bambora &&
       isBamboraCredentials(gatewayAccount, gatewayAccount.credentials) && (
         <EditBamboraCredentialsPage
           path={path}

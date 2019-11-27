@@ -1,72 +1,61 @@
 fragment GatewayAccount on GatewayAccount {
   id
+  externalId
   type
-  payment_provider
-  service_name
+  paymentProvider
+  serviceName
   credentials {
     ... on BamboraCredentials {
-      merchant_id
+      merchantId
     }
   }
 }
 
 fragment Payment on Payment {
   id
-  inserted_at
-  updated_at
+  externalId
   status
   amount
   reference
   description
   email
-  gateway_account_id
-  gateway_account {
+  gatewayAccount {
     ...GatewayAccount
   }
 }
 
-# These mutations hit the same endpoint. This is required because GraphQL does
-# not support input union types.
-# See https://github.com/graphql/graphql-spec/issues/488
-
 mutation SubmitSandboxPayment(
   $paymentId: ID!
-  $input: SubmitSandboxPaymentInput!
+  $transition: String!
+  $input: SandboxPaymentInput!
 ) {
-  payment: submitSandboxPayment(paymentId: $paymentId, input: $input)
-    @rest(
-      type: "Payment"
-      path: "/internal/payments/payments/{args.paymentId}"
-      method: "PATCH"
-    ) {
+  payment: submitSandboxPayment(
+    paymentId: $paymentId
+    transition: $transition
+    paymentInput: $input
+  ) {
     ...Payment
   }
 }
 
 mutation SubmitBamboraPayment(
   $paymentId: ID!
-  $input: SubmitBamboraPaymentInput!
+  $transition: String!
+  $input: BamboraPaymentInput!
 ) {
-  payment: submitBamboraPayment(paymentId: $paymentId, input: $input)
-    @rest(
-      type: "Payment"
-      path: "/internal/payments/payments/{args.paymentId}"
-      method: "PATCH"
-    ) {
+  payment: submitBamboraPayment(
+    paymentId: $paymentId
+    transition: $transition
+    paymentInput: $input
+  ) {
     ...Payment
   }
 }
 
 query GetPayment($id: ID!) {
-  payment(id: $id)
-    @rest(type: "Payment", path: "/internal/payments/payments/{args.id}") {
-    gateway_account_id @export(as: "gatewayAccountId")
+  payment(id: $id) {
     ...Payment
-    gateway_account
-      @rest(
-        type: "GatewayAccount"
-        path: "/internal/payments/gateway-accounts/{exportVariables.gatewayAccountId}"
-      ) {
+    gatewayAccount {
       ...GatewayAccount
     }
   }

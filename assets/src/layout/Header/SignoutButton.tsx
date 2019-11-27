@@ -41,11 +41,7 @@ const SignoutButton: React.FC = () => {
           cache.writeQuery<CheckAuthQuery>({
             query: CheckAuthDocument,
             data: {
-              checkAuth: {
-                is_authenticated: false,
-                user: null,
-                __typename: "CheckAuthResponse"
-              }
+              me: null
             }
           });
         }

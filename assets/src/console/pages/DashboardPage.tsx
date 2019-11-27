@@ -12,13 +12,9 @@ import {
 } from "@pay/web";
 
 import { useGetUserServicesQuery } from "../__generated__/graphql";
-import { UserContext } from "../../users";
 
 const DashboardPage: React.FC = () => {
-  const { user } = React.useContext(UserContext);
-
   const { loading, error, data } = useGetUserServicesQuery({
-    variables: { userId: user.id },
     errorPolicy: "all"
   });
 
@@ -58,8 +54,8 @@ const DashboardPage: React.FC = () => {
             )}
             <ul>
               {data.services.map(s => (
-                <li key={s.id}>
-                  <Link to={`/console/services/${s.id}`}>{s.name}</Link>
+                <li key={s.externalId}>
+                  <Link to={`/console/services/${s.externalId}`}>{s.name}</Link>
                 </li>
               ))}
             </ul>

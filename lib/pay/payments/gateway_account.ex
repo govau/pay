@@ -90,11 +90,42 @@ defmodule Pay.Payments.GatewayAccount do
     def from_string("live"), do: :live
   end
 
+  defmodule Credentials do
+    defmodule BamboraCredentials do
+      defstruct merchant_id: "", account_number: "", api_username: ""
+    end
+
+    defmodule SandboxCredentials do
+      defstruct dummy: ""
+    end
+  end
+
   defmodule Provider do
     @type t :: :sandbox | :bambora
 
     def from_string("sandbox"), do: :sandbox
     def from_string("bambora"), do: :bambora
+  end
+
+  defp to_struct(kind, attrs) do
+    s = struct(kind)
+
+    Enum.reduce(Map.to_list(s), s, fn {k, _}, acc ->
+      case Map.fetch(attrs, Atom.to_string(k)) do
+        {:ok, v} -> %{acc | k => v}
+        :error -> acc
+      end
+    end)
+  end
+
+  def credentials(%Pay.Payments.GatewayAccount{
+        payment_provider: provider,
+        credentials: credentials
+      }) do
+    case Provider.from_string(provider) do
+      :bambora -> to_struct(Credentials.BamboraCredentials, credentials)
+      :sandbox -> to_struct(Credentials.SandboxCredentials, credentials)
+    end
   end
 
   @spec type(Type.t()) :: String.t()

@@ -29,15 +29,15 @@ const ReferencePage: React.FC<Props> = ({ path, payment, onSubmit }) => {
     >
       <Helmet>
         <title>
-          {payment.product.reference_label} - {payment.product.name}
+          {payment.product.referenceLabel} - {payment.product.name}
         </title>
       </Helmet>
       <PageTitle title={payment.product.name} />
       {payment.product.description && <P>{payment.product.description}</P>}
       <Field
         name="reference"
-        label={payment.product.reference_label}
-        description={payment.product.reference_hint}
+        label={payment.product.referenceLabel || "Reference"}
+        description={payment.product.referenceHint}
       >
         {({ input, ariaProps, ...rest }) => (
           <BasicTextInput {...input} {...ariaProps} {...rest} />

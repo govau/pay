@@ -2,20 +2,23 @@ import * as React from "react";
 import { Helmet } from "react-helmet";
 import { TODO, PageTitle, Link } from "@pay/web";
 
-import { Service, GatewayAccountType } from "../../__generated__/graphql";
+import { GatewayAccountType } from "../../__generated__/graphql";
 
-const SettingsPage: React.FC<{
-  service: Service;
-}> = ({ service }) => {
+export interface props {
+  service: { externalId: string; name: string };
+  gatewayAccounts: { externalId: string; type: GatewayAccountType }[];
+}
+
+const SettingsPage: React.FC<props> = ({ service, gatewayAccounts }) => {
   let gatewayAccount = null;
-  if (service.gateway_accounts && service.gateway_accounts.length > 0) {
-    const live = service.gateway_accounts.filter(
+  if (gatewayAccounts && gatewayAccounts.length > 0) {
+    const live = gatewayAccounts.filter(
       ga => ga.type === GatewayAccountType.Live
     );
     if (live.length > 0) {
       gatewayAccount = live[0];
     } else {
-      gatewayAccount = service.gateway_accounts[0];
+      gatewayAccount = gatewayAccounts[0];
     }
   }
 
@@ -28,12 +31,12 @@ const SettingsPage: React.FC<{
       <TODO>
         <ul>
           <li>
-            <Link to={`/console/services/${service.id}/edit-name`}>
+            <Link to={`/console/services/${service.externalId}/edit-name`}>
               Edit name
             </Link>{" "}
           </li>
           <li>
-            <Link to={`/console/services/${service.id}/team`}>
+            <Link to={`/console/services/${service.externalId}/team`}>
               Manage service team members
             </Link>
           </li>
@@ -41,7 +44,7 @@ const SettingsPage: React.FC<{
           {gatewayAccount && (
             <li>
               <Link
-                to={`/console/services/${service.id}/gateway-accounts/${gatewayAccount.id}/credentials`}
+                to={`/console/services/${service.externalId}/gateway-accounts/${gatewayAccount.externalId}/credentials`}
               >
                 Manage payment service provider account credentials
               </Link>

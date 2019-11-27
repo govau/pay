@@ -18,8 +18,7 @@ const ProductPage: React.FC = () => {
   ] = useCreatePaymentMutation({
     variables: {
       serviceNameSlug,
-      nameSlug,
-      input: {}
+      nameSlug
     },
     errorPolicy: "all"
   });
@@ -57,7 +56,7 @@ const ProductPage: React.FC = () => {
           </>
         )
       ) : (
-        <Redirect to={`/products/pay/${data.payment.id}`} />
+        <Redirect to={`/products/pay/${data.payment.externalId}`} />
       )}
     </>
   );

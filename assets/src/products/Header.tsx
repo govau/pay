@@ -58,7 +58,7 @@ const Header: React.FC<Props> = () => {
           <Container>
             <PageInfo>
               {product ? (
-                <Strong>{product.gateway_account.service.name}</Strong>
+                <Strong>{product.gatewayAccount.service.name}</Strong>
               ) : null}
             </PageInfo>
           </Container>

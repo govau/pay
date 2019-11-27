@@ -3,10 +3,10 @@ import { Helmet } from "react-helmet";
 import { TODO, PageTitle, P, Link } from "@pay/web";
 
 import {
-  Service,
   GatewayAccountFragment,
-  GatewayAccountPaymentProvider,
-  BamboraCredentials
+  PaymentProviderLabel,
+  BamboraCredentials,
+  ServiceFragment
 } from "../../__generated__/graphql";
 import { isBamboraCredentials } from "../../../payments";
 
@@ -27,19 +27,19 @@ const BamboraCredentialsPage: React.FC<{
       <tbody>
         <tr>
           <th>Merchant ID</th>
-          <td>{credentials.merchant_id}</td>
+          <td>{credentials.merchantId}</td>
         </tr>
         <tr>
           <th>Account number</th>
-          <td>{credentials.account_number}</td>
+          <td>{credentials.accountNumber}</td>
         </tr>
         <tr>
           <th>API username</th>
-          <td>{credentials.api_username}</td>
+          <td>{credentials.apiUsername}</td>
         </tr>
         <tr>
           <th>API password</th>
-          <td>{credentials.api_username && "●●●●●●●●"}</td>
+          <td>{credentials.apiUsername && "●●●●●●●●"}</td>
         </tr>
       </tbody>
     </table>
@@ -49,7 +49,7 @@ const BamboraCredentialsPage: React.FC<{
 
 const CredentialsPage: React.FC<{
   path: string;
-  service: Service;
+  service: ServiceFragment;
   gatewayAccount: GatewayAccountFragment;
 }> = ({ path, service, gatewayAccount }) => (
   <>
@@ -57,10 +57,10 @@ const CredentialsPage: React.FC<{
       <title>Account credentials - {service.name}</title>
     </Helmet>
     <PageTitle title="Account credentials" />
-    {gatewayAccount.payment_provider ===
-      GatewayAccountPaymentProvider.Sandbox && <SandboxCredentialsPage />}
-    {gatewayAccount.payment_provider ===
-      GatewayAccountPaymentProvider.Bambora &&
+    {gatewayAccount.paymentProvider === PaymentProviderLabel.Sandbox && (
+      <SandboxCredentialsPage />
+    )}
+    {gatewayAccount.paymentProvider === PaymentProviderLabel.Bambora &&
       isBamboraCredentials(gatewayAccount, gatewayAccount.credentials) && (
         <BamboraCredentialsPage
           path={path}

@@ -10,7 +10,10 @@ import { Helmet } from "react-helmet";
 import { PageTitle, Loader, ErrorAlert, Pages as CorePages } from "@pay/web";
 
 import { isServerError } from "../../apollo-rest-utils";
-import { useGetPaymentQuery, ProductFragment } from "../__generated__/graphql";
+import {
+  useGetProductPaymentQuery,
+  ProductFragment
+} from "../__generated__/graphql";
 import Form from "./Form";
 import ReferencePage from "./ReferencePage";
 import AmountPage from "./AmountPage";
@@ -24,7 +27,7 @@ interface Props {
 const PaymentRoutes: React.FC<Props> = ({ onReceiveProduct }) => {
   const { productPaymentId: id } = useParams<{ productPaymentId: string }>();
 
-  const { loading, error, data } = useGetPaymentQuery({
+  const { loading, error, data } = useGetProductPaymentQuery({
     variables: { id },
     errorPolicy: "all"
   });
@@ -65,7 +68,7 @@ const PaymentRoutes: React.FC<Props> = ({ onReceiveProduct }) => {
     );
   }
 
-  const { payment } = data;
+  const { productPayment: payment } = data;
 
   onReceiveProduct(payment.product);
 
@@ -85,7 +88,7 @@ const PaymentRoutes: React.FC<Props> = ({ onReceiveProduct }) => {
                 <Redirect to={`${path}/reference`} />
               </Route>
               <Route path={`${path}/reference`} exact strict>
-                {payment.product.reference_enabled ? (
+                {payment.product.referenceEnabled ? (
                   <ReferencePage
                     path={path}
                     payment={payment}

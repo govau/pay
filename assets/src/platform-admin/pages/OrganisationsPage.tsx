@@ -15,6 +15,7 @@ const OrganisationsPage: React.FC = () => {
         <title>Organisations</title>
       </Helmet>
       <PageTitle title="Organisations" />
+
       <TODO>
         {loading ? (
           <Loader message="Loading organisations" />
@@ -26,8 +27,8 @@ const OrganisationsPage: React.FC = () => {
           />
         ) : (
           <ul>
-            {data.organisations.map(o => (
-              <li key={o.id}>{o.name}</li>
+            {data.admin.organisations.map(o => (
+              <li key={o.externalId}>{o.name}</li>
             ))}
           </ul>
         )}

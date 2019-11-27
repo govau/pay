@@ -13,17 +13,18 @@ import {
 import * as Table from "@pay/web/components/Table";
 
 import { paymentProviderLabel, paymentStatusLabel } from "../../payments";
-import { Service, PaymentEventType } from "../../../__generated__/schema";
+import { PaymentEventType } from "../../../__generated__/schema";
 import {
   GatewayAccountFragment,
   PaymentFragment,
-  useGetPaymentEventsQuery
+  useGetPaymentEventsQuery,
+  ServiceFragment
 } from "../../__generated__/graphql";
 import { gatewayAccountFullType } from "../../../payments";
 import { useLocation } from "react-router-dom";
 
 interface Props {
-  service: Service;
+  service: ServiceFragment;
   gatewayAccount: GatewayAccountFragment;
   payment: PaymentFragment;
 }
@@ -44,21 +45,21 @@ const MenuTitle = styled.div`
 
 const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
   const paymentEventsQuery = useGetPaymentEventsQuery({
-    variables: { paymentId: payment.id },
+    variables: { id: payment.externalId },
     errorPolicy: "all"
   });
 
   const {
-    id,
-    inserted_at,
-    updated_at,
+    externalId,
+    insertedAt,
+    updatedAt,
     amount,
     reference,
     description,
     status,
-    card_details,
+    cardDetails,
     email,
-    gateway_transaction_id
+    gatewayTransactionId
   } = payment;
 
   const location = useLocation();
@@ -110,9 +111,9 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
             <Table.Row>
               <Table.Header scope="row">Date created</Table.Header>
               <Table.Cell>
-                <time dateTime={updated_at || inserted_at}>
+                <time dateTime={updatedAt || insertedAt}>
                   {format(
-                    new Date(updated_at || inserted_at),
+                    new Date(updatedAt || insertedAt),
                     "dd MMM yyyy — HH:mm:ss"
                   )}
                 </time>
@@ -121,24 +122,24 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
             <Table.Row>
               <Table.Header scope="row">Provider</Table.Header>
               <Table.Cell>
-                {paymentProviderLabel(gatewayAccount.payment_provider)}
+                {paymentProviderLabel(gatewayAccount.paymentProvider)}
               </Table.Cell>
             </Table.Row>
             <Table.Row>
               <Table.Header scope="row">
-                {paymentProviderLabel(gatewayAccount.payment_provider)}{" "}
+                {paymentProviderLabel(gatewayAccount.paymentProvider)}{" "}
                 transaction ID
               </Table.Header>
-              <Table.Cell>{optional(gateway_transaction_id)}</Table.Cell>
+              <Table.Cell>{optional(gatewayTransactionId)}</Table.Cell>
             </Table.Row>
             <Table.Row>
               <Table.Header scope="row">Pay.gov.au payment ID</Table.Header>
-              <Table.Cell>{id}</Table.Cell>
+              <Table.Cell>{externalId}</Table.Cell>
             </Table.Row>
           </tbody>
         </Table.Table>
       </Table.ResponsiveWrapper>
-      {card_details && (
+      {cardDetails && (
         <>
           <H2>Payment method</H2>
           <Table.ResponsiveWrapper>
@@ -146,25 +147,25 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
               <tbody>
                 <Table.Row>
                   <Table.Header scope="row">Type</Table.Header>
-                  <Table.Cell>{optional(card_details.card_brand)}</Table.Cell>
+                  <Table.Cell>{optional(cardDetails.cardBrand)}</Table.Cell>
                 </Table.Row>
                 <Table.Row>
                   <Table.Header scope="row">Name on card</Table.Header>
                   <Table.Cell>
-                    {optional(card_details.cardholder_name)}
+                    {optional(cardDetails.cardholderName)}
                   </Table.Cell>
                 </Table.Row>
                 <Table.Row>
                   <Table.Header scope="row">Card number</Table.Header>
                   <Table.Cell>
-                    {card_details.card_number
-                      ? card_details.card_number
-                      : `${card_details.first_digits_card_number}** **** ${card_details.last_digits_card_number}`}
+                    {cardDetails.cardNumber
+                      ? cardDetails.cardNumber
+                      : `${cardDetails.firstDigitsCardNumber}** **** ${cardDetails.lastDigitsCardNumber}`}
                   </Table.Cell>
                 </Table.Row>
                 <Table.Row>
                   <Table.Header scope="row">Card expiry date</Table.Header>
-                  <Table.Cell>{optional(card_details.expiry_date)}</Table.Cell>
+                  <Table.Cell>{optional(cardDetails.expiryDate)}</Table.Cell>
                 </Table.Row>
                 <Table.Row>
                   <Table.Header scope="row">Email</Table.Header>
@@ -186,12 +187,12 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
           showError
         />
       ) : (
-        paymentEventsQuery.data.events.length > 0 && (
+        paymentEventsQuery.data.payment.events.length > 0 && (
           <Table.ResponsiveWrapper>
             <Table.Table>
               <tbody>
-                {paymentEventsQuery.data.events.map(
-                  ({ id, inserted_at, updated_at, type, status }) => (
+                {paymentEventsQuery.data.payment.events.map(
+                  ({ id, insertedAt, updatedAt, type, status }) => (
                     <Table.Row key={id}>
                       <Table.Cell>{paymentStatusLabel(status)}</Table.Cell>
                       <Table.NumericCell>
@@ -199,9 +200,9 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
                         {(amount / 100).toFixed(2)}
                       </Table.NumericCell>
                       <Table.NumericCell>
-                        <time dateTime={updated_at || inserted_at}>
+                        <time dateTime={updatedAt || insertedAt}>
                           {format(
-                            new Date(updated_at || inserted_at),
+                            new Date(updatedAt || insertedAt),
                             "dd MMM yyyy — HH:mm:ss"
                           )}
                         </time>

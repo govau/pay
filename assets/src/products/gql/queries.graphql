@@ -1,18 +1,21 @@
 fragment Product on Product {
   id
+  externalId
   name
-  name_slug
+  nameSlug
   description
-  service_name_slug
-  reference_enabled
-  reference_label
-  reference_hint
-  price_fixed
+  serviceNameSlug
+  referenceEnabled
+  referenceLabel
+  referenceHint
+  priceFixed
   price
-  gateway_account {
+  gatewayAccount {
     id
+    externalId
     service {
       id
+      externalId
       name
     }
   }
@@ -20,72 +23,42 @@ fragment Product on Product {
 
 fragment ProductPayment on ProductPayment {
   id
+  externalId
   reference
   amount
   status
-  next_url
+  nextUrl
   product {
     ...Product
   }
-}
-
-query GetProduct($serviceNameSlug: String!, $nameSlug: String!) {
-  product(serviceNameSlug: $serviceNameSlug, nameSlug: $nameSlug)
-    @rest(
-      type: "Product"
-      path: "/internal/products/products/{args.serviceNameSlug}/{args.nameSlug}"
-    ) {
-    ...Product
+  payment {
+    amount
   }
 }
 
-query GetPayment($id: ID!) {
-  payment(id: $id)
-    @rest(
-      type: "ProductPayment"
-      path: "/internal/products/product-payments/{args.id}"
-    ) {
+query GetProductPayment($id: ID!) {
+  productPayment(id: $id) {
     ...ProductPayment
   }
 }
 
-mutation CreatePayment(
-  $serviceNameSlug: String!
-  $nameSlug: String!
-  $input: CreatePaymentInput!
-) {
-  payment: createPayment(
+mutation CreatePayment($serviceNameSlug: String!, $nameSlug: String!) {
+  payment: createProductPayment(
     serviceNameSlug: $serviceNameSlug
     nameSlug: $nameSlug
-    input: $input
-  )
-    @rest(
-      type: "ProductPayment"
-      path: "/internal/products/products/{args.serviceNameSlug}/{args.nameSlug}/payments"
-      method: "POST"
-    ) {
+  ) {
     ...ProductPayment
   }
 }
 
-mutation UpdatePayment($id: ID!, $input: UpdatePaymentInput!) {
-  payment: updatePayment(id: $id, input: $input)
-    @rest(
-      type: "ProductPayment"
-      path: "/internal/products/product-payments/{args.id}"
-      method: "PUT"
-    ) {
+mutation UpdatePayment($id: ID!, $input: UpdateProductPaymentInput!) {
+  payment: updateProductPayment(id: $id, productPayment: $input) {
     ...ProductPayment
   }
 }
 
-mutation SubmitPayment($id: ID!, $input: SubmitPaymentInput!) {
-  payment: submitPayment(id: $id, input: $input)
-    @rest(
-      type: "ProductPayment"
-      path: "/internal/products/product-payments/{args.id}/submit"
-      method: "POST"
-    ) {
+mutation SubmitPayment($id: ID!) {
+  payment: submitProductPayment(id: $id) {
     ...ProductPayment
   }
 }

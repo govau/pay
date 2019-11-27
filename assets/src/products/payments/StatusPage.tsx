@@ -36,8 +36,12 @@ const StatusPage: React.FC<Props> = ({ payment }) =>
       <DescriptionList>
         <dt>Payment for:</dt>
         <dd>{payment.product.name}</dd>
-        <dt>Total amount:</dt>
-        <dd>${(payment.amount / 100).toFixed(2)}</dd>
+        {payment.payment ? (
+          <>
+            <dt>Total amount:</dt>
+            <dd>${(payment.payment.amount / 100).toFixed(2)}</dd>
+          </>
+        ) : null}
       </DescriptionList>
     </>
   ) : (
@@ -52,7 +56,7 @@ const StatusPage: React.FC<Props> = ({ payment }) =>
         showError
       ></ErrorAlert>
       <LinkButton
-        to={`/products/${payment.product.service_name_slug}/${payment.product.name_slug}`}
+        to={`/products/${payment.product.serviceNameSlug}/${payment.product.nameSlug}`}
       >
         Go back to try the payment again
       </LinkButton>

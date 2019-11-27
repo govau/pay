@@ -64,19 +64,19 @@ const AmountPage: React.FC<Props> = ({ path, payment, values, onSubmit }) => {
     >
       <Helmet>
         <title>
-          {payment.product.price_fixed
+          {payment.product.priceFixed
             ? "Confirm amount"
             : "Enter amount in dollars"}{" "}
           - {payment.product.name}
         </title>
       </Helmet>
-      {!payment.product.reference_enabled && (
+      {!payment.product.referenceEnabled && (
         <>
           <PageTitle title={payment.product.name} />
           {payment.product.description && <P>{payment.product.description}</P>}
         </>
       )}
-      {payment.product.price_fixed ? (
+      {payment.product.priceFixed ? (
         <>
           <Label id={labelId} htmlFor={fieldId}>
             Payment amount

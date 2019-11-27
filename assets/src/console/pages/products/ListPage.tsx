@@ -12,17 +12,21 @@ import {
 } from "@pay/web";
 
 import {
-  Service,
   GatewayAccountFragment,
   useGetProductsQuery
 } from "../../__generated__/graphql";
 
-const ListPage: React.FC<{
-  service: Service;
+const flatMap = <X, Y>(fx: (value: X) => Y[], xs: X[]): Y[] =>
+  Array.prototype.concat(...xs.map(fx));
+
+export interface props {
+  service: { externalId: string; name: string };
   gatewayAccount: GatewayAccountFragment;
-}> = ({ service, gatewayAccount }) => {
+}
+
+const ListPage: React.FC<props> = ({ service, gatewayAccount }) => {
   const { loading, error, data } = useGetProductsQuery({
-    variables: { gatewayAccountId: gatewayAccount.id },
+    variables: { serviceID: service.externalId },
     errorPolicy: "all"
   });
 
@@ -49,7 +53,10 @@ const ListPage: React.FC<{
           />
         ) : (
           <>
-            {data.products.length === 0 && (
+            {flatMap(
+              gatewayAccount => gatewayAccount.products,
+              data.service.gatewayAccounts
+            ).length === 0 && (
               <Warning>
                 <P>You don’t have any payment links.</P>
               </Warning>
@@ -58,19 +65,22 @@ const ListPage: React.FC<{
               <Link to={`${url}/create`}>Create a new payment link</Link>
             </P>
             <ul>
-              {data.products.map(
-                ({ id, name, name_slug, service_name_slug }, _) => (
-                  <li key={id}>
-                    <Link to={`/console/services/${service.id}/products/${id}`}>
-                      {name}
-                    </Link>
-                    —
-                    <Link to={`/products/${service_name_slug}/${name_slug}`}>
-                      /payments/{service_name_slug}/{name_slug}
-                    </Link>
-                  </li>
-                )
-              )}
+              {flatMap(
+                gatewayAccount => gatewayAccount.products,
+                data.service.gatewayAccounts
+              ).map(({ externalId, name, nameSlug, serviceNameSlug }, _) => (
+                <li key={externalId}>
+                  <Link
+                    to={`/console/services/${service.externalId}/products/${externalId}`}
+                  >
+                    {name}
+                  </Link>
+                  —
+                  <Link to={`/products/${serviceNameSlug}/${nameSlug}`}>
+                    /payments/{serviceNameSlug}/{nameSlug}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </>
         )}

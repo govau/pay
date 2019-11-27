@@ -1,66 +1,55 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
-import { TODO, PageTitle, P, Link, Loader } from "@pay/web";
+import { TODO, PageTitle, P, Link } from "@pay/web";
 
-import {
-  Service,
-  useGetGatewayAccountsQuery
-} from "../../__generated__/graphql";
+import { GatewayAccountType } from "../../../__generated__/schema";
 
-const DashboardPage: React.FC<{
-  service: Service;
-}> = ({ service }) => {
-  const getGatewayAccountsQuery = useGetGatewayAccountsQuery({
-    variables: { serviceId: service.id },
-    errorPolicy: "all"
-  });
+export interface props {
+  service: { externalId: string; name: string };
+  gatewayAccounts: {
+    externalId: string;
+    type: GatewayAccountType;
+  }[];
+}
 
-  return (
-    <>
-      <Helmet>
-        <title>{service.name}</title>
-      </Helmet>
-      <PageTitle title={service.name} />
-      <TODO>
-        <P>From this service dashboard page you’ll be able to:</P>
-        <ul>
-          <li>
-            View service usage and metrics:
-            <ul>
-              <li>Across today, last 7 days, last 30 days</li>
-              <li>Successful refunds</li>
-              <li>Net income</li>
-            </ul>
-          </li>
-          <li>
-            <Link to={`/console/services/${service.id}/team`}>
-              Manage service team members
+const DashboardPage: React.FC<props> = ({ service, gatewayAccounts }) => (
+  <>
+    <Helmet>
+      <title>{service.name}</title>
+    </Helmet>
+    <PageTitle title={service.name} />
+    <TODO>
+      <P>From this service dashboard page you’ll be able to:</P>
+      <ul>
+        <li>
+          View service usage and metrics:
+          <ul>
+            <li>Across today, last 7 days, last 30 days</li>
+            <li>Successful refunds</li>
+            <li>Net income</li>
+          </ul>
+        </li>
+        <li>
+          <Link to={`/console/services/${service.externalId}/team`}>
+            Manage service team members
+          </Link>
+        </li>
+        <li>Request to go live</li>
+      </ul>
+      <h2>Gateway accounts</h2>
+      <ul>
+        {gatewayAccounts.map(ga => (
+          <li key={ga.externalId}>
+            <Link
+              to={`/console/services/${service.externalId}/gateway-accounts/${ga.externalId}/payments`}
+            >
+              {ga.type}
             </Link>
           </li>
-          <li>Request to go live</li>
-        </ul>
-        {getGatewayAccountsQuery.loading ? (
-          <Loader />
-        ) : (
-          <>
-            <h2>Gateway accounts</h2>
-            <ul>
-              {getGatewayAccountsQuery.data &&
-                getGatewayAccountsQuery.data.gatewayAccounts.map(ga => (
-                  <li key={ga.id}>
-                    <Link
-                      to={`/console/services/${service.id}/gateway-accounts/${ga.id}/payments`}
-                    >
-                      {ga.type}
-                    </Link>
-                  </li>
-                ))}
-            </ul>
-          </>
-        )}
-      </TODO>
-    </>
-  );
-};
+        ))}
+      </ul>
+    </TODO>
+  </>
+);
 
 export default DashboardPage;

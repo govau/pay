@@ -41,7 +41,7 @@ const handleSubmit = (createService: CreateServiceMutationFn) => {
   return async (values: FormValues) => {
     try {
       const { name } = values;
-      await createService({ variables: { input: { service: { name } } } });
+      await createService({ variables: { input: { name } } });
     } catch (e) {}
   };
 };

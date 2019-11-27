@@ -116,19 +116,18 @@ const Header: React.FC = () => {
   const [isNavVisible, setIsNavVisible] = React.useState(false);
 
   React.useEffect(() => {
-    const checkAuth = checkAuthQuery.data && checkAuthQuery.data.checkAuth;
+    const user = checkAuthQuery.data && checkAuthQuery.data.me;
 
-    if (checkAuth && checkAuth.user) {
-      setUser(fromGQLUser(checkAuth.user));
+    if (user) {
+      setUser(fromGQLUser(user));
     }
   });
 
-  const checkAuth = checkAuthQuery.data && checkAuthQuery.data.checkAuth;
+  const userMe = checkAuthQuery.data && checkAuthQuery.data.me;
 
-  const isAuthenticated = checkAuth && checkAuth.is_authenticated;
+  const isAuthenticated = userMe && userMe.id;
 
-  const isPlatformAdmin =
-    checkAuth && checkAuth.user && checkAuth.user.platform_admin;
+  const isPlatformAdmin = userMe && userMe.platformAdmin;
 
   return (
     <ThemeProvider

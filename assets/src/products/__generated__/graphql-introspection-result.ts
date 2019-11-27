@@ -17,10 +17,22 @@ const result: IntrospectionResultData = {
         name: "GatewayAccountCredentials",
         possibleTypes: [
           {
-            name: "SandboxCredentials"
+            name: "BamboraCredentials"
           },
           {
-            name: "BamboraCredentials"
+            name: "SandboxCredentials"
+          }
+        ]
+      },
+      {
+        kind: "INTERFACE",
+        name: "TransactionEvent",
+        possibleTypes: [
+          {
+            name: "PaymentRefundEvent"
+          },
+          {
+            name: "PaymentEvent"
           }
         ]
       }

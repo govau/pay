@@ -66,7 +66,7 @@ defmodule Pay.Products.Product do
       :name_slug,
       :reference_enabled
     ])
-    |> unique_constraint(:name_slug, name: :products_email_service_name_slug_index)
+    |> unique_constraint(:name_slug, name: :products_name_slug_service_name_slug_index)
   end
 
   @doc false
@@ -101,6 +101,6 @@ defmodule Pay.Products.Product do
       :reference_label,
       :reference_hint
     ])
-    |> unique_constraint(:name_slug, name: :products_email_service_name_slug_index)
+    |> unique_constraint(:name_slug, name: :products_name_slug_service_name_slug_index)
   end
 end

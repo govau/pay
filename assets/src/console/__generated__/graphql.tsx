@@ -14,265 +14,325 @@ export type Scalars = {
   Float: number;
 };
 
+export type Admin = {
+  __typename?: "Admin";
+  organisations: Array<Organisation>;
+  services: Array<Service>;
+};
+
 export type BamboraCredentials = {
   __typename?: "BamboraCredentials";
-  merchant_id?: Maybe<Scalars["String"]>;
-  account_number?: Maybe<Scalars["String"]>;
-  api_username?: Maybe<Scalars["String"]>;
+  accountNumber?: Maybe<Scalars["String"]>;
+  apiUsername?: Maybe<Scalars["String"]>;
+  merchantId?: Maybe<Scalars["String"]>;
+};
+
+export type BamboraCredentialsInput = {
+  accountNumber?: Maybe<Scalars["String"]>;
+  apiPassword?: Maybe<Scalars["String"]>;
+  apiUsername: Scalars["String"];
+  merchantId: Scalars["String"];
+};
+
+export type BamboraPaymentInput = {
+  expiryMonth: Scalars["String"];
+  expiryYear: Scalars["String"];
+  last4: Scalars["String"];
+  ott: Scalars["String"];
 };
 
 export type CardDetails = {
   __typename?: "CardDetails";
-  cardholder_name: Scalars["String"];
-  card_number?: Maybe<Scalars["String"]>;
-  last_digits_card_number: Scalars["String"];
-  first_digits_card_number: Scalars["String"];
-  expiry_date: Scalars["String"];
-  card_brand: Scalars["String"];
+  cardBrand?: Maybe<Scalars["String"]>;
+  cardNumber?: Maybe<Scalars["String"]>;
+  cardholderName?: Maybe<Scalars["String"]>;
+  expiryDate?: Maybe<Scalars["String"]>;
+  firstDigitsCardNumber?: Maybe<Scalars["String"]>;
+  lastDigitsCardNumber?: Maybe<Scalars["String"]>;
 };
 
 export type CardType = {
   __typename?: "CardType";
+  brand?: Maybe<Scalars["String"]>;
   id: Scalars["ID"];
-  brand: Scalars["String"];
-  label: Scalars["String"];
-  type: Scalars["String"];
+  label?: Maybe<Scalars["String"]>;
+  requires3ds?: Maybe<Scalars["Boolean"]>;
+  type?: Maybe<Scalars["String"]>;
 };
 
 export type CreateProductInput = {
-  product: CreateProductProduct;
-};
-
-export type CreateProductProduct = {
-  name: Scalars["String"];
   description?: Maybe<Scalars["String"]>;
-  reference_enabled: Scalars["Boolean"];
-  reference_label?: Maybe<Scalars["String"]>;
-  reference_hint?: Maybe<Scalars["String"]>;
-  price_fixed: Scalars["Boolean"];
+  name: Scalars["String"];
   price?: Maybe<Scalars["Int"]>;
+  priceFixed: Scalars["Boolean"];
+  referenceEnabled: Scalars["Boolean"];
+  referenceHint?: Maybe<Scalars["String"]>;
+  referenceLabel?: Maybe<Scalars["String"]>;
 };
 
 export type CreateServiceInput = {
-  service: CreateServiceService;
-};
-
-export type CreateServiceService = {
   name: Scalars["String"];
 };
 
 export type GatewayAccount = {
   __typename?: "GatewayAccount";
-  id: Scalars["ID"];
-  payment_provider: GatewayAccountPaymentProvider;
-  type: GatewayAccountType;
-  service_name: Scalars["String"];
-  service: Service;
-  description: Scalars["String"];
+  allowApplePay?: Maybe<Scalars["Boolean"]>;
+  allowGooglePay?: Maybe<Scalars["Boolean"]>;
+  allowZeroAmount?: Maybe<Scalars["Boolean"]>;
+  cardTypes: Array<CardType>;
   credentials: GatewayAccountCredentials;
-  allow_apple_pay: Scalars["Boolean"];
-  allow_google_pay: Scalars["Boolean"];
-  allow_zero_amount: Scalars["Boolean"];
-  requires_3ds: Scalars["Boolean"];
-  products?: Maybe<Array<Product>>;
+  description?: Maybe<Scalars["String"]>;
+  externalId: Scalars["ID"];
+  id: Scalars["ID"];
+  integrationVersion3ds?: Maybe<Scalars["Int"]>;
+  paymentProvider: PaymentProviderLabel;
+  payments: Array<Payment>;
+  products: Array<Product>;
+  requires3ds?: Maybe<Scalars["Boolean"]>;
+  service: Service;
+  serviceName?: Maybe<Scalars["String"]>;
+  type: GatewayAccountType;
 };
 
-export type GatewayAccountCredentials = SandboxCredentials | BamboraCredentials;
-
-export enum GatewayAccountPaymentProvider {
-  Sandbox = "sandbox",
-  Bambora = "bambora",
-  Stripe = "stripe"
-}
+export type GatewayAccountCredentials = BamboraCredentials | SandboxCredentials;
 
 export enum GatewayAccountType {
-  Test = "test",
-  Live = "live"
+  Live = "LIVE",
+  Test = "TEST"
 }
-
-export type Mutation = {
-  __typename?: "Mutation";
-  createService: Service;
-  updateService: Service;
-  updateGatewayAccountCredentials: GatewayAccountCredentials;
-  createProduct: Service;
-  submitRefund: PaymentRefund;
-};
-
-export type MutationCreateServiceArgs = {
-  input: CreateServiceInput;
-};
-
-export type MutationUpdateServiceArgs = {
-  id: Scalars["ID"];
-  input: UpdateServiceInput;
-};
-
-export type MutationUpdateGatewayAccountCredentialsArgs = {
-  gatewayAccountId: Scalars["ID"];
-  input: UpdateGatewayAccountCredentialsInput;
-};
-
-export type MutationCreateProductArgs = {
-  gatewayAccountId: Scalars["ID"];
-  input: CreateProductInput;
-};
-
-export type MutationSubmitRefundArgs = {
-  paymentId: Scalars["ID"];
-  input: SubmitRefundInput;
-};
 
 export type Organisation = {
   __typename?: "Organisation";
+  externalId: Scalars["ID"];
   id: Scalars["ID"];
-  name: Scalars["String"];
+  name?: Maybe<Scalars["String"]>;
+  type?: Maybe<Scalars["String"]>;
 };
 
 export type Payment = {
   __typename?: "Payment";
-  id: Scalars["ID"];
-  inserted_at: Scalars["String"];
-  updated_at: Scalars["String"];
-  status: PaymentStatus;
   amount: Scalars["Int"];
-  reference: Scalars["String"];
+  cardDetails?: Maybe<CardDetails>;
   description: Scalars["String"];
-  email: Scalars["String"];
-  card_details?: Maybe<CardDetails>;
-  gateway_transaction_id?: Maybe<Scalars["ID"]>;
-  gateway_account_id: Scalars["ID"];
-  gateway_account: GatewayAccount;
+  email?: Maybe<Scalars["String"]>;
+  events: Array<TransactionEvent>;
+  externalId: Scalars["ID"];
+  gatewayAccount: GatewayAccount;
+  gatewayTransactionId?: Maybe<Scalars["String"]>;
+  id: Scalars["ID"];
+  insertedAt: Scalars["String"];
+  reference: Scalars["String"];
+  returnUrl: Scalars["String"];
+  status: PaymentStatus;
+  updatedAt: Scalars["String"];
 };
 
-export type PaymentEvent = {
+export type PaymentEvent = TransactionEvent & {
   __typename?: "PaymentEvent";
+  externalId: Scalars["ID"];
   id: Scalars["ID"];
-  inserted_at: Scalars["String"];
-  updated_at: Scalars["String"];
-  type: PaymentEventType;
+  insertedAt: Scalars["String"];
   status: PaymentStatus;
+  type: PaymentEventType;
+  updatedAt: Scalars["String"];
 };
 
 export enum PaymentEventType {
-  Payment = "payment",
-  Refund = "refund"
+  Payment = "PAYMENT",
+  Refund = "REFUND"
+}
+
+export enum PaymentProviderLabel {
+  Bambora = "BAMBORA",
+  Sandbox = "SANDBOX",
+  Stripe = "STRIPE"
 }
 
 export type PaymentRefund = {
   __typename?: "PaymentRefund";
+  amount: Scalars["Int"];
+  events?: Maybe<Array<PaymentRefundEvent>>;
+  externalId: Scalars["ID"];
+  gatewayTransactionId: Scalars["String"];
   id: Scalars["ID"];
+  payment?: Maybe<Payment>;
   reference: Scalars["String"];
-  amount: Scalars["Int"];
-  status: PaymentRefundStatus;
-  user_external_id: Scalars["ID"];
-  gateway_transaction_id: Scalars["ID"];
+  status: Scalars["String"];
+  user?: Maybe<User>;
 };
 
-export type PaymentRefundInput = {
-  amount: Scalars["Int"];
-  reference?: Maybe<Scalars["String"]>;
+export type PaymentRefundEvent = TransactionEvent & {
+  __typename?: "PaymentRefundEvent";
+  externalId: Scalars["ID"];
+  id: Scalars["ID"];
+  insertedAt: Scalars["String"];
+  refund?: Maybe<PaymentRefund>;
+  status: PaymentStatus;
+  type: PaymentEventType;
+  updatedAt: Scalars["String"];
 };
-
-export enum PaymentRefundStatus {
-  Created = "created",
-  Submitted = "submitted",
-  Success = "success",
-  Error = "error"
-}
 
 export enum PaymentStatus {
-  Created = "created",
-  Started = "started",
-  Submitted = "submitted",
-  Capturable = "capturable",
-  Success = "success",
-  Declined = "declined",
-  TimedOut = "timed_out",
-  Cancelled = "cancelled",
-  Error = "error"
+  Cancelled = "CANCELLED",
+  Capturable = "CAPTURABLE",
+  Created = "CREATED",
+  Declined = "DECLINED",
+  Error = "ERROR",
+  Started = "STARTED",
+  Submitted = "SUBMITTED",
+  Success = "SUCCESS",
+  TimedOut = "TIMED_OUT"
 }
 
 export type Product = {
   __typename?: "Product";
+  apiToken: Scalars["String"];
+  description?: Maybe<Scalars["String"]>;
+  externalId: Scalars["ID"];
+  gatewayAccount: GatewayAccount;
   id: Scalars["ID"];
   name: Scalars["String"];
-  name_slug: Scalars["String"];
-  service_name_slug: Scalars["String"];
-  description: Scalars["String"];
-  reference_enabled: Scalars["Boolean"];
-  reference_label: Scalars["String"];
-  reference_hint: Scalars["String"];
-  price_fixed: Scalars["Boolean"];
+  nameSlug: Scalars["String"];
+  payments: Array<ProductPayment>;
   price: Scalars["Int"];
-  gateway_account: GatewayAccount;
+  priceFixed: Scalars["Boolean"];
+  referenceEnabled: Scalars["Boolean"];
+  referenceHint?: Maybe<Scalars["String"]>;
+  referenceLabel?: Maybe<Scalars["String"]>;
+  returnUrl?: Maybe<Scalars["String"]>;
+  serviceNameSlug: Scalars["String"];
 };
 
 export type ProductPayment = {
   __typename?: "ProductPayment";
+  amount?: Maybe<Scalars["Int"]>;
+  externalId: Scalars["ID"];
+  gatewayAccount: GatewayAccount;
   id: Scalars["ID"];
+  nextUrl?: Maybe<Scalars["String"]>;
+  payment?: Maybe<Payment>;
   product: Product;
-  reference: Scalars["String"];
-  amount: Scalars["Int"];
+  reference?: Maybe<Scalars["String"]>;
   status: ProductPaymentStatus;
-  next_url: Scalars["String"];
 };
 
 export enum ProductPaymentStatus {
-  Created = "created",
-  Submitted = "submitted",
-  Error = "error"
+  Created = "CREATED",
+  Error = "ERROR",
+  Submitted = "SUBMITTED"
 }
-
-export type Query = {
-  __typename?: "Query";
-  userServices: Array<Service>;
-  service: Service;
-  gatewayAccounts: Array<GatewayAccount>;
-  gatewayAccount: GatewayAccount;
-  products: Array<Product>;
-  payments: Array<Payment>;
-  paymentEvents: Array<PaymentEvent>;
-  payment: Payment;
-};
-
-export type QueryUserServicesArgs = {
-  userId: Scalars["ID"];
-};
-
-export type QueryServiceArgs = {
-  id: Scalars["ID"];
-};
-
-export type QueryGatewayAccountsArgs = {
-  serviceId: Scalars["ID"];
-};
-
-export type QueryGatewayAccountArgs = {
-  id: Scalars["ID"];
-};
-
-export type QueryProductsArgs = {
-  gatewayAccountId: Scalars["ID"];
-};
-
-export type QueryPaymentsArgs = {
-  gatewayAccountId: Scalars["ID"];
-};
-
-export type QueryPaymentEventsArgs = {
-  paymentId: Scalars["ID"];
-};
-
-export type QueryPaymentArgs = {
-  id: Scalars["ID"];
-};
 
 export type Role = {
   __typename?: "Role";
+  description: Scalars["String"];
   id: Scalars["ID"];
   name: Scalars["String"];
-  description: Scalars["String"];
+};
+
+export type RootMutationType = {
+  __typename?: "RootMutationType";
+  /** Create a product */
+  createProduct: Product;
+  /** instantiate a product payment */
+  createProductPayment: ProductPayment;
+  /** Create a service */
+  createService: Service;
+  signout: Signout;
+  submitBamboraPayment: Payment;
+  submitProductPayment: ProductPayment;
+  /** Submit a payment refund */
+  submitRefund: PaymentRefund;
+  submitSandboxPayment: Payment;
+  updateGatewayAccountCredentials: GatewayAccount;
+  updateProductPayment: ProductPayment;
+  /** Submit the details of an existing service */
+  updateService: Service;
+};
+
+export type RootMutationTypeCreateProductArgs = {
+  gatewayAccountId: Scalars["ID"];
+  product: CreateProductInput;
+};
+
+export type RootMutationTypeCreateProductPaymentArgs = {
+  nameSlug: Scalars["String"];
+  serviceNameSlug: Scalars["String"];
+};
+
+export type RootMutationTypeCreateServiceArgs = {
+  service: CreateServiceInput;
+};
+
+export type RootMutationTypeSubmitBamboraPaymentArgs = {
+  paymentId: Scalars["ID"];
+  paymentInput: BamboraPaymentInput;
+  transition: Scalars["String"];
+};
+
+export type RootMutationTypeSubmitProductPaymentArgs = {
+  id: Scalars["ID"];
+};
+
+export type RootMutationTypeSubmitRefundArgs = {
+  amount: Scalars["Int"];
+  paymentId: Scalars["ID"];
+  reference?: Maybe<Scalars["String"]>;
+};
+
+export type RootMutationTypeSubmitSandboxPaymentArgs = {
+  paymentId: Scalars["ID"];
+  paymentInput: SandboxPaymentInput;
+  transition: Scalars["String"];
+};
+
+export type RootMutationTypeUpdateGatewayAccountCredentialsArgs = {
+  credentials: BamboraCredentialsInput;
+  gatewayAccountId: Scalars["ID"];
+};
+
+export type RootMutationTypeUpdateProductPaymentArgs = {
+  id: Scalars["ID"];
+  productPayment: UpdateProductPaymentInput;
+};
+
+export type RootMutationTypeUpdateServiceArgs = {
+  id: Scalars["ID"];
+  service: UpdateServiceInput;
+};
+
+export type RootQueryType = {
+  __typename?: "RootQueryType";
+  /** Access all resources based on admin rights */
+  admin: Admin;
+  cardTypes: Array<CardType>;
+  gatewayAccount: GatewayAccount;
+  /** Get the currently authenticated user */
+  me?: Maybe<User>;
+  organisations: Array<Organisation>;
+  payment: Payment;
+  productPayment: ProductPayment;
+  /** Services that the active user can access */
+  service: Service;
+  /** Services that the active user can access */
+  services: Array<Service>;
+  /** List all available users */
+  users: Array<User>;
+};
+
+export type RootQueryTypeGatewayAccountArgs = {
+  id: Scalars["ID"];
+};
+
+export type RootQueryTypePaymentArgs = {
+  id: Scalars["ID"];
+};
+
+export type RootQueryTypeProductPaymentArgs = {
+  id: Scalars["ID"];
+};
+
+export type RootQueryTypeServiceArgs = {
+  id: Scalars["ID"];
 };
 
 export type SandboxCredentials = {
@@ -280,144 +340,172 @@ export type SandboxCredentials = {
   dummy?: Maybe<Scalars["String"]>;
 };
 
+export type SandboxPaymentInput = {
+  expiryMonth: Scalars["String"];
+  expiryYear: Scalars["String"];
+  last4: Scalars["String"];
+};
+
 export type Service = {
   __typename?: "Service";
+  currentGoLiveStage: ServiceGoLiveStage;
+  externalId: Scalars["ID"];
+  gatewayAccount: GatewayAccount;
+  gatewayAccounts: Array<GatewayAccount>;
   id: Scalars["ID"];
+  merchantAddressCity?: Maybe<Scalars["String"]>;
+  merchantAddressCountry?: Maybe<Scalars["String"]>;
+  merchantAddressLine1?: Maybe<Scalars["String"]>;
+  merchantAddressLine2?: Maybe<Scalars["String"]>;
+  merchantAddressPostcode?: Maybe<Scalars["String"]>;
+  merchantEmail?: Maybe<Scalars["String"]>;
+  merchantName?: Maybe<Scalars["String"]>;
+  merchantTelephoneNumber?: Maybe<Scalars["String"]>;
   name: Scalars["String"];
-  current_go_live_stage: ServiceGoLiveStage;
-  users?: Maybe<Array<ServiceUser>>;
-  gateway_accounts?: Maybe<Array<GatewayAccount>>;
+  organisation?: Maybe<Organisation>;
+  users: Array<ServiceUser>;
+};
+
+export type ServiceGatewayAccountArgs = {
+  id: Scalars["ID"];
 };
 
 export enum ServiceGoLiveStage {
-  NotStarted = "not_started",
-  Live = "live"
+  Live = "LIVE",
+  NotStarted = "NOT_STARTED"
 }
 
 export type ServiceUser = {
   __typename?: "ServiceUser";
-  service: Service;
-  user: User;
+  email: Scalars["String"];
+  externalId: Scalars["ID"];
+  id: Scalars["ID"];
+  insertedAt: Scalars["String"];
+  name: Scalars["String"];
+  platformAdmin?: Maybe<Scalars["Boolean"]>;
   role: Role;
+  telephoneNumber?: Maybe<Scalars["String"]>;
+  updatedAt: Scalars["String"];
 };
 
-export type SubmitRefundInput = {
-  payment_refund: PaymentRefundInput;
+export type Signout = {
+  __typename?: "Signout";
+  signedOut: Scalars["Boolean"];
 };
 
-export type UpdateGatewayAccountBamboraCredentials = {
-  merchant_id: Scalars["String"];
-  account_number?: Maybe<Scalars["String"]>;
-  api_username: Scalars["String"];
+export type TransactionEvent = {
+  externalId: Scalars["ID"];
+  id: Scalars["ID"];
+  insertedAt: Scalars["String"];
+  status: PaymentStatus;
+  type: PaymentEventType;
+  updatedAt: Scalars["String"];
 };
 
-export type UpdateGatewayAccountCredentialsInput = {
-  /**
-   * Normally this would be an input union type but GraphQL doesn't support them
-   * and we only have Bambora so this is fine for now.
-   * See https://github.com/graphql/graphql-spec/issues/488
-   **/
-  credentials: UpdateGatewayAccountBamboraCredentials;
+export type UpdateProductPaymentInput = {
+  amount?: Maybe<Scalars["Int"]>;
+  reference: Scalars["String"];
 };
 
 export type UpdateServiceInput = {
-  service: UpdateServiceService;
-};
-
-export type UpdateServiceService = {
   name: Scalars["String"];
 };
 
 export type User = {
   __typename?: "User";
-  id: Scalars["ID"];
-  inserted_at: Scalars["String"];
-  updated_at: Scalars["String"];
-  platform_admin: Scalars["Boolean"];
-  name?: Maybe<Scalars["String"]>;
   email: Scalars["String"];
-  telephone_number?: Maybe<Scalars["String"]>;
+  externalId: Scalars["ID"];
+  id: Scalars["ID"];
+  insertedAt: Scalars["String"];
+  name: Scalars["String"];
+  platformAdmin?: Maybe<Scalars["Boolean"]>;
+  telephoneNumber?: Maybe<Scalars["String"]>;
+  updatedAt: Scalars["String"];
 };
 
 export type ServiceFragment = { __typename?: "Service" } & Pick<
   Service,
-  "id" | "name" | "current_go_live_stage"
+  "id" | "externalId" | "name" | "currentGoLiveStage"
 >;
 
 export type GatewayAccountFragment = { __typename?: "GatewayAccount" } & Pick<
   GatewayAccount,
-  "id" | "type" | "payment_provider"
+  "id" | "externalId" | "type" | "paymentProvider"
 > & {
     credentials:
-      | { __typename?: "SandboxCredentials" }
       | ({ __typename?: "BamboraCredentials" } & Pick<
           BamboraCredentials,
-          "merchant_id" | "account_number" | "api_username"
-        >);
+          "merchantId" | "accountNumber" | "apiUsername"
+        >)
+      | { __typename?: "SandboxCredentials" };
   };
+
+type GatewayAccountCredentials_BamboraCredentials_Fragment = {
+  __typename?: "BamboraCredentials";
+} & Pick<BamboraCredentials, "merchantId" | "accountNumber" | "apiUsername">;
 
 type GatewayAccountCredentials_SandboxCredentials_Fragment = {
   __typename?: "SandboxCredentials";
 };
 
-type GatewayAccountCredentials_BamboraCredentials_Fragment = {
-  __typename?: "BamboraCredentials";
-} & Pick<BamboraCredentials, "merchant_id" | "account_number" | "api_username">;
-
 export type GatewayAccountCredentialsFragment =
-  | GatewayAccountCredentials_SandboxCredentials_Fragment
-  | GatewayAccountCredentials_BamboraCredentials_Fragment;
+  | GatewayAccountCredentials_BamboraCredentials_Fragment
+  | GatewayAccountCredentials_SandboxCredentials_Fragment;
 
 export type ProductFragment = { __typename?: "Product" } & Pick<
   Product,
-  "id" | "name" | "name_slug" | "service_name_slug" | "description"
+  "id" | "externalId" | "name" | "nameSlug" | "serviceNameSlug" | "description"
 >;
 
 export type PaymentFragment = { __typename?: "Payment" } & Pick<
   Payment,
   | "id"
-  | "inserted_at"
-  | "updated_at"
+  | "externalId"
+  | "insertedAt"
+  | "updatedAt"
   | "status"
   | "amount"
   | "reference"
   | "description"
   | "email"
-  | "gateway_transaction_id"
+  | "gatewayTransactionId"
 > & {
-    card_details: Maybe<
+    cardDetails: Maybe<
       { __typename?: "CardDetails" } & Pick<
         CardDetails,
-        | "cardholder_name"
-        | "card_number"
-        | "last_digits_card_number"
-        | "first_digits_card_number"
-        | "expiry_date"
-        | "card_brand"
+        | "cardholderName"
+        | "cardNumber"
+        | "lastDigitsCardNumber"
+        | "firstDigitsCardNumber"
+        | "expiryDate"
+        | "cardBrand"
       >
     >;
   };
 
-export type PaymentEventFragment = { __typename?: "PaymentEvent" } & Pick<
-  PaymentEvent,
-  "id" | "inserted_at" | "updated_at" | "type" | "status"
+type PaymentEvent_PaymentRefundEvent_Fragment = {
+  __typename?: "PaymentRefundEvent";
+} & Pick<
+  PaymentRefundEvent,
+  "id" | "type" | "status" | "insertedAt" | "updatedAt"
 >;
+
+type PaymentEvent_PaymentEvent_Fragment = {
+  __typename?: "PaymentEvent";
+} & Pick<PaymentEvent, "id" | "type" | "status" | "insertedAt" | "updatedAt">;
+
+export type PaymentEventFragment =
+  | PaymentEvent_PaymentRefundEvent_Fragment
+  | PaymentEvent_PaymentEvent_Fragment;
 
 export type PaymentRefundFragment = { __typename?: "PaymentRefund" } & Pick<
   PaymentRefund,
-  | "id"
-  | "reference"
-  | "amount"
-  | "status"
-  | "user_external_id"
-  | "gateway_transaction_id"
+  "id" | "reference" | "amount" | "status" | "gatewayTransactionId"
 >;
 
-export type GetUserServicesQueryVariables = {
-  userId: Scalars["ID"];
-};
+export type GetUserServicesQueryVariables = {};
 
-export type GetUserServicesQuery = { __typename?: "Query" } & {
+export type GetUserServicesQuery = { __typename?: "RootQueryType" } & {
   services: Array<{ __typename?: "Service" } & ServiceFragment>;
 };
 
@@ -425,7 +513,7 @@ export type GetServiceQueryVariables = {
   id: Scalars["ID"];
 };
 
-export type GetServiceQuery = { __typename?: "Query" } & {
+export type GetServiceQuery = { __typename?: "RootQueryType" } & {
   service: { __typename?: "Service" } & ServiceFragment;
 };
 
@@ -433,36 +521,41 @@ export type GetServiceWithUsersQueryVariables = {
   id: Scalars["ID"];
 };
 
-export type GetServiceWithUsersQuery = { __typename?: "Query" } & {
-  service: { __typename?: "Service" } & Pick<Service, "id"> & {
-      users: Maybe<
-        Array<
-          { __typename?: "ServiceUser" } & {
-            user: { __typename?: "User" } & Pick<User, "id" | "name" | "email">;
-            role: { __typename?: "Role" } & Pick<Role, "name">;
-          }
-        >
-      >;
-    } & ServiceFragment;
+export type GetServiceWithUsersQuery = { __typename?: "RootQueryType" } & {
+  service: { __typename?: "Service" } & {
+    users: Array<
+      { __typename?: "ServiceUser" } & Pick<
+        ServiceUser,
+        "id" | "externalId" | "insertedAt" | "updatedAt" | "name" | "email"
+      > & {
+          role: { __typename?: "Role" } & Pick<
+            Role,
+            "id" | "name" | "description"
+          >;
+        }
+    >;
+  } & ServiceFragment;
 };
 
 export type GetServiceWithGatewayAccountsQueryVariables = {
   id: Scalars["ID"];
 };
 
-export type GetServiceWithGatewayAccountsQuery = { __typename?: "Query" } & {
-  service: { __typename?: "Service" } & Pick<Service, "id"> & {
-      gateway_accounts: Maybe<
-        Array<{ __typename?: "GatewayAccount" } & GatewayAccountFragment>
-      >;
-    } & ServiceFragment;
+export type GetServiceWithGatewayAccountsQuery = {
+  __typename?: "RootQueryType";
+} & {
+  service: { __typename?: "Service" } & {
+    gatewayAccounts: Array<
+      { __typename?: "GatewayAccount" } & GatewayAccountFragment
+    >;
+  } & ServiceFragment;
 };
 
 export type CreateServiceMutationVariables = {
   input: CreateServiceInput;
 };
 
-export type CreateServiceMutation = { __typename?: "Mutation" } & {
+export type CreateServiceMutation = { __typename?: "RootMutationType" } & {
   service: { __typename?: "Service" } & ServiceFragment;
 };
 
@@ -471,16 +564,17 @@ export type UpdateServiceMutationVariables = {
   input: UpdateServiceInput;
 };
 
-export type UpdateServiceMutation = { __typename?: "Mutation" } & {
+export type UpdateServiceMutation = { __typename?: "RootMutationType" } & {
   service: { __typename?: "Service" } & ServiceFragment;
 };
 
 export type SubmitRefundMutationVariables = {
   paymentId: Scalars["ID"];
-  input: SubmitRefundInput;
+  amount: Scalars["Int"];
+  reference?: Maybe<Scalars["String"]>;
 };
 
-export type SubmitRefundMutation = { __typename?: "Mutation" } & {
+export type SubmitRefundMutation = { __typename?: "RootMutationType" } & {
   refund: { __typename?: "PaymentRefund" } & PaymentRefundFragment;
 };
 
@@ -488,43 +582,53 @@ export type GetGatewayAccountsQueryVariables = {
   serviceId: Scalars["ID"];
 };
 
-export type GetGatewayAccountsQuery = { __typename?: "Query" } & {
-  gatewayAccounts: Array<
-    { __typename?: "GatewayAccount" } & GatewayAccountFragment
-  >;
+export type GetGatewayAccountsQuery = { __typename?: "RootQueryType" } & {
+  service: { __typename?: "Service" } & {
+    gatewayAccounts: Array<
+      { __typename?: "GatewayAccount" } & GatewayAccountFragment
+    >;
+  };
 };
 
 export type GetGatewayAccountQueryVariables = {
   id: Scalars["ID"];
 };
 
-export type GetGatewayAccountQuery = { __typename?: "Query" } & {
+export type GetGatewayAccountQuery = { __typename?: "RootQueryType" } & {
   gatewayAccount: { __typename?: "GatewayAccount" } & GatewayAccountFragment;
 };
 
 export type UpdateGatewayAccountCredentialsMutationVariables = {
   gatewayAccountId: Scalars["ID"];
-  input: UpdateGatewayAccountCredentialsInput;
+  input: BamboraCredentialsInput;
 };
 
 export type UpdateGatewayAccountCredentialsMutation = {
-  __typename?: "Mutation";
+  __typename?: "RootMutationType";
 } & {
-  credentials:
-    | ({
-        __typename?: "SandboxCredentials";
-      } & GatewayAccountCredentials_SandboxCredentials_Fragment)
-    | ({
-        __typename?: "BamboraCredentials";
-      } & GatewayAccountCredentials_BamboraCredentials_Fragment);
+  gatewayAccount: { __typename?: "GatewayAccount" } & {
+    credentials:
+      | ({
+          __typename?: "BamboraCredentials";
+        } & GatewayAccountCredentials_BamboraCredentials_Fragment)
+      | ({
+          __typename?: "SandboxCredentials";
+        } & GatewayAccountCredentials_SandboxCredentials_Fragment);
+  };
 };
 
 export type GetProductsQueryVariables = {
-  gatewayAccountId: Scalars["ID"];
+  serviceID: Scalars["ID"];
 };
 
-export type GetProductsQuery = { __typename?: "Query" } & {
-  products: Array<{ __typename?: "Product" } & ProductFragment>;
+export type GetProductsQuery = { __typename?: "RootQueryType" } & {
+  service: { __typename?: "Service" } & {
+    gatewayAccounts: Array<
+      { __typename?: "GatewayAccount" } & {
+        products: Array<{ __typename?: "Product" } & ProductFragment>;
+      }
+    >;
+  };
 };
 
 export type CreateProductMutationVariables = {
@@ -532,51 +636,66 @@ export type CreateProductMutationVariables = {
   input: CreateProductInput;
 };
 
-export type CreateProductMutation = { __typename?: "Mutation" } & {
-  product: { __typename?: "Service" } & ServiceFragment;
+export type CreateProductMutation = { __typename?: "RootMutationType" } & {
+  product: { __typename?: "Product" } & ProductFragment;
 };
 
 export type GetPaymentsQueryVariables = {
-  gatewayAccountId: Scalars["ID"];
+  serviceID: Scalars["ID"];
 };
 
-export type GetPaymentsQuery = { __typename?: "Query" } & {
-  payments: Array<{ __typename?: "Payment" } & PaymentFragment>;
+export type GetPaymentsQuery = { __typename?: "RootQueryType" } & {
+  service: { __typename?: "Service" } & {
+    gatewayAccounts: Array<
+      { __typename?: "GatewayAccount" } & {
+        payments: Array<{ __typename?: "Payment" } & PaymentFragment>;
+      } & GatewayAccountFragment
+    >;
+  };
 };
 
 export type GetPaymentQueryVariables = {
   id: Scalars["ID"];
 };
 
-export type GetPaymentQuery = { __typename?: "Query" } & {
+export type GetPaymentQuery = { __typename?: "RootQueryType" } & {
   payment: { __typename?: "Payment" } & PaymentFragment;
 };
 
 export type GetPaymentEventsQueryVariables = {
-  paymentId: Scalars["ID"];
+  id: Scalars["ID"];
 };
 
-export type GetPaymentEventsQuery = { __typename?: "Query" } & {
-  events: Array<{ __typename?: "PaymentEvent" } & PaymentEventFragment>;
+export type GetPaymentEventsQuery = { __typename?: "RootQueryType" } & {
+  payment: { __typename?: "Payment" } & {
+    events: Array<
+      | ({
+          __typename?: "PaymentRefundEvent";
+        } & PaymentEvent_PaymentRefundEvent_Fragment)
+      | ({ __typename?: "PaymentEvent" } & PaymentEvent_PaymentEvent_Fragment)
+    >;
+  } & PaymentFragment;
 };
 
 export const ServiceFragmentDoc = gql`
   fragment Service on Service {
     id
+    externalId
     name
-    current_go_live_stage
+    currentGoLiveStage
   }
 `;
 export const GatewayAccountFragmentDoc = gql`
   fragment GatewayAccount on GatewayAccount {
     id
+    externalId
     type
-    payment_provider
+    paymentProvider
     credentials {
       ... on BamboraCredentials {
-        merchant_id
-        account_number
-        api_username
+        merchantId
+        accountNumber
+        apiUsername
       }
     }
   }
@@ -584,49 +703,51 @@ export const GatewayAccountFragmentDoc = gql`
 export const GatewayAccountCredentialsFragmentDoc = gql`
   fragment GatewayAccountCredentials on GatewayAccountCredentials {
     ... on BamboraCredentials {
-      merchant_id
-      account_number
-      api_username
+      merchantId
+      accountNumber
+      apiUsername
     }
   }
 `;
 export const ProductFragmentDoc = gql`
   fragment Product on Product {
     id
+    externalId
     name
-    name_slug
-    service_name_slug
+    nameSlug
+    serviceNameSlug
     description
   }
 `;
 export const PaymentFragmentDoc = gql`
   fragment Payment on Payment {
     id
-    inserted_at
-    updated_at
+    externalId
+    insertedAt
+    updatedAt
     status
     amount
     reference
     description
     email
-    gateway_transaction_id
-    card_details {
-      cardholder_name
-      card_number
-      last_digits_card_number
-      first_digits_card_number
-      expiry_date
-      card_brand
+    gatewayTransactionId
+    cardDetails {
+      cardholderName
+      cardNumber
+      lastDigitsCardNumber
+      firstDigitsCardNumber
+      expiryDate
+      cardBrand
     }
   }
 `;
 export const PaymentEventFragmentDoc = gql`
-  fragment PaymentEvent on PaymentEvent {
+  fragment PaymentEvent on TransactionEvent {
     id
-    inserted_at
-    updated_at
     type
     status
+    insertedAt
+    updatedAt
   }
 `;
 export const PaymentRefundFragmentDoc = gql`
@@ -635,17 +756,12 @@ export const PaymentRefundFragmentDoc = gql`
     reference
     amount
     status
-    user_external_id
-    gateway_transaction_id
+    gatewayTransactionId
   }
 `;
 export const GetUserServicesDocument = gql`
-  query GetUserServices($userId: ID!) {
-    services: userServices(userId: $userId)
-      @rest(
-        type: "Service"
-        path: "/internal/services/users/{args.userId}/services"
-      ) {
+  query GetUserServices {
+    services {
       ...Service
     }
   }
@@ -657,11 +773,7 @@ export type GetUserServicesComponentProps = Omit<
     GetUserServicesQueryVariables
   >,
   "query"
-> &
-  (
-    | { variables: GetUserServicesQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+>;
 
 export const GetUserServicesComponent = (
   props: GetUserServicesComponentProps
@@ -687,7 +799,6 @@ export const GetUserServicesComponent = (
  * @example
  * const { data, loading, error } = useGetUserServicesQuery({
  *   variables: {
- *      userId: // value for 'userId'
  *   },
  * });
  */
@@ -725,8 +836,7 @@ export type GetUserServicesQueryResult = ApolloReactCommon.QueryResult<
 >;
 export const GetServiceDocument = gql`
   query GetService($id: ID!) {
-    service(id: $id)
-      @rest(type: "Service", path: "/internal/services/services/{args.id}") {
+    service(id: $id) {
       ...Service
     }
   }
@@ -796,22 +906,19 @@ export type GetServiceQueryResult = ApolloReactCommon.QueryResult<
 >;
 export const GetServiceWithUsersDocument = gql`
   query GetServiceWithUsers($id: ID!) {
-    service(id: $id)
-      @rest(type: "Service", path: "/internal/services/services/{args.id}") {
-      id @export(as: "id")
+    service(id: $id) {
       ...Service
-      users
-        @rest(
-          type: "[ServiceUser]"
-          path: "/internal/services/services/{exportVariables.id}/service-users"
-        ) {
-        user {
+      users {
+        id
+        externalId
+        insertedAt
+        updatedAt
+        name
+        email
+        role {
           id
           name
-          email
-        }
-        role {
-          name
+          description
         }
       }
     }
@@ -827,8 +934,7 @@ export type GetServiceWithUsersComponentProps = Omit<
 > &
   (
     | { variables: GetServiceWithUsersQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetServiceWithUsersComponent = (
   props: GetServiceWithUsersComponentProps
@@ -892,15 +998,9 @@ export type GetServiceWithUsersQueryResult = ApolloReactCommon.QueryResult<
 >;
 export const GetServiceWithGatewayAccountsDocument = gql`
   query GetServiceWithGatewayAccounts($id: ID!) {
-    service(id: $id)
-      @rest(type: "Service", path: "/internal/services/services/{args.id}") {
-      id @export(as: "id")
+    service(id: $id) {
       ...Service
-      gateway_accounts
-        @rest(
-          type: "[GatewayAccount]"
-          path: "/internal/services/services/{exportVariables.id}/gateway-accounts"
-        ) {
+      gatewayAccounts {
         ...GatewayAccount
       }
     }
@@ -917,8 +1017,7 @@ export type GetServiceWithGatewayAccountsComponentProps = Omit<
 > &
   (
     | { variables: GetServiceWithGatewayAccountsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetServiceWithGatewayAccountsComponent = (
   props: GetServiceWithGatewayAccountsComponentProps
@@ -982,12 +1081,7 @@ export type GetServiceWithGatewayAccountsQueryResult = ApolloReactCommon.QueryRe
 >;
 export const CreateServiceDocument = gql`
   mutation CreateService($input: CreateServiceInput!) {
-    service: createService(input: $input)
-      @rest(
-        type: "Service"
-        path: "/internal/services/services"
-        method: "POST"
-      ) {
+    service: createService(service: $input) {
       ...Service
     }
   }
@@ -1055,12 +1149,7 @@ export type CreateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions
 >;
 export const UpdateServiceDocument = gql`
   mutation UpdateService($id: ID!, $input: UpdateServiceInput!) {
-    service: updateService(id: $id, input: $input)
-      @rest(
-        type: "Service"
-        path: "/internal/services/services/{args.id}"
-        method: "PUT"
-      ) {
+    service: updateService(id: $id, service: $input) {
       ...Service
     }
   }
@@ -1128,13 +1217,12 @@ export type UpdateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions
   UpdateServiceMutationVariables
 >;
 export const SubmitRefundDocument = gql`
-  mutation SubmitRefund($paymentId: ID!, $input: SubmitRefundInput!) {
-    refund: submitRefund(paymentId: $paymentId, input: $input)
-      @rest(
-        type: "PaymentRefund"
-        path: "/internal/payments/payments/{args.paymentId}/refunds"
-        method: "POST"
-      ) {
+  mutation SubmitRefund($paymentId: ID!, $amount: Int!, $reference: String) {
+    refund: submitRefund(
+      paymentId: $paymentId
+      amount: $amount
+      reference: $reference
+    ) {
       ...PaymentRefund
     }
   }
@@ -1176,7 +1264,8 @@ export const SubmitRefundComponent = (props: SubmitRefundComponentProps) => (
  * const [submitRefundMutation, { data, loading, error }] = useSubmitRefundMutation({
  *   variables: {
  *      paymentId: // value for 'paymentId'
- *      input: // value for 'input'
+ *      amount: // value for 'amount'
+ *      reference: // value for 'reference'
  *   },
  * });
  */
@@ -1203,12 +1292,10 @@ export type SubmitRefundMutationOptions = ApolloReactCommon.BaseMutationOptions<
 >;
 export const GetGatewayAccountsDocument = gql`
   query GetGatewayAccounts($serviceId: ID!) {
-    gatewayAccounts(serviceId: $serviceId)
-      @rest(
-        type: "[GatewayAccount]"
-        path: "/internal/services/services/{args.serviceId}/gateway-accounts"
-      ) {
-      ...GatewayAccount
+    service(id: $serviceId) {
+      gatewayAccounts {
+        ...GatewayAccount
+      }
     }
   }
   ${GatewayAccountFragmentDoc}
@@ -1222,8 +1309,7 @@ export type GetGatewayAccountsComponentProps = Omit<
 > &
   (
     | { variables: GetGatewayAccountsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetGatewayAccountsComponent = (
   props: GetGatewayAccountsComponentProps
@@ -1287,11 +1373,7 @@ export type GetGatewayAccountsQueryResult = ApolloReactCommon.QueryResult<
 >;
 export const GetGatewayAccountDocument = gql`
   query GetGatewayAccount($id: ID!) {
-    gatewayAccount(id: $id)
-      @rest(
-        type: "GatewayAccount"
-        path: "/internal/payments/gateway-accounts/{args.id}"
-      ) {
+    gatewayAccount(id: $id) {
       ...GatewayAccount
     }
   }
@@ -1306,8 +1388,7 @@ export type GetGatewayAccountComponentProps = Omit<
 > &
   (
     | { variables: GetGatewayAccountQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetGatewayAccountComponent = (
   props: GetGatewayAccountComponentProps
@@ -1372,18 +1453,15 @@ export type GetGatewayAccountQueryResult = ApolloReactCommon.QueryResult<
 export const UpdateGatewayAccountCredentialsDocument = gql`
   mutation UpdateGatewayAccountCredentials(
     $gatewayAccountId: ID!
-    $input: UpdateGatewayAccountCredentialsInput!
+    $input: BamboraCredentialsInput!
   ) {
-    credentials: updateGatewayAccountCredentials(
+    gatewayAccount: updateGatewayAccountCredentials(
       gatewayAccountId: $gatewayAccountId
-      input: $input
-    )
-      @rest(
-        type: "GatewayAccountCredentials"
-        path: "/internal/payments/gateway-accounts/{args.gatewayAccountId}/credentials"
-        method: "PUT"
-      ) {
-      ...GatewayAccountCredentials
+      credentials: $input
+    ) {
+      credentials {
+        ...GatewayAccountCredentials
+      }
     }
   }
   ${GatewayAccountCredentialsFragmentDoc}
@@ -1452,13 +1530,13 @@ export type UpdateGatewayAccountCredentialsMutationOptions = ApolloReactCommon.B
   UpdateGatewayAccountCredentialsMutationVariables
 >;
 export const GetProductsDocument = gql`
-  query GetProducts($gatewayAccountId: ID!) {
-    products(gatewayAccountId: $gatewayAccountId)
-      @rest(
-        type: "[Product]"
-        path: "/internal/products/gateway-accounts/{args.gatewayAccountId}/products"
-      ) {
-      ...Product
+  query GetProducts($serviceID: ID!) {
+    service(id: $serviceID) {
+      gatewayAccounts {
+        products {
+          ...Product
+        }
+      }
     }
   }
   ${ProductFragmentDoc}
@@ -1472,8 +1550,7 @@ export type GetProductsComponentProps = Omit<
 > &
   (
     | { variables: GetProductsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetProductsComponent = (props: GetProductsComponentProps) => (
   <ApolloReactComponents.Query<GetProductsQuery, GetProductsQueryVariables>
@@ -1494,7 +1571,7 @@ export const GetProductsComponent = (props: GetProductsComponentProps) => (
  * @example
  * const { data, loading, error } = useGetProductsQuery({
  *   variables: {
- *      gatewayAccountId: // value for 'gatewayAccountId'
+ *      serviceID: // value for 'serviceID'
  *   },
  * });
  */
@@ -1530,16 +1607,14 @@ export type GetProductsQueryResult = ApolloReactCommon.QueryResult<
 >;
 export const CreateProductDocument = gql`
   mutation CreateProduct($gatewayAccountId: ID!, $input: CreateProductInput!) {
-    product: createProduct(gatewayAccountId: $gatewayAccountId, input: $input)
-      @rest(
-        type: "Product"
-        path: "/internal/products/gateway-accounts/{args.gatewayAccountId}/products"
-        method: "POST"
-      ) {
-      ...Service
+    product: createProduct(
+      gatewayAccountId: $gatewayAccountId
+      product: $input
+    ) {
+      ...Product
     }
   }
-  ${ServiceFragmentDoc}
+  ${ProductFragmentDoc}
 `;
 export type CreateProductMutationFn = ApolloReactCommon.MutationFunction<
   CreateProductMutation,
@@ -1603,15 +1678,17 @@ export type CreateProductMutationOptions = ApolloReactCommon.BaseMutationOptions
   CreateProductMutationVariables
 >;
 export const GetPaymentsDocument = gql`
-  query GetPayments($gatewayAccountId: ID!) {
-    payments(gatewayAccountId: $gatewayAccountId)
-      @rest(
-        type: "[Payment]"
-        path: "/internal/services/gateway-accounts/{args.gatewayAccountId}/payments"
-      ) {
-      ...Payment
+  query GetPayments($serviceID: ID!) {
+    service(id: $serviceID) {
+      gatewayAccounts {
+        ...GatewayAccount
+        payments {
+          ...Payment
+        }
+      }
     }
   }
+  ${GatewayAccountFragmentDoc}
   ${PaymentFragmentDoc}
 `;
 export type GetPaymentsComponentProps = Omit<
@@ -1623,8 +1700,7 @@ export type GetPaymentsComponentProps = Omit<
 > &
   (
     | { variables: GetPaymentsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetPaymentsComponent = (props: GetPaymentsComponentProps) => (
   <ApolloReactComponents.Query<GetPaymentsQuery, GetPaymentsQueryVariables>
@@ -1645,7 +1721,7 @@ export const GetPaymentsComponent = (props: GetPaymentsComponentProps) => (
  * @example
  * const { data, loading, error } = useGetPaymentsQuery({
  *   variables: {
- *      gatewayAccountId: // value for 'gatewayAccountId'
+ *      serviceID: // value for 'serviceID'
  *   },
  * });
  */
@@ -1681,8 +1757,7 @@ export type GetPaymentsQueryResult = ApolloReactCommon.QueryResult<
 >;
 export const GetPaymentDocument = gql`
   query GetPayment($id: ID!) {
-    payment(id: $id)
-      @rest(type: "Payment", path: "/internal/payments/payments/{args.id}") {
+    payment(id: $id) {
       ...Payment
     }
   }
@@ -1751,15 +1826,15 @@ export type GetPaymentQueryResult = ApolloReactCommon.QueryResult<
   GetPaymentQueryVariables
 >;
 export const GetPaymentEventsDocument = gql`
-  query GetPaymentEvents($paymentId: ID!) {
-    events: paymentEvents(paymentId: $paymentId)
-      @rest(
-        type: "[PaymentEvent]"
-        path: "/internal/payments/payments/{args.paymentId}/events"
-      ) {
-      ...PaymentEvent
+  query GetPaymentEvents($id: ID!) {
+    payment(id: $id) {
+      ...Payment
+      events {
+        ...PaymentEvent
+      }
     }
   }
+  ${PaymentFragmentDoc}
   ${PaymentEventFragmentDoc}
 `;
 export type GetPaymentEventsComponentProps = Omit<
@@ -1771,8 +1846,7 @@ export type GetPaymentEventsComponentProps = Omit<
 > &
   (
     | { variables: GetPaymentEventsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+    | { skip: boolean });
 
 export const GetPaymentEventsComponent = (
   props: GetPaymentEventsComponentProps
@@ -1798,7 +1872,7 @@ export const GetPaymentEventsComponent = (
  * @example
  * const { data, loading, error } = useGetPaymentEventsQuery({
  *   variables: {
- *      paymentId: // value for 'paymentId'
+ *      id: // value for 'id'
  *   },
  * });
  */
