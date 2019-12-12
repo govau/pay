@@ -1,3 +1,4 @@
+import "react-app-polyfill/ie11";
 import "core-js/features/array/find";
 import "core-js/features/string/starts-with";
 import React from "react";
