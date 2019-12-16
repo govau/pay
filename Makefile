@@ -6,13 +6,12 @@ FLAGS ?=
 ASSETS_SRC = $(shell find assets/src -type f)
 ASSETS_PUB = $(shell find assets/public -type f)
 
-CLD_HOST    ?= y.cld.gov.au
-CF_API      ?= https://api.system.$(CLD_HOST)
+CF          ?= cf
+CF_USERNAME ?=
 CF_ORG      ?= dta
 CF_SPACE    ?= platforms
-CF          ?= cf
-CF_USERNAME ?= $(CF_Y_USER)
-CF_PASSWORD ?= $(CF_Y_PASSWORD)
+CF_API      ?= $(CF_API_STAGING)
+CF_PASSWORD ?= $(CF_PASSWORD_STAGING)
 
 
 # deploys can respond to STG env variable if they support
@@ -37,7 +36,6 @@ endif
 STG           ?= dev
 PSQL_SVC_PLAN ?= shared
 PSQL_SVC_NAME ?= pay-psql-$(STG)
-export ENDPOINT_HOST ?= pay-$(STG).apps.$(CLD_HOST)
 
 run:
 	$(MIX) phx.server
@@ -77,6 +75,7 @@ setup:
 	$(MAKE) -C assets $@
 
 build-release:
+	$(MAKE) frontend
 	$(MIX) release
 
 cf-login:
@@ -87,6 +86,12 @@ cf-login:
 		-o "${CF_ORG}"\
 		-s "${CF_SPACE}"
 
+cf-login-prod:
+	@$(MAKE)\
+	  CF_PASSWORD=${CF_PASSWORD_PROD}\
+	  CF_API=${CF_API_PROD}\
+	  cf-login
+
 create-service-psql:
 	-$(CF) create-service postgres $(PSQL_SVC_PLAN) $(PSQL_SVC_NAME)
 
@@ -94,7 +99,7 @@ manifest-vars-%.yml:
 	echo "stg: $*" > $@
 
 deploy:
-	$(CF) zero-downtime-push $(APP) -f manifest.yml --show-app-log
+	$(CF) zero-downtime-push $(APP) -f manifest.yml
 
 deploy-dev: create-service-psql manifest-vars-$(STG).yml
 	$(CF) push $(APP)-$(STG) -f manifest-dev.yml --vars-file manifest-vars-$(STG).yml

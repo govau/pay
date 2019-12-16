@@ -1,0 +1,17 @@
+defaults: &defaults
+  buildpacks:
+    - binary_buildpack
+  instances: 1
+  memory: 512M
+  disk_quota: 256MB
+
+applications:
+  - name: pay
+    <<: *defaults
+    command: pay/bin/pay start
+    path: _build/prod/rel
+    services:
+      - pay-psql
+      - pay-bambora
+    env:
+      ENDPOINT_HOST: pay.apps.b.cld.gov.au
