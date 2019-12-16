@@ -3,7 +3,7 @@ version: 2
 references:
   elixir_image: &elixir_image
     docker:
-      - image: circleci/elixir:1.9-node
+      - image: circleci/elixir:1.9.2-node
         environment:
           MIX_ENV: test
           POSTGRES_USER: postgres
@@ -36,6 +36,12 @@ references:
     run:
       command: make cf-login-prod
 
+  master_branch: &master_branch
+    filters:
+      branches:
+        only:
+          - master
+
 jobs:
   build:
     <<: *elixir_image
@@ -46,12 +52,26 @@ jobs:
       - run: mix deps.get --only prod
       - run: make -C clients/pay-client install
       - run: make -C assets setup
+      - run: MIX_ENV=prod make build-release
+      - persist_to_workspace:
+          root: .
+          paths:
+            - Makefile
+            - _build
+            - manifest-dev.yml
+            - manifest.yml
+
+  test:
+    <<: *elixir_image
+    steps:
+      - checkout
+      - run: mix local.hex --force
+      - run: mix local.rebar --force
+      - run: mix deps.get --only prod
+      - run: make -C clients/pay-client install
+      - run: make -C assets setup
       - run: make frontend
       - run: make test
-      - run: MIX_ENV=prod make build-release
-      - *cf_install
-      - *cf_login
-      - run: make deploy-dev
 
   cleanup-old-deploys:
     <<: *undeploy_image
@@ -61,9 +81,44 @@ jobs:
       - *cf_login
       - run: make -C ci undeploy
 
+  deploy:
+    <<: *elixir_image
+    steps:
+      - attach_workspace:
+          at: .
+      - *cf_install
+      - *cf_login
+      - run: make deploy-dev
+
+  deploy-prod:
+    <<: *elixir_image
+    steps:
+      - attach_workspace:
+          at: .
+      - *cf_install
+      - *cf_login_prod
+      - run: make deploy
+
 workflows:
   version: 2
   build-and-deploy:
     jobs:
       - build
+      - test
       - cleanup-old-deploys
+      - deploy:
+          requires:
+            - build
+            - test
+
+      - unlock-prod-deploy:
+          <<: *master_branch
+          type: approval
+          requires:
+            - build
+            - test
+            - deploy
+
+      - deploy-prod:
+          requires:
+            - unlock-prod-deploy

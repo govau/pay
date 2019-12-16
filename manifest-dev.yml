@@ -13,3 +13,5 @@ applications:
     services:
       - pay-psql-((stg))
       - pay-bambora
+    env:
+      ENDPOINT_HOST: pay-((stg)).apps.y.cld.gov.au
