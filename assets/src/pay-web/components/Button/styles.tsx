@@ -64,7 +64,7 @@ const variantStyles = (props: ButtonProps) => {
         text-decoration: underline;
         &:hover,
         &:focus {
-          color: ${props => props.theme.textColor};
+          color: ${props => props.theme.linkColor};
         }
         ${props.padded &&
           `

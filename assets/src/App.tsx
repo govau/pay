@@ -1,12 +1,12 @@
 import React from "react";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, useHistory } from "react-router-dom";
 import ApolloClient from "apollo-client";
 import { ApolloProvider } from "react-apollo";
 import { styledComponents, theme, GlobalStyle } from "@pay/web";
 
 import { link as defaultLink } from "./apollo-client";
 import { cache as defaultCache } from "./apollo-cache";
-import { AuthProvider } from "./auth/AuthContext";
+import { Auth0Provider } from "./auth/AuthContext";
 import { UserProvider } from "./users/UserContext";
 import * as Content from "./content";
 import * as Auth from "./auth";
@@ -27,25 +27,54 @@ const defaultClient = new ApolloClient({
   }
 });
 
+const AuthenticatedApolloProvider: React.FC<{}> = ({ children }) => {
+  return <ApolloProvider client={defaultClient}>{children}</ApolloProvider>;
+};
+
 const App: React.FC = () => {
+  const history = useHistory();
+
+  const onAuthRedirectCallback = (redirectResult?: RedirectLoginResult) => {
+    console.log(
+      "auth0 onRedirectCallback called with redirectState %o",
+      redirectResult
+    );
+
+    // Clears auth0 query string parameters from url
+    const targetUrl =
+      redirectResult &&
+      redirectResult.appState &&
+      redirectResult.appState.targetUrl
+        ? redirectResult.appState.targetUrl
+        : window.location.pathname;
+
+    history.push(targetUrl);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <>
         <GlobalStyle />
-        <Switch>
-          <Route path="/pay" strict>
-            <ApolloProvider client={Checkout.apolloClient}>
-              <Checkout.Routes />
-            </ApolloProvider>
-          </Route>
-          <Route path="/products" strict>
-            <ApolloProvider client={Products.apolloClient}>
-              <Products.Routes />
-            </ApolloProvider>
-          </Route>
-          <Route path="*">
-            <ApolloProvider client={defaultClient}>
-              <AuthProvider>
+        <Auth0Provider
+          domain={process.env.REACT_APP_AUTH0_DOMAIN || ""}
+          client_id={process.env.REACT_APP_AUTH0_CLIENT_ID || ""}
+          audience={process.env.REACT_APP_AUTH0_AUDIENCE}
+          redirect_uri={window.location.origin}
+          onRedirectCallback={onAuthRedirectCallback}
+        >
+          <Switch>
+            <Route path="/pay" strict>
+              <ApolloProvider client={Checkout.apolloClient}>
+                <Checkout.Routes />
+              </ApolloProvider>
+            </Route>
+            <Route path="/products" strict>
+              <ApolloProvider client={Products.apolloClient}>
+                <Products.Routes />
+              </ApolloProvider>
+            </Route>
+            <Route path="*">
+              <AuthenticatedApolloProvider>
                 <UserProvider>
                   <Switch>
                     <Route path="/console" strict>
@@ -62,10 +91,10 @@ const App: React.FC = () => {
                     </Route>
                   </Switch>
                 </UserProvider>
-              </AuthProvider>
-            </ApolloProvider>
-          </Route>
-        </Switch>
+              </AuthenticatedApolloProvider>
+            </Route>
+          </Switch>
+        </Auth0Provider>
       </>
     </ThemeProvider>
   );

@@ -8,7 +8,7 @@ defmodule Pay.Services.User do
   schema "users" do
     field :disabled, :boolean, default: false
     field :email, :string
-    field :external_id, Ecto.UUID
+    field :external_id, Ecto.UUID, autogenerate: true
     field :last_logged_in_at, :utc_datetime_usec
     field :name, :string
     field :platform_admin, :boolean, default: false
@@ -24,28 +24,20 @@ defmodule Pay.Services.User do
     user
     |> cast(attrs, [:external_id, :email, :telephone_number, :name, :disabled, :last_logged_in_at])
     |> validate_required([
-      :external_id,
       :email,
-      :telephone_number,
-      :name,
-      :disabled,
-      :last_logged_in_at
+      :name
     ])
     |> unique_constraint(:email)
+    |> unique_constraint(:external_id)
   end
 
-  # TODO: check what we can update. already removed external_id
   @doc false
   def update_changeset(user, attrs) do
     user
     |> cast(attrs, [:email, :telephone_number, :name, :disabled, :last_logged_in_at])
     |> validate_required([
-      :external_id,
       :email,
-      :telephone_number,
-      :name,
-      :disabled,
-      :last_logged_in_at
+      :name
     ])
     |> unique_constraint(:email)
   end

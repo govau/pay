@@ -265,8 +265,23 @@ defmodule Pay.Services do
       ** (Ecto.NoResultsError)
 
   """
+  @spec get_user_by_external_id!(String.t()) :: %User{}
   def get_user_by_external_id!(external_id),
     do: Repo.get_by!(User, external_id: external_id)
+
+  @spec get_user_by_external_id(String.t()) :: %User{} | nil
+  def get_user_by_external_id(external_id),
+    do: Repo.get_by(User, external_id: external_id)
+
+  def get_or_create_user(%{email: email} = changes) do
+    %User{}
+    |> User.create_changeset(changes)
+    |> Repo.insert(
+      on_conflict: [set: [email: email]],
+      conflict_target: :email,
+      returning: [:id, :external_id]
+    )
+  end
 
   @doc """
   Creates a user.
@@ -551,14 +566,12 @@ defmodule Pay.Services do
 
   """
   def list_services_by_user_external_id(external_id) do
-    Repo.all(
-      from s in Service,
-        left_join: su in ServiceUser,
-        on: s.id == su.service_id,
-        left_join: u in User,
-        on: u.id == su.user_id,
-        where: u.external_id == ^external_id
-    )
+    %{services: services} =
+      external_id
+      |> get_user_by_external_id!()
+      |> Repo.preload(:services)
+
+    services
   end
 
   @doc """

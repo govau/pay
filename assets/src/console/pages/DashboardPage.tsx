@@ -22,6 +22,7 @@ const DashboardPage: React.FC = () => {
   if (!match) {
     return null;
   }
+
   const { url } = match;
 
   return (

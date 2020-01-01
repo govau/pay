@@ -8,7 +8,7 @@ const authLink = new ApolloLink((operation, forward) => {
       headers: {
         ...req.headers,
         Accept: "application/json",
-        Authorization: token
+        Authorization: `Bearer ${token}`
       }
     };
   });

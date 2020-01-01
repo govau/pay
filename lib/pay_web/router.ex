@@ -14,13 +14,13 @@ defmodule PayWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug Pay.Auth.Pipeline
     plug PayWeb.Plugs.SetCurrentUser
   end
 
   pipeline :external_api do
     plug :accepts, ["json"]
     plug(Validate, validation_failed_status: 422)
-    plug PayWeb.Plugs.SetCurrentUser
   end
 
   scope "/api/v1", PayWeb.External, as: :external do

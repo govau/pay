@@ -29,3 +29,5 @@ config/*.secret.exs
 
 manifest-vars-*.yml
 .elixir_ls
+.env
+env
