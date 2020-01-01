@@ -116,6 +116,7 @@ export type Payment = {
   description: Scalars["String"];
   email?: Maybe<Scalars["String"]>;
   events: Array<TransactionEvent>;
+  refunds: Array<PaymentRefund>;
   externalId: Scalars["ID"];
   gatewayAccount: GatewayAccount;
   gatewayTransactionId?: Maybe<Scalars["String"]>;
@@ -154,6 +155,7 @@ export type PaymentRefund = {
   events?: Maybe<Array<PaymentRefundEvent>>;
   externalId: Scalars["ID"];
   gatewayTransactionId: Scalars["String"];
+  paymentId: Scalars["ID"];
   id: Scalars["ID"];
   payment?: Maybe<Payment>;
   reference: Scalars["String"];
@@ -498,10 +500,9 @@ export type PaymentEventFragment =
   | PaymentEvent_PaymentRefundEvent_Fragment
   | PaymentEvent_PaymentEvent_Fragment;
 
-export type PaymentRefundFragment = { __typename?: "PaymentRefund" } & Pick<
-  PaymentRefund,
-  "id" | "reference" | "amount" | "status" | "gatewayTransactionId"
->;
+export type PaymentRefundFragment = { 
+  __typename?: "PaymentRefund"; 
+} & Pick<PaymentRefund, "id" | "reference" | "amount" | "status" | "paymentId" | "gatewayTransactionId">;
 
 export type GetUserServicesQueryVariables = {};
 
@@ -658,8 +659,22 @@ export type GetPaymentQueryVariables = {
   id: Scalars["ID"];
 };
 
+export type GetPaymentRefundQueryVariables = {
+  id : Scalars["ID"];
+};
+
 export type GetPaymentQuery = { __typename?: "RootQueryType" } & {
   payment: { __typename?: "Payment" } & PaymentFragment;
+};
+
+export type GetPaymentRefundQuery =  { __typename?: "RootQueryType" } & {
+  payment: { __typename?: "Payment" } & {
+    refunds: Array<
+      {
+        __typename?: "PaymentRefund";
+      } & PaymentRefundFragment
+    >;
+  } & PaymentFragment;
 };
 
 export type GetPaymentEventsQueryVariables = {
@@ -1763,6 +1778,20 @@ export const GetPaymentDocument = gql`
   }
   ${PaymentFragmentDoc}
 `;
+
+export const GetPaymentRefundDocument = gql`
+query GetPaymentRefund($id: ID!) {
+  payment(id: $id) {
+    ...Payment
+    refunds {
+      ...PaymentRefund
+    }
+  }
+}
+${PaymentFragmentDoc}
+${PaymentRefundFragmentDoc}
+`;
+
 export type GetPaymentComponentProps = Omit<
   ApolloReactComponents.QueryComponentOptions<
     GetPaymentQuery,
@@ -1806,6 +1835,35 @@ export function useGetPaymentQuery(
     baseOptions
   );
 }
+
+/**
+ * __useGetPaymentRefundQuery__
+ *
+ * To run a query within a React component, call `useGetPaymentRefundQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPaymentRefundQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPaymentRefundQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetPaymentRefundQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetPaymentRefundQuery,
+    GetPaymentRefundQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<GetPaymentRefundQuery, GetPaymentRefundQueryVariables>(
+    GetPaymentRefundDocument,
+    baseOptions
+  );
+}
+
 export function useGetPaymentLazyQuery(
   baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
     GetPaymentQuery,
@@ -1882,6 +1940,7 @@ export function useGetPaymentEventsQuery(
     GetPaymentEventsQueryVariables
   >
 ) {
+
   return ApolloReactHooks.useQuery<
     GetPaymentEventsQuery,
     GetPaymentEventsQueryVariables

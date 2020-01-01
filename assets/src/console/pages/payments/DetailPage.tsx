@@ -18,7 +18,8 @@ import {
   GatewayAccountFragment,
   PaymentFragment,
   useGetPaymentEventsQuery,
-  ServiceFragment
+  ServiceFragment,
+  useGetPaymentRefundQuery
 } from "../../__generated__/graphql";
 import { gatewayAccountFullType } from "../../../payments";
 import { useLocation } from "react-router-dom";
@@ -49,6 +50,14 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
     errorPolicy: "all"
   });
 
+
+  const paymentRefundQuery = useGetPaymentRefundQuery({
+    variables: { id: payment.externalId },
+    errorPolicy: "all"
+  })
+
+
+
   const {
     externalId,
     insertedAt,
@@ -64,8 +73,14 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
 
   const location = useLocation();
 
-  const refunded = false; // TODO: from payment
-  const refunded_amount = 0; // TODO: from payment
+  let refunded = false; 
+  let refunded_amount = 0;
+
+  if(!paymentRefundQuery.loading && paymentRefundQuery.data) {
+    refunded = paymentRefundQuery.data.payment.refunds.length > 0 ? true : false;
+    refunded_amount = paymentRefundQuery.data.payment.refunds.reduce((acc, refund) => acc + refund.amount, 0); 
+  }
+
 
   return (
     <>
@@ -78,7 +93,9 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
 
       <MenuTitle>
         <PageTitle title="Transaction detail" />
-        <Link to={`${location.pathname}/refund`}>Refund payment</Link>
+        {paymentStatusLabel(status) === "Success" && 
+          <Link to={`${location.pathname}/refund`}>Refund payment</Link>
+        }
       </MenuTitle>
 
       <TODO />
