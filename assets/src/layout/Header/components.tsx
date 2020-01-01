@@ -3,6 +3,7 @@ import {
   Link as LinkComponent,
   NavLink as NavLinkComponent
 } from "@pay/web/components/Link";
+import { Button as ButtonComponent } from "@pay/web";
 
 export const PrimaryHeader = styled.div`
   background-color: ${props => props.theme.colors.payBlue};
@@ -29,6 +30,11 @@ export const Link = styled(LinkComponent)`
 
 export const NavLink = styled(NavLinkComponent)`
   ${linkCSS}
+`;
+
+export const Button = styled(ButtonComponent)`
+  ${linkCSS}
+  padding: 0;
 `;
 
 export const Ul = styled.ul`

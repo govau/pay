@@ -1,17 +1,31 @@
 import * as React from "react";
-import { TODO, PageTitle, Loader, ErrorAlert, Button } from "@pay/web";
+import { TODO, PageTitle, Loader, ErrorAlert, Button, P } from "@pay/web";
 import * as Table from "@pay/web/components/Table";
 
 import { useGetUsersQuery } from "../../auth/__generated__/graphql";
+import { useAuth0 } from "../../auth/AuthContext";
 
 const HomePage: React.FunctionComponent = () => {
   const { loading, error, data } = useGetUsersQuery({
     errorPolicy: "all"
   });
 
+  const { user } = useAuth0();
+
   return (
     <>
       <PageTitle title="Home page" />
+
+      <P>start</P>
+      {user ? (
+        <>
+          <P>{user.email}</P>
+          <P>{user.email_verified}</P>
+          <P>{user.name}</P>
+        </>
+      ) : null}
+      <P>end</P>
+
       <TODO>
         <p>
           You can emulate signing in as a particular user using the button

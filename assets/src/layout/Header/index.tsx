@@ -7,7 +7,12 @@ import {
   Lozenge,
   desktop
 } from "@pay/web";
-import { PrimaryHeader, PrimaryNav, Link as LinkComponent } from "./components";
+import {
+  PrimaryHeader,
+  PrimaryNav,
+  Link as LinkComponent,
+  Button as ButtonComponent
+} from "./components";
 import Wordmark from "./Wordmark";
 import { useCheckAuthQuery } from "../../auth/__generated__/graphql";
 import Coat from "./Coat";
@@ -17,10 +22,16 @@ import { UserContext } from "../../users";
 import { fromGQLUser } from "../../users/graphql";
 import { ServiceInfoNav, NonServiceInfoNav } from "../../console/HeaderNav";
 import PlatformAdminNav from "../../platform-admin/HeaderNav";
+import { useAuth0 } from "../../auth/AuthContext";
 
 const { ThemeProvider } = styledComponents;
 
 export const Link = styled(LinkComponent)`
+  font-weight: 700;
+  font-size: 1.4rem;
+`;
+
+export const Button = styled(ButtonComponent)`
   font-weight: 700;
   font-size: 1.4rem;
 `;
@@ -108,6 +119,8 @@ export const CoaLogo = styled(Coat)`
 `;
 
 const Header: React.FC = () => {
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+
   const { setUser } = React.useContext(UserContext);
 
   const checkAuthQuery = useCheckAuthQuery({
@@ -124,8 +137,6 @@ const Header: React.FC = () => {
   });
 
   const userMe = checkAuthQuery.data && checkAuthQuery.data.me;
-
-  const isAuthenticated = userMe && userMe.id;
 
   const isPlatformAdmin = userMe && userMe.platformAdmin;
 
@@ -168,7 +179,12 @@ const Header: React.FC = () => {
                   </li>
                 ) : null}
                 <li>
-                  <Link to="/auth/signout">Sign out</Link>
+                  <Button
+                    variant="link"
+                    onClick={() => logout({ returnTo: window.location.origin })}
+                  >
+                    Sign out
+                  </Button>
                 </li>
               </Nav>
             ) : (
@@ -182,11 +198,11 @@ const Header: React.FC = () => {
                 <li>
                   <Link to="/TODO">Documentation</Link>
                 </li>
-                {!checkAuthQuery.loading && (
-                  <li>
-                    <Link to="/auth/signin">Sign in</Link>
-                  </li>
-                )}
+                <li>
+                  <Button variant="link" onClick={() => loginWithRedirect()}>
+                    Sign in
+                  </Button>
+                </li>
               </Nav>
             )}
           </PrimaryContainer>

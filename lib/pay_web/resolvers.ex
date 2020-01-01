@@ -34,14 +34,6 @@ defmodule PayWeb.Resolvers do
   end
 
   def gateway_account(
-        _parent,
-        %{id: external_id},
-        _resolution
-      ) do
-    {:ok, Payments.get_gateway_account_by_external_id!(external_id)}
-  end
-
-  def gateway_account(
         %Payments.Payment{gateway_account_id: gateway_account_id},
         _params,
         _resolution
@@ -63,6 +55,14 @@ defmodule PayWeb.Resolvers do
         _resolution
       ) do
     {:ok, Payments.get_gateway_account_by_external_id!(gateway_account_id)}
+  end
+
+  def gateway_account(
+        _parent,
+        %{id: external_id},
+        _resolution
+      ) do
+    {:ok, Payments.get_gateway_account_by_external_id!(external_id)}
   end
 
   def gateway_account_credentials(

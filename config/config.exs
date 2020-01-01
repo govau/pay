@@ -27,6 +27,11 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :pay, Pay.Auth.Guardian,
+  issuer: System.get_env("AUTH0_ISSUER", "https://dta-platforms.au.auth0.com/"),
+  allowed_algos: ["HS256", "HS512", "RS256"],
+  secret_fetcher: Pay.Auth.Guardian.JWKSSecretFetcher
+
 config :sentry,
   dsn: System.get_env("SENTRY_DSN"),
   enable_source_code_context: true,

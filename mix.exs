@@ -52,6 +52,7 @@ defmodule Pay.MixProject do
       {:stripity_stripe, "~> 2.4.0"},
       {:absinthe, "~> 1.4"},
       {:absinthe_plug, "~> 1.4"},
+      {:guardian, "~> 2.0"},
       {:pay_gov_au, path: "./clients/pay-client"},
       {:soap, path: "./vendor/soap"},
 
