@@ -22,7 +22,8 @@ import {
   GatewayAccountFragment,
   PaymentFragment,
   useSubmitRefundMutation,
-  ServiceFragment
+  ServiceFragment,
+  useGetPaymentRefundQuery
 } from "../../__generated__/graphql";
 import { gatewayAccountFullType } from "../../../payments";
 
@@ -64,6 +65,19 @@ const RefundPage: React.FC<Props> = ({
 
   const paymentAmount = `${(amount / 100).toFixed(2)}`;
 
+  const paymentRefundQuery = useGetPaymentRefundQuery({
+    variables: { id: payment.externalId },
+    errorPolicy: "all"
+  })
+
+  let refunded_amount = 0
+  if(!paymentRefundQuery.loading && paymentRefundQuery.data) {
+    refunded_amount = paymentRefundQuery.data.payment.refunds.reduce((acc, refund) => acc + refund.amount, 0); 
+  }
+
+  const eligibleToRefund = amount - refunded_amount;
+  const eligibleRefundAmount = `${(eligibleToRefund / 100).toFixed(2)}`; 
+
   return (
     <>
       <Helmet>
@@ -89,10 +103,11 @@ const RefundPage: React.FC<Props> = ({
           const partialRefundAmount =
             partialRefund && partialRefund.getAmount();
 
+
           const refundAmount =
             !values.full_refund && partialRefundAmount
               ? partialRefundAmount
-              : amount;
+              : eligibleToRefund;
 
           await submitRefund({
             variables: {
@@ -124,16 +139,16 @@ const RefundPage: React.FC<Props> = ({
               <Field
                 name="refund_amount"
                 label="Refund amount"
-                description={`You may issue a partial refund for up to $${paymentAmount}`}
+                description={`You may issue a partial refund for up to $${eligibleRefundAmount}`}
                 validate={value => {
                   const amount = money.parse(String(value));
 
                   return validators.composeValidators(
                     validators.required("Enter an amount to refund"),
                     validators.isLessThan(
-                      `Amount is greater than $${paymentAmount}`,
+                      `Amount is greater than $${eligibleRefundAmount}`,
                       {
-                        max: payment.amount
+                        max: eligibleToRefund
                       }
                     )
                   )(amount ? amount.getAmount() : undefined);
