@@ -500,9 +500,17 @@ export type PaymentEventFragment =
   | PaymentEvent_PaymentRefundEvent_Fragment
   | PaymentEvent_PaymentEvent_Fragment;
 
-export type PaymentRefundFragment = { 
-  __typename?: "PaymentRefund"; 
-} & Pick<PaymentRefund, "id" | "reference" | "amount" | "status" | "paymentId" | "gatewayTransactionId">;
+export type PaymentRefundFragment = {
+  __typename?: "PaymentRefund";
+} & Pick<
+  PaymentRefund,
+  | "id"
+  | "reference"
+  | "amount"
+  | "status"
+  | "paymentId"
+  | "gatewayTransactionId"
+>;
 
 export type GetUserServicesQueryVariables = {};
 
@@ -660,14 +668,14 @@ export type GetPaymentQueryVariables = {
 };
 
 export type GetPaymentRefundQueryVariables = {
-  id : Scalars["ID"];
+  id: Scalars["ID"];
 };
 
 export type GetPaymentQuery = { __typename?: "RootQueryType" } & {
   payment: { __typename?: "Payment" } & PaymentFragment;
 };
 
-export type GetPaymentRefundQuery =  { __typename?: "RootQueryType" } & {
+export type GetPaymentRefundQuery = { __typename?: "RootQueryType" } & {
   payment: { __typename?: "Payment" } & {
     refunds: Array<
       {
@@ -949,7 +957,8 @@ export type GetServiceWithUsersComponentProps = Omit<
 > &
   (
     | { variables: GetServiceWithUsersQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetServiceWithUsersComponent = (
   props: GetServiceWithUsersComponentProps
@@ -1032,7 +1041,8 @@ export type GetServiceWithGatewayAccountsComponentProps = Omit<
 > &
   (
     | { variables: GetServiceWithGatewayAccountsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetServiceWithGatewayAccountsComponent = (
   props: GetServiceWithGatewayAccountsComponentProps
@@ -1324,7 +1334,8 @@ export type GetGatewayAccountsComponentProps = Omit<
 > &
   (
     | { variables: GetGatewayAccountsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetGatewayAccountsComponent = (
   props: GetGatewayAccountsComponentProps
@@ -1403,7 +1414,8 @@ export type GetGatewayAccountComponentProps = Omit<
 > &
   (
     | { variables: GetGatewayAccountQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetGatewayAccountComponent = (
   props: GetGatewayAccountComponentProps
@@ -1565,7 +1577,8 @@ export type GetProductsComponentProps = Omit<
 > &
   (
     | { variables: GetProductsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetProductsComponent = (props: GetProductsComponentProps) => (
   <ApolloReactComponents.Query<GetProductsQuery, GetProductsQueryVariables>
@@ -1715,7 +1728,8 @@ export type GetPaymentsComponentProps = Omit<
 > &
   (
     | { variables: GetPaymentsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetPaymentsComponent = (props: GetPaymentsComponentProps) => (
   <ApolloReactComponents.Query<GetPaymentsQuery, GetPaymentsQueryVariables>
@@ -1780,16 +1794,16 @@ export const GetPaymentDocument = gql`
 `;
 
 export const GetPaymentRefundDocument = gql`
-query GetPaymentRefund($id: ID!) {
-  payment(id: $id) {
-    ...Payment
-    refunds {
-      ...PaymentRefund
+  query GetPaymentRefund($id: ID!) {
+    payment(id: $id) {
+      ...Payment
+      refunds {
+        ...PaymentRefund
+      }
     }
   }
-}
-${PaymentFragmentDoc}
-${PaymentRefundFragmentDoc}
+  ${PaymentFragmentDoc}
+  ${PaymentRefundFragmentDoc}
 `;
 
 export type GetPaymentComponentProps = Omit<
@@ -1858,10 +1872,10 @@ export function useGetPaymentRefundQuery(
     GetPaymentRefundQueryVariables
   >
 ) {
-  return ApolloReactHooks.useQuery<GetPaymentRefundQuery, GetPaymentRefundQueryVariables>(
-    GetPaymentRefundDocument,
-    baseOptions
-  );
+  return ApolloReactHooks.useQuery<
+    GetPaymentRefundQuery,
+    GetPaymentRefundQueryVariables
+  >(GetPaymentRefundDocument, baseOptions);
 }
 
 export function useGetPaymentLazyQuery(
@@ -1904,7 +1918,8 @@ export type GetPaymentEventsComponentProps = Omit<
 > &
   (
     | { variables: GetPaymentEventsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetPaymentEventsComponent = (
   props: GetPaymentEventsComponentProps
@@ -1940,7 +1955,6 @@ export function useGetPaymentEventsQuery(
     GetPaymentEventsQueryVariables
   >
 ) {
-
   return ApolloReactHooks.useQuery<
     GetPaymentEventsQuery,
     GetPaymentEventsQueryVariables

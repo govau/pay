@@ -50,13 +50,10 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
     errorPolicy: "all"
   });
 
-
   const paymentRefundQuery = useGetPaymentRefundQuery({
     variables: { id: payment.externalId },
     errorPolicy: "all"
-  })
-
-
+  });
 
   const {
     externalId,
@@ -73,14 +70,17 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
 
   const location = useLocation();
 
-  let refunded = false; 
+  let refunded = false;
   let refunded_amount = 0;
 
-  if(!paymentRefundQuery.loading && paymentRefundQuery.data) {
-    refunded = paymentRefundQuery.data.payment.refunds.length > 0 ? true : false;
-    refunded_amount = paymentRefundQuery.data.payment.refunds.reduce((acc, refund) => acc + refund.amount, 0); 
+  if (!paymentRefundQuery.loading && paymentRefundQuery.data) {
+    refunded =
+      paymentRefundQuery.data.payment.refunds.length > 0 ? true : false;
+    refunded_amount = paymentRefundQuery.data.payment.refunds.reduce(
+      (acc, refund) => acc + refund.amount,
+      0
+    );
   }
-
 
   return (
     <>
@@ -93,9 +93,9 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
 
       <MenuTitle>
         <PageTitle title="Transaction detail" />
-        {paymentStatusLabel(status) === "Success" && 
+        {paymentStatusLabel(status) === "Success" && (
           <Link to={`${location.pathname}/refund`}>Refund payment</Link>
-        }
+        )}
       </MenuTitle>
 
       <TODO />

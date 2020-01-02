@@ -197,7 +197,6 @@ query GetPayment($id: ID!) {
   }
 }
 
-
 query GetPaymentRefund($id: ID!) {
   payment(id: $id) {
     ...Payment
@@ -206,7 +205,6 @@ query GetPaymentRefund($id: ID!) {
     }
   }
 }
-
 
 query GetPaymentEvents($id: ID!) {
   payment(id: $id) {

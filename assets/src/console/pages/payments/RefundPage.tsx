@@ -68,15 +68,18 @@ const RefundPage: React.FC<Props> = ({
   const paymentRefundQuery = useGetPaymentRefundQuery({
     variables: { id: payment.externalId },
     errorPolicy: "all"
-  })
+  });
 
-  let refunded_amount = 0
-  if(!paymentRefundQuery.loading && paymentRefundQuery.data) {
-    refunded_amount = paymentRefundQuery.data.payment.refunds.reduce((acc, refund) => acc + refund.amount, 0); 
+  let refunded_amount = 0;
+  if (!paymentRefundQuery.loading && paymentRefundQuery.data) {
+    refunded_amount = paymentRefundQuery.data.payment.refunds.reduce(
+      (acc, refund) => acc + refund.amount,
+      0
+    );
   }
 
   const eligibleToRefund = amount - refunded_amount;
-  const eligibleRefundAmount = `${(eligibleToRefund / 100).toFixed(2)}`; 
+  const eligibleRefundAmount = `${(eligibleToRefund / 100).toFixed(2)}`;
 
   return (
     <>
@@ -102,7 +105,6 @@ const RefundPage: React.FC<Props> = ({
           const partialRefund = money.parse(String(values.refund_amount));
           const partialRefundAmount =
             partialRefund && partialRefund.getAmount();
-
 
           const refundAmount =
             !values.full_refund && partialRefundAmount
