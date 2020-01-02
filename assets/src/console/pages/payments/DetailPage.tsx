@@ -19,7 +19,8 @@ import {
   PaymentFragment,
   useGetPaymentEventsQuery,
   ServiceFragment,
-  useGetPaymentRefundQuery
+  useGetPaymentRefundQuery,
+  PaymentStatus
 } from "../../__generated__/graphql";
 import { gatewayAccountFullType } from "../../../payments";
 import { useLocation } from "react-router-dom";
@@ -71,12 +72,11 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
   const location = useLocation();
 
   let refunded = false;
-  let refunded_amount = 0;
+  let refundedAmount = 0;
 
   if (!paymentRefundQuery.loading && paymentRefundQuery.data) {
-    refunded =
-      paymentRefundQuery.data.payment.refunds.length > 0 ? true : false;
-    refunded_amount = paymentRefundQuery.data.payment.refunds.reduce(
+    refunded = paymentRefundQuery.data.payment.refunds.length > 0;
+    refundedAmount = paymentRefundQuery.data.payment.refunds.reduce(
       (acc, refund) => acc + refund.amount,
       0
     );
@@ -93,7 +93,7 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
 
       <MenuTitle>
         <PageTitle title="Transaction detail" />
-        {paymentStatusLabel(status) === "Success" && (
+        {payment.status === PaymentStatus.Success && (
           <Link to={`${location.pathname}/refund`}>Refund payment</Link>
         )}
       </MenuTitle>
@@ -122,7 +122,7 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
             <Table.Row>
               <Table.Header scope="row">Refunded amount</Table.Header>
               <Table.Cell>
-                ${((refunded ? refunded_amount : 0) / 100).toFixed(2)}
+                ${((refunded ? refundedAmount : 0) / 100).toFixed(2)}
               </Table.Cell>
             </Table.Row>
             <Table.Row>
