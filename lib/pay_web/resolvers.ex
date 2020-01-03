@@ -105,10 +105,6 @@ defmodule PayWeb.Resolvers do
     {:ok, Payments.get_payment_by_external_id!(external_id)}
   end
 
-  def payment(_parent, %{id: external_id}, _resolution) do
-    {:ok, Payments.get_payment_refund_by_external_id!(external_id)}
-  end
-
   def payment(%Payments.PaymentRefund{payment_id: payment_id}, _params, _resolution) do
     {:ok, Payments.get_payment!(payment_id)}
   end
