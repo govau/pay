@@ -116,6 +116,10 @@ defmodule PayWeb.Schema.ContentTypes do
     field :events, non_null(list_of(non_null(:transaction_event))) do
       resolve(&Resolvers.payment_events/3)
     end
+
+    field :refunds, non_null(list_of(non_null(:payment_refund))) do
+      resolve(&Resolvers.payment_refunds/3)
+    end
   end
 
   object :product do

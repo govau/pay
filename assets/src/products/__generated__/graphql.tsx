@@ -548,7 +548,8 @@ export type GetProductPaymentComponentProps = Omit<
 > &
   (
     | { variables: GetProductPaymentQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetProductPaymentComponent = (
   props: GetProductPaymentComponentProps

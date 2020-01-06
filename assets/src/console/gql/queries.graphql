@@ -70,6 +70,7 @@ fragment PaymentRefund on PaymentRefund {
   reference
   amount
   status
+  paymentId
   gatewayTransactionId
 }
 
@@ -193,6 +194,15 @@ query GetPayments($serviceID: ID!) {
 query GetPayment($id: ID!) {
   payment(id: $id) {
     ...Payment
+  }
+}
+
+query GetPaymentRefund($id: ID!) {
+  payment(id: $id) {
+    ...Payment
+    refunds {
+      ...PaymentRefund
+    }
   }
 }
 

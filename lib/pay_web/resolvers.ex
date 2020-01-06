@@ -134,6 +134,10 @@ defmodule PayWeb.Resolvers do
     {:ok, Payments.get_payment_refund!(payment_refund_id)}
   end
 
+  def payment_refunds(%Payments.Payment{} = payment, _params, _resolution) do
+    {:ok, Payments.list_payment_refunds(payment)}
+  end
+
   def service_users(%Services.Service{external_id: external_id} = _service, _params, _resolution) do
     service_users =
       external_id
