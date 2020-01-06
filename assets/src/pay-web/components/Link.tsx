@@ -41,4 +41,8 @@ const NavLink = styled(ReactRouterNavLink)`
   ${linkCSS}
 `;
 
-export { Link, NavLink, NavLinkActiveClassName };
+const ExternalLink = styled.a`
+  ${linkCSS}
+`;
+
+export { Link, NavLink, NavLinkActiveClassName, ExternalLink };

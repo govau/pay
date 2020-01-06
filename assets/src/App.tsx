@@ -12,6 +12,7 @@ import * as Content from "./content";
 import * as Auth from "./auth";
 import * as Checkout from "./checkout";
 import * as Console from "./console";
+import * as Docs from "./docs";
 import * as PlatformAdmin from "./platform-admin";
 import * as Products from "./products";
 
@@ -79,6 +80,9 @@ const App: React.FC = () => {
                   <Switch>
                     <Route path="/console" strict>
                       <Console.Routes />
+                    </Route>
+                    <Route path="/docs" strict>
+                      <Docs.Routes />
                     </Route>
                     <Route path="/platform-admin" strict>
                       <PlatformAdmin.Routes />
