@@ -58,6 +58,60 @@ export const Text = styled.span<{ variant?: "gray" }>`
   }};
 `;
 
+export const Pre = styled.pre`
+  position: relative;
+  background: #011628bf;
+  overflow-x: auto;
+  font-size: 1.3rem;
+  line-height: 1.9rem;
+  border-radius: 4px;
+  margin-bottom: 0;
+
+  &:not(:first-child) {
+    margin-top: 0;
+  }
+
+  &:not(:last-child) {
+    margin-bottom: 1.6rem;
+  }
+
+  code {
+    display: inline-block;
+    position: relative;
+    min-width: 100%;
+    padding: 12px 14px 12px 64px;
+    z-index: 2;
+    color: #f5fbff;
+    font-weight: 500;
+  }
+`;
+
+export const PreLineNumbers = styled.span`
+  z-index: 2;
+  position: absolute;
+  pointer-events: none;
+  top: 12px;
+  left: 29px;
+  width: 16px;
+  counter-reset: linenumber;
+  line-height: 1.9rem;
+
+  > span {
+    pointer-events: none;
+    display: block;
+    counter-increment: linenumber;
+
+    &:before {
+      content: counter(linenumber);
+      color: #bec5ca;
+      display: block;
+      font-size: 1.3rem;
+      text-align: right;
+      user-select: none;
+    }
+  }
+`;
+
 export const P = styled.p`
   max-width: 70rem;
   margin-bottom: ${spacing.small};
@@ -65,6 +119,16 @@ export const P = styled.p`
 
   * + & {
     margin-top: ${spacing.relative(1)};
+  }
+
+  code {
+    font-size: 1.5rem;
+    border-radius: 4px;
+    color: #3c4257;
+    font-weight: 500;
+    background: #f7fafc;
+    border: 1px solid #e3e8ee;
+    padding: 1px 2px;
   }
 `;
 
@@ -90,6 +154,10 @@ export const UL = styled.ul`
       width: 4px;
       border-radius: 50%;
       background: ${props => props.theme.colors.black};
+    }
+
+    ul {
+      margin-top: 1rem;
     }
   }
 `;

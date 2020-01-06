@@ -180,7 +180,7 @@ const Header: React.FC = () => {
                   <Link to="/TODO">Get started</Link>
                 </li>
                 <li>
-                  <Link to="/TODO">Documentation</Link>
+                  <Link to="/docs">Documentation</Link>
                 </li>
                 {!checkAuthQuery.loading && (
                   <li>

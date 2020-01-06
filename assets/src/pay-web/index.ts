@@ -23,7 +23,7 @@ export * from "./components/form";
 export { default as validators } from "./lib/validation";
 export { default as Button } from "./components/Button";
 export { default as Lozenge } from "./components/Lozenge";
-export { Link } from "./components/Link";
+export { Link, ExternalLink } from "./components/Link";
 export { LinkButton } from "./components/LinkButton";
 export { default as PageTitle } from "./components/PageTitle";
 export * from "./components/Typography";
