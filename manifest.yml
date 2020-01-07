@@ -1,8 +1,7 @@
 defaults: &defaults
-  buildpacks:
-    - binary_buildpack
-  instances: 1
-  memory: 512M
+  buildpack: binary_buildpack
+  instances: 2
+  memory: 256M
   disk_quota: 256MB
 
 applications:
