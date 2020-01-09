@@ -3,6 +3,8 @@ CF            ?= cf
 JQ            ?= jq
 DIFF          ?= diff
 
+APP           ?= pay
+STG           ?= dev
 CF_SPACE      ?= platforms
 CF_SPACE_ID   ?= $(shell $(CF) curl "/v2/spaces?q=name:$(CF_SPACE)" | jq -r ".resources[].metadata.guid")
 GIT_REMOTE    ?= $(shell $(GIT) config --get remote.origin.url)
@@ -59,17 +61,21 @@ list-services:
 	$(CF) curl "/v2/spaces/${CF_SPACE_ID}/service_instances" | $(JQ) -r ".resources[].entity.name"
 
 undeploy:
-	./undeploy_closed_branches.py
+	$(MAKE) -C provisioning undeploy-closed-branches
 	$(CF) delete-orphaned-routes -f
 
 undeploy-app-%:
 	$(CF) delete $* -f -r
+	$(MAKE) -C provisioning unprovision-$*
 
 undeploy-service-%:
 	$(CF) delete-service $* -f
 
+setup-auth0:
+	$(MAKE) -C provisioning provision-$(APP)-$(STG)
+
 .PHONY: apply-services fetch-services diff-services \
 	ensure-space \
 	list-branches list-apps list-services \
-	undeploy \
+	setup setup-auth0 undeploy \
 	$(SVC_APPLIED) $(SVC_CREATED) $(SVC_DIFFED) $(SVC_FETCHED)

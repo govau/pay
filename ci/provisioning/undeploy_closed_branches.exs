@@ -1,0 +1,1 @@
+Provisioning.FeatureBranches.undeploy_closed_branches()
