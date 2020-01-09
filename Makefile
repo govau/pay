@@ -110,4 +110,15 @@ clean:
 	-rm -r _build
 	-rm -r lib/pay_web/templates/react/index.html.eex priv/static
 
-.PHONY: run run-frontend test deploy setup install
+
+TARGETS     = setup
+CI_TARGETS  = setup-auth0 undeploy
+ANY_TARGETS = $(TARGETS) $(CI_TARGETS)
+
+$(ANY_TARGETS:%=\%.%):
+	$(MAKE) -C $* $(@:$*.%=%)
+
+$(CI_TARGETS):
+	$(MAKE) ci.$@
+
+.PHONY: run run-frontend test deploy setup install $(CI_TARGETS)

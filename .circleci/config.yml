@@ -15,7 +15,7 @@ references:
 
   undeploy_image: &undeploy_image
     docker:
-      - image: circleci/python:3.7
+      - image: circleci/elixir:1.9.2
 
   cf_install: &cf_install
     run:
@@ -73,13 +73,15 @@ jobs:
       - run: make frontend
       - run: make test
 
-  cleanup-old-deploys:
+  manage-feature-deploys:
     <<: *undeploy_image
     steps:
       - checkout
       - *cf_install
       - *cf_login
-      - run: make -C ci undeploy
+      - run: make -C ci/provisioning setup-ci
+      - run: make ci.setup-auth0
+      - run: make ci.undeploy
 
   deploy:
     <<: *elixir_image
@@ -105,7 +107,7 @@ workflows:
     jobs:
       - build
       - test
-      - cleanup-old-deploys
+      - manage-feature-deploys
       - deploy:
           requires:
             - build
