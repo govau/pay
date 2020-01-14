@@ -77,7 +77,7 @@ defmodule PayWeb.Resolvers do
     {:ok, Payments.list_gateway_account_card_types(gateway_account)}
   end
 
-  def card_types(parent, _params, _resolution) do
+  def card_types(_parent, _params, _resolution) do
     {:ok, Payments.list_card_types()}
   end
 
