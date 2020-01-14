@@ -4,7 +4,6 @@ import createDecorator from "final-form-focus";
 
 import {
   PageTitle,
-  H4,
   P,
   Checkbox,
   Button,
@@ -34,7 +33,7 @@ interface Props {
 }
 
 const CardsPage: React.FC<Props> = ({ service, gatewayAccount }) => {
-  const [submitCardType, submitCardsTypeResult] = useSubmitCardTypeMutation();
+  const [submitCardType] = useSubmitCardTypeMutation();
   const { loading, error, data } = useCardTypesQuery({ errorPolicy: "all" });
 
   return (
