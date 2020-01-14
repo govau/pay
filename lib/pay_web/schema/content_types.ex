@@ -315,6 +315,17 @@ defmodule PayWeb.Schema.ContentTypes do
     end
   end
 
+  object :gateway_account_card_type do
+    field :gateway_account, non_null(:gateway_account) do
+      arg(:gateway_account_id, non_null(:id))
+      resolve(&Resolvers.gateway_account/3)
+    end
+
+    field :card_type, non_null(:card_type) do
+      resolve(&Resolvers.card_type/3)
+    end
+  end
+
   object :organisation do
     field :id, non_null(:id)
     field :external_id, non_null(:id)

@@ -116,13 +116,13 @@ export type Payment = {
   description: Scalars["String"];
   email?: Maybe<Scalars["String"]>;
   events: Array<TransactionEvent>;
-  refunds: Array<PaymentRefund>;
   externalId: Scalars["ID"];
   gatewayAccount: GatewayAccount;
   gatewayTransactionId?: Maybe<Scalars["String"]>;
   id: Scalars["ID"];
   insertedAt: Scalars["String"];
   reference: Scalars["String"];
+  refunds: Array<PaymentRefund>;
   returnUrl: Scalars["String"];
   status: PaymentStatus;
   updatedAt: Scalars["String"];
@@ -155,7 +155,6 @@ export type PaymentRefund = {
   events?: Maybe<Array<PaymentRefundEvent>>;
   externalId: Scalars["ID"];
   gatewayTransactionId: Scalars["String"];
-  paymentId: Scalars["ID"];
   id: Scalars["ID"];
   payment?: Maybe<Payment>;
   reference: Scalars["String"];
@@ -241,6 +240,8 @@ export type RootMutationType = {
   createService: Service;
   signout: Signout;
   submitBamboraPayment: Payment;
+  /** Submit Card types */
+  submitCardType: GatewayAccount;
   submitProductPayment: ProductPayment;
   /** Submit a payment refund */
   submitRefund: PaymentRefund;
@@ -269,6 +270,11 @@ export type RootMutationTypeSubmitBamboraPaymentArgs = {
   paymentId: Scalars["ID"];
   paymentInput: BamboraPaymentInput;
   transition: Scalars["String"];
+};
+
+export type RootMutationTypeSubmitCardTypeArgs = {
+  cardTypeIds?: Maybe<Array<Scalars["ID"]>>;
+  gatewayAccountId: Scalars["ID"];
 };
 
 export type RootMutationTypeSubmitProductPaymentArgs = {
@@ -440,6 +446,9 @@ export type GatewayAccountFragment = { __typename?: "GatewayAccount" } & Pick<
           "merchantId" | "accountNumber" | "apiUsername"
         >)
       | { __typename?: "SandboxCredentials" };
+    cardTypes: Array<
+      { __typename?: "CardType" } & Pick<CardType, "id" | "label">
+    >;
   };
 
 type GatewayAccountCredentials_BamboraCredentials_Fragment = {
@@ -500,16 +509,9 @@ export type PaymentEventFragment =
   | PaymentEvent_PaymentRefundEvent_Fragment
   | PaymentEvent_PaymentEvent_Fragment;
 
-export type PaymentRefundFragment = {
-  __typename?: "PaymentRefund";
-} & Pick<
+export type PaymentRefundFragment = { __typename?: "PaymentRefund" } & Pick<
   PaymentRefund,
-  | "id"
-  | "reference"
-  | "amount"
-  | "status"
-  | "paymentId"
-  | "gatewayTransactionId"
+  "id" | "reference" | "amount" | "status" | "gatewayTransactionId"
 >;
 
 export type GetUserServicesQueryVariables = {};
@@ -585,6 +587,19 @@ export type SubmitRefundMutationVariables = {
 
 export type SubmitRefundMutation = { __typename?: "RootMutationType" } & {
   refund: { __typename?: "PaymentRefund" } & PaymentRefundFragment;
+};
+
+export type SubmitCardTypeMutationVariables = {
+  gatewayAccountId: Scalars["ID"];
+  cardTypeIds: Array<Scalars["ID"]>;
+};
+
+export type SubmitCardTypeMutation = { __typename?: "RootMutationType" } & {
+  cardType: { __typename?: "GatewayAccount" } & Pick<GatewayAccount, "id"> & {
+      cardTypes: Array<
+        { __typename?: "CardType" } & Pick<CardType, "id" | "label" | "type">
+      >;
+    };
 };
 
 export type GetGatewayAccountsQueryVariables = {
@@ -667,21 +682,17 @@ export type GetPaymentQueryVariables = {
   id: Scalars["ID"];
 };
 
-export type GetPaymentRefundQueryVariables = {
-  id: Scalars["ID"];
-};
-
 export type GetPaymentQuery = { __typename?: "RootQueryType" } & {
   payment: { __typename?: "Payment" } & PaymentFragment;
 };
 
+export type GetPaymentRefundQueryVariables = {
+  id: Scalars["ID"];
+};
+
 export type GetPaymentRefundQuery = { __typename?: "RootQueryType" } & {
   payment: { __typename?: "Payment" } & {
-    refunds: Array<
-      {
-        __typename?: "PaymentRefund";
-      } & PaymentRefundFragment
-    >;
+    refunds: Array<{ __typename?: "PaymentRefund" } & PaymentRefundFragment>;
   } & PaymentFragment;
 };
 
@@ -720,6 +731,10 @@ export const GatewayAccountFragmentDoc = gql`
         accountNumber
         apiUsername
       }
+    }
+    cardTypes {
+      id
+      label
     }
   }
 `;
@@ -1315,6 +1330,84 @@ export type SubmitRefundMutationOptions = ApolloReactCommon.BaseMutationOptions<
   SubmitRefundMutation,
   SubmitRefundMutationVariables
 >;
+export const SubmitCardTypeDocument = gql`
+  mutation SubmitCardType($gatewayAccountId: ID!, $cardTypeIds: [ID!]!) {
+    cardType: submitCardType(
+      gatewayAccountId: $gatewayAccountId
+      cardTypeIds: $cardTypeIds
+    ) {
+      id
+      cardTypes {
+        id
+        label
+        type
+      }
+    }
+  }
+`;
+export type SubmitCardTypeMutationFn = ApolloReactCommon.MutationFunction<
+  SubmitCardTypeMutation,
+  SubmitCardTypeMutationVariables
+>;
+export type SubmitCardTypeComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    SubmitCardTypeMutation,
+    SubmitCardTypeMutationVariables
+  >,
+  "mutation"
+>;
+
+export const SubmitCardTypeComponent = (
+  props: SubmitCardTypeComponentProps
+) => (
+  <ApolloReactComponents.Mutation<
+    SubmitCardTypeMutation,
+    SubmitCardTypeMutationVariables
+  >
+    mutation={SubmitCardTypeDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useSubmitCardTypeMutation__
+ *
+ * To run a mutation, you first call `useSubmitCardTypeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSubmitCardTypeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [submitCardTypeMutation, { data, loading, error }] = useSubmitCardTypeMutation({
+ *   variables: {
+ *      gatewayAccountId: // value for 'gatewayAccountId'
+ *      cardTypeIds: // value for 'cardTypeIds'
+ *   },
+ * });
+ */
+export function useSubmitCardTypeMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    SubmitCardTypeMutation,
+    SubmitCardTypeMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    SubmitCardTypeMutation,
+    SubmitCardTypeMutationVariables
+  >(SubmitCardTypeDocument, baseOptions);
+}
+export type SubmitCardTypeMutationHookResult = ReturnType<
+  typeof useSubmitCardTypeMutation
+>;
+export type SubmitCardTypeMutationResult = ApolloReactCommon.MutationResult<
+  SubmitCardTypeMutation
+>;
+export type SubmitCardTypeMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  SubmitCardTypeMutation,
+  SubmitCardTypeMutationVariables
+>;
 export const GetGatewayAccountsDocument = gql`
   query GetGatewayAccounts($serviceId: ID!) {
     service(id: $serviceId) {
@@ -1792,20 +1885,6 @@ export const GetPaymentDocument = gql`
   }
   ${PaymentFragmentDoc}
 `;
-
-export const GetPaymentRefundDocument = gql`
-  query GetPaymentRefund($id: ID!) {
-    payment(id: $id) {
-      ...Payment
-      refunds {
-        ...PaymentRefund
-      }
-    }
-  }
-  ${PaymentFragmentDoc}
-  ${PaymentRefundFragmentDoc}
-`;
-
 export type GetPaymentComponentProps = Omit<
   ApolloReactComponents.QueryComponentOptions<
     GetPaymentQuery,
@@ -1849,6 +1928,60 @@ export function useGetPaymentQuery(
     baseOptions
   );
 }
+export function useGetPaymentLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetPaymentQuery,
+    GetPaymentQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetPaymentQuery,
+    GetPaymentQueryVariables
+  >(GetPaymentDocument, baseOptions);
+}
+export type GetPaymentQueryHookResult = ReturnType<typeof useGetPaymentQuery>;
+export type GetPaymentLazyQueryHookResult = ReturnType<
+  typeof useGetPaymentLazyQuery
+>;
+export type GetPaymentQueryResult = ApolloReactCommon.QueryResult<
+  GetPaymentQuery,
+  GetPaymentQueryVariables
+>;
+export const GetPaymentRefundDocument = gql`
+  query GetPaymentRefund($id: ID!) {
+    payment(id: $id) {
+      ...Payment
+      refunds {
+        ...PaymentRefund
+      }
+    }
+  }
+  ${PaymentFragmentDoc}
+  ${PaymentRefundFragmentDoc}
+`;
+export type GetPaymentRefundComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    GetPaymentRefundQuery,
+    GetPaymentRefundQueryVariables
+  >,
+  "query"
+> &
+  (
+    | { variables: GetPaymentRefundQueryVariables; skip?: boolean }
+    | { skip: boolean }
+  );
+
+export const GetPaymentRefundComponent = (
+  props: GetPaymentRefundComponentProps
+) => (
+  <ApolloReactComponents.Query<
+    GetPaymentRefundQuery,
+    GetPaymentRefundQueryVariables
+  >
+    query={GetPaymentRefundDocument}
+    {...props}
+  />
+);
 
 /**
  * __useGetPaymentRefundQuery__
@@ -1877,25 +2010,26 @@ export function useGetPaymentRefundQuery(
     GetPaymentRefundQueryVariables
   >(GetPaymentRefundDocument, baseOptions);
 }
-
-export function useGetPaymentLazyQuery(
+export function useGetPaymentRefundLazyQuery(
   baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetPaymentQuery,
-    GetPaymentQueryVariables
+    GetPaymentRefundQuery,
+    GetPaymentRefundQueryVariables
   >
 ) {
   return ApolloReactHooks.useLazyQuery<
-    GetPaymentQuery,
-    GetPaymentQueryVariables
-  >(GetPaymentDocument, baseOptions);
+    GetPaymentRefundQuery,
+    GetPaymentRefundQueryVariables
+  >(GetPaymentRefundDocument, baseOptions);
 }
-export type GetPaymentQueryHookResult = ReturnType<typeof useGetPaymentQuery>;
-export type GetPaymentLazyQueryHookResult = ReturnType<
-  typeof useGetPaymentLazyQuery
+export type GetPaymentRefundQueryHookResult = ReturnType<
+  typeof useGetPaymentRefundQuery
 >;
-export type GetPaymentQueryResult = ApolloReactCommon.QueryResult<
-  GetPaymentQuery,
-  GetPaymentQueryVariables
+export type GetPaymentRefundLazyQueryHookResult = ReturnType<
+  typeof useGetPaymentRefundLazyQuery
+>;
+export type GetPaymentRefundQueryResult = ApolloReactCommon.QueryResult<
+  GetPaymentRefundQuery,
+  GetPaymentRefundQueryVariables
 >;
 export const GetPaymentEventsDocument = gql`
   query GetPaymentEvents($id: ID!) {

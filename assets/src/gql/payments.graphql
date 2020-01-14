@@ -55,6 +55,12 @@ type CardDetails {
   card_brand: String!
 }
 
+type GatewayAccountCardType {
+  id: ID!
+  gateway_account_id: ID!
+  card_type_id: [ID]!
+}
+
 enum PaymentStatus {
   created
   started

@@ -122,6 +122,7 @@ export type Payment = {
   id: Scalars["ID"];
   insertedAt: Scalars["String"];
   reference: Scalars["String"];
+  refunds: Array<PaymentRefund>;
   returnUrl: Scalars["String"];
   status: PaymentStatus;
   updatedAt: Scalars["String"];
@@ -239,6 +240,8 @@ export type RootMutationType = {
   createService: Service;
   signout: Signout;
   submitBamboraPayment: Payment;
+  /** Submit Card types */
+  submitCardType: GatewayAccount;
   submitProductPayment: ProductPayment;
   /** Submit a payment refund */
   submitRefund: PaymentRefund;
@@ -267,6 +270,11 @@ export type RootMutationTypeSubmitBamboraPaymentArgs = {
   paymentId: Scalars["ID"];
   paymentInput: BamboraPaymentInput;
   transition: Scalars["String"];
+};
+
+export type RootMutationTypeSubmitCardTypeArgs = {
+  cardTypeIds?: Maybe<Array<Scalars["ID"]>>;
+  gatewayAccountId: Scalars["ID"];
 };
 
 export type RootMutationTypeSubmitProductPaymentArgs = {

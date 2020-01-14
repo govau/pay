@@ -86,8 +86,15 @@ defmodule PayWeb.Schema do
       arg(:payment_id, non_null(:id))
       arg(:amount, non_null(:integer))
       arg(:reference, :string)
-
       resolve(&Resolvers.Mutations.Console.submit_refund/3)
+    end
+
+    @desc "Submit Card types"
+    field :submit_card_type, type: non_null(:gateway_account) do
+      arg(:gateway_account_id, non_null(:id))
+      arg(:card_type_ids, list_of(non_null(:id)))
+
+      resolve(&Resolvers.Mutations.Console.submit_card_type/3)
     end
 
     @desc "Create a product"

@@ -13,7 +13,7 @@ defmodule Pay.Payments.GatewayAccountCardType do
   @doc false
   def changeset(gateway_account_card_type, attrs) do
     gateway_account_card_type
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:gateway_account_id, :card_type_id])
+    |> validate_required([:gateway_account_id, :card_type_id])
   end
 end

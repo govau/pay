@@ -61,6 +61,15 @@ input SubmitRefundInput {
   payment_refund: PaymentRefundInput!
 }
 
+input GatewayAccountCardTypeInput {
+  gatewayAccountId: ID!
+  cardTypeIds: [ID!]!
+}
+
+input SubmitCardTypeInput {
+  gateway_account_card_type: GatewayAccountCardTypeInput!
+}
+
 type Mutation {
   createService(input: CreateServiceInput!): Service!
   updateService(id: ID!, input: UpdateServiceInput!): Service!
@@ -70,4 +79,5 @@ type Mutation {
   ): GatewayAccountCredentials!
   createProduct(gatewayAccountId: ID!, input: CreateProductInput!): Service!
   submitRefund(paymentId: ID!, input: SubmitRefundInput!): PaymentRefund!
+  submitCardType(id: ID!, input: SubmitCardTypeInput!): GatewayAccount!
 }
