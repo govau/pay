@@ -41,4 +41,10 @@ defmodule Pay.Services.User do
     ])
     |> unique_constraint(:email)
   end
+
+  def admin_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:platform_admin])
+    |> validate_required([:platform_admin])
+  end
 end
