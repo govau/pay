@@ -38,6 +38,28 @@ defmodule Pay.PaymentsTest do
     [payment_refund: Associations.clear(payment_refund)]
   end
 
+  defp create_card_type(_context) do
+    {:ok, card_type} =
+      Payments.create_card_type(%{
+        id: 1,
+        label: "Mastercard",
+        brand: "Mastercard",
+        requires_3ds: true,
+        type: "CREDIT"
+      })
+    [card_type: card_type]
+  end
+
+  defp create_gateway_account_card_type(%{gateway_account: gateway_account, card_type: card_type}) do
+    {:ok, gateway_account_card_type} =
+      Payments.create_gateway_account_card_type(%{
+        gateway_account_id: gateway_account.id,
+        card_type_id: card_type.id
+      })
+    [gateway_account_card_type: gateway_account_card_type]
+  end
+
+
   describe "card_types" do
     alias Pay.Payments.CardType
 
@@ -678,46 +700,62 @@ defmodule Pay.PaymentsTest do
   end
 
   describe "gateway_account_card_types" do
+    setup [:create_gateway_account, :create_card_type, :create_gateway_account_card_type]
+
     alias Pay.Payments.GatewayAccountCardType
 
-    @valid_attrs %{}
-    @update_attrs %{}
 
     def gateway_account_card_type_fixture(attrs \\ %{}) do
-      {:ok, gateway_account_card_type} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Payments.create_gateway_account_card_type()
-
+      {:ok, gateway_account_card_type} = Payments.create_gateway_account_card_type(attrs)
       gateway_account_card_type
     end
 
-    test "list_gateway_account_card_types/0 returns all gateway_account_card_types" do
-      gateway_account_card_type = gateway_account_card_type_fixture()
+    test "list_gateway_account_card_types/0 returns all gateway_account_card_types", %{gateway_account_card_type: gateway_account_card_type} do
       assert Payments.list_gateway_account_card_types() == [gateway_account_card_type]
     end
 
-    test "get_gateway_account_card_type!/1 returns the gateway_account_card_type with given id" do
-      gateway_account_card_type = gateway_account_card_type_fixture()
+    test "get_gateway_account_card_type!/1 returns the gateway_account_card_type with given id", %{
+      gateway_account: gateway_account,
+      card_type: card_type
+    } do
+      gateway_account_card_type = gateway_account_card_type_fixture(%{
+        gateway_account_id: gateway_account.id,
+        card_type_id: card_type.id
+      })
 
       assert Payments.get_gateway_account_card_type!(gateway_account_card_type.id) ==
                gateway_account_card_type
     end
 
-    test "create_gateway_account_card_type/1 with valid data creates a gateway_account_card_type" do
-      assert {:ok, %GatewayAccountCardType{} = gateway_account_card_type} =
-               Payments.create_gateway_account_card_type(@valid_attrs)
+    test "create_gateway_account_card_type/1 with valid data creates a gateway_account_card_type", %{
+      gateway_account: gateway_account,
+      card_type: card_type,
+      gateway_account_card_type: gateway_account_card_type
+    } do
+
+        assert gateway_account_card_type.gateway_account_id == gateway_account.id
+        assert gateway_account_card_type.card_type_id == card_type.id
     end
 
-    test "update_gateway_account_card_type/2 with valid data updates the gateway_account_card_type" do
-      gateway_account_card_type = gateway_account_card_type_fixture()
+    test "clear_gateway_account_card_types/1 clears the gateway_account_card_type for given gateway_account_id", %{
+      gateway_account_card_type: gateway_account_card_type
+    }  do
 
-      assert {:ok, %GatewayAccountCardType{} = gateway_account_card_type} =
-               Payments.update_gateway_account_card_type(gateway_account_card_type, @update_attrs)
+      assert {:ok, 1} = Payments.clear_gateway_account_card_types(gateway_account_card_type.gateway_account_id)
+      assert_raise Ecto.NoResultsError, fn ->
+        Payments.get_gateway_account_card_type!(gateway_account_card_type.id)
+      end
     end
 
-    test "delete_gateway_account_card_type/1 deletes the gateway_account_card_type" do
-      gateway_account_card_type = gateway_account_card_type_fixture()
+    test "delete_gateway_account_card_type/1 deletes the gateway_account_card_type", %{
+      gateway_account: gateway_account,
+      card_type: card_type
+    }  do
+
+      gateway_account_card_type = gateway_account_card_type_fixture(%{
+        gateway_account_id: gateway_account.id,
+        card_type_id: card_type.id
+      })
 
       assert {:ok, %GatewayAccountCardType{}} =
                Payments.delete_gateway_account_card_type(gateway_account_card_type)

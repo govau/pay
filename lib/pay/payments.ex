@@ -782,26 +782,7 @@ defmodule Pay.Payments do
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a gateway_account_card_type.
 
-  ## Examples
-
-      iex> update_gateway_account_card_type(gateway_account_card_type, %{field: new_value})
-      {:ok, %GatewayAccountCardType{}}
-
-      iex> update_gateway_account_card_type(gateway_account_card_type, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_gateway_account_card_type(
-        %GatewayAccountCardType{} = gateway_account_card_type,
-        attrs
-      ) do
-    gateway_account_card_type
-    |> GatewayAccountCardType.changeset(attrs)
-    |> Repo.update()
-  end
 
   @doc """
   Deletes a GatewayAccountCardType.
@@ -828,15 +809,13 @@ defmodule Pay.Payments do
   ## Examples
 
       iex> clear_gateway_account_card_types(%{field: value})
-      {:ok, %GatewayAccountCardType{}}
-
-      iex> clear_gateway_account_card_types(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+      {:ok, n}
 
   """
 
   def clear_gateway_account_card_types(gateway_account_id) do
-    from(g in GatewayAccountCardType, where: g.gateway_account_id == ^gateway_account_id) |> Repo.delete_all
+    {n, _} = from(g in GatewayAccountCardType, where: g.gateway_account_id == ^gateway_account_id) |> Repo.delete_all
+    {:ok, n}
   end
 
   @doc """

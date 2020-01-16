@@ -15,5 +15,7 @@ defmodule Pay.Payments.GatewayAccountCardType do
     gateway_account_card_type
     |> cast(attrs, [:gateway_account_id, :card_type_id])
     |> validate_required([:gateway_account_id, :card_type_id])
+    |> foreign_key_constraint(:gateway_account_id)
+    |> foreign_key_constraint(:card_type_id)
   end
 end
