@@ -111,7 +111,6 @@ workflows:
       - deploy:
           requires:
             - build
-            - test
 
       - unlock-prod-deploy:
           <<: *master_branch
