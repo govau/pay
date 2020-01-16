@@ -18,7 +18,7 @@ const CreateStartPage = () => {
       <PageTitle title="Create payment link" />
       <P>
         You can create a payment link so that users can make online payments to
-        your service. Even if you don’t have a digital service, GOV.UK Pay can
+        your service. Even if you don’t have a digital service, Pay.gov.au can
         still take payments for you.
       </P>
       <P>
