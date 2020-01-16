@@ -273,14 +273,17 @@ defmodule Pay.Services do
   def get_user_by_external_id(external_id),
     do: Repo.get_by(User, external_id: external_id)
 
+  @spec get_user_by_email(String.t()) :: %User{} | nil
+  def get_user_by_email(email),
+    do: Repo.get_by(User, email: email)
+
   def get_or_create_user(%{email: email} = changes) do
-    %User{}
-    |> User.create_changeset(changes)
-    |> Repo.insert(
-      on_conflict: [set: [email: email]],
-      conflict_target: :email,
-      returning: [:id, :external_id]
-    )
+    {:ok, _user} =
+      %User{}
+      |> User.create_changeset(changes)
+      |> Repo.insert(on_conflict: :nothing)
+
+    {:ok, get_user_by_email(email)}
   end
 
   @doc """
@@ -318,6 +321,12 @@ defmodule Pay.Services do
   def update_user(%User{} = user, attrs) do
     user
     |> User.update_changeset(attrs)
+    |> Repo.update()
+  end
+
+  def set_platform_admin(%User{} = user, is_platform_admin) do
+    user
+    |> User.admin_changeset(%{platform_admin: is_platform_admin})
     |> Repo.update()
   end
 

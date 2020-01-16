@@ -31,6 +31,22 @@ defmodule Pay.Release do
     end
   end
 
+  def promote_platform_admin(email) do
+    load_app()
+
+    email
+    |> Pay.Services.get_user_by_email()
+    |> Pay.Services.set_platform_admin(true)
+  end
+
+  def revoke_platform_admin(email) do
+    load_app()
+
+    email
+    |> Pay.Services.get_user_by_email()
+    |> Pay.Services.set_platform_admin(false)
+  end
+
   defp repos do
     Application.fetch_env!(@app, :ecto_repos)
   end
