@@ -31,27 +31,11 @@ defmodule Pay.Release do
     end
   end
 
-  def promote_platform_admin(email) do
-    load_app()
-
-    email
-    |> Pay.Services.get_user_by_email()
-    |> Pay.Services.set_platform_admin(true)
-  end
-
-  def revoke_platform_admin(email) do
-    load_app()
-
-    email
-    |> Pay.Services.get_user_by_email()
-    |> Pay.Services.set_platform_admin(false)
-  end
-
-  defp repos do
+  def repos do
     Application.fetch_env!(@app, :ecto_repos)
   end
 
-  defp load_app do
+  def load_app do
     Application.load(@app)
   end
 
@@ -90,5 +74,46 @@ defmodule Pay.Release do
     priv_dir = "#{:code.priv_dir(app)}"
 
     Path.join([priv_dir, repo_underscore, filename])
+  end
+
+  defmodule Admin do
+    @repo_apps [
+      :crypto,
+      :ssl,
+      :postgrex,
+      :ecto_sql
+    ]
+
+    defp start_repo() do
+      IO.puts("Starting dependencies...")
+
+      Enum.each(@repo_apps, fn app ->
+        {:ok, _} = Application.ensure_all_started(app)
+      end)
+
+      IO.puts("Starting repos...")
+
+      Enum.each(Pay.Release.repos(), fn repo ->
+        {:ok, _} = repo.start_link(pool_size: 2)
+      end)
+    end
+
+    def grant_platform_admin(email) do
+      Pay.Release.load_app()
+      start_repo()
+
+      email
+      |> Pay.Services.get_user_by_email()
+      |> Pay.Services.set_platform_admin(true)
+    end
+
+    def revoke_platform_admin(email) do
+      Pay.Release.load_app()
+      start_repo()
+
+      email
+      |> Pay.Services.get_user_by_email()
+      |> Pay.Services.set_platform_admin(false)
+    end
   end
 end
