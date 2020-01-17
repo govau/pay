@@ -4,9 +4,9 @@ import ApolloClient from "apollo-client";
 import { ApolloProvider } from "react-apollo";
 import { styledComponents, theme, GlobalStyle } from "@pay/web";
 
-import { link as defaultLink } from "./apollo-client";
+import { authenticatedLink } from "./apollo-client";
 import { cache as defaultCache } from "./apollo-cache";
-import { Auth0Provider } from "./auth/AuthContext";
+import { Auth0Provider, useAuth0 } from "./auth/AuthContext";
 import { UserProvider } from "./users/UserContext";
 import * as Content from "./content";
 import * as Auth from "./auth";
@@ -18,18 +18,36 @@ import * as Products from "./products";
 
 const { ThemeProvider } = styledComponents;
 
-const defaultClient = new ApolloClient({
-  link: defaultLink,
-  cache: defaultCache,
-  defaultOptions: {
-    watchQuery: {
-      fetchPolicy: "no-cache"
+const tokenizedClient = (token: string | null) =>
+  new ApolloClient({
+    link: authenticatedLink(token),
+    cache: defaultCache,
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: "no-cache"
+      }
     }
+  });
+
+const useIDTokenClaims = () => {
+  const [token, setToken] = React.useState<null | string>(null);
+  const { user, getIdTokenClaims } = useAuth0();
+
+  if (!token && user) {
+    getIdTokenClaims().then(claims => {
+      setToken(claims.__raw);
+    });
   }
-});
+
+  return token;
+};
 
 const AuthenticatedApolloProvider: React.FC<{}> = ({ children }) => {
-  return <ApolloProvider client={defaultClient}>{children}</ApolloProvider>;
+  const token = useIDTokenClaims();
+
+  return (
+    <ApolloProvider client={tokenizedClient(token)}>{children}</ApolloProvider>
+  );
 };
 
 const App: React.FC = () => {
