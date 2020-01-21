@@ -37,7 +37,7 @@ defmodule PayWeb.Resolvers.Mutations do
       end
     end
 
-    def submit_card_type(
+    def update_gateway_account_card_types(
           _,
           %{
             gateway_account_id: gateway_account_id,

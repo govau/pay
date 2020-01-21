@@ -45,8 +45,8 @@ export const Services = {
         }
       )
     },
-    Cards: {
-      IndexPage: loadable(() => import("./gateway-accounts/CardsPage"), {
+    CardTypes: {
+      IndexPage: loadable(() => import("./gateway-accounts/CardTypesPage"), {
         fallback: <Loader />
       })
     },

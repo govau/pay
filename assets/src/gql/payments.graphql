@@ -1,11 +1,26 @@
 # import Product from './products.graphql'
 # import Service from './services.graphql'
 
+enum CardTypeBrand {
+  visa
+  master-card
+  american-express
+  diners-club
+  discover
+  jcb
+  unionpay
+}
+
+enum CardTypeType {
+  debit
+  credit
+}
+
 type CardType {
   id: ID!
-  brand: String!
+  brand: CardTypeBrand!
   label: String!
-  type: String!
+  type: CardTypeType!
 }
 
 enum GatewayAccountPaymentProvider {

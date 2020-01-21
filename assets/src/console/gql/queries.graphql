@@ -139,8 +139,11 @@ mutation SubmitRefund($paymentId: ID!, $amount: Int!, $reference: String) {
   }
 }
 
-mutation SubmitCardType($gatewayAccountId: ID!, $cardTypeIds: [ID!]!) {
-  cardType: submitCardType(
+mutation UpdateGatewayAccountCardTypes(
+  $gatewayAccountId: ID!
+  $cardTypeIds: [ID!]!
+) {
+  cardType: updateGatewayAccountCardTypes(
     gatewayAccountId: $gatewayAccountId
     cardTypeIds: $cardTypeIds
   ) {

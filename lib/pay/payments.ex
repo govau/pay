@@ -801,7 +801,8 @@ defmodule Pay.Payments do
   end
 
 
-  #TODO : Replace Repo.delete_all with put_assoc
+  #TODO : Replace Repo.delete_all & Repo.insert with put_assoc in update_gateway_account_card_types
+  # put_assoc erase all previous records and add new records.
 
   @doc """
   Clears gateway_account_card_type table entries for given gateway_account_id
