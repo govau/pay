@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
-import { PageContent, Pages as CorePages } from "@pay/web";
+import { Pages as CorePages } from "@pay/web";
 
 import Layout from "./Layout";
 import MarkdownPage from "./MarkdownPage";
@@ -28,28 +28,26 @@ const Routes: React.FC = () => {
 
   return (
     <Layout>
-      <PageContent>
-        <Switch>
-          <Route path={url} strict exact>
-            <MarkdownPage path={paths.index} />
-          </Route>
-          <Route path={`${url}/integrate`} strict>
-            <MarkdownPage path={paths.integrate.index} />
-          </Route>
-          <Route path={`${url}/optional-features`} strict exact>
-            <MarkdownPage path={paths.optionalFeatures.index} />
-          </Route>
-          <Route path={`${url}/optional-features`} strict>
-            <MarkdownPage path={paths.optionalFeatures.customMetadata} />
-          </Route>
-          <Route path={`${url}/payment-links`} strict exact>
-            <MarkdownPage path={paths.paymentLinks.index} />
-          </Route>
-          <Route path="*">
-            <CorePages.NotFoundPage />
-          </Route>
-        </Switch>
-      </PageContent>
+      <Switch>
+        <Route path={url} strict exact>
+          <MarkdownPage path={paths.index} />
+        </Route>
+        <Route path={`${url}/integrate`} strict>
+          <MarkdownPage path={paths.integrate.index} />
+        </Route>
+        <Route path={`${url}/optional-features`} strict exact>
+          <MarkdownPage path={paths.optionalFeatures.index} />
+        </Route>
+        <Route path={`${url}/optional-features`} strict>
+          <MarkdownPage path={paths.optionalFeatures.customMetadata} />
+        </Route>
+        <Route path={`${url}/payment-links`} strict exact>
+          <MarkdownPage path={paths.paymentLinks.index} />
+        </Route>
+        <Route path="*">
+          <CorePages.NotFoundPage />
+        </Route>
+      </Switch>
     </Layout>
   );
 };

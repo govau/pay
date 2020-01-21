@@ -18,13 +18,15 @@ import {
   GatewayAccountFragment,
   useUpdateGatewayAccountCardTypesMutation,
   CardTypeBrand,
-  CardTypeType
+  CardTypeType,
+  ServiceFragment
 } from "../../__generated__/graphql";
 import {
   useCardTypesQuery,
   CardTypesQuery
 } from "../../../platform-admin/__generated__/graphql";
 import { CardType } from "../../../auth/__generated__/graphql";
+import { BreadBox } from "@pay/web/components/Breadcrumb";
 
 interface FormValues {
   cardTypes: Array<string>;
@@ -33,6 +35,7 @@ interface FormValues {
 const decorators = [createDecorator<FormValues>()];
 
 interface Props {
+  service: ServiceFragment;
   gatewayAccount: GatewayAccountFragment;
 }
 
@@ -64,7 +67,7 @@ const getCardTypesList = (data: CardTypesQuery, type: string) => {
     ));
 };
 
-const CardTypesPage: React.FC<Props> = ({ gatewayAccount }) => {
+const CardTypesPage: React.FC<Props> = ({ service, gatewayAccount }) => {
   const [
     updateGatewayAccountCardTypes
   ] = useUpdateGatewayAccountCardTypesMutation();
@@ -75,7 +78,13 @@ const CardTypesPage: React.FC<Props> = ({ gatewayAccount }) => {
       <Helmet>
         <title>Manage payment types</title>
       </Helmet>
-      <PageTitle title="Manage payment types" />
+      <PageTitle
+        title="Manage payment types"
+        breadcrumbs={BreadBox.CardTypeSettings({
+          service,
+          gatewayAccount
+        })}
+      />
       <P>Choose which credit and debit cards you want to accept.</P>
       <Form<FormValues>
         initialValues={{

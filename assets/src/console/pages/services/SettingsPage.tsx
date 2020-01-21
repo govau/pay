@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet";
 import { TODO, PageTitle, Link } from "@pay/web";
 
 import { GatewayAccountType } from "../../__generated__/graphql";
+import { BreadBox } from "@pay/web/components/Breadcrumb";
 
 export interface props {
   service: { externalId: string; name: string };
@@ -27,7 +28,10 @@ const SettingsPage: React.FC<props> = ({ service, gatewayAccounts }) => {
       <Helmet>
         <title>Settings - {service.name}</title>
       </Helmet>
-      <PageTitle title="Settings" />
+      <PageTitle
+        title="Settings"
+        breadcrumbs={BreadBox.Settings({ service })}
+      />
       <TODO>
         <ul>
           <li>

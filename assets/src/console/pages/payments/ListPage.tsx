@@ -18,8 +18,9 @@ const flatMap = <X, Y>(fx: (value: X) => Y[], xs: X[]): Y[] =>
 
 const Payments: React.FC<{
   path: string;
+  serviceID: string;
   payments: PaymentFragment[];
-}> = ({ path, payments }) => {
+}> = ({ path, serviceID, payments }) => {
   const history = useHistory();
 
   if (payments.length === 0) {
@@ -92,9 +93,7 @@ interface Props {
 
 const ListPage: React.FC<Props> = ({ path, service, gatewayAccount }) => {
   const { loading, error, data } = useGetPaymentsQuery({
-    variables: {
-      serviceID: service.externalId
-    },
+    variables: { serviceID: service.externalId },
     errorPolicy: "all"
   });
 
@@ -115,6 +114,7 @@ const ListPage: React.FC<Props> = ({ path, service, gatewayAccount }) => {
       ) : (
         <Payments
           path={path}
+          serviceID={service.externalId}
           payments={flatMap(
             gatewayAccount => gatewayAccount.payments,
             data.service.gatewayAccounts

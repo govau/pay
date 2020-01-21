@@ -13,9 +13,15 @@ const headingStyles = css<HeadingProps>`
   * + & {
     margin-top: ${spacing.relative(1)};
   }
+
+  nav + & {
+    margin-top: ${spacing.relative(0.5)};
+  }
 `;
 
 export const H1 = styled.h1<HeadingProps>`
+  margin-top: ${spacing.fixed(2)};
+
   ${headingStyles};
   font-size: 3.2rem;
 

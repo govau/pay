@@ -1,6 +1,6 @@
 import React from "react";
 import { useRouteMatch } from "react-router-dom";
-import { Pages as CorePages, PageContent } from "@pay/web";
+import { Pages as CorePages } from "@pay/web";
 
 import { MinimalLayout } from "../layout";
 
@@ -12,9 +12,7 @@ const Routes: React.FC = () => {
 
   return (
     <MinimalLayout>
-      <PageContent>
-        <CorePages.NotFoundPage />
-      </PageContent>
+      <CorePages.NotFoundPage />
     </MinimalLayout>
   );
 };
