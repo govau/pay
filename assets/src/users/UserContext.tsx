@@ -1,52 +1,87 @@
 import * as React from "react";
-import { User, emptyUser } from "./types";
+import { User } from "./types";
+import { Auth0Provider, useAuth0, Auth0User } from "../auth/AuthContext";
+import { useCheckAuthQuery } from "../auth/__generated__/graphql";
+import { fromGQLUser } from "./graphql";
 
-interface State {
-  user: User;
-}
+const onAuthRedirectCallback = (redirectResult?: RedirectLoginResult) => {
+  console.log(
+    "auth0 onRedirectCallback called with redirectState %o",
+    redirectResult
+  );
 
-interface UserContextValues extends State {
-  setUser(user: User): void;
-  clearUser(): void;
-}
+  // Clears auth0 query string parameters from url
+  const targetUrl =
+    redirectResult &&
+    redirectResult.appState &&
+    redirectResult.appState.targetUrl
+      ? redirectResult.appState.targetUrl
+      : window.location.pathname;
 
-const initialState: State = {
-  user: emptyUser
+  window.location.href = targetUrl;
 };
 
-const userContextDefaults: UserContextValues = {
-  ...initialState,
-  setUser: (user: User) => {},
-  clearUser: () => {}
+const AuthUserProvider: React.FC<{}> = ({ children }) => {
+  return (
+    <Auth0Provider
+      domain={process.env.REACT_APP_AUTH0_DOMAIN || ""}
+      client_id={process.env.REACT_APP_AUTH0_CLIENT_ID || ""}
+      audience={process.env.REACT_APP_AUTH0_AUDIENCE}
+      redirect_uri={window.location.origin}
+      onRedirectCallback={onAuthRedirectCallback}
+    >
+      {children}
+    </Auth0Provider>
+  );
 };
 
-const UserContext = React.createContext<UserContextValues>(userContextDefaults);
-
-class UserProvider extends React.Component<{}, State> {
-  state = initialState;
-
-  setUser = (user: User) => {
-    const currentUser = this.state.user;
-
-    if (user.updatedAt > currentUser.updatedAt) {
-      this.setState({ user });
+const PayUserContext = React.createContext<User | undefined>(undefined);
+const UserContext = React.createContext<
+  | {
+      authUser: Auth0User;
+      payUser: User;
     }
-  };
+  | undefined
+>(undefined);
 
-  clearUser = () => {
-    this.setState({ user: emptyUser });
-  };
+const useAuthUser = () => {
+  const { user } = useAuth0();
+  return user;
+};
+const usePayUser = () => React.useContext(PayUserContext);
+const useUser = () => React.useContext(UserContext);
 
-  render() {
-    const values = {
-      setUser: this.setUser,
-      clearUser: this.clearUser,
-      ...this.state
-    };
-    return (
-      <UserContext.Provider value={values} children={this.props.children} />
-    );
-  }
-}
+const PayUserProvider: React.FC<{}> = ({ children }) => {
+  const query = useCheckAuthQuery({});
+  const value =
+    query.data && query.data.me ? fromGQLUser(query.data.me) : undefined;
 
-export { UserContext, UserProvider };
+  return (
+    <PayUserContext.Provider value={value}>{children}</PayUserContext.Provider>
+  );
+};
+
+const CombinedProvider: React.FC<{}> = ({ children }) => {
+  const authUser = useAuthUser();
+  const payUser = usePayUser();
+  const value = authUser && payUser ? { authUser, payUser } : undefined;
+
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
+};
+
+const UserProvider: React.FC<{}> = ({ children }) => (
+  <AuthUserProvider>
+    <PayUserProvider>
+      <CombinedProvider>{children}</CombinedProvider>
+    </PayUserProvider>
+  </AuthUserProvider>
+);
+
+export {
+  AuthUserProvider,
+  PayUserProvider,
+  UserProvider,
+  useAuthUser,
+  usePayUser,
+  useUser
+};

@@ -1,18 +1,19 @@
 import * as React from "react";
 import { ErrorAlert } from "@pay/web";
 
-import { UserContext } from "../../users";
+import { usePayUser } from "../../users";
 
 interface Props {
   children: JSX.Element;
 }
 
 const RestrictedPage: React.FC<Props> = ({ children }) => {
-  const { user } = React.useContext(UserContext);
+  const user = usePayUser();
 
-  if (user.platformAdmin) {
+  if (user && user.platformAdmin) {
     return children;
   }
+
   return (
     <ErrorAlert
       title="Permission denied"
