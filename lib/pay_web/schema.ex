@@ -89,7 +89,7 @@ defmodule PayWeb.Schema do
       resolve(&Resolvers.Mutations.Console.submit_refund/3)
     end
 
-    @desc "Update Gateway Account Card types"
+    @desc "Update a gateway account card types"
     field :update_gateway_account_card_types, type: non_null(:gateway_account) do
       arg(:gateway_account_id, non_null(:id))
       arg(:card_type_ids, list_of(non_null(:id)))

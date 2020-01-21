@@ -98,7 +98,7 @@ const GatewayAccountCredentialsRoutes: React.FC<{
   );
 };
 
-const GatewayAccountCardsRoutes: React.FC<{
+const GatewayAccountCardTypesRoutes: React.FC<{
   service: ServiceFragment;
   gatewayAccount: GatewayAccountFragment;
 }> = ({ service, gatewayAccount }) => {
@@ -182,8 +182,8 @@ const GatewayAccountRoutes: React.FC<{
           gatewayAccount={data.gatewayAccount}
         />
       </Route>
-      <Route path={`${url}/cards`} strict>
-        <GatewayAccountCardsRoutes
+      <Route path={`${url}/card-types`} strict>
+        <GatewayAccountCardTypesRoutes
           service={service}
           gatewayAccount={data.gatewayAccount}
         />

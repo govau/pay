@@ -53,7 +53,7 @@ const SettingsPage: React.FC<props> = ({ service, gatewayAccounts }) => {
           {gatewayAccount && (
             <li>
               <Link
-                to={`/console/services/${service.externalId}/gateway-accounts/${gatewayAccount.externalId}/cards`}
+                to={`/console/services/${service.externalId}/gateway-accounts/${gatewayAccount.externalId}/card-types`}
               >
                 Manage the cards that you accept
               </Link>
