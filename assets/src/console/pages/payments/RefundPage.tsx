@@ -26,6 +26,7 @@ import {
   useGetPaymentRefundQuery
 } from "../../__generated__/graphql";
 import { gatewayAccountFullType } from "../../../payments";
+import { BreadBox } from "@pay/web/components/Breadcrumb";
 
 interface FormValues {
   refund_amount: number;
@@ -88,7 +89,14 @@ const RefundPage: React.FC<Props> = ({
           {gatewayAccountFullType(gatewayAccount)}
         </title>
       </Helmet>
-      <PageTitle title="Refund transaction" />
+      <PageTitle
+        title="Refund transaction"
+        breadcrumbs={BreadBox.RefundPayment({
+          service,
+          gatewayAccount,
+          payment
+        })}
+      />
 
       {submitRefundResult.error ? (
         <ErrorAlert

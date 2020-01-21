@@ -112,6 +112,7 @@ const GatewayAccountCardTypesRoutes: React.FC<{
     <Switch>
       <Route path={`${path}`} exact strict>
         <Pages.Services.GatewayAccounts.CardTypes.IndexPage
+          service={service}
           gatewayAccount={gatewayAccount}
         />
       </Route>

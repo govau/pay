@@ -19,6 +19,7 @@ import {
   useCreateServiceMutation
 } from "../../__generated__/graphql";
 import { isServerError } from "../../../apollo-rest-utils";
+import { BreadBox } from "@pay/web/components/Breadcrumb";
 
 interface FormValues {
   name: string;
@@ -58,7 +59,10 @@ const CreatePage = () => {
       <Helmet>
         <title>Create service</title>
       </Helmet>
-      <PageTitle title="What service will you be taking payments for?" />
+      <PageTitle
+        title="What service will you be taking payments for?"
+        breadcrumbs={BreadBox.CreateService()}
+      />
       <Form<FormValues>
         onSubmit={handleSubmit(createService)}
         column

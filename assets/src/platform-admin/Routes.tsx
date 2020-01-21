@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
-import { Pages as CorePages, PageContent } from "@pay/web";
+import { Pages as CorePages } from "@pay/web";
 
 import * as Pages from "./pages/Pages";
 import DefaultLayout from "../layout";
@@ -15,29 +15,27 @@ const Routes: React.FC = () => {
   const { url } = match;
   return (
     <DefaultLayout>
-      <PageContent>
-        <AuthRestrictedPage>
-          <RestrictedPage>
-            <Switch>
-              <Route path={`${url}`} exact strict>
-                <Pages.DashboardPage />
-              </Route>
-              <Route path={`${url}/organisations`} exact strict>
-                <Pages.OrganisationsPage />
-              </Route>
-              <Route path={`${url}/services`} exact strict>
-                <Pages.ServicesPage />
-              </Route>
-              <Route path={`${url}/card-types`} exact strict>
-                <Pages.CardTypesPage />
-              </Route>
-              <Route path="*">
-                <CorePages.NotFoundPage />
-              </Route>
-            </Switch>
-          </RestrictedPage>
-        </AuthRestrictedPage>
-      </PageContent>
+      <AuthRestrictedPage>
+        <RestrictedPage>
+          <Switch>
+            <Route path={`${url}`} exact strict>
+              <Pages.DashboardPage />
+            </Route>
+            <Route path={`${url}/organisations`} exact strict>
+              <Pages.OrganisationsPage />
+            </Route>
+            <Route path={`${url}/services`} exact strict>
+              <Pages.ServicesPage />
+            </Route>
+            <Route path={`${url}/card-types`} exact strict>
+              <Pages.CardTypesPage />
+            </Route>
+            <Route path="*">
+              <CorePages.NotFoundPage />
+            </Route>
+          </Switch>
+        </RestrictedPage>
+      </AuthRestrictedPage>
     </DefaultLayout>
   );
 };

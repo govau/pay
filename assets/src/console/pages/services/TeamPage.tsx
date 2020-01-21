@@ -8,6 +8,7 @@ import {
   ServiceUser
 } from "../../__generated__/graphql";
 import { partitionByRole } from "./team";
+import { BreadBox } from "@pay/web/components/Breadcrumb";
 
 const RoleTable: React.FC<{
   heading: string;
@@ -68,7 +69,10 @@ const TeamPage: React.FC<props> = ({ service }) => {
           <Helmet>
             <title>Team members - {getQuery.data.service.name}</title>
           </Helmet>
-          <PageTitle title="Team members" />
+          <PageTitle
+            title="Team members"
+            breadcrumbs={BreadBox.TeamSettings({ service })}
+          />
           {renderRoleTables(getQuery.data)}
         </>
       )}

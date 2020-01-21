@@ -9,6 +9,7 @@ import {
   ServiceFragment
 } from "../../__generated__/graphql";
 import { isBamboraCredentials } from "../../../payments";
+import { BreadBox } from "@pay/web/components/Breadcrumb";
 
 const SandboxCredentialsPage: React.FC = () => (
   <P>
@@ -56,7 +57,10 @@ const CredentialsPage: React.FC<{
     <Helmet>
       <title>Account credentials - {service.name}</title>
     </Helmet>
-    <PageTitle title="Account credentials" />
+    <PageTitle
+      title="Account credentials"
+      breadcrumbs={BreadBox.GatewaySettings({ service, gatewayAccount })}
+    />
     {gatewayAccount.paymentProvider === PaymentProviderLabel.Sandbox && (
       <SandboxCredentialsPage />
     )}

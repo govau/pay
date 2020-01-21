@@ -17,7 +17,7 @@ const Wrapper = styled.div`
 
 const Main = styled.div`
   flex: 1;
-  padding: 3rem 0 6rem;
+  padding: 1rem 0 6rem;
 `;
 
 const Layout: React.FC = ({ children }) => (

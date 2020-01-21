@@ -21,6 +21,7 @@ import {
   useUpdateServiceMutation
 } from "../../__generated__/graphql";
 import { isServerError } from "../../../apollo-rest-utils";
+import { BreadBox } from "@pay/web/components/Breadcrumb";
 
 interface FormValues {
   name: string;
@@ -64,7 +65,10 @@ const EditNamePage: React.FC<props> = ({ service }) => {
       <Helmet>
         <title>Edit name - {service.name}</title>
       </Helmet>
-      <PageTitle title="Edit service name" />
+      <PageTitle
+        title="Edit service name"
+        breadcrumbs={BreadBox.EditServiceName({ service })}
+      />
       <Form<FormValues>
         onSubmit={handleSubmit(service.externalId, updateService)}
         initialValues={{ name: service.name }}

@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
-import { PageContent, Pages as CorePages } from "@pay/web";
+import { Pages as CorePages } from "@pay/web";
 
 import { ProductFragment } from "./__generated__/graphql";
 import Layout from "./Layout";
@@ -20,19 +20,17 @@ const Routes: React.FC = () => {
   return (
     <ProductContext.Provider value={product}>
       <Layout>
-        <PageContent>
-          <Switch>
-            <Route path={`${url}/pay/:productPaymentId`} strict>
-              <PaymentRoutes onReceiveProduct={setProduct} />
-            </Route>
-            <Route path={`${url}/:serviceNameSlug/:nameSlug`} exact strict>
-              <ProductPage />
-            </Route>
-            <Route path="*">
-              <CorePages.NotFoundPage />
-            </Route>
-          </Switch>
-        </PageContent>
+        <Switch>
+          <Route path={`${url}/pay/:productPaymentId`} strict>
+            <PaymentRoutes onReceiveProduct={setProduct} />
+          </Route>
+          <Route path={`${url}/:serviceNameSlug/:nameSlug`} exact strict>
+            <ProductPage />
+          </Route>
+          <Route path="*">
+            <CorePages.NotFoundPage />
+          </Route>
+        </Switch>
       </Layout>
     </ProductContext.Provider>
   );

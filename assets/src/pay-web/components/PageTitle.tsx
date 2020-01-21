@@ -1,8 +1,10 @@
 import * as React from "react";
 import { H1 } from "@pay/web";
+import { Breadcrumbs } from "./Breadcrumb";
 
 interface Props {
   title: string;
+  breadcrumbs?: React.ReactNode[];
 }
 
 class PageTitle extends React.Component<Props> {
@@ -20,11 +22,15 @@ class PageTitle extends React.Component<Props> {
   }
 
   render() {
-    const { title } = this.props;
+    const { title, breadcrumbs } = this.props;
+
     return (
-      <H1 ref={this.ref} tabIndex={-1} as="h1" style={{ outline: "none" }}>
-        {title}
-      </H1>
+      <>
+        {breadcrumbs ? <Breadcrumbs>{breadcrumbs}</Breadcrumbs> : null}
+        <H1 ref={this.ref} tabIndex={-1} as="h1" style={{ outline: "none" }}>
+          {title}
+        </H1>
+      </>
     );
   }
 }
