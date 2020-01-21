@@ -13,6 +13,7 @@
 alias Pay.Repo
 alias Pay.Payments.CardType
 alias Pay.Payments.GatewayAccount
+alias Pay.Payments.GatewayAccountCardType
 alias Pay.Services.Role
 alias Pay.Services.Permission
 alias Pay.Services.RolePermission
@@ -25,15 +26,22 @@ alias Pay.Services.ServiceUser
 alias Pay.Services.ServiceGatewayAccount
 alias Pay.Products.Product
 
-Repo.insert!(%CardType{type: "CREDIT", brand: "visa", label: "Visa"})
-Repo.insert!(%CardType{type: "DEBIT", brand: "visa", label: "Visa"})
-Repo.insert!(%CardType{type: "CREDIT", brand: "master-card", label: "Mastercard"})
-Repo.insert!(%CardType{type: "DEBIT", brand: "master-card", label: "Mastercard"})
-Repo.insert!(%CardType{type: "CREDIT", brand: "american-express", label: "American Express"})
-Repo.insert!(%CardType{type: "CREDIT", brand: "diners-club", label: "Diners Club"})
-Repo.insert!(%CardType{type: "CREDIT", brand: "discover", label: "Discover"})
-Repo.insert!(%CardType{type: "CREDIT", brand: "jcb", label: "Jcb"})
-Repo.insert!(%CardType{type: "CREDIT", brand: "unionpay", label: "Union Pay"})
+visa_credit_id = Repo.insert!(%CardType{type: "CREDIT", brand: "visa", label: "Visa"}).id
+visa_debit_id = Repo.insert!(%CardType{type: "DEBIT", brand: "visa", label: "Visa"}).id
+
+master_credit_id =
+  Repo.insert!(%CardType{type: "CREDIT", brand: "master-card", label: "Mastercard"}).id
+
+master_debit_id =
+  Repo.insert!(%CardType{type: "DEBIT", brand: "master-card", label: "Mastercard"}).id
+
+amex_id =
+  Repo.insert!(%CardType{type: "CREDIT", brand: "american-express", label: "American Express"}).id
+
+diners_id = Repo.insert!(%CardType{type: "CREDIT", brand: "diners-club", label: "Diners Club"}).id
+discover_id = Repo.insert!(%CardType{type: "CREDIT", brand: "discover", label: "Discover"}).id
+jcb_id = Repo.insert!(%CardType{type: "CREDIT", brand: "jcb", label: "Jcb"}).id
+unionPay_id = Repo.insert!(%CardType{type: "CREDIT", brand: "unionpay", label: "Union Pay"}).id
 
 # Roles
 
@@ -277,14 +285,14 @@ service1_view_only_user_id =
 
 # Sample services
 
-service1_gateway_account_external_id =
+service1_gateway_account =
   Repo.insert!(%GatewayAccount{
     external_id: Ecto.UUID.generate(),
     payment_provider: GatewayAccount.provider(:sandbox),
     type: GatewayAccount.type(:test),
     service_name: "Service 1",
     credentials: %{}
-  }).external_id
+  })
 
 service1_id =
   Repo.insert!(%Service{
@@ -296,8 +304,28 @@ service1_id =
   }).id
 
 Repo.insert!(%ServiceGatewayAccount{
-  gateway_account_id: service1_gateway_account_external_id,
+  gateway_account_id: service1_gateway_account.external_id,
   service_id: service1_id
+})
+
+Repo.insert!(%GatewayAccountCardType{
+  gateway_account_id: service1_gateway_account.id,
+  card_type_id: visa_credit_id
+})
+
+Repo.insert!(%GatewayAccountCardType{
+  gateway_account_id: service1_gateway_account.id,
+  card_type_id: master_debit_id
+})
+
+Repo.insert!(%GatewayAccountCardType{
+  gateway_account_id: service1_gateway_account.id,
+  card_type_id: jcb_id
+})
+
+Repo.insert!(%GatewayAccountCardType{
+  gateway_account_id: service1_gateway_account.id,
+  card_type_id: diners_id
 })
 
 Repo.insert!(%ServiceUser{
@@ -306,14 +334,14 @@ Repo.insert!(%ServiceUser{
   role_id: view_only_role_id
 })
 
-service2_test_gateway_account_external_id =
+service2_test_gateway_account =
   Repo.insert!(%GatewayAccount{
     external_id: Ecto.UUID.generate(),
     payment_provider: GatewayAccount.provider(:sandbox),
     type: GatewayAccount.type(:test),
     service_name: "Service 2",
     credentials: %{}
-  }).external_id
+  })
 
 service2_live_gateway_account_external_id =
   Repo.insert!(%GatewayAccount{
@@ -367,8 +395,18 @@ service2_id =
   }).id
 
 Repo.insert!(%ServiceGatewayAccount{
-  gateway_account_id: service2_test_gateway_account_external_id,
+  gateway_account_id: service2_test_gateway_account.external_id,
   service_id: service2_id
+})
+
+Repo.insert!(%GatewayAccountCardType{
+  gateway_account_id: service2_test_gateway_account.id,
+  card_type_id: master_credit_id
+})
+
+Repo.insert!(%GatewayAccountCardType{
+  gateway_account_id: service2_test_gateway_account.id,
+  card_type_id: unionPay_id
 })
 
 Repo.insert!(%ServiceGatewayAccount{
@@ -384,7 +422,7 @@ Repo.insert!(%ServiceUser{
 
 Repo.insert!(%Product{
   external_id: Ecto.UUID.generate(),
-  gateway_account_id: service2_test_gateway_account_external_id,
+  gateway_account_id: service2_test_gateway_account.external_id,
   name: "New adult passport (test)",
   name_slug: "new-adult-passport-test",
   service_name_slug: "australian-passport-office",

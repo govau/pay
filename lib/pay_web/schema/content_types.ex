@@ -300,11 +300,27 @@ defmodule PayWeb.Schema.ContentTypes do
     field :card_brand, :string
   end
 
+  enum :card_type_brand do
+    value(:visa, as: "visa")
+    value(:master_card, as: "master-card")
+    value(:american_express, as: "american-express")
+    value(:diners_club, as: "diners-club")
+    value(:discover, as: "discover")
+    value(:jcb, as: "jcb")
+    value(:unionpay, as: "unionpay")
+  end
+
+  enum :card_type_type do
+    value(:debit, as: "DEBIT")
+    value(:credit, as: "CREDIT")
+  end
+
+
   object :card_type do
     field :id, non_null(:id)
-    field :brand, :string
+    field :brand, non_null(:card_type_brand)
     field :label, :string
-    field :type, :string
+    field :type, non_null(:card_type_type)
 
     # issue with *_N* where n is a digit
     # https://github.com/absinthe-graphql/absinthe/issues/560
@@ -312,6 +328,17 @@ defmodule PayWeb.Schema.ContentTypes do
       resolve(fn
         %Pay.Payments.CardType{requires_3ds: req3ds}, _, _ -> {:ok, req3ds}
       end)
+    end
+  end
+
+  object :gateway_account_card_type do
+    field :gateway_account, non_null(:gateway_account) do
+      arg(:gateway_account_id, non_null(:id))
+      resolve(&Resolvers.gateway_account/3)
+    end
+
+    field :card_type, non_null(:card_type) do
+      resolve(&Resolvers.card_type/3)
     end
   end
 

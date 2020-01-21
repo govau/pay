@@ -98,6 +98,30 @@ const GatewayAccountCredentialsRoutes: React.FC<{
   );
 };
 
+const GatewayAccountCardsRoutes: React.FC<{
+  service: ServiceFragment;
+  gatewayAccount: GatewayAccountFragment;
+}> = ({ service, gatewayAccount }) => {
+  const match = useRouteMatch();
+  if (!match) {
+    return null;
+  }
+  const { url: path } = match;
+
+  return (
+    <Switch>
+      <Route path={`${path}`} exact strict>
+        <Pages.Services.GatewayAccounts.CardTypes.IndexPage
+          gatewayAccount={gatewayAccount}
+        />
+      </Route>
+      <Route path="*">
+        <CorePages.NotFoundPage />
+      </Route>
+    </Switch>
+  );
+};
+
 const GatewayAccountRoutes: React.FC<{
   service: ServiceFragment;
 }> = ({ service }) => {
@@ -154,6 +178,12 @@ const GatewayAccountRoutes: React.FC<{
       </Route>
       <Route path={`${url}/credentials`} strict>
         <GatewayAccountCredentialsRoutes
+          service={service}
+          gatewayAccount={data.gatewayAccount}
+        />
+      </Route>
+      <Route path={`${url}/cards`} strict>
+        <GatewayAccountCardsRoutes
           service={service}
           gatewayAccount={data.gatewayAccount}
         />

@@ -17,6 +17,10 @@ fragment GatewayAccount on GatewayAccount {
       apiUsername
     }
   }
+  cardTypes {
+    id
+    label
+  }
 }
 
 fragment GatewayAccountCredentials on GatewayAccountCredentials {
@@ -70,7 +74,6 @@ fragment PaymentRefund on PaymentRefund {
   reference
   amount
   status
-  paymentId
   gatewayTransactionId
 }
 
@@ -133,6 +136,23 @@ mutation SubmitRefund($paymentId: ID!, $amount: Int!, $reference: String) {
     reference: $reference
   ) {
     ...PaymentRefund
+  }
+}
+
+mutation UpdateGatewayAccountCardTypes(
+  $gatewayAccountId: ID!
+  $cardTypeIds: [ID!]!
+) {
+  cardType: updateGatewayAccountCardTypes(
+    gatewayAccountId: $gatewayAccountId
+    cardTypeIds: $cardTypeIds
+  ) {
+    id
+    cardTypes {
+      id
+      label
+      type
+    }
   }
 }
 

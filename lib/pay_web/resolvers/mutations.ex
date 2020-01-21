@@ -37,6 +37,27 @@ defmodule PayWeb.Resolvers.Mutations do
       end
     end
 
+    def update_gateway_account_card_types(
+          _,
+          %{
+            gateway_account_id: gateway_account_id,
+            card_type_ids: card_type_ids
+          },
+          _
+        ) do
+          Pay.Payments.clear_gateway_account_card_types(gateway_account_id)
+
+          Enum.each(card_type_ids, fn card_type_id ->
+            {:ok, _} = Payments.create_gateway_account_card_type(%{
+              gateway_account_id: gateway_account_id,
+              card_type_id: card_type_id
+            })
+          end
+          )
+
+      {:ok, Payments.get_gateway_account!(gateway_account_id)}
+    end
+
     def create_product(
           _,
           %{gateway_account_id: gateway_account_id, product: product_params},

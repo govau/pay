@@ -736,11 +736,13 @@ defmodule Pay.Payments do
       [%GatewayAccountCardType{}, ...]
 
   """
+
   def list_gateway_account_card_types do
     Repo.all(GatewayAccountCardType)
   end
 
   def list_gateway_account_card_types(%GatewayAccount{} = gateway_account) do
+
     with %{card_types: card_types} <- Repo.preload(gateway_account, :card_types) do
       card_types
     end
@@ -780,26 +782,7 @@ defmodule Pay.Payments do
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a gateway_account_card_type.
 
-  ## Examples
-
-      iex> update_gateway_account_card_type(gateway_account_card_type, %{field: new_value})
-      {:ok, %GatewayAccountCardType{}}
-
-      iex> update_gateway_account_card_type(gateway_account_card_type, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_gateway_account_card_type(
-        %GatewayAccountCardType{} = gateway_account_card_type,
-        attrs
-      ) do
-    gateway_account_card_type
-    |> GatewayAccountCardType.changeset(attrs)
-    |> Repo.update()
-  end
 
   @doc """
   Deletes a GatewayAccountCardType.
@@ -815,6 +798,25 @@ defmodule Pay.Payments do
   """
   def delete_gateway_account_card_type(%GatewayAccountCardType{} = gateway_account_card_type) do
     Repo.delete(gateway_account_card_type)
+  end
+
+
+  #TODO : Replace Repo.delete_all & Repo.insert with put_assoc in update_gateway_account_card_types
+  # put_assoc erase all previous records and add new records.
+
+  @doc """
+  Clears gateway_account_card_type table entries for given gateway_account_id
+
+  ## Examples
+
+      iex> clear_gateway_account_card_types(%{field: value})
+      {:ok, n}
+
+  """
+
+  def clear_gateway_account_card_types(gateway_account_id) do
+    {n, _} = from(g in GatewayAccountCardType, where: g.gateway_account_id == ^gateway_account_id) |> Repo.delete_all
+    {:ok, n}
   end
 
   @doc """
