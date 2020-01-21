@@ -3,28 +3,18 @@ import { HttpLink } from "apollo-link-http";
 
 const authLink = (token: string | null) =>
   new ApolloLink((operation, forward) => {
+    const auth = token ? { Authorization: `Bearer ${token}` } : {};
+
     operation.setContext((req: Request) => {
       return {
         headers: {
           ...req.headers,
-          Accept: "application/json",
-          Authorization: token ? `Bearer ${token}` : `Bearer abcd`
+          ...auth,
+          Accept: "application/json"
         }
       };
     });
-    return forward(operation).map(result => {
-      const { restResponses } = operation.getContext();
-      const authTokenResponse =
-        restResponses &&
-        restResponses.find((res: Response) => res.headers.has("Authorization"));
-      if (authTokenResponse) {
-        localStorage.setItem(
-          "token",
-          authTokenResponse.headers.get("Authorization")
-        );
-      }
-      return result;
-    });
+    return forward(operation);
   });
 
 const httpLink = new HttpLink({

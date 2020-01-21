@@ -14,12 +14,10 @@ import {
   Button as ButtonComponent
 } from "./components";
 import Wordmark from "./Wordmark";
-import { useCheckAuthQuery } from "../../auth/__generated__/graphql";
 import Coat from "./Coat";
 import { HamburgerIcon } from "../../components/icons/HamburgerIcon";
 import { CrossIcon } from "../../components/icons/CrossIcon";
-import { UserContext } from "../../users";
-import { fromGQLUser } from "../../users/graphql";
+import { usePayUser } from "../../users";
 import { ServiceInfoNav, NonServiceInfoNav } from "../../console/HeaderNav";
 import PlatformAdminNav from "../../platform-admin/HeaderNav";
 import { useAuth0 } from "../../auth/AuthContext";
@@ -119,24 +117,9 @@ export const CoaLogo = styled(Coat)`
 `;
 
 const Header: React.FC = () => {
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
-
-  const { setUser } = React.useContext(UserContext);
-
-  const checkAuthQuery = useCheckAuthQuery({
-    errorPolicy: "all"
-  });
   const [isNavVisible, setIsNavVisible] = React.useState(false);
-
-  React.useEffect(() => {
-    const user = checkAuthQuery.data && checkAuthQuery.data.me;
-
-    if (user) {
-      setUser(fromGQLUser(user));
-    }
-  });
-
-  const userMe = checkAuthQuery.data && checkAuthQuery.data.me;
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const userMe = usePayUser();
 
   const isPlatformAdmin = userMe && userMe.platformAdmin;
 
