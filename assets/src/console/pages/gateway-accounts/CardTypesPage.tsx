@@ -39,31 +39,29 @@ interface Props {
 const getCardTypeBrand = (cardType: CardType) => {
   if (!cardType.type || !cardType.label) {
     return "";
-  } else {
-    return cardType.brand === CardTypeBrand.Visa ||
-      cardType.brand === CardTypeBrand.MasterCard
-      ? cardType.label + " " + cardType.type.toLowerCase()
-      : cardType.label;
   }
+  return cardType.brand === CardTypeBrand.Visa ||
+    cardType.brand === CardTypeBrand.MasterCard
+    ? cardType.label + " " + cardType.type.toLowerCase()
+    : cardType.label;
 };
 
 const getCardTypesList = (data: CardTypesQuery, type: string) => {
   if (!data) {
-    return <></>;
-  } else {
-    return data.cardTypes
-      .filter(cardType => cardType.type === type)
-      .map(cardType => (
-        <React.Fragment key={cardType.id}>
-          <Checkbox
-            name="cardTypes"
-            label={getCardTypeBrand(cardType)}
-            value={cardType.id}
-          />
-          <Hr />
-        </React.Fragment>
-      ));
+    return null;
   }
+  return data.cardTypes
+    .filter(cardType => cardType.type === type)
+    .map(cardType => (
+      <React.Fragment key={cardType.id}>
+        <Checkbox
+          name="cardTypes"
+          label={getCardTypeBrand(cardType)}
+          value={cardType.id}
+        />
+        <Hr />
+      </React.Fragment>
+    ));
 };
 
 const CardTypesPage: React.FC<Props> = ({ gatewayAccount }) => {
