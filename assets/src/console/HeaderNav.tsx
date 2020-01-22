@@ -92,7 +92,7 @@ export const ServiceInfoNav: React.FC = () => {
                       `${url}/gateway-accounts/${gatewayAccount.externalId}/credentials`
                     ) ||
                     location.pathname.startsWith(
-                      `${url}/gateway-accounts/${gatewayAccount.externalId}/cards`
+                      `${url}/gateway-accounts/${gatewayAccount.externalId}/card-types`
                     )
                   : false)
               }

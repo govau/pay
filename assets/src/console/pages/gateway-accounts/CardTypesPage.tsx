@@ -37,35 +37,32 @@ interface Props {
 }
 
 const getCardTypeBrand = (cardType: CardType) => {
-  if (cardType.type && cardType.label) {
-    let label =
-      cardType.brand === CardTypeBrand.Visa ||
-      cardType.brand === CardTypeBrand.MasterCard
-        ? cardType.label + " " + cardType.type.toLowerCase()
-        : cardType.label;
-    return label;
-  } else {
+  if (!cardType.type || !cardType.label) {
     return "";
   }
+  return cardType.brand === CardTypeBrand.Visa ||
+    cardType.brand === CardTypeBrand.MasterCard
+    ? cardType.label + " " + cardType.type.toLowerCase()
+    : cardType.label;
 };
 
-const getCardTypesList = (data: CardTypesQuery, type: string) =>
-  data &&
-  data.cardTypes
+const getCardTypesList = (data: CardTypesQuery, type: string) => {
+  if (!data) {
+    return null;
+  }
+  return data.cardTypes
     .filter(cardType => cardType.type === type)
-    .map(cardType => {
-      return (
-        <>
-          <Checkbox
-            name="cardTypes"
-            label={getCardTypeBrand(cardType)}
-            key={cardType.id}
-            value={cardType.id}
-          />
-          <Hr />
-        </>
-      );
-    });
+    .map(cardType => (
+      <React.Fragment key={cardType.id}>
+        <Checkbox
+          name="cardTypes"
+          label={getCardTypeBrand(cardType)}
+          value={cardType.id}
+        />
+        <Hr />
+      </React.Fragment>
+    ));
+};
 
 const CardTypesPage: React.FC<Props> = ({ gatewayAccount }) => {
   const [
@@ -80,7 +77,7 @@ const CardTypesPage: React.FC<Props> = ({ gatewayAccount }) => {
       </Helmet>
       <PageTitle title="Manage payment types" />
       <P>Choose which credit and debit cards you want to accept.</P>
-      <Form<FormValues> //TODO: Refactor this code with Fieldset
+      <Form<FormValues>
         initialValues={{
           cardTypes: gatewayAccount.cardTypes.map(cardType => cardType.id)
         }}
@@ -107,11 +104,13 @@ const CardTypesPage: React.FC<Props> = ({ gatewayAccount }) => {
               showError
             />
           ) : (
-            getCardTypesList(data!, CardTypeType.Debit)
+            <>
+              {getCardTypesList(data, CardTypeType.Debit)}
+              <Strong>Credit cards</Strong>
+              <Hr />
+              {getCardTypesList(data, CardTypeType.Credit)}
+            </>
           )}
-          <Strong>Credit cards</Strong>
-          <Hr />
-          {getCardTypesList(data!, CardTypeType.Credit)}
           <Button type="submit">Save changes</Button>
         </React.Fragment>
       </Form>
