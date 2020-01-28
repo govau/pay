@@ -59,6 +59,7 @@ export enum CardTypeBrand {
   DinersClub = 'DINERS_CLUB',
   Discover = 'DISCOVER',
   Jcb = 'JCB',
+  Maestro = 'MAESTRO',
   MasterCard = 'MASTER_CARD',
   Unionpay = 'UNIONPAY',
   Visa = 'VISA'
@@ -253,7 +254,7 @@ export type RootMutationType = {
   /** Submit a payment refund */
   submitRefund: PaymentRefund,
   submitSandboxPayment: Payment,
-  /** Update Gateway Account Card types */
+  /** Update a gateway account card types */
   updateGatewayAccountCardTypes: GatewayAccount,
   updateGatewayAccountCredentials: GatewayAccount,
   updateProductPayment: ProductPayment,

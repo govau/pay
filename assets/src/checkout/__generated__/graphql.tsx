@@ -65,6 +65,7 @@ export enum CardTypeBrand {
   DinersClub = 'DINERS_CLUB',
   Discover = 'DISCOVER',
   Jcb = 'JCB',
+  Maestro = 'MAESTRO',
   MasterCard = 'MASTER_CARD',
   Unionpay = 'UNIONPAY',
   Visa = 'VISA'
@@ -259,7 +260,7 @@ export type RootMutationType = {
   /** Submit a payment refund */
   submitRefund: PaymentRefund,
   submitSandboxPayment: Payment,
-  /** Update Gateway Account Card types */
+  /** Update a gateway account card types */
   updateGatewayAccountCardTypes: GatewayAccount,
   updateGatewayAccountCredentials: GatewayAccount,
   updateProductPayment: ProductPayment,
@@ -468,7 +469,10 @@ export type GatewayAccountFragment = (
   & { credentials: (
     { __typename?: 'BamboraCredentials' }
     & Pick<BamboraCredentials, 'merchantId'>
-  ) | { __typename?: 'SandboxCredentials' } }
+  ) | { __typename?: 'SandboxCredentials' }, cardTypes: Array<(
+    { __typename?: 'CardType' }
+    & Pick<CardType, 'id' | 'brand' | 'type'>
+  )> }
 );
 
 export type PaymentFragment = (
@@ -538,6 +542,11 @@ export const GatewayAccountFragmentDoc = gql`
     ... on BamboraCredentials {
       merchantId
     }
+  }
+  cardTypes {
+    id
+    brand
+    type
   }
 }
     `;

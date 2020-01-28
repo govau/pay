@@ -343,7 +343,7 @@ service2_test_gateway_account =
     credentials: %{}
   })
 
-service2_live_gateway_account_external_id =
+service2_live_gateway_account =
   Repo.insert!(%GatewayAccount{
     external_id: Ecto.UUID.generate(),
     payment_provider: GatewayAccount.provider(:bambora),
@@ -383,7 +383,7 @@ service2_live_gateway_account_external_id =
       else
         _ -> %{}
       end
-  }).external_id
+  })
 
 service2_id =
   Repo.insert!(%Service{
@@ -410,8 +410,28 @@ Repo.insert!(%GatewayAccountCardType{
 })
 
 Repo.insert!(%ServiceGatewayAccount{
-  gateway_account_id: service2_live_gateway_account_external_id,
+  gateway_account_id: service2_live_gateway_account.external_id,
   service_id: service2_id
+})
+
+Repo.insert!(%GatewayAccountCardType{
+  gateway_account_id: service2_live_gateway_account.id,
+  card_type_id: visa_credit_id
+})
+
+Repo.insert!(%GatewayAccountCardType{
+  gateway_account_id: service2_live_gateway_account.id,
+  card_type_id: master_credit_id
+})
+
+Repo.insert!(%GatewayAccountCardType{
+  gateway_account_id: service2_live_gateway_account.id,
+  card_type_id: diners_id
+})
+
+Repo.insert!(%GatewayAccountCardType{
+  gateway_account_id: service2_live_gateway_account.id,
+  card_type_id: jcb_id
 })
 
 Repo.insert!(%ServiceUser{
@@ -437,7 +457,7 @@ Repo.insert!(%Product{
 
 Repo.insert!(%Product{
   external_id: Ecto.UUID.generate(),
-  gateway_account_id: service2_live_gateway_account_external_id,
+  gateway_account_id: service2_live_gateway_account.external_id,
   name: "New adult passport",
   name_slug: "new-adult-passport",
   service_name_slug: "australian-passport-office",

@@ -3,7 +3,8 @@ import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
 import CustomCheckout, {
   isTokenResultError,
-  Field
+  Field,
+  Brand
 } from "@bambora/apac-custom-checkout-sdk-web";
 import {
   useLoadCheckout,
@@ -25,6 +26,7 @@ import CardForm, {
   classNames as cardFormClassNames
 } from "../components/BamboraCardForm";
 import Summary from "../components/Summary";
+import { CardTypeBrand } from "../../auth/__generated__/graphql";
 
 const mountFields = (
   checkout: CustomCheckout,
@@ -65,9 +67,40 @@ const mountFields = (
     .mount(`#${ids.expiry}`);
 };
 
+const normalizeBamboraBrand = (brand: Brand): String => {
+  switch (brand) {
+    case "visa":
+      return CardTypeBrand.Visa;
+    case "mastercard":
+      return CardTypeBrand.MasterCard;
+    case "amex":
+      return CardTypeBrand.AmericanExpress;
+    case "diners":
+      return CardTypeBrand.DinersClub;
+    case "discover":
+      return CardTypeBrand.Discover;
+    case "jcb":
+      return CardTypeBrand.Jcb;
+    case "maestro":
+      return CardTypeBrand.Maestro;
+    default:
+      return "";
+  }
+};
+
+const isCardBrandSupported = (
+  gatewayAccount: GatewayAccountFragment,
+  brand: Brand
+): boolean => {
+  return gatewayAccount.cardTypes.some(
+    cardType => cardType.brand === normalizeBamboraBrand(brand)
+  );
+};
+
 const bindEventListeners = (
   checkout: CustomCheckout,
-  setCardErrors: React.Dispatch<React.SetStateAction<Record<Field, string>>>
+  setCardErrors: React.Dispatch<React.SetStateAction<Record<Field, string>>>,
+  gatewayAccount: GatewayAccountFragment
 ) => {
   checkout.on("error", event => {
     setCardErrors(errors => ({ ...errors, [event.field]: event.message }));
@@ -80,6 +113,21 @@ const bindEventListeners = (
   checkout.on("empty", event => {
     if (event.empty) {
       setCardErrors(errors => ({ ...errors, [event.field]: "" }));
+    }
+  });
+  checkout.on("brand", event => {
+    if (event.brand) {
+      if (isCardBrandSupported(gatewayAccount, event.brand)) {
+        setCardErrors(errors => ({ ...errors, [event.field]: "" }));
+      } else {
+        setCardErrors(errors => ({
+          ...errors,
+          [event.field]:
+            event.brand.charAt(0).toUpperCase() +
+            event.brand.slice(1) +
+            " is not supported"
+        }));
+      }
     }
   });
 };
@@ -111,9 +159,9 @@ const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
   const onCheckoutLoad = React.useCallback(
     (checkout: CustomCheckout) => {
       mountFields(checkout, theme, cardFieldIds);
-      bindEventListeners(checkout, setCardErrors);
+      bindEventListeners(checkout, setCardErrors, gatewayAccount);
     },
-    [theme, cardFieldIds]
+    [theme, cardFieldIds, gatewayAccount]
   );
 
   const loadCheckout = useLoadCheckout({

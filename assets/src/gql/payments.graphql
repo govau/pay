@@ -9,6 +9,7 @@ enum CardTypeBrand {
   discover
   jcb
   unionpay
+  maestro
 }
 
 enum CardTypeType {

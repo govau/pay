@@ -9,6 +9,11 @@ fragment GatewayAccount on GatewayAccount {
       merchantId
     }
   }
+  cardTypes {
+    id
+    brand
+    type
+  }
 }
 
 fragment Payment on Payment {
