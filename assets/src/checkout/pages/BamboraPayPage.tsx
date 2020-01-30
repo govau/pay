@@ -99,16 +99,23 @@ const isCardBrandSupported = (
 
 const bindEventListeners = (
   checkout: CustomCheckout,
+  setFieldComplete: React.Dispatch<
+    React.SetStateAction<null | {
+      field: Field;
+    }>
+  >,
   setCardErrors: React.Dispatch<React.SetStateAction<Record<Field, string>>>,
-  gatewayAccount: GatewayAccountFragment
+  setCardBrand: React.Dispatch<React.SetStateAction<null | Brand>>
 ) => {
   checkout.on("error", event => {
     setCardErrors(errors => ({ ...errors, [event.field]: event.message }));
   });
   checkout.on("complete", event => {
-    if (event.complete) {
-      setCardErrors(errors => ({ ...errors, [event.field]: "" }));
+    if (!event.complete) {
+      setFieldComplete(null);
+      return;
     }
+    setFieldComplete(event);
   });
   checkout.on("empty", event => {
     if (event.empty) {
@@ -116,19 +123,11 @@ const bindEventListeners = (
     }
   });
   checkout.on("brand", event => {
-    if (event.brand) {
-      if (isCardBrandSupported(gatewayAccount, event.brand)) {
-        setCardErrors(errors => ({ ...errors, [event.field]: "" }));
-      } else {
-        setCardErrors(errors => ({
-          ...errors,
-          [event.field]:
-            event.brand.charAt(0).toUpperCase() +
-            event.brand.slice(1) +
-            " is not supported"
-        }));
-      }
+    if (!event.brand || event.brand === "unknown") {
+      setCardBrand(null);
+      return;
     }
+    setCardBrand(event.brand);
   });
 };
 
@@ -150,19 +149,42 @@ const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
     expiry: generateId("card-expiry-")
   });
 
+  const [fieldComplete, setFieldComplete] = React.useState<null | {
+    field: Field;
+  }>(null);
   const [cardErrors, setCardErrors] = React.useState<Record<Field, string>>({
     "card-number": "",
     cvv: "",
     expiry: ""
   });
+  const [cardBrand, setCardBrand] = React.useState<null | Brand>(null);
 
   const onCheckoutLoad = React.useCallback(
     (checkout: CustomCheckout) => {
       mountFields(checkout, theme, cardFieldIds);
-      bindEventListeners(checkout, setCardErrors, gatewayAccount);
+      bindEventListeners(
+        checkout,
+        setFieldComplete,
+        setCardErrors,
+        setCardBrand
+      );
     },
-    [theme, cardFieldIds, gatewayAccount]
+    [theme, cardFieldIds]
   );
+
+  React.useEffect(() => {
+    if (!cardBrand || isCardBrandSupported(gatewayAccount, cardBrand)) {
+      setCardErrors(errors => ({ ...errors, "card-number": "" }));
+      return;
+    }
+    setCardErrors(errors => ({
+      ...errors,
+      // TODO: label from func/enum not custom built.
+      "card-number": `${cardBrand.charAt(0).toUpperCase()}${cardBrand.slice(
+        1
+      )} is not supported.`
+    }));
+  }, [gatewayAccount, fieldComplete, cardBrand]);
 
   const loadCheckout = useLoadCheckout({
     // TODO: different script for demo/test or prod environment
