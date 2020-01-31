@@ -308,7 +308,6 @@ defmodule PayWeb.Schema.ContentTypes do
     value(:discover, as: "discover")
     value(:jcb, as: "jcb")
     value(:unionpay, as: "unionpay")
-    value(:maestro, as: "maestro")
   end
 
   enum :card_type_type do

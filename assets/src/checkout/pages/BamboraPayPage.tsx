@@ -19,6 +19,7 @@ import {
   GatewayAccountFragment,
   PaymentFragment,
   BamboraCredentials,
+  CardType,
   useSubmitBamboraPaymentMutation
 } from "../__generated__/graphql";
 import { SidebarLayout } from "../components/Split";
@@ -81,8 +82,6 @@ const normalizeBamboraBrand = (brand: Brand): String => {
       return CardTypeBrand.Discover;
     case "jcb":
       return CardTypeBrand.Jcb;
-    case "maestro":
-      return CardTypeBrand.Maestro;
     default:
       return "";
   }
@@ -91,9 +90,10 @@ const normalizeBamboraBrand = (brand: Brand): String => {
 const isCardBrandSupported = (
   gatewayAccount: GatewayAccountFragment,
   brand: Brand
-): boolean => {
+) => {
+  const bamboraBrand = normalizeBamboraBrand(brand);
   return gatewayAccount.cardTypes.some(
-    cardType => cardType.brand === normalizeBamboraBrand(brand)
+    cardType => cardType.brand === bamboraBrand
   );
 };
 
@@ -104,10 +104,20 @@ const bindEventListeners = (
       field: Field;
     }>
   >,
+  setFieldError: React.Dispatch<
+    React.SetStateAction<null | {
+      field: Field;
+    }>
+  >,
   setCardErrors: React.Dispatch<React.SetStateAction<Record<Field, string>>>,
   setCardBrand: React.Dispatch<React.SetStateAction<null | Brand>>
 ) => {
   checkout.on("error", event => {
+    if (!event.type || !event.message) {
+      setFieldError(null);
+      return;
+    }
+    setFieldError(event);
     setCardErrors(errors => ({ ...errors, [event.field]: event.message }));
   });
   checkout.on("complete", event => {
@@ -116,6 +126,7 @@ const bindEventListeners = (
       return;
     }
     setFieldComplete(event);
+    setFieldError(null);
   });
   checkout.on("empty", event => {
     if (event.empty) {
@@ -128,6 +139,7 @@ const bindEventListeners = (
       return;
     }
     setCardBrand(event.brand);
+    setFieldError(null);
   });
 };
 
@@ -137,9 +149,15 @@ interface Props {
     credentials: BamboraCredentials;
   };
   payment: Omit<PaymentFragment, "gateway_account">;
+  cardTypes: Array<CardType>;
 }
 
-const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
+const BamboraPayPage: React.FC<Props> = ({
+  path,
+  gatewayAccount,
+  payment,
+  cardTypes
+}) => {
   const history = useHistory();
   const theme = useTheme();
 
@@ -150,6 +168,9 @@ const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
   });
 
   const [fieldComplete, setFieldComplete] = React.useState<null | {
+    field: Field;
+  }>(null);
+  const [fieldError, setFieldError] = React.useState<null | {
     field: Field;
   }>(null);
   const [cardErrors, setCardErrors] = React.useState<Record<Field, string>>({
@@ -165,6 +186,7 @@ const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
       bindEventListeners(
         checkout,
         setFieldComplete,
+        setFieldError,
         setCardErrors,
         setCardBrand
       );
@@ -173,18 +195,25 @@ const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
   );
 
   React.useEffect(() => {
+    if (fieldError) {
+      return;
+    }
     if (!cardBrand || isCardBrandSupported(gatewayAccount, cardBrand)) {
       setCardErrors(errors => ({ ...errors, "card-number": "" }));
       return;
     }
+    const bamboraBrand = normalizeBamboraBrand(cardBrand);
+    const cardType = cardTypes.find(
+      cardType => cardType.brand === bamboraBrand
+    );
+
     setCardErrors(errors => ({
       ...errors,
-      // TODO: label from func/enum not custom built.
-      "card-number": `${cardBrand.charAt(0).toUpperCase()}${cardBrand.slice(
-        1
-      )} is not supported.`
+      "card-number": !cardType
+        ? "This card is not supported"
+        : `${cardType.label} is not supported.`
     }));
-  }, [gatewayAccount, fieldComplete, cardBrand]);
+  }, [gatewayAccount, fieldComplete, fieldError, cardBrand, cardTypes]);
 
   const loadCheckout = useLoadCheckout({
     // TODO: different script for demo/test or prod environment
