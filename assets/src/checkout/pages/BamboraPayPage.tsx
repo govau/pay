@@ -20,6 +20,7 @@ import {
   PaymentFragment,
   BamboraCredentials,
   CardType,
+  CardTypeBrand,
   useSubmitBamboraPaymentMutation
 } from "../__generated__/graphql";
 import { SidebarLayout } from "../components/Split";
@@ -27,7 +28,6 @@ import CardForm, {
   classNames as cardFormClassNames
 } from "../components/BamboraCardForm";
 import Summary from "../components/Summary";
-import { CardTypeBrand } from "../../auth/__generated__/graphql";
 
 const mountFields = (
   checkout: CustomCheckout,
@@ -210,7 +210,7 @@ const BamboraPayPage: React.FC<Props> = ({
     setCardErrors(errors => ({
       ...errors,
       "card-number": !cardType
-        ? "This card is not supported"
+        ? "This card is not supported."
         : `${cardType.label} is not supported.`
     }));
   }, [gatewayAccount, fieldComplete, fieldError, cardBrand, cardTypes]);
