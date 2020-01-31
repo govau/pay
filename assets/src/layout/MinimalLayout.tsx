@@ -10,7 +10,7 @@ interface Props {
 
 const Wrapper = styled.div`
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   flex-direction: column;
 `;
 
