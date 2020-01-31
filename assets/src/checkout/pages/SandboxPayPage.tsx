@@ -7,7 +7,7 @@ import {
   PaymentFragment,
   useSubmitSandboxPaymentMutation
 } from "../__generated__/graphql";
-import Split, { Content } from "../components/Split";
+import { SidebarLayout } from "../components/Split";
 import CardForm from "../components/SandboxCardForm";
 import Summary from "../components/Summary";
 
@@ -50,30 +50,25 @@ const SandboxPayPage: React.FC<Props> = ({ path, payment }) => {
   }, [history, path, payment.externalId, submitPayment]);
 
   return (
-    <>
+    <SidebarLayout sidebar={<Summary payment={payment} />} important={false}>
       <Helmet>
         <title>Make a payment</title>
       </Helmet>
-      <Split>
-        <Content>
-          <PageTitle title="Enter card details" />
-          {submitError && (
-            <ErrorAlert
-              title="Unable to submit your payment"
-              message={submitError.message}
-              showError
-            />
-          )}
-          <CardForm onSubmit={handleSubmit}>
-            <Button disabled={submitting} onClick={handleSubmit}>
-              Submit payment
-            </Button>
-            <Button variant="link">Cancel</Button>
-          </CardForm>
-        </Content>
-        <Summary payment={payment} />
-      </Split>
-    </>
+      <PageTitle title="Enter card details" />
+      {submitError && (
+        <ErrorAlert
+          title="Unable to submit your payment"
+          message={submitError.message}
+          showError
+        />
+      )}
+      <CardForm onSubmit={handleSubmit}>
+        <Button disabled={submitting} onClick={handleSubmit}>
+          Submit payment
+        </Button>
+        <Button variant="link">Cancel</Button>
+      </CardForm>
+    </SidebarLayout>
   );
 };
 

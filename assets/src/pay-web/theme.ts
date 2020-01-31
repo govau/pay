@@ -25,7 +25,7 @@ const colors = {
   payHeaderBar: "#1d70b8",
   payDarkGrey: "#222222",
   payLightGrey: "#F3F2F1",
-  payLightBlack: "#757575",
+  payLightBlack: "#6E6E6E",
   links: "#1d70b8"
 };
 
