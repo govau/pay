@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
 import { format } from "date-fns";
-import { TODO, PageTitle, H2, Loader, ErrorAlert, Link } from "@pay/web";
+import { PageTitle, H2, Loader, ErrorAlert, Link } from "@pay/web";
 import * as Table from "@pay/web/components/Table";
 
 import { paymentProviderLabel, paymentStatusLabel } from "../../payments";
@@ -17,6 +17,7 @@ import {
 import { gatewayAccountFullType } from "../../../payments";
 import { useLocation } from "react-router-dom";
 import { BreadBox } from "@pay/web/components/Breadcrumb";
+import { SidebarLayout } from "../../../checkout/components/Split";
 
 interface Props {
   service: ServiceFragment;
@@ -80,11 +81,14 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
           payment
         })}
       />
-      <TODO>
-        {payment.status === PaymentStatus.Success && (
-          <Link to={`${location.pathname}/refund`}>Refund payment</Link>
-        )}
 
+      <SidebarLayout
+        sidebar={
+          payment.status === PaymentStatus.Success ? (
+            <Link to={`${location.pathname}/refund`}>Refund payment</Link>
+          ) : null
+        }
+      >
         <Table.ResponsiveWrapper>
           <Table.Table>
             <tbody>
@@ -141,85 +145,91 @@ const DetailPage: React.FC<Props> = ({ service, gatewayAccount, payment }) => {
             </tbody>
           </Table.Table>
         </Table.ResponsiveWrapper>
-        {cardDetails && (
-          <>
-            <H2>Payment method</H2>
-            <Table.ResponsiveWrapper>
-              <Table.Table>
-                <tbody>
-                  <Table.Row>
-                    <Table.Header scope="row">Type</Table.Header>
-                    <Table.Cell>{optional(cardDetails.cardBrand)}</Table.Cell>
-                  </Table.Row>
-                  <Table.Row>
-                    <Table.Header scope="row">Name on card</Table.Header>
-                    <Table.Cell>
-                      {optional(cardDetails.cardholderName)}
-                    </Table.Cell>
-                  </Table.Row>
-                  <Table.Row>
-                    <Table.Header scope="row">Card number</Table.Header>
-                    <Table.Cell>
-                      {cardDetails.cardNumber
-                        ? cardDetails.cardNumber
-                        : `${cardDetails.firstDigitsCardNumber}** **** ${cardDetails.lastDigitsCardNumber}`}
-                    </Table.Cell>
-                  </Table.Row>
-                  <Table.Row>
-                    <Table.Header scope="row">Card expiry date</Table.Header>
-                    <Table.Cell>{optional(cardDetails.expiryDate)}</Table.Cell>
-                  </Table.Row>
-                  <Table.Row>
-                    <Table.Header scope="row">Email</Table.Header>
-                    <Table.Cell>{optional(email)}</Table.Cell>
-                  </Table.Row>
-                </tbody>
-              </Table.Table>
-            </Table.ResponsiveWrapper>
-          </>
-        )}
+      </SidebarLayout>
 
-        <H2>Transaction events</H2>
-        {paymentEventsQuery.loading ? (
-          <Loader />
-        ) : paymentEventsQuery.error || !paymentEventsQuery.data ? (
-          <ErrorAlert
-            title="Unable to retrieve events"
-            message={
-              paymentEventsQuery.error && paymentEventsQuery.error.message
-            }
-            showError
-          />
-        ) : (
-          paymentEventsQuery.data.payment.events.length > 0 && (
-            <Table.ResponsiveWrapper>
-              <Table.Table>
-                <tbody>
-                  {paymentEventsQuery.data.payment.events.map(
-                    ({ id, insertedAt, updatedAt, type, status }) => (
-                      <Table.Row key={id}>
-                        <Table.Cell>{paymentStatusLabel(status)}</Table.Cell>
-                        <Table.NumericCell>
-                          {type === PaymentEventType.Refund ? "-" : ""}$
-                          {(amount / 100).toFixed(2)}
-                        </Table.NumericCell>
-                        <Table.NumericCell>
-                          <time dateTime={updatedAt || insertedAt}>
-                            {format(
-                              new Date(updatedAt || insertedAt),
-                              "dd MMM yyyy — HH:mm:ss"
-                            )}
-                          </time>
-                        </Table.NumericCell>
-                      </Table.Row>
-                    )
-                  )}
-                </tbody>
-              </Table.Table>
-            </Table.ResponsiveWrapper>
-          )
-        )}
-      </TODO>
+      {cardDetails && (
+        <>
+          <H2>Payment method</H2>
+          <Table.ResponsiveWrapper>
+            <Table.Table>
+              <tbody>
+                <Table.Row>
+                  <Table.Header scope="row">Type</Table.Header>
+                  <Table.Cell>{optional(cardDetails.cardBrand)}</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Header scope="row">Name on card</Table.Header>
+                  <Table.Cell>
+                    {optional(cardDetails.cardholderName)}
+                  </Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Header scope="row">Card number</Table.Header>
+                  <Table.Cell>
+                    {cardDetails.cardNumber
+                      ? cardDetails.cardNumber
+                      : `${cardDetails.firstDigitsCardNumber}** **** ${cardDetails.lastDigitsCardNumber}`}
+                  </Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Header scope="row">Card expiry date</Table.Header>
+                  <Table.Cell>{optional(cardDetails.expiryDate)}</Table.Cell>
+                </Table.Row>
+                <Table.Row>
+                  <Table.Header scope="row">Email</Table.Header>
+                  <Table.Cell>{optional(email)}</Table.Cell>
+                </Table.Row>
+              </tbody>
+            </Table.Table>
+          </Table.ResponsiveWrapper>
+        </>
+      )}
+
+      <H2>Transaction events</H2>
+      {paymentEventsQuery.loading ? (
+        <Loader />
+      ) : paymentEventsQuery.error || !paymentEventsQuery.data ? (
+        <ErrorAlert
+          title="Unable to retrieve events"
+          message={paymentEventsQuery.error && paymentEventsQuery.error.message}
+          showError
+        />
+      ) : (
+        paymentEventsQuery.data.payment.events.length > 0 && (
+          <Table.ResponsiveWrapper>
+            <Table.Table>
+              <thead>
+                <Table.Row>
+                  <Table.Header>Status</Table.Header>
+                  <Table.NumericHeader>Amount</Table.NumericHeader>
+                  <Table.NumericHeader>Date</Table.NumericHeader>
+                </Table.Row>
+              </thead>
+              <tbody>
+                {paymentEventsQuery.data.payment.events.map(
+                  ({ id, insertedAt, updatedAt, type, status }) => (
+                    <Table.Row key={id}>
+                      <Table.Cell>{paymentStatusLabel(status)}</Table.Cell>
+                      <Table.NumericCell>
+                        {type === PaymentEventType.Refund ? "-" : ""}$
+                        {(amount / 100).toFixed(2)}
+                      </Table.NumericCell>
+                      <Table.NumericCell>
+                        <time dateTime={updatedAt || insertedAt}>
+                          {format(
+                            new Date(updatedAt || insertedAt),
+                            "dd MMM yyyy — HH:mm:ss"
+                          )}
+                        </time>
+                      </Table.NumericCell>
+                    </Table.Row>
+                  )
+                )}
+              </tbody>
+            </Table.Table>
+          </Table.ResponsiveWrapper>
+        )
+      )}
     </>
   );
 };

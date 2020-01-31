@@ -1,10 +1,11 @@
 import * as React from "react";
 import styled from "@pay/web/styled-components";
-import { H2, P, tablet } from "@pay/web";
+import { H2, P } from "@pay/web";
 
 import { PaymentFragment } from "../__generated__/graphql";
 
 const Wrapper = styled.div`
+  text-align: left;
   margin-top: 3rem;
   padding: 1.5rem;
   position: sticky;
@@ -13,11 +14,6 @@ const Wrapper = styled.div`
   font-size: 1.2em;
   background-color: ${props => props.theme.colors.payLightGrey};
   border-top: 2px solid ${props => props.theme.colors.payBlue};
-
-  @media ${tablet} {
-    flex-basis: 33.3333%;
-    margin-top: 0;
-  }
 `;
 
 const Amount = styled.span`

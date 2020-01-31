@@ -20,7 +20,7 @@ import {
   BamboraCredentials,
   useSubmitBamboraPaymentMutation
 } from "../__generated__/graphql";
-import Split, { Content } from "../components/Split";
+import { SidebarLayout } from "../components/Split";
 import CardForm, {
   classNames as cardFormClassNames
 } from "../components/BamboraCardForm";
@@ -183,37 +183,32 @@ const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
   }
 
   return (
-    <>
+    <SidebarLayout sidebar={<Summary payment={payment} />} important={false}>
       <Helmet>
         <title>Make a payment</title>
       </Helmet>
-      <Split>
-        <Content>
-          <PageTitle title="Enter card details" />
-          {submitError && (
-            <ErrorAlert
-              title="Unable to submit your payment"
-              message={submitError.message}
-              showError
-            />
-          )}
-          <CardForm
-            onSubmit={handleSubmit}
-            fieldIds={cardFieldIds}
-            errors={cardErrors}
-          >
-            <Button
-              disabled={createOTT.loading || submitting}
-              onClick={handleSubmit}
-            >
-              Submit payment
-            </Button>
-            <Button variant="link">Cancel</Button>
-          </CardForm>
-        </Content>
-        <Summary payment={payment} />
-      </Split>
-    </>
+      <PageTitle title="Enter card details" />
+      {submitError && (
+        <ErrorAlert
+          title="Unable to submit your payment"
+          message={submitError.message}
+          showError
+        />
+      )}
+      <CardForm
+        onSubmit={handleSubmit}
+        fieldIds={cardFieldIds}
+        errors={cardErrors}
+      >
+        <Button
+          disabled={createOTT.loading || submitting}
+          onClick={handleSubmit}
+        >
+          Submit payment
+        </Button>
+        <Button variant="link">Cancel</Button>
+      </CardForm>
+    </SidebarLayout>
   );
 };
 

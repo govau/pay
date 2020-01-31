@@ -10,29 +10,29 @@ export const Table = styled.table`
   border-spacing: 0;
 `;
 
-export const Row = styled.tr``;
+export const Row = styled.tr`
+  &:nth-child(even) {
+    background-color: ${props => props.theme.colors.payLightGrey};
+  }
+`;
 
 export const LinkRow = styled(Row)`
   cursor: pointer;
 
   &:hover {
-    background-color: #f2f2f2;
+    background-color: ${props => props.theme.colors.payLightGrey};
   }
 `;
 
 const cellStyle = css`
-  text-align: left;
-  vertical-align: top;
-  padding: 1rem 2rem 1rem 0;
-  border-bottom: 1px solid silver;
-
-  &:last-child {
-    padding-right: 0;
-  }
+  padding: 1rem;
 `;
 
 export const Header = styled.th`
   ${cellStyle};
+  font-size: 1.3rem;
+  color: ${props => props.theme.colors.payLightBlack};
+  font-weight: normal;
 `;
 
 export const Cell = styled.td`
