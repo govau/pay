@@ -17,7 +17,6 @@ const Wrapper = styled.div`
 const Centered = styled.div``;
 
 const Main = styled.div`
-  min-height: 100vh; /* IE11 min-height fix */
   flex: 1;
   position: relative;
   display: flex;
