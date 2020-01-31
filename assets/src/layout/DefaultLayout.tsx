@@ -9,9 +9,14 @@ import Header from "./Header";
 
 const { styled } = styledComponents;
 
+const IE11Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 const Wrapper = styled.div`
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   flex-direction: column;
 `;
 
@@ -21,14 +26,16 @@ const Main = styled.div`
 `;
 
 const DefaultLayout: React.FC = ({ children }) => (
-  <Wrapper>
-    <ScrollToTopOnMount />
-    <Header />
-    <Main role="main">
-      <Container>{children}</Container>
-    </Main>
-    <Footer />
-  </Wrapper>
+  <IE11Wrapper>
+    <Wrapper>
+      <ScrollToTopOnMount />
+      <Header />
+      <Main role="main">
+        <Container>{children}</Container>
+      </Main>
+      <Footer />
+    </Wrapper>
+  </IE11Wrapper>
 );
 
 export default DefaultLayout;
