@@ -40,7 +40,7 @@ amex_id =
 
 diners_id = Repo.insert!(%CardType{type: "CREDIT", brand: "diners-club", label: "Diners Club"}).id
 discover_id = Repo.insert!(%CardType{type: "CREDIT", brand: "discover", label: "Discover"}).id
-jcb_id = Repo.insert!(%CardType{type: "CREDIT", brand: "jcb", label: "Jcb"}).id
+jcb_id = Repo.insert!(%CardType{type: "CREDIT", brand: "jcb", label: "JCB"}).id
 unionPay_id = Repo.insert!(%CardType{type: "CREDIT", brand: "unionpay", label: "Union Pay"}).id
 
 # Roles

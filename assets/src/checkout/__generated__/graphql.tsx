@@ -474,6 +474,11 @@ export type GatewayAccountFragment = (
   )> }
 );
 
+export type CardTypesFragment = (
+  { __typename?: 'CardType' }
+  & Pick<CardType, 'id' | 'brand' | 'label' | 'type'>
+);
+
 export type PaymentFragment = (
   { __typename?: 'Payment' }
   & Pick<Payment, 'id' | 'externalId' | 'status' | 'amount' | 'reference' | 'description' | 'email'>
@@ -527,9 +532,20 @@ export type GetPaymentQuery = (
       & GatewayAccountFragment
     ) }
     & PaymentFragment
-  ) }
+  ), cardTypes: Array<(
+    { __typename?: 'CardType' }
+    & CardTypesFragment
+  )> }
 );
 
+export const CardTypesFragmentDoc = gql`
+    fragment CardTypes on CardType {
+  id
+  brand
+  label
+  type
+}
+    `;
 export const GatewayAccountFragmentDoc = gql`
     fragment GatewayAccount on GatewayAccount {
   id
@@ -651,9 +667,13 @@ export const GetPaymentDocument = gql`
       ...GatewayAccount
     }
   }
+  cardTypes {
+    ...CardTypes
+  }
 }
     ${PaymentFragmentDoc}
-${GatewayAccountFragmentDoc}`;
+${GatewayAccountFragmentDoc}
+${CardTypesFragmentDoc}`;
 export type GetPaymentComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetPaymentQuery, GetPaymentQueryVariables>, 'query'> & ({ variables: GetPaymentQueryVariables; skip?: boolean; } | { skip: boolean; });
 
     export const GetPaymentComponent = (props: GetPaymentComponentProps) => (

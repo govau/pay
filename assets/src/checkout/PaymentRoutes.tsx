@@ -71,7 +71,7 @@ const PaymentRoutes: React.FC<Props> = ({ onReceivePayment }) => {
     );
   }
 
-  const { payment } = data;
+  const { payment, cardTypes } = data;
 
   onReceivePayment(payment);
 
@@ -89,6 +89,7 @@ const PaymentRoutes: React.FC<Props> = ({ onReceivePayment }) => {
               path={path}
               gatewayAccount={payment.gatewayAccount}
               payment={payment}
+              cardTypes={cardTypes}
             />
           )}
         {payment.gatewayAccount.paymentProvider ===

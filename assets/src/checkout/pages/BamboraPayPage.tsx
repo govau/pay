@@ -19,8 +19,8 @@ import {
   GatewayAccountFragment,
   PaymentFragment,
   BamboraCredentials,
-  CardType,
   CardTypeBrand,
+  CardType,
   useSubmitBamboraPaymentMutation
 } from "../__generated__/graphql";
 import { SidebarLayout } from "../components/Split";
