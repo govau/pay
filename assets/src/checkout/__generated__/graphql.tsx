@@ -259,7 +259,7 @@ export type RootMutationType = {
   /** Submit a payment refund */
   submitRefund: PaymentRefund,
   submitSandboxPayment: Payment,
-  /** Update Gateway Account Card types */
+  /** Update a gateway account card types */
   updateGatewayAccountCardTypes: GatewayAccount,
   updateGatewayAccountCredentials: GatewayAccount,
   updateProductPayment: ProductPayment,
@@ -468,7 +468,15 @@ export type GatewayAccountFragment = (
   & { credentials: (
     { __typename?: 'BamboraCredentials' }
     & Pick<BamboraCredentials, 'merchantId'>
-  ) | { __typename?: 'SandboxCredentials' } }
+  ) | { __typename?: 'SandboxCredentials' }, cardTypes: Array<(
+    { __typename?: 'CardType' }
+    & Pick<CardType, 'id' | 'brand' | 'type'>
+  )> }
+);
+
+export type CardTypesFragment = (
+  { __typename?: 'CardType' }
+  & Pick<CardType, 'id' | 'brand' | 'label' | 'type'>
 );
 
 export type PaymentFragment = (
@@ -524,9 +532,20 @@ export type GetPaymentQuery = (
       & GatewayAccountFragment
     ) }
     & PaymentFragment
-  ) }
+  ), cardTypes: Array<(
+    { __typename?: 'CardType' }
+    & CardTypesFragment
+  )> }
 );
 
+export const CardTypesFragmentDoc = gql`
+    fragment CardTypes on CardType {
+  id
+  brand
+  label
+  type
+}
+    `;
 export const GatewayAccountFragmentDoc = gql`
     fragment GatewayAccount on GatewayAccount {
   id
@@ -538,6 +557,11 @@ export const GatewayAccountFragmentDoc = gql`
     ... on BamboraCredentials {
       merchantId
     }
+  }
+  cardTypes {
+    id
+    brand
+    type
   }
 }
     `;
@@ -643,9 +667,13 @@ export const GetPaymentDocument = gql`
       ...GatewayAccount
     }
   }
+  cardTypes {
+    ...CardTypes
+  }
 }
     ${PaymentFragmentDoc}
-${GatewayAccountFragmentDoc}`;
+${GatewayAccountFragmentDoc}
+${CardTypesFragmentDoc}`;
 export type GetPaymentComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetPaymentQuery, GetPaymentQueryVariables>, 'query'> & ({ variables: GetPaymentQueryVariables; skip?: boolean; } | { skip: boolean; });
 
     export const GetPaymentComponent = (props: GetPaymentComponentProps) => (

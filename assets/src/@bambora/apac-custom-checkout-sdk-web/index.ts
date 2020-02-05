@@ -50,7 +50,8 @@ export type Brand =
   | "jcb"
   | "mastercard"
   | "visa"
-  | "maestro";
+  | "maestro"
+  | "unknown";
 
 export interface Element {
   mount: (domID: string) => void;
@@ -89,11 +90,7 @@ export class TokenResultError extends Error {
 
 export interface TokenResult {
   code?: null | number;
-  error?: {
-    message: string;
-    field: string;
-    type: TokenResultErrorType;
-  };
+  error?: { message: string; field: string; type: TokenResultErrorType };
   // The following fields are only present if no error.
   token?: string;
   last4?: string;

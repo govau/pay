@@ -3,7 +3,8 @@ import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
 import CustomCheckout, {
   isTokenResultError,
-  Field
+  Field,
+  Brand
 } from "@bambora/apac-custom-checkout-sdk-web";
 import {
   useLoadCheckout,
@@ -18,6 +19,8 @@ import {
   GatewayAccountFragment,
   PaymentFragment,
   BamboraCredentials,
+  CardTypeBrand,
+  CardType,
   useSubmitBamboraPaymentMutation
 } from "../__generated__/graphql";
 import { SidebarLayout } from "../components/Split";
@@ -65,22 +68,78 @@ const mountFields = (
     .mount(`#${ids.expiry}`);
 };
 
+const normalizeBamboraBrand = (brand: Brand): String => {
+  switch (brand) {
+    case "visa":
+      return CardTypeBrand.Visa;
+    case "mastercard":
+      return CardTypeBrand.MasterCard;
+    case "amex":
+      return CardTypeBrand.AmericanExpress;
+    case "diners":
+      return CardTypeBrand.DinersClub;
+    case "discover":
+      return CardTypeBrand.Discover;
+    case "jcb":
+      return CardTypeBrand.Jcb;
+    default:
+      return "";
+  }
+};
+
+const isCardBrandSupported = (
+  gatewayAccount: GatewayAccountFragment,
+  brand: Brand
+) => {
+  const bamboraBrand = normalizeBamboraBrand(brand);
+  return gatewayAccount.cardTypes.some(
+    cardType => cardType.brand === bamboraBrand
+  );
+};
+
 const bindEventListeners = (
   checkout: CustomCheckout,
-  setCardErrors: React.Dispatch<React.SetStateAction<Record<Field, string>>>
+  setFieldComplete: React.Dispatch<
+    React.SetStateAction<null | {
+      field: Field;
+    }>
+  >,
+  setFieldError: React.Dispatch<
+    React.SetStateAction<null | {
+      field: Field;
+    }>
+  >,
+  setCardErrors: React.Dispatch<React.SetStateAction<Record<Field, string>>>,
+  setCardBrand: React.Dispatch<React.SetStateAction<null | Brand>>
 ) => {
   checkout.on("error", event => {
+    if (!event.type || !event.message) {
+      setFieldError(null);
+      return;
+    }
+    setFieldError(event);
     setCardErrors(errors => ({ ...errors, [event.field]: event.message }));
   });
   checkout.on("complete", event => {
-    if (event.complete) {
-      setCardErrors(errors => ({ ...errors, [event.field]: "" }));
+    if (!event.complete) {
+      setFieldComplete(null);
+      return;
     }
+    setFieldComplete(event);
+    setFieldError(null);
   });
   checkout.on("empty", event => {
     if (event.empty) {
       setCardErrors(errors => ({ ...errors, [event.field]: "" }));
     }
+  });
+  checkout.on("brand", event => {
+    if (!event.brand || event.brand === "unknown") {
+      setCardBrand(null);
+      return;
+    }
+    setCardBrand(event.brand);
+    setFieldError(null);
   });
 };
 
@@ -90,9 +149,15 @@ interface Props {
     credentials: BamboraCredentials;
   };
   payment: Omit<PaymentFragment, "gateway_account">;
+  cardTypes: Array<CardType>;
 }
 
-const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
+const BamboraPayPage: React.FC<Props> = ({
+  path,
+  gatewayAccount,
+  payment,
+  cardTypes
+}) => {
   const history = useHistory();
   const theme = useTheme();
 
@@ -102,19 +167,53 @@ const BamboraPayPage: React.FC<Props> = ({ path, gatewayAccount, payment }) => {
     expiry: generateId("card-expiry-")
   });
 
+  const [fieldComplete, setFieldComplete] = React.useState<null | {
+    field: Field;
+  }>(null);
+  const [fieldError, setFieldError] = React.useState<null | {
+    field: Field;
+  }>(null);
   const [cardErrors, setCardErrors] = React.useState<Record<Field, string>>({
     "card-number": "",
     cvv: "",
     expiry: ""
   });
+  const [cardBrand, setCardBrand] = React.useState<null | Brand>(null);
 
   const onCheckoutLoad = React.useCallback(
     (checkout: CustomCheckout) => {
       mountFields(checkout, theme, cardFieldIds);
-      bindEventListeners(checkout, setCardErrors);
+      bindEventListeners(
+        checkout,
+        setFieldComplete,
+        setFieldError,
+        setCardErrors,
+        setCardBrand
+      );
     },
     [theme, cardFieldIds]
   );
+
+  React.useEffect(() => {
+    if (fieldError) {
+      return;
+    }
+    if (!cardBrand || isCardBrandSupported(gatewayAccount, cardBrand)) {
+      setCardErrors(errors => ({ ...errors, "card-number": "" }));
+      return;
+    }
+    const bamboraBrand = normalizeBamboraBrand(cardBrand);
+    const cardType = cardTypes.find(
+      cardType => cardType.brand === bamboraBrand
+    );
+
+    setCardErrors(errors => ({
+      ...errors,
+      "card-number": !cardType
+        ? "This card is not supported."
+        : `${cardType.label} is not supported.`
+    }));
+  }, [gatewayAccount, fieldComplete, fieldError, cardBrand, cardTypes]);
 
   const loadCheckout = useLoadCheckout({
     // TODO: different script for demo/test or prod environment

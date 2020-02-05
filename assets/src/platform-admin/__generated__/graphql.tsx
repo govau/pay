@@ -259,7 +259,7 @@ export type RootMutationType = {
   /** Submit a payment refund */
   submitRefund: PaymentRefund,
   submitSandboxPayment: Payment,
-  /** Update Gateway Account Card types */
+  /** Update a gateway account card types */
   updateGatewayAccountCardTypes: GatewayAccount,
   updateGatewayAccountCredentials: GatewayAccount,
   updateProductPayment: ProductPayment,

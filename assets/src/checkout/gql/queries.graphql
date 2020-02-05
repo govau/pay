@@ -9,6 +9,18 @@ fragment GatewayAccount on GatewayAccount {
       merchantId
     }
   }
+  cardTypes {
+    id
+    brand
+    type
+  }
+}
+
+fragment CardTypes on CardType {
+  id
+  brand
+  label
+  type
 }
 
 fragment Payment on Payment {
@@ -58,5 +70,8 @@ query GetPayment($id: ID!) {
     gatewayAccount {
       ...GatewayAccount
     }
+  }
+  cardTypes {
+    ...CardTypes
   }
 }
