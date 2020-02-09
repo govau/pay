@@ -72,6 +72,9 @@ const CardTypesPage: React.FC<Props> = ({ service, gatewayAccount }) => {
     updateGatewayAccountCardTypes
   ] = useUpdateGatewayAccountCardTypesMutation();
   const { loading, error, data } = useCardTypesQuery({ errorPolicy: "all" });
+  const [initialCardValues, setInitialCardValues] = React.useState(
+    gatewayAccount.cardTypes.map(cardType => cardType.id)
+  );
 
   return (
     <>
@@ -88,7 +91,7 @@ const CardTypesPage: React.FC<Props> = ({ service, gatewayAccount }) => {
       <P>Choose which credit and debit cards you want to accept.</P>
       <Form<FormValues>
         initialValues={{
-          cardTypes: gatewayAccount.cardTypes.map(cardType => cardType.id)
+          cardTypes: initialCardValues
         }}
         onSubmit={async values => {
           await updateGatewayAccountCardTypes({
@@ -97,6 +100,7 @@ const CardTypesPage: React.FC<Props> = ({ service, gatewayAccount }) => {
               cardTypeIds: values.cardTypes
             }
           });
+          setInitialCardValues(values.cardTypes);
         }}
         column
         decorators={decorators}

@@ -6,13 +6,15 @@ import createDecorator from "final-form-focus";
 import {
   PageTitle,
   H2,
+  P,
   BooleanRadio,
   validators,
   Field,
   BasicTextInput,
   Button,
   Form,
-  ErrorAlert
+  ErrorAlert,
+  Warning
 } from "@pay/web";
 import * as Table from "@pay/web/components/Table";
 import * as money from "@pay/web/lib/money";
@@ -23,7 +25,8 @@ import {
   PaymentFragment,
   useSubmitRefundMutation,
   ServiceFragment,
-  useGetPaymentRefundQuery
+  useGetPaymentRefundQuery,
+  PaymentStatus
 } from "../../__generated__/graphql";
 import { gatewayAccountFullType } from "../../../payments";
 import { BreadBox } from "@pay/web/components/Breadcrumb";
@@ -105,77 +108,82 @@ const RefundPage: React.FC<Props> = ({
           showError
         />
       ) : null}
+      {payment.status !== PaymentStatus.Success ? (
+        <Warning>
+          <P>You cannot refund a failed payment.</P>
+        </Warning>
+      ) : (
+        <Form<FormValues>
+          initialValues={{ full_refund: true, refund_amount: 0 }}
+          onSubmit={async values => {
+            const partialRefund = money.parse(String(values.refund_amount));
+            const partialRefundAmount =
+              partialRefund && partialRefund.getAmount();
 
-      <Form<FormValues>
-        initialValues={{ full_refund: true, refund_amount: 0 }}
-        onSubmit={async values => {
-          const partialRefund = money.parse(String(values.refund_amount));
-          const partialRefundAmount =
-            partialRefund && partialRefund.getAmount();
+            const refundAmount =
+              !values.full_refund && partialRefundAmount
+                ? partialRefundAmount
+                : eligibleToRefund;
 
-          const refundAmount =
-            !values.full_refund && partialRefundAmount
-              ? partialRefundAmount
-              : eligibleToRefund;
+            await submitRefund({
+              variables: {
+                paymentId: payment.externalId,
+                amount: refundAmount,
+                reference: "TODO"
+              }
+            });
 
-          await submitRefund({
-            variables: {
-              paymentId: payment.externalId,
-              amount: refundAmount,
-              reference: "TODO"
-            }
-          });
+            history.push(redirectURL);
+          }}
+          column
+          decorators={decorators}
+        >
+          {params => (
+            <React.Fragment>
+              <BooleanRadio
+                name="full_refund"
+                value={true}
+                label="Full refund"
+                first
+              />
+              <BooleanRadio
+                name="full_refund"
+                value={false}
+                label="Partial refund"
+              />
+              {!params.values.full_refund ? (
+                <Field
+                  name="refund_amount"
+                  label="Refund amount"
+                  description={`You may issue a partial refund for up to $${eligibleRefundAmount}`}
+                  validate={value => {
+                    const amount = money.parse(String(value));
 
-          history.push(redirectURL);
-        }}
-        column
-        decorators={decorators}
-      >
-        {params => (
-          <React.Fragment>
-            <BooleanRadio
-              name="full_refund"
-              value={true}
-              label="Full refund"
-              first
-            />
-            <BooleanRadio
-              name="full_refund"
-              value={false}
-              label="Partial refund"
-            />
-            {!params.values.full_refund ? (
-              <Field
-                name="refund_amount"
-                label="Refund amount"
-                description={`You may issue a partial refund for up to $${eligibleRefundAmount}`}
-                validate={value => {
-                  const amount = money.parse(String(value));
+                    return validators.composeValidators(
+                      validators.required("Enter an amount to refund"),
+                      validators.isLessThan(
+                        `Amount is greater than $${eligibleRefundAmount}`,
+                        {
+                          max: eligibleToRefund
+                        }
+                      )
+                    )(amount ? amount.getAmount() : undefined);
+                  }}
+                >
+                  {({ input, ariaProps, ...rest }) => (
+                    <BasicTextInput {...input} {...ariaProps} {...rest} />
+                  )}
+                </Field>
+              ) : null}
 
-                  return validators.composeValidators(
-                    validators.required("Enter an amount to refund"),
-                    validators.isLessThan(
-                      `Amount is greater than $${eligibleRefundAmount}`,
-                      {
-                        max: eligibleToRefund
-                      }
-                    )
-                  )(amount ? amount.getAmount() : undefined);
-                }}
-              >
-                {({ input, ariaProps, ...rest }) => (
-                  <BasicTextInput {...input} {...ariaProps} {...rest} />
-                )}
-              </Field>
-            ) : null}
-
-            <Button type="submit" disabled={submitRefundResult.loading}>
-              Submit refund
-            </Button>
-            <Button variant="link">Cancel</Button>
-          </React.Fragment>
-        )}
-      </Form>
+              <Button type="submit" disabled={submitRefundResult.loading}>
+                Submit refund
+              </Button>
+              <Button variant="link">Cancel</Button>
+            </React.Fragment>
+          )}
+        </Form>
+      )}
 
       <H2>Payment summary</H2>
       <Table.ResponsiveWrapper>
