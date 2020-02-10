@@ -2,16 +2,22 @@ import * as React from "react";
 import { useRouteMatch } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import {
+  Button,
   PageTitle,
   Loader,
   ErrorAlert,
   Link,
   Warning,
   P,
-  styled
+  styled,
+  H2,
+  Hint
 } from "@pay/web";
 
-import { useGetUserServicesQuery } from "../__generated__/graphql";
+import {
+  useGetUserServicesQuery,
+  useAcceptInviteMutation
+} from "../__generated__/graphql";
 
 const Ul = styled.ul`
   margin: 0;
@@ -21,9 +27,17 @@ const Ul = styled.ul`
   }
 `;
 
+const Bad = styled(Hint)`
+  color: ${props => props.theme.colors.payBadRed};
+`;
+
 const DashboardPage: React.FC = () => {
   const { loading, error, data } = useGetUserServicesQuery({
     errorPolicy: "all"
+  });
+
+  const [acceptInvite] = useAcceptInviteMutation({
+    refetchQueries: ["GetUserServices"]
   });
 
   const match = useRouteMatch();
@@ -64,6 +78,38 @@ const DashboardPage: React.FC = () => {
               </li>
             ))}
           </Ul>
+
+          {data.serviceInvites && data.serviceInvites.length > 0 ? (
+            <>
+              <H2>Pending service invites</H2>
+              <Ul>
+                {data.serviceInvites.map(invite => (
+                  <li key={invite.id}>
+                    <section style={{ marginTop: "1em" }}>
+                      <header>{invite.serviceName}</header>
+                      <Hint>Invited by {invite.invitedBy}</Hint>
+                      <br />
+                      {invite.isExpired ? (
+                        <Bad>Invite has expired</Bad>
+                      ) : (
+                        <Button
+                          style={{ padding: 0 }}
+                          variant="link"
+                          onClick={() =>
+                            acceptInvite({
+                              variables: { serviceID: invite.serviceId }
+                            })
+                          }
+                        >
+                          Join service
+                        </Button>
+                      )}
+                    </section>
+                  </li>
+                ))}
+              </Ul>
+            </>
+          ) : null}
         </>
       )}
     </>

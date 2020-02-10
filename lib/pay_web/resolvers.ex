@@ -13,6 +13,40 @@ defmodule PayWeb.Resolvers do
     {:ok, Services.list_users()}
   end
 
+  defp format_service_invite(%Services.ServiceInvite{} = invite) do
+    date_now = DateTime.utc_now()
+
+    # make invite available for resolvers as parent through _invite
+    %{
+      _invite: invite,
+      id: invite.id,
+      service_id: invite.service.id,
+      service_name: invite.service.name,
+      expires_at: invite.expires_at,
+      is_expired: DateTime.compare(date_now, invite.expires_at) === :gt,
+      invited_by: invite.sender.email,
+      email: invite.email
+    }
+  end
+
+  def service_invites(_params, %{context: %{current_user: user}}) do
+    {:ok,
+     Enum.map(
+       Services.list_user_service_invites(user.email),
+       &format_service_invite/1
+     )}
+  end
+
+  def service_invites(%Services.Service{id: service_id}, _params, %{
+        context: %{current_user: _user}
+      }) do
+    {:ok,
+     Enum.map(
+       Services.list_service_invites(%{service_id: service_id}),
+       &format_service_invite/1
+     )}
+  end
+
   def services(%Services.User{platform_admin: true}, _params, _resolution) do
     {:ok, Services.list_services()}
   end
@@ -166,5 +200,9 @@ defmodule PayWeb.Resolvers do
   @spec organisation_type(Pay.Services.Organisation.t(), any, any) :: {:ok, String.t()}
   def organisation_type(%Services.Organisation{type_id: org_type_id}, _params, _resolution) do
     {:ok, Services.get_organisation_type!(org_type_id).name}
+  end
+
+  def role(%{_invite: invite}, _params, _resolution) do
+    {:ok, Services.get_invite_role(invite)}
   end
 end

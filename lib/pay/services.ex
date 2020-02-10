@@ -10,6 +10,7 @@ defmodule Pay.Services do
   alias Pay.Services.Permission
   alias Pay.Services.Role
   alias Pay.Services.ServiceUser
+  alias Pay.Services.ServiceInvite
   alias Pay.Services.ServiceGatewayAccount
   alias Pay.Services.Service.GoLiveStage
 
@@ -153,6 +154,13 @@ defmodule Pay.Services do
 
   """
   def get_role_by_name!(name), do: Repo.get_by!(Role, name: name) |> Repo.preload([:permissions])
+
+  def get_role_by_name(name) do
+    case Repo.get_by(from(Role, preload: [:permissions]), name: name) do
+      nil -> {:error, "role not found"}
+      role -> {:ok, role}
+    end
+  end
 
   @doc """
   Creates a role.
@@ -1060,99 +1068,165 @@ defmodule Pay.Services do
     ServiceUser.changeset(service_user, %{})
   end
 
-  alias Pay.Services.ServiceInvite
-
-  @doc """
-  Returns the list of service_invites.
-
-  ## Examples
-
-      iex> list_service_invites()
-      [%ServiceInvite{}, ...]
-
-  """
-  def list_service_invites do
-    Repo.all(ServiceInvite)
-  end
-
-  @doc """
-  Gets a single service_invite.
-
-  Raises `Ecto.NoResultsError` if the Service invite does not exist.
-
-  ## Examples
-
-      iex> get_service_invite!(123)
-      %ServiceInvite{}
-
-      iex> get_service_invite!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_service_invite!(id), do: Repo.get!(ServiceInvite, id)
-
-  @doc """
-  Creates a service_invite.
-
-  ## Examples
-
-      iex> create_service_invite(%{field: value})
-      {:ok, %ServiceInvite{}}
-
-      iex> create_service_invite(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_service_invite(attrs \\ %{}) do
-    %ServiceInvite{}
+  def create_service_invite(%ServiceInvite{} = service_invite, attrs) do
+    service_invite
     |> ServiceInvite.changeset(attrs)
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a service_invite.
+  def create_service_invite(attrs) do
+    create_service_invite(%ServiceInvite{}, attrs)
+  end
 
-  ## Examples
+  defp query_service_invites(%{email: email, service_id: service_id}) do
+    from ServiceInvite, where: [email: ^email, service_id: ^service_id]
+  end
 
-      iex> update_service_invite(service_invite, %{field: new_value})
-      {:ok, %ServiceInvite{}}
+  defp query_service_invites(%{email: email}) do
+    from ServiceInvite, where: [email: ^email]
+  end
 
-      iex> update_service_invite(service_invite, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_service_invite(%ServiceInvite{} = service_invite, attrs) do
-    service_invite
-    |> ServiceInvite.changeset(attrs)
-    |> Repo.update()
+  defp query_service_invites(%{service_id: service_id}) do
+    from ServiceInvite, where: [service_id: ^service_id]
   end
 
   @doc """
-  Deletes a ServiceInvite.
-
-  ## Examples
-
-      iex> delete_service_invite(service_invite)
-      {:ok, %ServiceInvite{}}
-
-      iex> delete_service_invite(service_invite)
-      {:error, %Ecto.Changeset{}}
-
+  Get and order service invites with preloads from the perspective of a service.
+  Which users have been invited to this service?
   """
-  def delete_service_invite(%ServiceInvite{} = service_invite) do
-    Repo.delete(service_invite)
+  def list_service_invites(%{service_id: _service_id} = params) do
+    current_services =
+      from query_service_invites(params),
+        distinct: [:email, :service_id],
+        order_by: [desc: :expires_at],
+        preload: [:sender, :service]
+
+    current_services |> Repo.all()
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking service_invite changes.
-
-  ## Examples
-
-      iex> change_service_invite(service_invite)
-      %Ecto.Changeset{source: %ServiceInvite{}}
-
+  Get all service invites from the perspective of a user.
+  Which services are available to me?
   """
-  def change_service_invite(%ServiceInvite{} = service_invite) do
-    ServiceInvite.changeset(service_invite, %{})
+  def list_user_service_invites(email) do
+    current_services =
+      from query_service_invites(%{email: email}),
+        distinct: [:email, :service_id],
+        order_by: [desc: :expires_at],
+        preload: [:sender, :service]
+
+    current_services |> Repo.all()
+  end
+
+  @doc """
+  Search for a users' invite to a service that has not yet expired.
+  """
+  def get_current_service_invite(email, service_id) do
+    now = DateTime.utc_now()
+
+    current_services =
+      from s in query_service_invites(%{email: email, service_id: service_id}),
+        where: s.disabled == ^false and s.expires_at > ^now
+
+    current_services |> last(:expires_at) |> Repo.one!()
+  end
+
+  @doc """
+  Remove any service invites for an email to a specific service.
+  Do this when granting a user access to a service.
+  """
+  def clear_service_invites(email, service_id) do
+    query_service_invites(%{email: email, service_id: service_id})
+    |> Repo.delete_all()
+  end
+
+  @doc """
+  Check that a user has access to a service and return the pair
+  """
+  def get_user_service(%User{} = user, service_id) do
+    service_user =
+      ServiceUser
+      |> where(user_id: ^user.id, service_id: ^service_id)
+      |> preload([:service, :user])
+      |> Repo.one()
+
+    with %{service: service, user: user} <- service_user do
+      {:ok, %{service: service, user: user}}
+    else
+      nil -> {:error, "user not associated with service"}
+    end
+  end
+
+  def get_invite_role(%ServiceInvite{} = invite) do
+    with %{role: role} <- Repo.preload(invite, :role) do
+      role
+    end
+  end
+
+  @doc """
+  Check that a user has access to a service and return the service
+  """
+  def service_for_user(%User{} = user, service_id) do
+    with {:ok, %{service: service}} <- get_user_service(user, service_id) do
+      service
+    end
+  end
+
+  @doc """
+  Check whether a user has access to a service
+  """
+  def service_has_user?(email, service_id) do
+    with %User{} = user <- get_user_by_email(email),
+         {:ok, _service_user} <- get_user_service(user, service_id) do
+      true
+    else
+      _ -> false
+    end
+  end
+
+  defp second, do: 1
+  defp minute, do: second() * 60
+  defp hour, do: minute() * 60
+  defp day, do: hour() * 24
+
+  def invite_user(
+        %User{id: sender_id} = sender,
+        %{email: email, service_id: service_id, role: role}
+      ) do
+    expires_at = DateTime.utc_now() |> DateTime.add(day() * 5, :second)
+
+    if service_has_user?(email, service_id) do
+      {:error, "user already belongs to service"}
+    else
+      with {:ok, %{service: service}} <- get_user_service(sender, service_id),
+           {:ok, %Role{id: role_id}} <- get_role_by_name(role),
+           {:ok, _service_invite} <-
+             create_service_invite(%{
+               email: email,
+               sender_id: sender_id,
+               service_id: service_id,
+               role_id: role_id,
+               expires_at: expires_at
+             }) do
+        {:ok, service}
+      end
+    end
+  end
+
+  def accept_invite(
+        %User{id: user_id, email: email},
+        %{service_id: service_id}
+      ) do
+    with service_invite <- get_current_service_invite(email, service_id),
+         {:ok, service_user} <-
+           create_service_user(%{
+             user_id: user_id,
+             service_id: service_id,
+             role_id: service_invite.role_id
+           }),
+         %{service: service} <- Repo.preload(service_user, :service) do
+      clear_service_invites(email, service_id)
+      {:ok, service}
+    end
   end
 end

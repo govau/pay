@@ -4,6 +4,7 @@ defmodule Pay.ServicesTest do
   import Pay.Fixtures
 
   alias Pay.Services
+  alias Pay.Support.Associations
 
   describe "permissions" do
     alias Pay.Services.Permission
@@ -690,86 +691,153 @@ defmodule Pay.ServicesTest do
   end
 
   describe "service_invites" do
-    alias Pay.Services.ServiceInvite
-
-    @valid_attrs %{disabled: true, email: "some email", expires_at: "2010-04-17T14:00:00.000000Z"}
-    @update_attrs %{
-      disabled: false,
-      email: "some updated email",
-      expires_at: "2011-05-18T15:01:01.000000Z"
-    }
     @invalid_attrs %{disabled: nil, email: nil, expires_at: nil}
 
-    def service_invite_fixture(attrs \\ %{}) do
-      {:ok, service_invite} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Services.create_service_invite()
+    setup [:create_user, :create_admin_role, :create_service, :create_service_invite]
 
-      service_invite
-    end
+    test "list_service_invites/1 returns all service_invites for a service", %{
+      service: service,
+      service_invite: service_invite
+    } do
+      service_invites =
+        Associations.clear(Services.list_service_invites(%{service_id: service.id}))
 
-    test "list_service_invites/0 returns all service_invites" do
-      service_invite = service_invite_fixture()
-      assert Services.list_service_invites() == [service_invite]
-    end
-
-    test "get_service_invite!/1 returns the service_invite with given id" do
-      service_invite = service_invite_fixture()
-      assert Services.get_service_invite!(service_invite.id) == service_invite
-    end
-
-    test "create_service_invite/1 with valid data creates a service_invite" do
-      assert {:ok, %ServiceInvite{} = service_invite} =
-               Services.create_service_invite(@valid_attrs)
-
-      assert service_invite.disabled == true
-      assert service_invite.email == "some email"
-
-      assert service_invite.expires_at ==
-               DateTime.from_naive!(~N[2010-04-17T14:00:00.000000Z], "Etc/UTC")
+      assert service_invites == [service_invite]
     end
 
     test "create_service_invite/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Services.create_service_invite(@invalid_attrs)
     end
+  end
 
-    test "update_service_invite/2 with valid data updates the service_invite" do
-      service_invite = service_invite_fixture()
+  describe "invite_user" do
+    setup [:create_user, :create_admin_role, :create_service]
 
-      assert {:ok, %ServiceInvite{} = service_invite} =
-               Services.update_service_invite(service_invite, @update_attrs)
-
-      assert service_invite.disabled == false
-      assert service_invite.email == "some updated email"
-
-      assert service_invite.expires_at ==
-               DateTime.from_naive!(~N[2011-05-18T15:01:01.000000Z], "Etc/UTC")
+    @tag associate_service_user: true
+    test "invite_user/2 sets up an invite to a service on behalf of sender", %{
+      user: sender,
+      service: service,
+      admin_role: admin_role
+    } do
+      assert {:ok, %Services.Service{} = service} =
+               Services.invite_user(
+                 sender,
+                 %{email: "invitee@aus.gov.au", service_id: service.id, role: admin_role.name}
+               )
     end
 
-    test "update_service_invite/2 with invalid data returns error changeset" do
-      service_invite = service_invite_fixture()
-
-      assert {:error, %Ecto.Changeset{}} =
-               Services.update_service_invite(service_invite, @invalid_attrs)
-
-      assert service_invite == Services.get_service_invite!(service_invite.id)
+    test "invite_user/2 refuses invites to service when no user access", %{
+      user: sender,
+      service: service,
+      admin_role: admin_role
+    } do
+      assert {:error, _msg} =
+               Services.invite_user(
+                 sender,
+                 %{email: "invitee@aus.gov.au", service_id: service.id, role: admin_role.name}
+               )
     end
 
-    test "delete_service_invite/1 deletes the service_invite" do
-      service_invite = service_invite_fixture()
-      assert {:ok, %ServiceInvite{}} = Services.delete_service_invite(service_invite)
-      assert_raise Ecto.NoResultsError, fn -> Services.get_service_invite!(service_invite.id) end
+    test "invite_user/2 refuses invites when role not present", %{
+      user: sender,
+      service: service
+    } do
+      assert {:error, _msg} =
+               Services.invite_user(
+                 sender,
+                 %{email: "invitee@aus.gov.au", service_id: service.id, role: "serf"}
+               )
     end
 
-    test "change_service_invite/1 returns a service_invite changeset" do
-      service_invite = service_invite_fixture()
-      assert %Ecto.Changeset{} = Services.change_service_invite(service_invite)
+    @tag associate_service_user: true
+    test "invite_user/2 refuses invites when user already exists as part of service", %{
+      user: sender,
+      service: service,
+      admin_role: admin_role
+    } do
+      assert {:error, _msg} =
+               Services.invite_user(
+                 sender,
+                 %{email: sender.email, service_id: service.id, role: admin_role.name}
+               )
+    end
+  end
+
+  describe "accept_invite" do
+    setup [:create_user, :create_admin_role, :create_service, :create_service_invite]
+
+    test "accept_invite/2 fails if no user associated with email", %{
+      service_invite: service_invite
+    } do
+      assert_raise Ecto.NoResultsError, fn ->
+        Services.accept_invite(%Services.User{email: "12345"}, %{
+          service_id: service_invite.service_id
+        })
+      end
+    end
+
+    setup %{service_invite: invite} do
+      {:ok, invited_user} = create_custom_user(%{email: invite.email})
+      {:ok, invited_user: invited_user}
+    end
+
+    test "accept_invite/2 grants a user access to a service", %{
+      service_invite: service_invite,
+      invited_user: invited_user
+    } do
+      assert {:ok, _service} =
+               Services.accept_invite(invited_user, %{service_id: service_invite.service_id})
     end
   end
 
   defp create_admin_role(_) do
     admin_role = fixture(:admin_role)
-    {:ok, admin_role: admin_role}
+    [admin_role: admin_role, default_role: admin_role]
+  end
+
+  defp create_custom_user(attrs) do
+    user_attrs = %{
+      name: "Some User",
+      telephone_number: "some telephone_number"
+    }
+
+    attrs
+    |> Enum.into(user_attrs)
+    |> Services.create_user()
+  end
+
+  defp create_user(_context) do
+    {:ok, user} =
+      create_custom_user(%{
+        email: "some-user@aus.gov.au",
+        external_id: "7488a646-e31f-11e4-aace-600308960662",
+        last_logged_in_at: "2010-04-17T14:00:00.000000Z"
+      })
+
+    [user: user]
+  end
+
+  defp create_service(%{user: user, default_role: role, associate_service_user: true} = _context) do
+    # set up the service with a user if tagged
+    service = fixture(:service, %{user: user, role: role})
+    [service: service]
+  end
+
+  defp create_service(_context) do
+    service = fixture(:service)
+    [service: service]
+  end
+
+  defp create_service_invite(%{user: user, admin_role: admin_role, service: service}) do
+    invite_attrs = %{
+      email: "newly-invited-user@aus.gov.au",
+      expires_at: "2021-05-18T15:01:01.000000Z",
+      role_id: admin_role.id,
+      sender_id: user.id,
+      service_id: service.id
+    }
+
+    {:ok, service_invite} = Services.create_service_invite(invite_attrs)
+    {:ok, service_invite: Associations.clear(service_invite)}
   end
 end

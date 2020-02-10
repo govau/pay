@@ -26,6 +26,7 @@ const colors = {
   payDarkGrey: "#222222",
   payLightGrey: "#F3F2F1",
   payLightBlack: "#6E6E6E",
+  payBadRed: "#DE0D33",
   links: "#1d70b8"
 };
 

@@ -44,6 +44,20 @@ defmodule PayWeb.Schema.ContentTypes do
     value(:live, as: "live")
   end
 
+  object :service_invite do
+    field :id, non_null(:id)
+    field :service_id, non_null(:id)
+    field :service_name, non_null(:string)
+    field :expires_at, non_null(:string)
+    field :is_expired, non_null(:boolean)
+    field :invited_by, non_null(:string)
+    field :email, non_null(:string)
+
+    field :role, non_null(:role) do
+      resolve(&Resolvers.role/3)
+    end
+  end
+
   object :service do
     field :id, non_null(:id)
     field :external_id, non_null(:id)
@@ -74,6 +88,10 @@ defmodule PayWeb.Schema.ContentTypes do
 
     field :users, non_null(list_of(non_null(:service_user))) do
       resolve(&Resolvers.service_users/3)
+    end
+
+    field :invites, non_null(list_of(non_null(:service_invite))) do
+      resolve(&Resolvers.service_invites/3)
     end
   end
 
@@ -314,7 +332,6 @@ defmodule PayWeb.Schema.ContentTypes do
     value(:debit, as: "DEBIT")
     value(:credit, as: "CREDIT")
   end
-
 
   object :card_type do
     field :id, non_null(:id)
