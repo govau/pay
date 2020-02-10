@@ -1,5 +1,6 @@
 defmodule Pay.Fixtures do
   alias Pay.Repo
+  alias Pay.Services
   alias Pay.Services.Role
   alias Pay.Services.Service
   alias Pay.Services.User
@@ -75,6 +76,36 @@ defmodule Pay.Fixtures do
       reference_label: "some reference_label",
       reference_hint: "some reference_hint"
     })
+  end
+
+  def fixture(:service, %{
+        user: %User{} = user,
+        role: %Role{} = role
+      }) do
+    service = fixture(:service)
+
+    fixture(:service_user, %{
+      user: user,
+      role: role,
+      service: service
+    })
+
+    service
+  end
+
+  def fixture(:service_user, %{
+        service: %Service{} = service,
+        user: %User{} = user,
+        role: %Role{} = role
+      }) do
+    {:ok, service_user} =
+      Services.create_service_user(%{
+        user_id: user.id,
+        service_id: service.id,
+        role_id: role.id
+      })
+
+    service_user
   end
 
   def fixture(:payment, gateway_account) do

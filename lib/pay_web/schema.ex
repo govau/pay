@@ -34,6 +34,11 @@ defmodule PayWeb.Schema do
     end
 
     @desc "Services that the active user can access"
+    field :service_invites, non_null(list_of(non_null(:service_invite))) do
+      resolve(&Resolvers.service_invites/2)
+    end
+
+    @desc "Services that the active user can access"
     field :service, non_null(:service) do
       arg(:id, non_null(:id))
       resolve(&Resolvers.service/3)
@@ -65,6 +70,22 @@ defmodule PayWeb.Schema do
 
   mutation do
     # "Console"
+
+    @desc "Invite a user to your service"
+    field :invite_user, type: non_null(:service) do
+      arg(:service_id, non_null(:id))
+      arg(:email, non_null(:string))
+      arg(:role, non_null(:string))
+
+      resolve(&Resolvers.Mutations.Console.invite_user/2)
+    end
+
+    @desc "Accept a pending service invite"
+    field :accept_invite, type: non_null(:service) do
+      arg(:service_id, non_null(:id))
+
+      resolve(&Resolvers.Mutations.Console.accept_invite/2)
+    end
 
     @desc "Create a service"
     field :create_service, type: non_null(:service) do

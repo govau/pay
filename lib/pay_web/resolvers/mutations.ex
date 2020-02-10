@@ -10,6 +10,24 @@ defmodule PayWeb.Resolvers.Mutations do
       Services.create_service(user, service_params)
     end
 
+    def invite_user(
+          %{service_id: service_id, role: role, email: invited_email},
+          %{context: %{current_user: sender}}
+        ) do
+      Services.invite_user(sender, %{
+        service_id: service_id,
+        email: invited_email,
+        role: role
+      })
+    end
+
+    def accept_invite(
+          %{service_id: service_id},
+          %{context: %{current_user: user}}
+        ) do
+      Services.accept_invite(user, %{service_id: service_id})
+    end
+
     def update_service(_, %{id: service_id, service: service_params}, _) do
       service = Services.get_service_by_external_id!(service_id)
       Services.update_service(service, service_params)
@@ -46,15 +64,15 @@ defmodule PayWeb.Resolvers.Mutations do
           },
           _
         ) do
-          Pay.Payments.clear_gateway_account_card_types(gateway_account_id)
+      Pay.Payments.clear_gateway_account_card_types(gateway_account_id)
 
-          Enum.each(card_type_ids, fn card_type_id ->
-            {:ok, _} = Payments.create_gateway_account_card_type(%{
-              gateway_account_id: gateway_account_id,
-              card_type_id: card_type_id
-            })
-          end
-          )
+      Enum.each(card_type_ids, fn card_type_id ->
+        {:ok, _} =
+          Payments.create_gateway_account_card_type(%{
+            gateway_account_id: gateway_account_id,
+            card_type_id: card_type_id
+          })
+      end)
 
       {:ok, Payments.get_gateway_account!(gateway_account_id)}
     end

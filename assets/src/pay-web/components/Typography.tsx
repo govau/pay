@@ -138,6 +138,11 @@ export const P = styled.p`
   }
 `;
 
+export const Hint = styled.span`
+  color: ${props => props.theme.colors.payLightBlack};
+  font-size: 1.3rem;
+`;
+
 export const Strong = styled.strong`
   font-weight: 700;
 `;

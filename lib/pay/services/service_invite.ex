@@ -7,9 +7,10 @@ defmodule Pay.Services.ServiceInvite do
     field :disabled, :boolean, default: false
     field :email, :string
     field :expires_at, :utc_datetime_usec
-    field :service_id, :id
-    field :role_id, :id
-    field :sender_id, :id
+
+    belongs_to :service, Pay.Services.Service
+    belongs_to :role, Pay.Services.Role
+    belongs_to :sender, Pay.Services.User
 
     timestamps()
   end
@@ -17,7 +18,7 @@ defmodule Pay.Services.ServiceInvite do
   @doc false
   def changeset(service_invite, attrs) do
     service_invite
-    |> cast(attrs, [:email, :expires_at, :disabled])
-    |> validate_required([:email, :expires_at, :disabled])
+    |> cast(attrs, [:email, :service_id, :role_id, :sender_id, :expires_at, :disabled])
+    |> validate_required([:email, :service_id, :role_id, :sender_id, :expires_at, :disabled])
   end
 end

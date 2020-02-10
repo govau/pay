@@ -5,6 +5,27 @@ fragment Service on Service {
   currentGoLiveStage
 }
 
+fragment Role on Role {
+  id
+  name
+  description
+}
+
+fragment ServiceInvite on ServiceInvite {
+  id
+  serviceId
+  serviceName
+  expiresAt
+  isExpired
+  invitedBy
+  email
+  role {
+    id
+    name
+    description
+  }
+}
+
 fragment GatewayAccount on GatewayAccount {
   id
   externalId
@@ -81,6 +102,10 @@ query GetUserServices {
   services {
     ...Service
   }
+
+  serviceInvites {
+    ...ServiceInvite
+  }
 }
 
 query GetService($id: ID!) {
@@ -105,6 +130,10 @@ query GetServiceWithUsers($id: ID!) {
         description
       }
     }
+
+    invites {
+      ...ServiceInvite
+    }
   }
 }
 
@@ -119,6 +148,18 @@ query GetServiceWithGatewayAccounts($id: ID!) {
 
 mutation CreateService($input: CreateServiceInput!) {
   service: createService(service: $input) {
+    ...Service
+  }
+}
+
+mutation InviteUser($serviceID: ID!, $email: String!, $role: String!) {
+  service: inviteUser(serviceId: $serviceID, email: $email, role: $role) {
+    ...Service
+  }
+}
+
+mutation AcceptInvite($serviceID: ID!) {
+  service: acceptInvite(serviceId: $serviceID) {
     ...Service
   }
 }
@@ -181,6 +222,7 @@ mutation UpdateGatewayAccountCredentials(
 
 query GetProducts($serviceID: ID!) {
   service(id: $serviceID) {
+    id
     gatewayAccounts {
       products {
         ...Product
@@ -197,6 +239,7 @@ mutation CreateProduct($gatewayAccountId: ID!, $input: CreateProductInput!) {
 
 query GetPayments($serviceID: ID!) {
   service(id: $serviceID) {
+    id
     gatewayAccounts {
       ...GatewayAccount
       payments {

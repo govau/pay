@@ -21,12 +21,7 @@ const { ThemeProvider } = styledComponents;
 const tokenizedClient = (token: string | null) =>
   new ApolloClient({
     link: authenticatedLink(token),
-    cache: defaultCache,
-    defaultOptions: {
-      watchQuery: {
-        fetchPolicy: "no-cache"
-      }
-    }
+    cache: defaultCache
   });
 
 const useIDTokenClaims = () => {

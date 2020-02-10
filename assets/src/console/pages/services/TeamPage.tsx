@@ -5,7 +5,8 @@ import * as Table from "@pay/web/components/Table";
 
 import {
   useGetServiceWithUsersQuery,
-  ServiceUser
+  ServiceUser,
+  ServiceInvite
 } from "../../__generated__/graphql";
 import { BreadBox } from "@pay/web/components/Breadcrumb";
 import { usePayUser } from "../../../users";
@@ -16,14 +17,15 @@ const MemberTable: React.FC<{
   serviceID: string;
   currentUser: User | undefined;
   users: ServiceUser[];
-}> = ({ serviceID, users, currentUser }) => (
+  invites: ServiceInvite[];
+}> = ({ serviceID, currentUser, users, invites }) => (
   <Table.ResponsiveWrapper>
     <Table.Table>
       <thead>
         <Table.Row>
           <Table.Header>Email address</Table.Header>
           <Table.Header>Role</Table.Header>
-          <Table.Header>Last login date</Table.Header>
+          <Table.Header>Status</Table.Header>
         </Table.Row>
       </thead>
       <tbody>
@@ -40,7 +42,15 @@ const MemberTable: React.FC<{
                 : null}
             </Table.Cell>
             <Table.Cell>{user.role.description}</Table.Cell>
-            <Table.Cell>{user.updatedAt}</Table.Cell>
+            <Table.Cell>Active</Table.Cell>
+          </Table.Row>
+        ))}
+
+        {invites.map(invite => (
+          <Table.Row key={`invite-${invite.email}`}>
+            <Table.Cell> {invite.email}</Table.Cell>
+            <Table.Cell>{invite.role.description}</Table.Cell>
+            <Table.Cell>Invited</Table.Cell>
           </Table.Row>
         ))}
       </tbody>
@@ -82,6 +92,7 @@ const TeamPage: React.FC<props> = ({ service }) => {
         <MemberTable
           serviceID={getQuery.data.service.externalId}
           users={getQuery.data.service.users}
+          invites={getQuery.data.service.invites}
           currentUser={user}
         />
       </SidebarLayout>

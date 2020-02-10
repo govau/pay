@@ -3,6 +3,10 @@ defmodule Pay.Support.Associations do
     clear(schema, struct.__schema__(:associations))
   end
 
+  def clear(schemas) when is_list(schemas) do
+    Enum.map(schemas, &clear/1)
+  end
+
   def clear(%{__struct__: _} = schema, associations) when is_list(associations) do
     Enum.reduce(
       associations,
