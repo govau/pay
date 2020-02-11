@@ -17,6 +17,7 @@ import {
 import {
   GatewayAccountFragment,
   useUpdateGatewayAccountCardTypesMutation,
+  UpdateGatewayAccountCardTypesDocument,
   CardTypeBrand,
   CardTypeType,
   ServiceFragment
@@ -29,7 +30,7 @@ import { CardType } from "../../../auth/__generated__/graphql";
 import { BreadBox } from "@pay/web/components/Breadcrumb";
 
 interface FormValues {
-  cardTypes: Array<string>;
+  cardTypeIds: Array<string>;
 }
 
 const decorators = [createDecorator<FormValues>()];
@@ -58,7 +59,7 @@ const getCardTypesList = (data: CardTypesQuery, type: string) => {
     .map(cardType => (
       <React.Fragment key={cardType.id}>
         <Checkbox
-          name="cardTypes"
+          name="cardTypeIds"
           label={getCardTypeBrand(cardType)}
           value={cardType.id}
         />
@@ -72,9 +73,9 @@ const CardTypesPage: React.FC<Props> = ({ service, gatewayAccount }) => {
     updateGatewayAccountCardTypes
   ] = useUpdateGatewayAccountCardTypesMutation();
   const { loading, error, data } = useCardTypesQuery({ errorPolicy: "all" });
-  const [initialCardValues, setInitialCardValues] = React.useState(
+  /*const [initialCardValues, setInitialCardValues] = React.useState(
     gatewayAccount.cardTypes.map(cardType => cardType.id)
-  );
+  );*/
 
   return (
     <>
@@ -91,16 +92,36 @@ const CardTypesPage: React.FC<Props> = ({ service, gatewayAccount }) => {
       <P>Choose which credit and debit cards you want to accept.</P>
       <Form<FormValues>
         initialValues={{
-          cardTypes: initialCardValues
+          cardTypeIds: gatewayAccount.cardTypes.map(cardType => cardType.id)
         }}
         onSubmit={async values => {
           await updateGatewayAccountCardTypes({
             variables: {
               gatewayAccountId: gatewayAccount.id,
-              cardTypeIds: values.cardTypes
+              cardTypeIds: values.cardTypeIds
+            },
+            update(cache, { data }) {
+              console.log("Data is", data);
+              console.log("Inside update- cache is", cache);
+              if (!data) return null;
+              cache.writeQuery({
+                query: UpdateGatewayAccountCardTypesDocument,
+                data: {
+                  cardType: [data.cardType]
+                }
+              });
+              /*const cardTypes = data.cardTypes.map(cardType => cardType.cardTypeIds)
+              cache.writeQuery({
+                query: UpdateGatewayAccountCardTypesDocument,
+                data: {
+                  cardTypeIds: data.concat([
+                    updateGatewayAccountCardTypes
+                  ])
+                }
+              });*/
             }
           });
-          setInitialCardValues(values.cardTypes);
+          //setInitialCardValues(values.cardTypes);
         }}
         column
         decorators={decorators}

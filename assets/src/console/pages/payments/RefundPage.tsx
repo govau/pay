@@ -103,7 +103,7 @@ const RefundPage: React.FC<Props> = ({
 
       {submitRefundResult.error ? (
         <ErrorAlert
-          title="Unable to retrieve events"
+          title="Unable to submit refund"
           message={submitRefundResult.error && submitRefundResult.error.message}
           showError
         />

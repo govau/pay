@@ -312,6 +312,14 @@ defmodule Pay.Payments do
   def get_payment_by_external_id!(external_id),
     do: Repo.get_by!(query_payments(), external_id: external_id)
 
+  def get_payment_successful(%Payment{} = payment) do
+    with gateway_transaction_id when not is_nil(gateway_transaction_id) <- payment.gateway_transaction_id do
+      {:ok, payment}
+    else
+      _ -> {:error, "Cannot refund a failed payment"}
+    end
+  end
+
   defp create_payment_changeset(attrs) do
     alias Payments.Payment.Statuses
     created = Statuses.initial() |> Statuses.status()

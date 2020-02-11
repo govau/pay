@@ -25,7 +25,7 @@ defmodule PayWeb.Resolvers.Mutations do
           %{context: %{current_user: current_user}}
         ) do
       with payment <- Payments.get_payment_by_external_id!(payment_id),
-           gateway_transaction_id when not is_nil(gateway_transaction_id) <- payment.gateway_transaction_id,
+           {:ok, Payments.get_payment_successful(payment)},
            gateway <- Payments.GatewayAccount.payment_provider(payment.gateway_account),
            {:ok, %{reference: refund_reference}} <-
              Payments.Gateway.refund_payment(gateway, payment, %{amount: amount}) do
@@ -35,8 +35,6 @@ defmodule PayWeb.Resolvers.Mutations do
           gateway_transaction_id: refund_reference,
           user_external_id: current_user.external_id
         })
-        else
-          _ -> {:error, "Cannot refund a failed payment"}
       end
     end
 
