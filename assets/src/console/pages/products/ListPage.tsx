@@ -2,12 +2,13 @@ import * as React from "react";
 import { useRouteMatch } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import {
+  TODO,
   PageTitle,
   Loader,
   ErrorAlert,
   Link,
-  P,
   Warning,
+  P,
   styled
 } from "@pay/web";
 
@@ -33,25 +34,22 @@ const Ul = styled.ul`
 
 const Li = styled.li`
   margin: 1rem 0 3rem;
-  & ${P} {
+  ${P} {
     font-weight: 700;
     margin-bottom: 0;
   }
 `;
 
-const ColouredLink = styled(Link)`
+const RedLink = styled(Link)`
   ${Link}
 `;
 
 const LinkWrapper = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  & ${ColouredLink} {
+  ${RedLink} {
     color: #de0d33;
     margin-right: 2rem;
   }
-  & ${Link} {
+  ${Link} {
     margin-right: 2rem;
   }
 `;
@@ -74,51 +72,53 @@ const ListPage: React.FC<props> = ({ service, gatewayAccount }) => {
         <title>Payment links - {service.name}</title>
       </Helmet>
       <PageTitle title="Manage payment links" />
-      <SidebarLayout
-        sidebar={<Link to={`${url}/create`}>Create a payment link</Link>}
-      >
-        {loading ? (
-          <Loader message="Loading payment links" />
-        ) : error || !data ? (
-          <ErrorAlert
-            title="Unable to retrieve payment links"
-            message={error && error.message}
-            showError
-          />
-        ) : (
-          <>
-            {flatMap(
-              gatewayAccount => gatewayAccount.products,
-              data.service.gatewayAccounts
-            ).length === 0 && (
-              <Warning>
-                <P>You don’t have any payment links.</P>
-              </Warning>
-            )}
-            <Ul>
+      <TODO>
+        <SidebarLayout
+          sidebar={<Link to={`${url}/create`}>Create a payment link</Link>}
+        >
+          {loading ? (
+            <Loader message="Loading payment links" />
+          ) : error || !data ? (
+            <ErrorAlert
+              title="Unable to retrieve payment links"
+              message={error && error.message}
+              showError
+            />
+          ) : (
+            <>
               {flatMap(
                 gatewayAccount => gatewayAccount.products,
                 data.service.gatewayAccounts
-              ).map(({ externalId, name, nameSlug, serviceNameSlug }, _) => (
-                <Li key={externalId}>
-                  <P>{name}</P>
-                  <Link to={`/products/${serviceNameSlug}/${nameSlug}`}>
-                    /payments/{serviceNameSlug}/{nameSlug}
-                  </Link>
-                  <LinkWrapper>
-                    <Link color="blue" to="/TODO">
-                      edit
+              ).length === 0 && (
+                <Warning>
+                  <P>You don’t have any payment links.</P>
+                </Warning>
+              )}
+              <Ul>
+                {flatMap(
+                  gatewayAccount => gatewayAccount.products,
+                  data.service.gatewayAccounts
+                ).map(({ externalId, name, nameSlug, serviceNameSlug }, _) => (
+                  <Li key={externalId}>
+                    <P>{name}</P>
+                    <Link to={`/products/${serviceNameSlug}/${nameSlug}`}>
+                      /payments/{serviceNameSlug}/{nameSlug}
                     </Link>
-                    <ColouredLink to="/TODO">disable</ColouredLink>
-                    <ColouredLink to="/TODO">delete</ColouredLink>
-                  </LinkWrapper>
-                </Li>
-              ))}
-            </Ul>
-            <h2>Disabled payment links</h2>
-          </>
-        )}
-      </SidebarLayout>
+                    <LinkWrapper>
+                      <Link color="blue" to="/TODO">
+                        edit
+                      </Link>
+                      <RedLink to="/TODO">disable</RedLink>
+                      <RedLink to="/TODO">delete</RedLink>
+                    </LinkWrapper>
+                  </Li>
+                ))}
+              </Ul>
+              <h2>Disabled payment links</h2>
+            </>
+          )}
+        </SidebarLayout>
+      </TODO>
     </>
   );
 };
