@@ -42,6 +42,8 @@ defmodule PayWeb.Schema.InputTypes do
   end
 
   input_object :bambora_credentials_input do
+    # TODO: could it be :bambora_environment? can't get it to work
+    field :environment, non_null(:string)
     field :merchant_id, non_null(:string)
     field :api_username, non_null(:string)
     field :api_password, :string

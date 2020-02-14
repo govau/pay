@@ -16,7 +16,7 @@ defmodule PayWeb.GatewayAccountCredentialsView do
   def render("gateway_account_credentials.json", %{gateway_account: gateway_account}) do
     case Pay.Payments.GatewayAccount.Provider.from_string(gateway_account.payment_provider) do
       :bambora ->
-        Map.take(gateway_account.credentials, ["merchant_id", "account_number", "api_username"])
+        Map.take(gateway_account.credentials, ["environment", "merchant_id", "account_number", "api_username"])
 
       :sandbox ->
         %{}

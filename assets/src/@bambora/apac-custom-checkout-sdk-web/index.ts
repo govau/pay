@@ -1,3 +1,8 @@
+export enum Environment {
+  Test = "test",
+  Live = "live"
+}
+
 type cssProps =
   | "color"
   | "fontFamily"

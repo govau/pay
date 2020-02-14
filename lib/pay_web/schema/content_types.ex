@@ -237,7 +237,14 @@ defmodule PayWeb.Schema.ContentTypes do
     interface(:transaction_event)
   end
 
+  enum :bambora_environment do
+    value(:test, as: "test")
+    value(:live, as: "live")
+  end
+
   object :bambora_credentials do
+    # TODO: could it be :bambora_environment? can't get it to work
+    field :environment, :string
     field :merchant_id, :string
     field :account_number, :string
     field :api_username, :string

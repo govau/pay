@@ -4,8 +4,16 @@ defmodule Pay.Payments.Gateway.BamboraGateway do
 
   @spec from_credentials(map) :: Pay.Payments.Gateway.BamboraGateway.t()
   def from_credentials(credentials) do
+    base_url =
+      if credentials["environment"] == "live" do
+        "https://www.ippayments.com.au/interface/api/dts.asmx"
+      else
+        "https://demo.ippayments.com.au/interface/api/dts.asmx"
+      end
+
     %__MODULE__{
       client: %Bambora.Client.SOAP{
+        base_url: base_url,
         username: credentials["api_username"],
         password: credentials["api_password"]
       }

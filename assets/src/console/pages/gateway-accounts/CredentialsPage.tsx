@@ -10,6 +10,19 @@ import {
 } from "../../__generated__/graphql";
 import { isBamboraCredentials } from "../../../payments";
 import { BreadBox } from "@pay/web/components/Breadcrumb";
+import { Environment as BamboraEnvironment } from "@bambora/apac-custom-checkout-sdk-web";
+
+// TODO: want to use BamboraEnvironment not string
+const bamboraEnvironmentLabel = (env?: null | string) => {
+  switch (env) {
+    case BamboraEnvironment.Test:
+      return "Test";
+    case BamboraEnvironment.Live:
+      return "Live";
+    default:
+      return "";
+  }
+};
 
 const SandboxCredentialsPage: React.FC = () => (
   <P>
@@ -26,6 +39,10 @@ const BamboraCredentialsPage: React.FC<{
     <table>
       <caption>Your Bambora credentials</caption>
       <tbody>
+        <tr>
+          <th>Environment</th>
+          <td>{bamboraEnvironmentLabel(credentials.environment)}</td>
+        </tr>
         <tr>
           <th>Merchant ID</th>
           <td>{credentials.merchantId}</td>

@@ -1,5 +1,0 @@
-type Query {
-  organisations: [Organisation!]!
-  services: [Service!]!
-  cardTypes: [CardType!]!
-}

@@ -15,12 +15,14 @@ import {
   Warning,
   P
 } from "@pay/web";
-
+import { Label, Description } from "@pay/web/components/form";
+import { Environment as BamboraEnvironment } from "@bambora/apac-custom-checkout-sdk-web";
 import {
   PaymentProviderLabel,
   BamboraCredentials
 } from "../../../__generated__/schema";
 import {
+  GetGatewayAccountDocument,
   UpdateGatewayAccountCredentialsMutationFn,
   useUpdateGatewayAccountCredentialsMutation,
   GatewayAccountFragment,
@@ -31,8 +33,10 @@ import {
   gatewayAccountFullType,
   isBamboraCredentials
 } from "../../../payments";
+import BamboraEnvironmentRadio from "./BamboraEnvironmentRadio";
 
 interface FormValues {
+  environment: string; // TODO: want to use BamboraEnvironment not string
   merchantId: string;
   accountNumber: string;
   apiUsername: string;
@@ -59,7 +63,13 @@ const handleSubmit = (
   return async (values: FormValues) => {
     try {
       await updateCredentials({
-        variables: { gatewayAccountId: id, input: values }
+        variables: { gatewayAccountId: id, input: values },
+        refetchQueries: [
+          {
+            query: GetGatewayAccountDocument,
+            variables: { id }
+          }
+        ]
       });
     } catch (e) {}
   };
@@ -93,6 +103,8 @@ const EditBamboraCredentialsPage: React.FC<{
       <Form<FormValues>
         onSubmit={handleSubmit(gatewayAccount.externalId, updateCredentials)}
         initialValues={{
+          environment:
+            gatewayAccount.credentials.environment || BamboraEnvironment.Live,
           merchantId: gatewayAccount.credentials.merchantId || "",
           accountNumber: gatewayAccount.credentials.accountNumber || "",
           apiUsername: gatewayAccount.credentials.apiUsername || "",
@@ -121,8 +133,24 @@ const EditBamboraCredentialsPage: React.FC<{
               message={getErrorMessage(updateMutation.error)}
               showError={Boolean(updateMutation.error)}
             />
+            <Label>Environment</Label>
+            <Description>
+              This is the type of environment that Bambora created for you. If
+              you are unsure, choose the live environment.
+            </Description>
+            <BamboraEnvironmentRadio
+              name="environment"
+              value={BamboraEnvironment.Test}
+              label="Test"
+              first
+            />
+            <BamboraEnvironmentRadio
+              name="environment"
+              value={BamboraEnvironment.Live}
+              label="Live"
+            />
             <Field
-              name="merchant_id"
+              name="merchantId"
               label="Merchant ID"
               description="This should be a UUID/GUID. For example, “21019d65-bf62-437b-b51d-30ec2107193f”."
               validate={validators.required("Enter a merchant ID")}
@@ -132,7 +160,7 @@ const EditBamboraCredentialsPage: React.FC<{
               )}
             </Field>
             <Field
-              name="account_number"
+              name="accountNumber"
               label="Account number (optional)"
               description="Only required if an account number was given to you by Bambora."
             >
@@ -141,7 +169,7 @@ const EditBamboraCredentialsPage: React.FC<{
               )}
             </Field>
             <Field
-              name="api_username"
+              name="apiUsername"
               label="API username"
               description="This is the API username given to you by Bambora. For example, “YourOrg.live.api”."
               validate={validators.required("Enter an API username")}
@@ -151,7 +179,7 @@ const EditBamboraCredentialsPage: React.FC<{
               )}
             </Field>
             <Field
-              name="api_password"
+              name="apiPassword"
               label="API password"
               description="This is the API password given to you by Bambora."
               validate={validators.required("Enter an API password")}

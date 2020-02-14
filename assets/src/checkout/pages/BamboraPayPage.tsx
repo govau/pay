@@ -2,6 +2,7 @@ import * as React from "react";
 import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
 import CustomCheckout, {
+  Environment as BamboraEnvironment,
   isTokenResultError,
   Field,
   Brand
@@ -28,6 +29,18 @@ import CardForm, {
   classNames as cardFormClassNames
 } from "../components/BamboraCardForm";
 import Summary from "../components/Summary";
+
+// TODO: want to use BamboraEnvironment not string
+const bamboraURL = (env?: null | string) => {
+  switch (env) {
+    case BamboraEnvironment.Live:
+      return "https://customcheckout.bambora.com.au/1.0.0/customcheckout.js";
+    case BamboraEnvironment.Test:
+    // fallthrough
+    default:
+      return "https://customcheckout-uat.bambora.net.au/1.0.0/customcheckout.js";
+  }
+};
 
 const mountFields = (
   checkout: CustomCheckout,
@@ -216,8 +229,7 @@ const BamboraPayPage: React.FC<Props> = ({
   }, [gatewayAccount, fieldComplete, fieldError, cardBrand, cardTypes]);
 
   const loadCheckout = useLoadCheckout({
-    // TODO: different script for demo/test or prod environment
-    src: "https://customcheckout-uat.bambora.net.au/1.0.0/customcheckout.js",
+    src: bamboraURL(gatewayAccount.credentials.environment),
     onLoad: onCheckoutLoad
   });
   const createOTT = useCreateOTT(

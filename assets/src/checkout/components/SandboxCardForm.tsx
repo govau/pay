@@ -12,14 +12,21 @@ const ExpiryInputWrapper = styled.div`
   width: 6em;
 `;
 
-const decorators = [createDecorator()];
+interface FormValues {
+  cardNumber: string;
+  expiryDate: string;
+  cvv: string;
+  email: string;
+}
+
+const decorators = [createDecorator<FormValues>()];
 
 interface Props {
   onSubmit(): void;
 }
 
 const SandboxCardForm: React.FC<Props> = ({ children, onSubmit }) => (
-  <Form onSubmit={onSubmit} column decorators={decorators}>
+  <Form<FormValues> onSubmit={onSubmit} column decorators={decorators}>
     <Field name="cardNumber" label="Card number">
       {({ input, ariaProps, ...rest }) => (
         <BasicTextInput
