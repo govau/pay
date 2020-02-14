@@ -72,23 +72,12 @@ const CardTypesPage: React.FC<Props> = ({ service, gatewayAccount }) => {
   const [
     updateGatewayAccountCardTypes
   ] = useUpdateGatewayAccountCardTypesMutation({
-    update: (cache, mutationResult) => {
-      if (!mutationResult.data) {
-        return;
-      }
-
-      const { gatewayAccount } = mutationResult.data;
-
-      cache.writeQuery({
+    refetchQueries: [
+      {
         query: GetGatewayAccountDocument,
-        variables: {
-          id: gatewayAccount.externalId
-        },
-        data: {
-          gatewayAccount
-        }
-      });
-    }
+        variables: { id: gatewayAccount.externalId }
+      }
+    ]
   });
   const { loading, error, data } = useCardTypesQuery({ errorPolicy: "all" });
 
