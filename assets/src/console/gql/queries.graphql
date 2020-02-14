@@ -49,6 +49,7 @@ fragment GatewayAccount on GatewayAccount {
   paymentProvider
   credentials {
     ... on BamboraCredentials {
+      environment
       merchantId
       accountNumber
       apiUsername
@@ -62,6 +63,7 @@ fragment GatewayAccount on GatewayAccount {
 
 fragment GatewayAccountCredentials on GatewayAccountCredentials {
   ... on BamboraCredentials {
+    environment
     merchantId
     accountNumber
     apiUsername

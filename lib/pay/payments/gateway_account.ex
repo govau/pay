@@ -92,7 +92,7 @@ defmodule Pay.Payments.GatewayAccount do
 
   defmodule Credentials do
     defmodule BamboraCredentials do
-      defstruct merchant_id: "", account_number: "", api_username: ""
+      defstruct environment: "", merchant_id: "", account_number: "", api_username: ""
     end
 
     defmodule SandboxCredentials do

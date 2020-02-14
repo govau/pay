@@ -1,4 +1,5 @@
 {
+  "ENVIRONMENT": "test",
   "MERCHANT_ID": "",
   "ACCOUNT_NUMBER": "",
   "API_USERNAME": "",

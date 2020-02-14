@@ -9,10 +9,6 @@ query_plugins: &query_plugins
   - "typescript-operations"
   - "typescript-react-apollo"
 
-query_options: &query_options
-  config: *query_config
-  plugins: *query_plugins
-
 overwrite: true
 schema: http://localhost:4000/api/v1/internal/graphql
 generates:
@@ -33,28 +29,31 @@ generates:
       - "src/checkout/gql/queries.graphql"
     plugins:
       - "fragment-matcher"
-
   src/__generated__/schema.ts:
     plugins:
       - "typescript"
-
   src/auth/__generated__/graphql.tsx:
     documents:
       - src/auth/gql/queries.graphql
-    <<: *query_options
+    config: *query_config
+    plugins: *query_plugins
   src/console/__generated__/graphql.tsx:
     documents:
       - src/console/gql/queries.graphql
-    <<: *query_options
+    config: *query_config
+    plugins: *query_plugins
   src/checkout/__generated__/graphql.tsx:
     documents:
       - src/checkout/gql/queries.graphql
-    <<: *query_options
+    config: *query_config
+    plugins: *query_plugins
   src/platform-admin/__generated__/graphql.tsx:
     documents:
       - src/platform-admin/gql/queries.graphql
-    <<: *query_options
+    config: *query_config
+    plugins: *query_plugins
   src/products/__generated__/graphql.tsx:
     documents:
       - src/products/gql/queries.graphql
-    <<: *query_options
+    config: *query_config
+    plugins: *query_plugins

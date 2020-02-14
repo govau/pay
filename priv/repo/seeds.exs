@@ -350,7 +350,13 @@ service2_live_gateway_account =
     type: GatewayAccount.type(:live),
     service_name: "Service 2",
     credentials:
-      with {:ok, merchant_id} <-
+      with {:ok, environment} <-
+             Pay.VCAP.user_provided(
+               "pay-bambora",
+               "ENVIRONMENT",
+               System.get_env("BAMBORA_ENVIRONMENT", "")
+             ),
+           {:ok, merchant_id} <-
              Pay.VCAP.user_provided(
                "pay-bambora",
                "MERCHANT_ID",
@@ -375,6 +381,7 @@ service2_live_gateway_account =
                System.get_env("BAMBORA_API_PASSWORD", "")
              ) do
         %{
+          "environment" => environment,
           "merchant_id" => merchant_id,
           "account_number" => account_number,
           "api_username" => api_username,
@@ -486,7 +493,13 @@ service3_live_gateway_account_external_id =
     type: GatewayAccount.type(:live),
     service_name: "Service 3",
     credentials:
-      with {:ok, merchant_id} <-
+      with {:ok, environment} <-
+             Pay.VCAP.user_provided(
+               "pay-bambora",
+               "ENVIRONMENT",
+               System.get_env("BAMBORA_ENVIRONMENT", "")
+             ),
+           {:ok, merchant_id} <-
              Pay.VCAP.user_provided(
                "pay-bambora",
                "MERCHANT_ID",
@@ -511,6 +524,7 @@ service3_live_gateway_account_external_id =
                System.get_env("BAMBORA_API_PASSWORD", "")
              ) do
         %{
+          "environment" => environment,
           "merchant_id" => merchant_id,
           "account_number" => account_number,
           "api_username" => api_username,

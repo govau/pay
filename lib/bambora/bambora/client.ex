@@ -4,20 +4,20 @@ defprotocol Bambora.Client do
 end
 
 defmodule Bambora.Client.SOAP do
-  @base_url "https://demo.bambora.co.nz/interface/api/dts.asmx"
-  @enforce_keys [:username, :password]
-  defstruct [:username, :password]
+  @enforce_keys [:base_url, :username, :password]
+  defstruct [:base_url, :username, :password]
 
-  @spec bambora_wsdl() :: map
-  defp bambora_wsdl do
-    with {:ok, wsdl} <- Soap.init_model("#{@base_url}?WSDL", :url) do
+  @spec bambora_wsdl(String.t()) :: map
+  defp bambora_wsdl(base_url) do
+    with {:ok, wsdl} <- Soap.init_model("#{base_url}?WSDL", :url) do
       wsdl
     end
   end
 
-  @spec call(Soap.Request.Params.t(), String.t()) :: {:ok, map()} | {:error, String.t()}
-  def call(request, operation) do
-    with {:ok, response} <- Soap.call(bambora_wsdl(), operation, request) do
+  @spec call(Soap.Request.Params.t(), String.t(), String.t()) ::
+          {:ok, map()} | {:error, String.t()}
+  def call(request, operation, base_url) do
+    with {:ok, response} <- Soap.call(bambora_wsdl(base_url), operation, request) do
       {:ok, Soap.Response.parse(response)}
     end
   end
@@ -37,7 +37,7 @@ defimpl Bambora.Client, for: Bambora.Client.SOAP do
     service.build_body(params)
     |> Bambora.Auth.authorise(t)
     |> Bambora.Request.prepare(service.envelope)
-    |> Bambora.Client.SOAP.call(service.operation)
+    |> Bambora.Client.SOAP.call(service.operation, t.base_url)
     |> Bambora.Service.decode(service)
   end
 end

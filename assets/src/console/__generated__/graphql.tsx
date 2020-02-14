@@ -24,6 +24,7 @@ export type BamboraCredentials = {
   __typename?: "BamboraCredentials";
   accountNumber?: Maybe<Scalars["String"]>;
   apiUsername?: Maybe<Scalars["String"]>;
+  environment?: Maybe<Scalars["String"]>;
   merchantId?: Maybe<Scalars["String"]>;
 };
 
@@ -31,6 +32,7 @@ export type BamboraCredentialsInput = {
   accountNumber?: Maybe<Scalars["String"]>;
   apiPassword?: Maybe<Scalars["String"]>;
   apiUsername: Scalars["String"];
+  environment: Scalars["String"];
   merchantId: Scalars["String"];
 };
 
@@ -247,27 +249,19 @@ export type Role = {
 
 export type RootMutationType = {
   __typename?: "RootMutationType";
-  /** Accept a pending service invite */
   acceptInvite: Service;
-  /** Create a product */
   createProduct: Product;
-  /** instantiate a product payment */
   createProductPayment: ProductPayment;
-  /** Create a service */
   createService: Service;
-  /** Invite a user to your service */
   inviteUser: Service;
   signout: Signout;
   submitBamboraPayment: Payment;
   submitProductPayment: ProductPayment;
-  /** Submit a payment refund */
   submitRefund: PaymentRefund;
   submitSandboxPayment: Payment;
-  /** Update a gateway account card types */
   updateGatewayAccountCardTypes: GatewayAccount;
   updateGatewayAccountCredentials: GatewayAccount;
   updateProductPayment: ProductPayment;
-  /** Submit the details of an existing service */
   updateService: Service;
 };
 
@@ -339,23 +333,17 @@ export type RootMutationTypeUpdateServiceArgs = {
 
 export type RootQueryType = {
   __typename?: "RootQueryType";
-  /** Access all resources based on admin rights */
   admin: Admin;
   cardTypes: Array<CardType>;
   gatewayAccount: GatewayAccount;
-  /** Get the currently authenticated user */
   me?: Maybe<User>;
   organisations: Array<Organisation>;
   payment: Payment;
   productPayment: ProductPayment;
   roles: Array<Role>;
-  /** Services that the active user can access */
   service: Service;
-  /** Services that the active user can access */
   serviceInvites: Array<ServiceInvite>;
-  /** Services that the active user can access */
   services: Array<Service>;
-  /** List all available users */
   users: Array<User>;
 };
 
@@ -520,7 +508,7 @@ export type GatewayAccountFragment = { __typename?: "GatewayAccount" } & Pick<
     credentials:
       | ({ __typename?: "BamboraCredentials" } & Pick<
           BamboraCredentials,
-          "merchantId" | "accountNumber" | "apiUsername"
+          "environment" | "merchantId" | "accountNumber" | "apiUsername"
         >)
       | { __typename?: "SandboxCredentials" };
     cardTypes: Array<
@@ -530,7 +518,10 @@ export type GatewayAccountFragment = { __typename?: "GatewayAccount" } & Pick<
 
 type GatewayAccountCredentials_BamboraCredentials_Fragment = {
   __typename?: "BamboraCredentials";
-} & Pick<BamboraCredentials, "merchantId" | "accountNumber" | "apiUsername">;
+} & Pick<
+  BamboraCredentials,
+  "environment" | "merchantId" | "accountNumber" | "apiUsername"
+>;
 
 type GatewayAccountCredentials_SandboxCredentials_Fragment = {
   __typename?: "SandboxCredentials";
@@ -846,6 +837,7 @@ export const GatewayAccountFragmentDoc = gql`
     paymentProvider
     credentials {
       ... on BamboraCredentials {
+        environment
         merchantId
         accountNumber
         apiUsername
@@ -860,6 +852,7 @@ export const GatewayAccountFragmentDoc = gql`
 export const GatewayAccountCredentialsFragmentDoc = gql`
   fragment GatewayAccountCredentials on GatewayAccountCredentials {
     ... on BamboraCredentials {
+      environment
       merchantId
       accountNumber
       apiUsername
@@ -1098,7 +1091,8 @@ export type GetServiceWithGatewayAccountsComponentProps = Omit<
 > &
   (
     | { variables: GetServiceWithGatewayAccountsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetServiceWithGatewayAccountsComponent = (
   props: GetServiceWithGatewayAccountsComponentProps
@@ -1605,7 +1599,8 @@ export type GetGatewayAccountsComponentProps = Omit<
 > &
   (
     | { variables: GetGatewayAccountsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetGatewayAccountsComponent = (
   props: GetGatewayAccountsComponentProps
@@ -1684,7 +1679,8 @@ export type GetGatewayAccountComponentProps = Omit<
 > &
   (
     | { variables: GetGatewayAccountQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetGatewayAccountComponent = (
   props: GetGatewayAccountComponentProps
@@ -1847,7 +1843,8 @@ export type GetProductsComponentProps = Omit<
 > &
   (
     | { variables: GetProductsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetProductsComponent = (props: GetProductsComponentProps) => (
   <ApolloReactComponents.Query<GetProductsQuery, GetProductsQueryVariables>
@@ -1998,7 +1995,8 @@ export type GetPaymentsComponentProps = Omit<
 > &
   (
     | { variables: GetPaymentsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetPaymentsComponent = (props: GetPaymentsComponentProps) => (
   <ApolloReactComponents.Query<GetPaymentsQuery, GetPaymentsQueryVariables>
@@ -2144,7 +2142,8 @@ export type GetPaymentRefundComponentProps = Omit<
 > &
   (
     | { variables: GetPaymentRefundQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetPaymentRefundComponent = (
   props: GetPaymentRefundComponentProps
@@ -2227,7 +2226,8 @@ export type GetPaymentEventsComponentProps = Omit<
 > &
   (
     | { variables: GetPaymentEventsQueryVariables; skip?: boolean }
-    | { skip: boolean });
+    | { skip: boolean }
+  );
 
 export const GetPaymentEventsComponent = (
   props: GetPaymentEventsComponentProps
