@@ -39,12 +39,13 @@ const Li = styled.li`
   }
 `;
 
-const RedLink = styled(Link)`
+const CustomLink = styled(Link)`
   ${Link}
 `;
 
 const LinkWrapper = styled.div`
-  ${RedLink} {
+  font-size: 1.3rem;
+  ${CustomLink} {
     color: #de0d33;
     margin-right: 2rem;
   }
@@ -101,19 +102,24 @@ const ListPage: React.FC<props> = ({ service, gatewayAccount }) => {
                     ({ externalId, name, nameSlug, serviceNameSlug }, _) => (
                       <Li key={externalId}>
                         <P>{name}</P>
+                        <Link
+                          to={`/console/services/${service.externalId}/products/${externalId}`}
+                        >
+                          {name}
+                        </Link>
+                        —
                         <Link to={`/products/${serviceNameSlug}/${nameSlug}`}>
                           /payments/{serviceNameSlug}/{nameSlug}
                         </Link>
                         <LinkWrapper>
                           <Link to="/TODO">edit</Link>
-                          <RedLink to="/TODO">disable</RedLink>
-                          <RedLink to="/TODO">delete</RedLink>
+                          <CustomLink to="/TODO">disable</CustomLink>
+                          <CustomLink to="/TODO">delete</CustomLink>
                         </LinkWrapper>
                       </Li>
                     )
                   )}
                 </Ul>
-                <h2>Disabled payment links</h2>
               </>
             )}
           </>
