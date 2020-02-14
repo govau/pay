@@ -120,7 +120,7 @@ defmodule Pay.Services do
 
   """
   def list_roles do
-    Enum.map(Repo.all(Role), fn r -> Repo.preload(r, [:permissions]) end)
+    Repo.all(from Role, preload: :permissions)
   end
 
   @doc """

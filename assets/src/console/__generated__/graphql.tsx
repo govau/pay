@@ -348,6 +348,7 @@ export type RootQueryType = {
   organisations: Array<Organisation>;
   payment: Payment;
   productPayment: ProductPayment;
+  roles: Array<Role>;
   /** Services that the active user can access */
   service: Service;
   /** Services that the active user can access */
@@ -485,6 +486,20 @@ export type RoleFragment = { __typename?: "Role" } & Pick<
   "id" | "name" | "description"
 >;
 
+export type ServiceUserFragment = { __typename?: "ServiceUser" } & Pick<
+  ServiceUser,
+  | "id"
+  | "insertedAt"
+  | "updatedAt"
+  | "externalId"
+  | "name"
+  | "email"
+  | "telephoneNumber"
+  | "platformAdmin"
+> & {
+    role: { __typename?: "Role" } & Pick<Role, "id" | "name" | "description">;
+  };
+
 export type ServiceInviteFragment = { __typename?: "ServiceInvite" } & Pick<
   ServiceInvite,
   | "id"
@@ -593,27 +608,6 @@ export type GetServiceQuery = { __typename?: "RootQueryType" } & {
   service: { __typename?: "Service" } & ServiceFragment;
 };
 
-export type GetServiceWithUsersQueryVariables = {
-  id: Scalars["ID"];
-};
-
-export type GetServiceWithUsersQuery = { __typename?: "RootQueryType" } & {
-  service: { __typename?: "Service" } & {
-    users: Array<
-      { __typename?: "ServiceUser" } & Pick<
-        ServiceUser,
-        "id" | "externalId" | "insertedAt" | "updatedAt" | "name" | "email"
-      > & {
-          role: { __typename?: "Role" } & Pick<
-            Role,
-            "id" | "name" | "description"
-          >;
-        }
-    >;
-    invites: Array<{ __typename?: "ServiceInvite" } & ServiceInviteFragment>;
-  } & ServiceFragment;
-};
-
 export type GetServiceWithGatewayAccountsQueryVariables = {
   id: Scalars["ID"];
 };
@@ -625,7 +619,10 @@ export type GetServiceWithGatewayAccountsQuery = {
     gatewayAccounts: Array<
       { __typename?: "GatewayAccount" } & GatewayAccountFragment
     >;
+    users: Array<{ __typename?: "ServiceUser" } & ServiceUserFragment>;
+    invites: Array<{ __typename?: "ServiceInvite" } & ServiceInviteFragment>;
   } & ServiceFragment;
+  roles: Array<{ __typename?: "Role" } & RoleFragment>;
 };
 
 export type CreateServiceMutationVariables = {
@@ -806,6 +803,23 @@ export const RoleFragmentDoc = gql`
     id
     name
     description
+  }
+`;
+export const ServiceUserFragmentDoc = gql`
+  fragment ServiceUser on ServiceUser {
+    id
+    insertedAt
+    updatedAt
+    externalId
+    name
+    email
+    telephoneNumber
+    platformAdmin
+    role {
+      id
+      name
+      description
+    }
   }
 `;
 export const ServiceInviteFragmentDoc = gql`
@@ -1051,102 +1065,6 @@ export type GetServiceQueryResult = ApolloReactCommon.QueryResult<
   GetServiceQuery,
   GetServiceQueryVariables
 >;
-export const GetServiceWithUsersDocument = gql`
-  query GetServiceWithUsers($id: ID!) {
-    service(id: $id) {
-      ...Service
-      users {
-        id
-        externalId
-        insertedAt
-        updatedAt
-        name
-        email
-        role {
-          id
-          name
-          description
-        }
-      }
-      invites {
-        ...ServiceInvite
-      }
-    }
-  }
-  ${ServiceFragmentDoc}
-  ${ServiceInviteFragmentDoc}
-`;
-export type GetServiceWithUsersComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    GetServiceWithUsersQuery,
-    GetServiceWithUsersQueryVariables
-  >,
-  "query"
-> &
-  (
-    | { variables: GetServiceWithUsersQueryVariables; skip?: boolean }
-    | { skip: boolean });
-
-export const GetServiceWithUsersComponent = (
-  props: GetServiceWithUsersComponentProps
-) => (
-  <ApolloReactComponents.Query<
-    GetServiceWithUsersQuery,
-    GetServiceWithUsersQueryVariables
-  >
-    query={GetServiceWithUsersDocument}
-    {...props}
-  />
-);
-
-/**
- * __useGetServiceWithUsersQuery__
- *
- * To run a query within a React component, call `useGetServiceWithUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetServiceWithUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetServiceWithUsersQuery({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useGetServiceWithUsersQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetServiceWithUsersQuery,
-    GetServiceWithUsersQueryVariables
-  >
-) {
-  return ApolloReactHooks.useQuery<
-    GetServiceWithUsersQuery,
-    GetServiceWithUsersQueryVariables
-  >(GetServiceWithUsersDocument, baseOptions);
-}
-export function useGetServiceWithUsersLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetServiceWithUsersQuery,
-    GetServiceWithUsersQueryVariables
-  >
-) {
-  return ApolloReactHooks.useLazyQuery<
-    GetServiceWithUsersQuery,
-    GetServiceWithUsersQueryVariables
-  >(GetServiceWithUsersDocument, baseOptions);
-}
-export type GetServiceWithUsersQueryHookResult = ReturnType<
-  typeof useGetServiceWithUsersQuery
->;
-export type GetServiceWithUsersLazyQueryHookResult = ReturnType<
-  typeof useGetServiceWithUsersLazyQuery
->;
-export type GetServiceWithUsersQueryResult = ApolloReactCommon.QueryResult<
-  GetServiceWithUsersQuery,
-  GetServiceWithUsersQueryVariables
->;
 export const GetServiceWithGatewayAccountsDocument = gql`
   query GetServiceWithGatewayAccounts($id: ID!) {
     service(id: $id) {
@@ -1154,10 +1072,22 @@ export const GetServiceWithGatewayAccountsDocument = gql`
       gatewayAccounts {
         ...GatewayAccount
       }
+      users {
+        ...ServiceUser
+      }
+      invites {
+        ...ServiceInvite
+      }
+    }
+    roles {
+      ...Role
     }
   }
   ${ServiceFragmentDoc}
   ${GatewayAccountFragmentDoc}
+  ${ServiceUserFragmentDoc}
+  ${ServiceInviteFragmentDoc}
+  ${RoleFragmentDoc}
 `;
 export type GetServiceWithGatewayAccountsComponentProps = Omit<
   ApolloReactComponents.QueryComponentOptions<

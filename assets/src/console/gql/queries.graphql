@@ -11,6 +11,22 @@ fragment Role on Role {
   description
 }
 
+fragment ServiceUser on ServiceUser {
+  id
+  insertedAt
+  updatedAt
+  externalId
+  name
+  email
+  telephoneNumber
+  platformAdmin
+  role {
+    id
+    name
+    description
+  }
+}
+
 fragment ServiceInvite on ServiceInvite {
   id
   serviceId
@@ -114,35 +130,23 @@ query GetService($id: ID!) {
   }
 }
 
-query GetServiceWithUsers($id: ID!) {
-  service(id: $id) {
-    ...Service
-    users {
-      id
-      externalId
-      insertedAt
-      updatedAt
-      name
-      email
-      role {
-        id
-        name
-        description
-      }
-    }
-
-    invites {
-      ...ServiceInvite
-    }
-  }
-}
-
 query GetServiceWithGatewayAccounts($id: ID!) {
   service(id: $id) {
     ...Service
     gatewayAccounts {
       ...GatewayAccount
     }
+
+    users {
+      ...ServiceUser
+    }
+
+    invites {
+      ...ServiceInvite
+    }
+  }
+  roles {
+    ...Role
   }
 }
 
