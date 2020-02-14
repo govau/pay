@@ -17,7 +17,7 @@ import {
 import {
   GatewayAccountFragment,
   useUpdateGatewayAccountCardTypesMutation,
-  UpdateGatewayAccountCardTypesDocument,
+  GetGatewayAccountDocument,
   CardTypeBrand,
   CardTypeType,
   ServiceFragment
@@ -71,11 +71,26 @@ const getCardTypesList = (data: CardTypesQuery, type: string) => {
 const CardTypesPage: React.FC<Props> = ({ service, gatewayAccount }) => {
   const [
     updateGatewayAccountCardTypes
-  ] = useUpdateGatewayAccountCardTypesMutation();
+  ] = useUpdateGatewayAccountCardTypesMutation({
+    update: (cache, mutationResult) => {
+      if (!mutationResult.data) {
+        return;
+      }
+
+      const { gatewayAccount } = mutationResult.data;
+
+      cache.writeQuery({
+        query: GetGatewayAccountDocument,
+        variables: {
+          id: gatewayAccount.externalId
+        },
+        data: {
+          gatewayAccount
+        }
+      });
+    }
+  });
   const { loading, error, data } = useCardTypesQuery({ errorPolicy: "all" });
-  /*const [initialCardValues, setInitialCardValues] = React.useState(
-    gatewayAccount.cardTypes.map(cardType => cardType.id)
-  );*/
 
   return (
     <>
@@ -99,29 +114,8 @@ const CardTypesPage: React.FC<Props> = ({ service, gatewayAccount }) => {
             variables: {
               gatewayAccountId: gatewayAccount.id,
               cardTypeIds: values.cardTypeIds
-            },
-            update(cache, { data }) {
-              console.log("Data is", data);
-              console.log("Inside update- cache is", cache);
-              if (!data) return null;
-              cache.writeQuery({
-                query: UpdateGatewayAccountCardTypesDocument,
-                data: {
-                  cardType: [data.cardType]
-                }
-              });
-              /*const cardTypes = data.cardTypes.map(cardType => cardType.cardTypeIds)
-              cache.writeQuery({
-                query: UpdateGatewayAccountCardTypesDocument,
-                data: {
-                  cardTypeIds: data.concat([
-                    updateGatewayAccountCardTypes
-                  ])
-                }
-              });*/
             }
           });
-          //setInitialCardValues(values.cardTypes);
         }}
         column
         decorators={decorators}
