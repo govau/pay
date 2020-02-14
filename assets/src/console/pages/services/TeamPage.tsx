@@ -1,17 +1,14 @@
 import * as React from "react";
 import { Helmet } from "react-helmet";
-import { PageTitle, Loader, ErrorAlert, Link } from "@pay/web";
+import { PageTitle, Link } from "@pay/web";
 import * as Table from "@pay/web/components/Table";
 
-import {
-  useGetServiceWithUsersQuery,
-  ServiceUser,
-  ServiceInvite
-} from "../../__generated__/graphql";
+import { ServiceUser, ServiceInvite } from "../../__generated__/graphql";
 import { BreadBox } from "@pay/web/components/Breadcrumb";
 import { usePayUser } from "../../../users";
 import { User } from "../../../users/types";
 import { SidebarLayout } from "../../../checkout/components/Split";
+import { useMatchURL } from "@pay/web/hooks";
 
 const MemberTable: React.FC<{
   serviceID: string;
@@ -59,40 +56,35 @@ const MemberTable: React.FC<{
 );
 
 export interface props {
-  service: { externalId: string };
+  service: {
+    externalId: string;
+    name: string;
+    users: ServiceUser[];
+    invites: ServiceInvite[];
+  };
 }
 
 const TeamPage: React.FC<props> = ({ service }) => {
-  const getQuery = useGetServiceWithUsersQuery({
-    variables: { id: service.externalId },
-    errorPolicy: "all"
-  });
-
   const user = usePayUser();
+  const currentURL = useMatchURL();
 
-  return getQuery.loading ? (
-    <Loader message="Loading service" />
-  ) : getQuery.error || !getQuery.data ? (
-    <ErrorAlert
-      title="Unable to retrieve service"
-      message={getQuery.error && getQuery.error.message}
-      showError
-    />
-  ) : (
+  return (
     <>
       <Helmet>
-        <title>Team members - {getQuery.data.service.name}</title>
+        <title>Team members - {service.name}</title>
       </Helmet>
       <PageTitle
         title="Team members"
         breadcrumbs={BreadBox.TeamSettings({ service })}
       />
 
-      <SidebarLayout sidebar={<Link to="/invite">Invite new user</Link>}>
+      <SidebarLayout
+        sidebar={<Link to={`${currentURL}/invite`}>Invite new user</Link>}
+      >
         <MemberTable
-          serviceID={getQuery.data.service.externalId}
-          users={getQuery.data.service.users}
-          invites={getQuery.data.service.invites}
+          serviceID={service.externalId}
+          users={service.users}
+          invites={service.invites}
           currentUser={user}
         />
       </SidebarLayout>

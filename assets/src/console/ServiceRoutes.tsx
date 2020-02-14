@@ -271,6 +271,12 @@ const ServiceRoutes: React.FC = () => {
       <Route path={`${url}/team`} exact strict>
         <Pages.Services.TeamPage service={data.service} />
       </Route>
+      <Route path={`${url}/team/invite`} exact strict>
+        <Pages.Services.TeamInvitePage
+          service={data.service}
+          roles={data.roles}
+        />
+      </Route>
       <Route
         path={`${url}/gateway-accounts/:gatewayAccountId([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})`}
         strict

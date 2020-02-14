@@ -342,6 +342,7 @@ export type RootQueryType = {
   organisations: Array<Organisation>;
   payment: Payment;
   productPayment: ProductPayment;
+  roles: Array<Role>;
   /** Services that the active user can access */
   service: Service;
   /** Services that the active user can access */

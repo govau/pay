@@ -205,4 +205,8 @@ defmodule PayWeb.Resolvers do
   def role(%{_invite: invite}, _params, _resolution) do
     {:ok, Services.get_invite_role(invite)}
   end
+
+  def roles(_parent, _params, _resolution) do
+    {:ok, Services.list_roles()}
+  end
 end

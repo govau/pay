@@ -22,6 +22,9 @@ export const Services = {
   TeamPage: loadable(() => import("./services/TeamPage"), {
     fallback: <Loader />
   }),
+  TeamInvitePage: loadable(() => import("./services/TeamInvitePage"), {
+    fallback: <Loader />
+  }),
   GatewayAccounts: {
     Payments: {
       ListPage: loadable(() => import("./payments/ListPage"), {

@@ -122,13 +122,13 @@ const CardTypeSettings = (params: SettingsParams & GatewayAccountParams) =>
     Settings(params)
   );
 
-const AddTeamMember = (params: SettingsParams) =>
+const InviteTeamMember = (params: SettingsParams) =>
   createCrumbs(
     <Breadcrumb
-      key="add-team-member"
-      to={`/console/services/${params.service.externalId}/team/add`}
+      key="invite-team-member"
+      to={`/console/services/${params.service.externalId}/team/invite`}
     >
-      Add team member
+      Invite team member
     </Breadcrumb>,
     TeamSettings(params)
   );
@@ -184,7 +184,7 @@ const BreadBox = {
   Settings,
   EditServiceName,
   TeamSettings,
-  AddTeamMember,
+  InviteTeamMember,
   Services,
   CreateService,
   Payments,

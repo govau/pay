@@ -59,12 +59,16 @@ defmodule PayWeb.Schema do
       resolve(&Resolvers.product_payment/3)
     end
 
-    field :card_types, non_null(list_of(non_null(:card_type))) do
-      resolve(&Resolvers.card_types/3)
-    end
-
     field :organisations, non_null(list_of(non_null(:organisation))) do
       resolve(&Resolvers.organisations/3)
+    end
+
+    field :roles, non_null(list_of(non_null(:role))) do
+      resolve(&Resolvers.roles/3)
+    end
+
+    field :card_types, non_null(list_of(non_null(:card_type))) do
+      resolve(&Resolvers.card_types/3)
     end
   end
 
