@@ -143,16 +143,11 @@ mutation UpdateGatewayAccountCardTypes(
   $gatewayAccountId: ID!
   $cardTypeIds: [ID!]!
 ) {
-  cardType: updateGatewayAccountCardTypes(
+  gatewayAccount: updateGatewayAccountCardTypes(
     gatewayAccountId: $gatewayAccountId
     cardTypeIds: $cardTypeIds
   ) {
-    id
-    cardTypes {
-      id
-      label
-      type
-    }
+    ...GatewayAccount
   }
 }
 

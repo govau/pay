@@ -17,6 +17,7 @@ import {
 import {
   GatewayAccountFragment,
   useUpdateGatewayAccountCardTypesMutation,
+  GetGatewayAccountDocument,
   CardTypeBrand,
   CardTypeType,
   ServiceFragment
@@ -29,7 +30,7 @@ import { CardType } from "../../../auth/__generated__/graphql";
 import { BreadBox } from "@pay/web/components/Breadcrumb";
 
 interface FormValues {
-  cardTypes: Array<string>;
+  cardTypeIds: Array<string>;
 }
 
 const decorators = [createDecorator<FormValues>()];
@@ -58,7 +59,7 @@ const getCardTypesList = (data: CardTypesQuery, type: string) => {
     .map(cardType => (
       <React.Fragment key={cardType.id}>
         <Checkbox
-          name="cardTypes"
+          name="cardTypeIds"
           label={getCardTypeBrand(cardType)}
           value={cardType.id}
         />
@@ -70,7 +71,14 @@ const getCardTypesList = (data: CardTypesQuery, type: string) => {
 const CardTypesPage: React.FC<Props> = ({ service, gatewayAccount }) => {
   const [
     updateGatewayAccountCardTypes
-  ] = useUpdateGatewayAccountCardTypesMutation();
+  ] = useUpdateGatewayAccountCardTypesMutation({
+    refetchQueries: [
+      {
+        query: GetGatewayAccountDocument,
+        variables: { id: gatewayAccount.externalId }
+      }
+    ]
+  });
   const { loading, error, data } = useCardTypesQuery({ errorPolicy: "all" });
 
   return (
@@ -88,13 +96,13 @@ const CardTypesPage: React.FC<Props> = ({ service, gatewayAccount }) => {
       <P>Choose which credit and debit cards you want to accept.</P>
       <Form<FormValues>
         initialValues={{
-          cardTypes: gatewayAccount.cardTypes.map(cardType => cardType.id)
+          cardTypeIds: gatewayAccount.cardTypes.map(cardType => cardType.id)
         }}
         onSubmit={async values => {
           await updateGatewayAccountCardTypes({
             variables: {
               gatewayAccountId: gatewayAccount.id,
-              cardTypeIds: values.cardTypes
+              cardTypeIds: values.cardTypeIds
             }
           });
         }}

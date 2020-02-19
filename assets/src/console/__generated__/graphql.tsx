@@ -631,13 +631,9 @@ export type UpdateGatewayAccountCardTypesMutationVariables = {
 
 export type UpdateGatewayAccountCardTypesMutation = (
   { __typename?: 'RootMutationType' }
-  & { cardType: (
+  & { gatewayAccount: (
     { __typename?: 'GatewayAccount' }
-    & Pick<GatewayAccount, 'id'>
-    & { cardTypes: Array<(
-      { __typename?: 'CardType' }
-      & Pick<CardType, 'id' | 'label' | 'type'>
-    )> }
+    & GatewayAccountFragment
   ) }
 );
 
@@ -1170,16 +1166,11 @@ export type SubmitRefundMutationResult = ApolloReactCommon.MutationResult<Submit
 export type SubmitRefundMutationOptions = ApolloReactCommon.BaseMutationOptions<SubmitRefundMutation, SubmitRefundMutationVariables>;
 export const UpdateGatewayAccountCardTypesDocument = gql`
     mutation UpdateGatewayAccountCardTypes($gatewayAccountId: ID!, $cardTypeIds: [ID!]!) {
-  cardType: updateGatewayAccountCardTypes(gatewayAccountId: $gatewayAccountId, cardTypeIds: $cardTypeIds) {
-    id
-    cardTypes {
-      id
-      label
-      type
-    }
+  gatewayAccount: updateGatewayAccountCardTypes(gatewayAccountId: $gatewayAccountId, cardTypeIds: $cardTypeIds) {
+    ...GatewayAccount
   }
 }
-    `;
+    ${GatewayAccountFragmentDoc}`;
 export type UpdateGatewayAccountCardTypesMutationFn = ApolloReactCommon.MutationFunction<UpdateGatewayAccountCardTypesMutation, UpdateGatewayAccountCardTypesMutationVariables>;
 export type UpdateGatewayAccountCardTypesComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<UpdateGatewayAccountCardTypesMutation, UpdateGatewayAccountCardTypesMutationVariables>, 'mutation'>;
 

@@ -35,7 +35,7 @@ defimpl Pay.Payments.Gateway, for: Pay.Payments.Gateway.BamboraGateway do
             }
           }
         } = payment,
-        %{"ott" => one_time_token}
+        %{ott: one_time_token}
       ) do
     payment_response =
       Bambora.submit_single_payment(client, %{

@@ -25,6 +25,7 @@ defmodule PayWeb.Resolvers.Mutations do
           %{context: %{current_user: current_user}}
         ) do
       with payment <- Payments.get_payment_by_external_id!(payment_id),
+           {:ok, Payments.get_payment_successful(payment)},
            gateway <- Payments.GatewayAccount.payment_provider(payment.gateway_account),
            {:ok, %{reference: refund_reference}} <-
              Payments.Gateway.refund_payment(gateway, payment, %{amount: amount}) do
