@@ -4,7 +4,7 @@ import {
   FormProps as ReactFinalFormProps
 } from "react-final-form";
 
-import styled, { css } from "../../styled-components";
+import styled from "../../styled-components";
 import ErrorAlert from "../ErrorAlert";
 
 interface AnyObject {
@@ -22,15 +22,7 @@ interface Props<FormValues = AnyObject>
   column?: boolean;
 }
 
-export const FormElement = styled("form")<{ column?: boolean }>`
-  ${props =>
-    props.column &&
-    css`
-      input {
-        width: 100%;
-      }
-    `}
-`;
+export const FormElement = styled("form")<{ column?: boolean }>``;
 
 const formatGraphqlError = (message?: string | null) =>
   message ? message.replace("GraphQL error: ", "") : "";

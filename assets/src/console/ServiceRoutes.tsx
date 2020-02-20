@@ -160,7 +160,6 @@ const GatewayAccountRoutes: React.FC<{
             <Pages.Services.GatewayAccounts.Payments.ListPage
               path={`${url}/payments`}
               service={service}
-              gatewayAccount={data.gatewayAccount}
             />
           </Route>
           <Route

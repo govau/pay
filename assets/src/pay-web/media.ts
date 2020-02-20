@@ -19,11 +19,13 @@ const breakpoint = (size: string) => (
 const mobile = max("40em");
 const tablet = min("52em");
 const desktop = min("64em");
+const nondesktop = max("64em");
 
-export { mobile, tablet, desktop };
+export { mobile, tablet, desktop, nondesktop };
 
 export default {
   mobile: breakpoint(mobile),
   tablet: breakpoint(tablet),
-  desktop: breakpoint(desktop)
+  desktop: breakpoint(desktop),
+  nondesktop: breakpoint(nondesktop)
 };

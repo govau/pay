@@ -243,14 +243,11 @@ mutation CreateProduct($gatewayAccountId: ID!, $input: CreateProductInput!) {
   }
 }
 
-query GetPayments($serviceID: ID!) {
+query GetPayments($serviceID: ID!, $filterBy: FilterPaymentsInput) {
   service(id: $serviceID) {
     id
-    gatewayAccounts {
-      ...GatewayAccount
-      payments {
-        ...Payment
-      }
+    payments(filterBy: $filterBy) {
+      ...Payment
     }
   }
 }

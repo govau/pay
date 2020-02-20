@@ -5,10 +5,10 @@
 import spacing from "../spacing";
 import styled, { css } from "../../styled-components";
 import { tablet } from "../../media";
+import { P } from "../Typography";
 
 export const textInputStyles = {
   base: css`
-    margin-top: 3px;
     box-shadow: none;
     border: 2px solid ${props => props.theme.colors.payDarkGrey};
   `,
@@ -24,13 +24,14 @@ export const textInputStyles = {
 
 export const BasicTextInput = styled("input")<{ error?: boolean }>`
   ${textInputStyles.base};
+  display: block;
   padding: 1rem;
   width: 100%;
   font-size: 1em;
   ${props => (props.error ? textInputStyles.error : "")};
 
   @media ${tablet} {
-    width: auto;
+    max-width: 52rem;
   }
 
   &:focus {
@@ -51,6 +52,22 @@ export const Label = styled.label`
   }
 `;
 
-export const Description = styled.div`
+export const Select = styled.select`
+  display: block;
+  appearance: none;
+  ${textInputStyles.base};
+  padding: 1rem;
+  width: 100%;
+  font-size: 1em;
+  border-radius: 0;
+
+  &:focus {
+    ${textInputStyles.focus};
+  }
+`;
+
+export const Option = styled.option``;
+
+export const Description = styled(P)`
   color: ${props => props.theme.colors.payLightBlack};
 `;

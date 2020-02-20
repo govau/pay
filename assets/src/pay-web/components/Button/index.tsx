@@ -9,4 +9,10 @@ const Button = styled("button")<Props>`
   ${styles}
 `;
 
-export default Button;
+const ButtonGroup = styled.section`
+  * + & {
+    margin-top: 1em;
+  }
+`;
+
+export { Button as default, ButtonGroup };

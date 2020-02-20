@@ -91,6 +91,17 @@ export type CreateServiceInput = {
   name: Scalars["String"];
 };
 
+export type FilterPaymentsInput = {
+  cardBrand?: Maybe<Array<CardTypeBrand>>;
+  cardName?: Maybe<Scalars["String"]>;
+  cardSuffix?: Maybe<Scalars["String"]>;
+  emailAddress?: Maybe<Scalars["String"]>;
+  endDate?: Maybe<Scalars["String"]>;
+  reference?: Maybe<Scalars["String"]>;
+  startDate?: Maybe<Scalars["String"]>;
+  status?: Maybe<Array<PaymentStatus>>;
+};
+
 export type GatewayAccount = {
   __typename?: "GatewayAccount";
   allowApplePay?: Maybe<Scalars["Boolean"]>;
@@ -392,11 +403,16 @@ export type Service = {
   merchantTelephoneNumber?: Maybe<Scalars["String"]>;
   name: Scalars["String"];
   organisation?: Maybe<Organisation>;
+  payments: Array<Payment>;
   users: Array<ServiceUser>;
 };
 
 export type ServiceGatewayAccountArgs = {
   id: Scalars["ID"];
+};
+
+export type ServicePaymentsArgs = {
+  filterBy?: Maybe<FilterPaymentsInput>;
 };
 
 export enum ServiceGoLiveStage {

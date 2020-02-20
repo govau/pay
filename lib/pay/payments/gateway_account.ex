@@ -20,6 +20,11 @@ defmodule Pay.Payments.GatewayAccount do
 
     has_many :payments, Pay.Payments.Payment
 
+    has_one :service_gateway_account,
+            Pay.Services.ServiceGatewayAccount,
+            foreign_key: :gateway_account_id,
+            references: :external_id
+
     many_to_many :card_types, Pay.Payments.CardType,
       join_through: Pay.Payments.GatewayAccountCardType
 

@@ -21,7 +21,7 @@ export {
 export { default as Footer } from "./components/Footer";
 export * from "./components/form";
 export { default as validators } from "./lib/validation";
-export { default as Button } from "./components/Button";
+export { default as Button, ButtonGroup } from "./components/Button";
 export { default as Lozenge } from "./components/Lozenge";
 export { Link, ExternalLink } from "./components/Link";
 export { LinkButton } from "./components/LinkButton";

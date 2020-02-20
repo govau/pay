@@ -24,6 +24,8 @@ defmodule Pay.Payments.Payment do
     has_many :events, Pay.Payments.PaymentEvent
     has_many :refunds, Pay.Payments.PaymentRefund
 
+    has_one :service, through: [:gateway_account, :service_gateway_account, :service]
+
     timestamps()
   end
 
