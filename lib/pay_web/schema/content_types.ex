@@ -2,6 +2,14 @@ defmodule PayWeb.Schema.ContentTypes do
   alias PayWeb.Resolvers
   use Absinthe.Schema.Notation
 
+  defp pluck_map_items(nil, _keys), do: nil
+
+  defp pluck_map_items(params, keys) do
+    keys
+    |> Enum.map(fn key -> {key, Map.get(params, Atom.to_string(key))} end)
+    |> Map.new()
+  end
+
   defp resolve_as(value) do
     fn _, _ -> {:ok, value} end
   end
@@ -82,6 +90,11 @@ defmodule PayWeb.Schema.ContentTypes do
       resolve(&Resolvers.gateway_accounts/3)
     end
 
+    field :payments, non_null(list_of(non_null(:payment))) do
+      arg(:filter_by, :filter_payments_input)
+      resolve(&Resolvers.payments/3)
+    end
+
     field :organisation, :organisation do
       resolve(&Resolvers.organisation/3)
     end
@@ -125,7 +138,21 @@ defmodule PayWeb.Schema.ContentTypes do
     field :gateway_transaction_id, :string
     field :return_url, non_null(:string)
     field :status, non_null(:payment_status)
-    field :card_details, :card_details
+
+    field :card_details, :card_details do
+      resolve(fn payment, _, _ ->
+        card_details_keys = [
+          :cardholder_name,
+          :card_number,
+          :last_digits_card_number,
+          :first_digits_card_number,
+          :expiry_date,
+          :card_brand
+        ]
+
+        {:ok, pluck_map_items(payment.card_details, card_details_keys)}
+      end)
+    end
 
     field :gateway_account, non_null(:gateway_account) do
       resolve(&Resolvers.gateway_account/3)
@@ -154,6 +181,7 @@ defmodule PayWeb.Schema.ContentTypes do
     field :reference_label, :string
     field :return_url, :string
     field :service_name_slug, non_null(:string)
+
     # field :status, non_null(:string)
 
     field :gateway_account, non_null(:gateway_account) do
@@ -323,6 +351,7 @@ defmodule PayWeb.Schema.ContentTypes do
     field :first_digits_card_number, :string
     field :expiry_date, :string
     field :card_brand, :string
+    # TODO: field :card_brand, :card_type_brand
   end
 
   enum :card_type_brand do

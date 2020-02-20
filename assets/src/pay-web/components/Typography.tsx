@@ -120,10 +120,14 @@ export const PreLineNumbers = styled.span`
 
 export const P = styled.p`
   max-width: 70rem;
-  margin-bottom: ${spacing.small};
+  margin-bottom: ${spacing.fixed(1)};
   line-height: 1.3;
 
-  * + & {
+  & + &,
+  ${H1} + &,
+  ${H2} + &,
+  ${H3} + &,
+  ${H4} + & {
     margin-top: ${spacing.relative(1)};
   }
 

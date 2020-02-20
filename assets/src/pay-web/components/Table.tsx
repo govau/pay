@@ -2,6 +2,9 @@ import styled, { css } from "../styled-components";
 
 export const ResponsiveWrapper = styled.div`
   overflow-x: auto;
+
+  margin-left: -1rem;
+  margin-right: -1rem;
 `;
 
 export const Table = styled.table`

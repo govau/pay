@@ -135,6 +135,11 @@ defmodule PayWeb.Resolvers do
     {:ok, Payments.list_payments_for_gateway_account(gateway_account)}
   end
 
+  def payments(%Services.Service{} = service, params, _resolution) do
+    filters = Map.get(params, :filter_by, %{})
+    {:ok, Payments.find_payments_by_service(service, filters)}
+  end
+
   def payment(_parent, %{id: external_id}, _resolution) do
     {:ok, Payments.get_payment_by_external_id!(external_id)}
   end

@@ -49,4 +49,15 @@ defmodule PayWeb.Schema.InputTypes do
     field :api_password, :string
     field :account_number, :string
   end
+
+  input_object :filter_payments_input do
+    field :reference, :string
+    field :status, list_of(non_null(:payment_status))
+    field :email_address, :string
+    field :card_name, :string
+    field :card_suffix, :string
+    field :card_brand, list_of(non_null(:card_type_brand))
+    field :start_date, :string
+    field :end_date, :string
+  end
 end

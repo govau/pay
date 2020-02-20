@@ -15,7 +15,13 @@ defmodule Bambora.Service.SubmitSinglePayment do
     "0" => :approved,
     "1" => :not_approved
   }
+  @card_types %{
+    "Visa" => :visa,
+    "Amex" => :american_express,
+    "MasterCard" => :mastercard
+  }
 
+  @type card_type_t :: :visa | :american_express | :mastercard
   @type transaction_t :: :purchase | :auth | :refund | :debit | :credit
   @type params :: %{
           one_time_token: String.t(),
@@ -47,6 +53,9 @@ defmodule Bambora.Service.SubmitSinglePayment do
 
   @spec response_code(String.t()) :: :approved | :not_approved
   def response_code(code), do: @response_codes[code]
+
+  @spec card_type(String.t()) :: card_type_t
+  def card_type(t), do: @card_types[t]
 
   def decoder do
     {

@@ -91,6 +91,17 @@ export type CreateServiceInput = {
   name: Scalars["String"];
 };
 
+export type FilterPaymentsInput = {
+  cardBrand?: Maybe<Array<CardTypeBrand>>;
+  cardName?: Maybe<Scalars["String"]>;
+  cardSuffix?: Maybe<Scalars["String"]>;
+  emailAddress?: Maybe<Scalars["String"]>;
+  endDate?: Maybe<Scalars["String"]>;
+  reference?: Maybe<Scalars["String"]>;
+  startDate?: Maybe<Scalars["String"]>;
+  status?: Maybe<Array<PaymentStatus>>;
+};
+
 export type GatewayAccount = {
   __typename?: "GatewayAccount";
   allowApplePay?: Maybe<Scalars["Boolean"]>;
@@ -392,11 +403,16 @@ export type Service = {
   merchantTelephoneNumber?: Maybe<Scalars["String"]>;
   name: Scalars["String"];
   organisation?: Maybe<Organisation>;
+  payments: Array<Payment>;
   users: Array<ServiceUser>;
 };
 
 export type ServiceGatewayAccountArgs = {
   id: Scalars["ID"];
+};
+
+export type ServicePaymentsArgs = {
+  filterBy?: Maybe<FilterPaymentsInput>;
 };
 
 export enum ServiceGoLiveStage {
@@ -736,15 +752,12 @@ export type CreateProductMutation = { __typename?: "RootMutationType" } & {
 
 export type GetPaymentsQueryVariables = {
   serviceID: Scalars["ID"];
+  filterBy?: Maybe<FilterPaymentsInput>;
 };
 
 export type GetPaymentsQuery = { __typename?: "RootQueryType" } & {
   service: { __typename?: "Service" } & Pick<Service, "id"> & {
-      gatewayAccounts: Array<
-        { __typename?: "GatewayAccount" } & {
-          payments: Array<{ __typename?: "Payment" } & PaymentFragment>;
-        } & GatewayAccountFragment
-      >;
+      payments: Array<{ __typename?: "Payment" } & PaymentFragment>;
     };
 };
 
@@ -1972,18 +1985,14 @@ export type CreateProductMutationOptions = ApolloReactCommon.BaseMutationOptions
   CreateProductMutationVariables
 >;
 export const GetPaymentsDocument = gql`
-  query GetPayments($serviceID: ID!) {
+  query GetPayments($serviceID: ID!, $filterBy: FilterPaymentsInput) {
     service(id: $serviceID) {
       id
-      gatewayAccounts {
-        ...GatewayAccount
-        payments {
-          ...Payment
-        }
+      payments(filterBy: $filterBy) {
+        ...Payment
       }
     }
   }
-  ${GatewayAccountFragmentDoc}
   ${PaymentFragmentDoc}
 `;
 export type GetPaymentsComponentProps = Omit<
@@ -2018,6 +2027,7 @@ export const GetPaymentsComponent = (props: GetPaymentsComponentProps) => (
  * const { data, loading, error } = useGetPaymentsQuery({
  *   variables: {
  *      serviceID: // value for 'serviceID'
+ *      filterBy: // value for 'filterBy'
  *   },
  * });
  */

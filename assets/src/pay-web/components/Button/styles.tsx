@@ -1,11 +1,11 @@
 import { css } from "../../styled-components";
-import { desktop } from "../../media";
+import { desktop, nondesktop } from "../../media";
+import { Link } from "../Link";
 
 type ButtonVariant = "primary" | "secondary" | "tertiary" | "link";
 
 export interface ButtonProps {
   variant?: ButtonVariant;
-  stretch?: boolean;
   padded?: boolean;
 }
 
@@ -101,25 +101,11 @@ const disabledStyles = css`
 `;
 
 const ButtonStyles = css<ButtonProps>`
-  display: block;
-  width: 100%;
-  text-align: center;
   text-decoration: none;
   align-items: center;
   justify-content: center;
   padding: 9px 30px;
-  margin: 30px 0;
   line-height: inherit;
-
-  @media ${desktop} {
-    ${props =>
-      props.stretch
-        ? css``
-        : css`
-            display: flex;
-            width: auto;
-          `}
-  }
 
   &:active {
     box-shadow: 0 0 0 2pt ${props => props.theme.colors.orange};
@@ -132,10 +118,34 @@ const ButtonStyles = css<ButtonProps>`
 `;
 
 const Styles = css<ButtonProps>`
+  width: 100%;
+  text-align: center;
   cursor: pointer;
   font-size: 1em;
   font-family: ${props => props.theme.fontFamily};
-  text-align: center;
+
+  * + & {
+    margin-top: 1em;
+  }
+
+  @media ${nondesktop} {
+    & + ${Link} {
+      display: inline-block;
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+  @media ${desktop} {
+    width: auto;
+
+    & + &,
+    & + a {
+      margin-top: 0;
+      margin-left: 1em;
+    }
+  }
+
   ${variantStyles}
   ${props => (hasButtonAppearance(props.variant) ? ButtonStyles : css``)};
 `;

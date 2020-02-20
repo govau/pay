@@ -236,7 +236,9 @@ defmodule Pay.Payments do
   end
 
   defp query_payments() do
-    from(Payment, preload: :gateway_account)
+    from Payment,
+      order_by: [desc: :inserted_at],
+      preload: :gateway_account
   end
 
   @doc """
@@ -250,6 +252,55 @@ defmodule Pay.Payments do
   """
   def list_payments do
     Repo.all(query_payments())
+  end
+
+  def filter_payments_by_service(query, %Service{} = service) do
+    from payment in query,
+      join: s in assoc(payment, :service),
+      where: s.id == ^service.id
+  end
+
+  defp filter_payments_by_term(query, {_, ref}) when is_nil(ref), do: query
+
+  defp filter_payments_by_term(q, {:reference, ref}) do
+    where(q, [payment], ilike(payment.reference, ^"%#{ref}%"))
+  end
+
+  defp filter_payments_by_term(q, {:status, statuses}),
+    do: where(q, [payment], payment.status in ^statuses)
+
+  defp filter_payments_by_term(q, {:email_address, email_address}),
+    do: where(q, [payment], ilike(payment.email, ^"%#{email_address}%"))
+
+  defp filter_payments_by_term(q, {:card_suffix, card_suffix}),
+    do:
+      where(
+        q,
+        [payment],
+        fragment("?->>? ILIKE ?", payment.card_details, "card_number", ^"%#{card_suffix}")
+      )
+
+  defp filter_payments_by_term(q, {:card_brand, brands}),
+    do:
+      where(
+        q,
+        [payment],
+        fragment("?->>?", payment.card_details, "card_brand") in ^brands
+      )
+
+  defp filter_payments_by_term(query, _), do: query
+
+  def filter_payments(query, options) do
+    Enum.reduce(options, query, fn term, query ->
+      filter_payments_by_term(query, term)
+    end)
+  end
+
+  def find_payments_by_service(%Service{} = service, filters) do
+    query_payments()
+    |> filter_payments_by_service(service)
+    |> filter_payments(filters)
+    |> Repo.all()
   end
 
   def list_payments_for_gateway_account(%GatewayAccount{} = gateway_account) do
@@ -313,7 +364,8 @@ defmodule Pay.Payments do
     do: Repo.get_by!(query_payments(), external_id: external_id)
 
   def get_payment_successful(%Payment{} = payment) do
-    with gateway_transaction_id when not is_nil(gateway_transaction_id) <- payment.gateway_transaction_id do
+    with gateway_transaction_id when not is_nil(gateway_transaction_id) <-
+           payment.gateway_transaction_id do
       {:ok, payment}
     else
       _ -> {:error, "Cannot refund a failed payment"}
@@ -750,7 +802,6 @@ defmodule Pay.Payments do
   end
 
   def list_gateway_account_card_types(%GatewayAccount{} = gateway_account) do
-
     with %{card_types: card_types} <- Repo.preload(gateway_account, :card_types) do
       card_types
     end
@@ -790,8 +841,6 @@ defmodule Pay.Payments do
     |> Repo.insert()
   end
 
-
-
   @doc """
   Deletes a GatewayAccountCardType.
 
@@ -808,8 +857,7 @@ defmodule Pay.Payments do
     Repo.delete(gateway_account_card_type)
   end
 
-
-  #TODO : Replace Repo.delete_all & Repo.insert with put_assoc in update_gateway_account_card_types
+  # TODO : Replace Repo.delete_all & Repo.insert with put_assoc in update_gateway_account_card_types
   # put_assoc erase all previous records and add new records.
 
   @doc """
@@ -823,7 +871,10 @@ defmodule Pay.Payments do
   """
 
   def clear_gateway_account_card_types(gateway_account_id) do
-    {n, _} = from(g in GatewayAccountCardType, where: g.gateway_account_id == ^gateway_account_id) |> Repo.delete_all
+    {n, _} =
+      from(g in GatewayAccountCardType, where: g.gateway_account_id == ^gateway_account_id)
+      |> Repo.delete_all()
+
     {:ok, n}
   end
 
