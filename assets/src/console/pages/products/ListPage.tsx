@@ -102,14 +102,9 @@ const ListPage: React.FC<props> = ({ service, gatewayAccount }) => {
                     ({ externalId, name, nameSlug, serviceNameSlug }, _) => (
                       <Li key={externalId}>
                         <P>{name}</P>
-                        <Link
-                          to={`/console/services/${service.externalId}/products/${externalId}`}
-                        >
-                          {name}
-                        </Link>
-                        —
                         <Link to={`/products/${serviceNameSlug}/${nameSlug}`}>
-                          /payments/{serviceNameSlug}/{nameSlug}
+                          https://pay.gov.au/payments/{serviceNameSlug}/
+                          {nameSlug}
                         </Link>
                         <LinkWrapper>
                           <Link to="/TODO">edit</Link>
