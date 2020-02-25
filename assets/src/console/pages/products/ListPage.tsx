@@ -2,19 +2,20 @@ import * as React from "react";
 import { useRouteMatch } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import {
-  TODO,
   PageTitle,
   Loader,
   ErrorAlert,
   Link,
   Warning,
-  P
+  P,
+  styled
 } from "@pay/web";
 
 import {
   GatewayAccountFragment,
   useGetProductsQuery
 } from "../../__generated__/graphql";
+import { SidebarLayout } from "../../../checkout/components/Split";
 
 const flatMap = <X, Y>(fx: (value: X) => Y[], xs: X[]): Y[] =>
   Array.prototype.concat(...xs.map(fx));
@@ -23,6 +24,35 @@ export interface props {
   service: { externalId: string; name: string };
   gatewayAccount: GatewayAccountFragment;
 }
+
+const Ul = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+`;
+
+const Li = styled.li`
+  margin: 1rem 0 3rem;
+  ${P} {
+    font-weight: 700;
+    margin-bottom: 0;
+  }
+`;
+
+const CustomLink = styled(Link)`
+  ${Link}
+`;
+
+const LinkWrapper = styled.div`
+  font-size: 1.3rem;
+  ${CustomLink} {
+    color: #de0d33;
+    margin-right: 2rem;
+  }
+  ${Link} {
+    margin-right: 2rem;
+  }
+`;
 
 const ListPage: React.FC<props> = ({ service, gatewayAccount }) => {
   const { loading, error, data } = useGetProductsQuery({
@@ -41,8 +71,10 @@ const ListPage: React.FC<props> = ({ service, gatewayAccount }) => {
       <Helmet>
         <title>Payment links - {service.name}</title>
       </Helmet>
-      <PageTitle title="Payment links" />
-      <TODO>
+      <PageTitle title="Manage payment links" />
+      <SidebarLayout
+        sidebar={<Link to={`${url}/create`}>Create a payment link</Link>}
+      >
         {loading ? (
           <Loader message="Loading payment links" />
         ) : error || !data ? (
@@ -56,35 +88,38 @@ const ListPage: React.FC<props> = ({ service, gatewayAccount }) => {
             {flatMap(
               gatewayAccount => gatewayAccount.products,
               data.service.gatewayAccounts
-            ).length === 0 && (
+            ).length === 0 ? (
               <Warning>
                 <P>You don’t have any payment links.</P>
               </Warning>
+            ) : (
+              <>
+                <Ul>
+                  {flatMap(
+                    gatewayAccount => gatewayAccount.products,
+                    data.service.gatewayAccounts
+                  ).map(
+                    ({ externalId, name, nameSlug, serviceNameSlug }, _) => (
+                      <Li key={externalId}>
+                        <P>{name}</P>
+                        <Link to={`/products/${serviceNameSlug}/${nameSlug}`}>
+                          https://pay.gov.au/payments/{serviceNameSlug}/
+                          {nameSlug}
+                        </Link>
+                        <LinkWrapper>
+                          <Link to="/TODO">edit</Link>
+                          <CustomLink to="/TODO">disable</CustomLink>
+                          <CustomLink to="/TODO">delete</CustomLink>
+                        </LinkWrapper>
+                      </Li>
+                    )
+                  )}
+                </Ul>
+              </>
             )}
-            <P>
-              <Link to={`${url}/create`}>Create a new payment link</Link>
-            </P>
-            <ul>
-              {flatMap(
-                gatewayAccount => gatewayAccount.products,
-                data.service.gatewayAccounts
-              ).map(({ externalId, name, nameSlug, serviceNameSlug }, _) => (
-                <li key={externalId}>
-                  <Link
-                    to={`/console/services/${service.externalId}/products/${externalId}`}
-                  >
-                    {name}
-                  </Link>
-                  —
-                  <Link to={`/products/${serviceNameSlug}/${nameSlug}`}>
-                    /payments/{serviceNameSlug}/{nameSlug}
-                  </Link>
-                </li>
-              ))}
-            </ul>
           </>
         )}
-      </TODO>
+      </SidebarLayout>
     </>
   );
 };
