@@ -7,15 +7,16 @@ import createDecorator from "final-form-focus";
 import { validators, Pages as CorePages, Loader, ErrorAlert } from "@pay/web";
 
 import {
-  CreateProductMutationFn,
-  useCreateProductMutation
+  UpdateProductMutationFn,
+  useUpdateProductMutation
 } from "../../__generated__/graphql";
+import { ProductFragment } from "../../../products/__generated__/graphql";
 import { isServerError } from "../../../apollo-rest-utils";
 import DetailsPage from "./DetailsPage";
 import ReferencePage from "./ReferencePage";
 import AmountPage from "./AmountPage";
-import ReviewPage from "./ReviewPage";
 import { Location } from "history";
+import EditStartPage from "./EditStartPage";
 
 export interface Values {
   name: string;
@@ -49,8 +50,8 @@ const ensureMoneyInCents = (amount: number) => {
 const handleSubmit = (
   location: Location,
   path: string,
-  gatewayAccountId: string,
-  createProduct: CreateProductMutationFn
+  id: string,
+  updateProduct: UpdateProductMutationFn
 ) => {
   return async (values: Values) => {
     const errors = [
@@ -99,24 +100,26 @@ const handleSubmit = (
       }, initial);
     }
 
-    if (location.pathname !== `${path}/review`) {
+    if (location.pathname !== `${path}`) {
       return;
     }
 
     const { reference_enabled, price_fixed, price } = values;
 
     try {
-      await createProduct({
+      await updateProduct({
         variables: {
-          gatewayAccountId,
+          id,
           input: {
             ...values,
             referenceEnabled: Boolean(reference_enabled),
+            referenceLabel: values.reference_label,
             priceFixed: Boolean(price_fixed),
             price: price ? ensureMoneyInCents(price) : 0
           }
         }
       });
+      return;
     } catch (e) {}
   };
 };
@@ -126,50 +129,60 @@ const decorators = [createDecorator<Values>()];
 interface Props {
   serviceName: string;
   gatewayAccountId: string;
-  productsPath: string;
+  product: ProductFragment;
   path: string;
+  productPath: string;
 }
 
-const CreateFormPage: React.FC<Props> = ({
+const EditFormPage: React.FC<Props> = ({
   serviceName,
   gatewayAccountId,
-  productsPath,
-  path
+  product,
+  path,
+  productPath
 }) => {
   const location = useLocation();
 
-  const [createProduct, { loading, error, data }] = useCreateProductMutation({
+  const [updateProduct, { loading, error, data }] = useUpdateProductMutation({
     errorPolicy: "all"
   });
 
   return (
     <>
       <Helmet>
-        <title>Create payment link</title>
+        <title>Edit payment link</title>
       </Helmet>
       <FinalForm<Values>
-        onSubmit={handleSubmit(location, path, gatewayAccountId, createProduct)}
+        onSubmit={handleSubmit(
+          location,
+          path,
+          product.externalId,
+          updateProduct
+        )}
         initialValues={{
-          name: "",
-          reference_enabled: null,
-          reference_label: "",
-          reference_hint: "",
-          price_fixed: null,
-          price: 0
+          name: product.name,
+          description: !product.description ? "" : product.description,
+          reference_enabled: product.referenceEnabled,
+          reference_label: !product.referenceLabel
+            ? ""
+            : product.referenceLabel,
+          reference_hint: product.referenceHint || "",
+          price_fixed: product.priceFixed,
+          price: Number(product.price / 100)
         }}
         decorators={decorators}
       >
         {({ values, handleSubmit }) => (
           <>
             {loading ? (
-              <Loader message="Creating a new payment link" />
+              <Loader message="Editing payment link" />
             ) : data && data.product ? (
-              <Redirect to={productsPath} />
+              <Redirect to={path} />
             ) : (
               <>
                 {error && (
                   <ErrorAlert
-                    title="Unable to create payment link"
+                    title="Unable to edit payment link"
                     message={getErrorMessage(error)}
                     showError={true}
                   />
@@ -178,10 +191,10 @@ const CreateFormPage: React.FC<Props> = ({
                   <Route path={`${path}/details`} exact strict>
                     <DetailsPage
                       serviceName={serviceName}
-                      title="Set payment link information"
+                      title="Edit payment link information"
                       values={values}
                       onSubmit={handleSubmit}
-                      redirectURL={`${path}/reference`}
+                      redirectURL={path}
                     />
                   </Route>
                   <Route path={`${path}/reference`} exact strict>
@@ -189,20 +202,22 @@ const CreateFormPage: React.FC<Props> = ({
                       path={path}
                       values={values}
                       onSubmit={handleSubmit}
-                      redirectURL={`${path}/amount`}
+                      redirectURL={path}
                     />
                   </Route>
                   <Route path={`${path}/amount`} exact strict>
                     <AmountPage
                       values={values}
                       onSubmit={handleSubmit}
-                      redirectURL={`${path}/review`}
+                      redirectURL={path}
                     />
                   </Route>
-                  <Route path={`${path}/review`} exact strict>
-                    <ReviewPage
+                  <Route path={`${path}`} exact strict>
+                    <EditStartPage
                       path={path}
+                      productPath={productPath}
                       values={values}
+                      product={product}
                       onSubmit={handleSubmit}
                     />
                   </Route>
@@ -219,4 +234,4 @@ const CreateFormPage: React.FC<Props> = ({
   );
 };
 
-export default CreateFormPage;
+export default EditFormPage;

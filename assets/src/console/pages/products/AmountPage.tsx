@@ -12,12 +12,12 @@ import { FormElement, OnSubmitFn } from "@pay/web/components/form/Form";
 import { Values } from "./CreateFormPage";
 
 interface Props {
-  path: string;
   values: Pick<Values, "price_fixed">;
   onSubmit: OnSubmitFn;
+  redirectURL: string;
 }
 
-const AmountPage: React.FC<Props> = ({ path, values, onSubmit }) => {
+const AmountPage: React.FC<Props> = ({ values, onSubmit, redirectURL }) => {
   const history = useHistory();
 
   return (
@@ -28,7 +28,7 @@ const AmountPage: React.FC<Props> = ({ path, values, onSubmit }) => {
         if (error && (error.price_fixed || error.price)) {
           return;
         }
-        history.push(`${path}/review`);
+        history.push(redirectURL);
       }}
       noValidate
     >

@@ -73,34 +73,16 @@ defmodule Pay.Products.Product do
   def update_changeset(product, attrs) do
     product
     |> cast(attrs, [
-      :api_token,
       :name,
       :description,
       :price_fixed,
       :price,
       :status,
-      :return_url,
-      :service_name_slug,
-      :name_slug,
       :reference_enabled,
       :reference_label,
       :reference_hint
     ])
     |> slug(:name, :name_slug)
-    |> validate_required([
-      :api_token,
-      :name,
-      :description,
-      :price_fixed,
-      :price,
-      :status,
-      :return_url,
-      :service_name_slug,
-      :name_slug,
-      :reference_enabled,
-      :reference_label,
-      :reference_hint
-    ])
     |> unique_constraint(:name_slug, name: :products_name_slug_service_name_slug_index)
   end
 end

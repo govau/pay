@@ -1,23 +1,23 @@
-import gql from "graphql-tag";
-import * as React from "react";
-import * as ApolloReactCommon from "@apollo/react-common";
-import * as ApolloReactComponents from "@apollo/react-components";
-import * as ApolloReactHooks from "@apollo/react-hooks";
+import gql from 'graphql-tag';
+import * as React from 'react';
+import * as ApolloReactCommon from '@apollo/react-common';
+import * as ApolloReactComponents from '@apollo/react-components';
+import * as ApolloReactHooks from '@apollo/react-hooks';
 export type Maybe<T> = T | null;
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
-  String: string;
-  Boolean: boolean;
-  Int: number;
-  Float: number;
+  ID: string,
+  String: string,
+  Boolean: boolean,
+  Int: number,
+  Float: number,
 };
 
 export type Admin = {
-  __typename?: "Admin";
-  organisations: Array<Organisation>;
-  services: Array<Service>;
+   __typename?: 'Admin',
+  organisations: Array<Organisation>,
+  services: Array<Service>,
 };
 
 export type BamboraCredentials = {
@@ -37,214 +37,214 @@ export type BamboraCredentialsInput = {
 };
 
 export type BamboraPaymentInput = {
-  expiryMonth: Scalars["String"];
-  expiryYear: Scalars["String"];
-  last4: Scalars["String"];
-  ott: Scalars["String"];
+  expiryMonth: Scalars['String'],
+  expiryYear: Scalars['String'],
+  last4: Scalars['String'],
+  ott: Scalars['String'],
 };
 
 export type CardDetails = {
-  __typename?: "CardDetails";
-  cardBrand?: Maybe<Scalars["String"]>;
-  cardNumber?: Maybe<Scalars["String"]>;
-  cardholderName?: Maybe<Scalars["String"]>;
-  expiryDate?: Maybe<Scalars["String"]>;
-  firstDigitsCardNumber?: Maybe<Scalars["String"]>;
-  lastDigitsCardNumber?: Maybe<Scalars["String"]>;
+   __typename?: 'CardDetails',
+  cardBrand?: Maybe<Scalars['String']>,
+  cardNumber?: Maybe<Scalars['String']>,
+  cardholderName?: Maybe<Scalars['String']>,
+  expiryDate?: Maybe<Scalars['String']>,
+  firstDigitsCardNumber?: Maybe<Scalars['String']>,
+  lastDigitsCardNumber?: Maybe<Scalars['String']>,
 };
 
 export type CardType = {
-  __typename?: "CardType";
-  brand: CardTypeBrand;
-  id: Scalars["ID"];
-  label?: Maybe<Scalars["String"]>;
-  requires3ds?: Maybe<Scalars["Boolean"]>;
-  type: CardTypeType;
+   __typename?: 'CardType',
+  brand: CardTypeBrand,
+  id: Scalars['ID'],
+  label?: Maybe<Scalars['String']>,
+  requires3ds?: Maybe<Scalars['Boolean']>,
+  type: CardTypeType,
 };
 
 export enum CardTypeBrand {
-  AmericanExpress = "AMERICAN_EXPRESS",
-  DinersClub = "DINERS_CLUB",
-  Discover = "DISCOVER",
-  Jcb = "JCB",
-  MasterCard = "MASTER_CARD",
-  Unionpay = "UNIONPAY",
-  Visa = "VISA"
+  AmericanExpress = 'AMERICAN_EXPRESS',
+  DinersClub = 'DINERS_CLUB',
+  Discover = 'DISCOVER',
+  Jcb = 'JCB',
+  MasterCard = 'MASTER_CARD',
+  Unionpay = 'UNIONPAY',
+  Visa = 'VISA'
 }
 
 export enum CardTypeType {
-  Credit = "CREDIT",
-  Debit = "DEBIT"
+  Credit = 'CREDIT',
+  Debit = 'DEBIT'
 }
 
 export type CreateProductInput = {
-  description?: Maybe<Scalars["String"]>;
-  name: Scalars["String"];
-  price?: Maybe<Scalars["Int"]>;
-  priceFixed: Scalars["Boolean"];
-  referenceEnabled: Scalars["Boolean"];
-  referenceHint?: Maybe<Scalars["String"]>;
-  referenceLabel?: Maybe<Scalars["String"]>;
+  description?: Maybe<Scalars['String']>,
+  name: Scalars['String'],
+  price?: Maybe<Scalars['Int']>,
+  priceFixed: Scalars['Boolean'],
+  referenceEnabled: Scalars['Boolean'],
+  referenceHint?: Maybe<Scalars['String']>,
+  referenceLabel?: Maybe<Scalars['String']>,
 };
 
 export type CreateServiceInput = {
-  name: Scalars["String"];
+  name: Scalars['String'],
 };
 
 export type GatewayAccount = {
-  __typename?: "GatewayAccount";
-  allowApplePay?: Maybe<Scalars["Boolean"]>;
-  allowGooglePay?: Maybe<Scalars["Boolean"]>;
-  allowZeroAmount?: Maybe<Scalars["Boolean"]>;
-  cardTypes: Array<CardType>;
-  credentials: GatewayAccountCredentials;
-  description?: Maybe<Scalars["String"]>;
-  externalId: Scalars["ID"];
-  id: Scalars["ID"];
-  integrationVersion3ds?: Maybe<Scalars["Int"]>;
-  paymentProvider: PaymentProviderLabel;
-  payments: Array<Payment>;
-  products: Array<Product>;
-  requires3ds?: Maybe<Scalars["Boolean"]>;
-  service: Service;
-  serviceName?: Maybe<Scalars["String"]>;
-  type: GatewayAccountType;
+   __typename?: 'GatewayAccount',
+  allowApplePay?: Maybe<Scalars['Boolean']>,
+  allowGooglePay?: Maybe<Scalars['Boolean']>,
+  allowZeroAmount?: Maybe<Scalars['Boolean']>,
+  cardTypes: Array<CardType>,
+  credentials: GatewayAccountCredentials,
+  description?: Maybe<Scalars['String']>,
+  externalId: Scalars['ID'],
+  id: Scalars['ID'],
+  integrationVersion3ds?: Maybe<Scalars['Int']>,
+  paymentProvider: PaymentProviderLabel,
+  payments: Array<Payment>,
+  products: Array<Product>,
+  requires3ds?: Maybe<Scalars['Boolean']>,
+  service: Service,
+  serviceName?: Maybe<Scalars['String']>,
+  type: GatewayAccountType,
 };
 
 export type GatewayAccountCredentials = BamboraCredentials | SandboxCredentials;
 
 export enum GatewayAccountType {
-  Live = "LIVE",
-  Test = "TEST"
+  Live = 'LIVE',
+  Test = 'TEST'
 }
 
 export type Organisation = {
-  __typename?: "Organisation";
-  externalId: Scalars["ID"];
-  id: Scalars["ID"];
-  name?: Maybe<Scalars["String"]>;
-  type?: Maybe<Scalars["String"]>;
+   __typename?: 'Organisation',
+  externalId: Scalars['ID'],
+  id: Scalars['ID'],
+  name?: Maybe<Scalars['String']>,
+  type?: Maybe<Scalars['String']>,
 };
 
 export type Payment = {
-  __typename?: "Payment";
-  amount: Scalars["Int"];
-  cardDetails?: Maybe<CardDetails>;
-  description: Scalars["String"];
-  email?: Maybe<Scalars["String"]>;
-  events: Array<TransactionEvent>;
-  externalId: Scalars["ID"];
-  gatewayAccount: GatewayAccount;
-  gatewayTransactionId?: Maybe<Scalars["String"]>;
-  id: Scalars["ID"];
-  insertedAt: Scalars["String"];
-  reference: Scalars["String"];
-  refunds: Array<PaymentRefund>;
-  returnUrl: Scalars["String"];
-  status: PaymentStatus;
-  updatedAt: Scalars["String"];
+   __typename?: 'Payment',
+  amount: Scalars['Int'],
+  cardDetails?: Maybe<CardDetails>,
+  description: Scalars['String'],
+  email?: Maybe<Scalars['String']>,
+  events: Array<TransactionEvent>,
+  externalId: Scalars['ID'],
+  gatewayAccount: GatewayAccount,
+  gatewayTransactionId?: Maybe<Scalars['String']>,
+  id: Scalars['ID'],
+  insertedAt: Scalars['String'],
+  reference: Scalars['String'],
+  refunds: Array<PaymentRefund>,
+  returnUrl: Scalars['String'],
+  status: PaymentStatus,
+  updatedAt: Scalars['String'],
 };
 
 export type PaymentEvent = TransactionEvent & {
-  __typename?: "PaymentEvent";
-  externalId: Scalars["ID"];
-  id: Scalars["ID"];
-  insertedAt: Scalars["String"];
-  status: PaymentStatus;
-  type: PaymentEventType;
-  updatedAt: Scalars["String"];
+   __typename?: 'PaymentEvent',
+  externalId: Scalars['ID'],
+  id: Scalars['ID'],
+  insertedAt: Scalars['String'],
+  status: PaymentStatus,
+  type: PaymentEventType,
+  updatedAt: Scalars['String'],
 };
 
 export enum PaymentEventType {
-  Payment = "PAYMENT",
-  Refund = "REFUND"
+  Payment = 'PAYMENT',
+  Refund = 'REFUND'
 }
 
 export enum PaymentProviderLabel {
-  Bambora = "BAMBORA",
-  Sandbox = "SANDBOX",
-  Stripe = "STRIPE"
+  Bambora = 'BAMBORA',
+  Sandbox = 'SANDBOX',
+  Stripe = 'STRIPE'
 }
 
 export type PaymentRefund = {
-  __typename?: "PaymentRefund";
-  amount: Scalars["Int"];
-  events?: Maybe<Array<PaymentRefundEvent>>;
-  externalId: Scalars["ID"];
-  gatewayTransactionId: Scalars["String"];
-  id: Scalars["ID"];
-  payment?: Maybe<Payment>;
-  reference: Scalars["String"];
-  status: Scalars["String"];
-  user?: Maybe<User>;
+   __typename?: 'PaymentRefund',
+  amount: Scalars['Int'],
+  events?: Maybe<Array<PaymentRefundEvent>>,
+  externalId: Scalars['ID'],
+  gatewayTransactionId: Scalars['String'],
+  id: Scalars['ID'],
+  payment?: Maybe<Payment>,
+  reference: Scalars['String'],
+  status: Scalars['String'],
+  user?: Maybe<User>,
 };
 
 export type PaymentRefundEvent = TransactionEvent & {
-  __typename?: "PaymentRefundEvent";
-  externalId: Scalars["ID"];
-  id: Scalars["ID"];
-  insertedAt: Scalars["String"];
-  refund?: Maybe<PaymentRefund>;
-  status: PaymentStatus;
-  type: PaymentEventType;
-  updatedAt: Scalars["String"];
+   __typename?: 'PaymentRefundEvent',
+  externalId: Scalars['ID'],
+  id: Scalars['ID'],
+  insertedAt: Scalars['String'],
+  refund?: Maybe<PaymentRefund>,
+  status: PaymentStatus,
+  type: PaymentEventType,
+  updatedAt: Scalars['String'],
 };
 
 export enum PaymentStatus {
-  Cancelled = "CANCELLED",
-  Capturable = "CAPTURABLE",
-  Created = "CREATED",
-  Declined = "DECLINED",
-  Error = "ERROR",
-  Started = "STARTED",
-  Submitted = "SUBMITTED",
-  Success = "SUCCESS",
-  TimedOut = "TIMED_OUT"
+  Cancelled = 'CANCELLED',
+  Capturable = 'CAPTURABLE',
+  Created = 'CREATED',
+  Declined = 'DECLINED',
+  Error = 'ERROR',
+  Started = 'STARTED',
+  Submitted = 'SUBMITTED',
+  Success = 'SUCCESS',
+  TimedOut = 'TIMED_OUT'
 }
 
 export type Product = {
-  __typename?: "Product";
-  apiToken: Scalars["String"];
-  description?: Maybe<Scalars["String"]>;
-  externalId: Scalars["ID"];
-  gatewayAccount: GatewayAccount;
-  id: Scalars["ID"];
-  name: Scalars["String"];
-  nameSlug: Scalars["String"];
-  payments: Array<ProductPayment>;
-  price: Scalars["Int"];
-  priceFixed: Scalars["Boolean"];
-  referenceEnabled: Scalars["Boolean"];
-  referenceHint?: Maybe<Scalars["String"]>;
-  referenceLabel?: Maybe<Scalars["String"]>;
-  returnUrl?: Maybe<Scalars["String"]>;
-  serviceNameSlug: Scalars["String"];
+   __typename?: 'Product',
+  apiToken: Scalars['String'],
+  description?: Maybe<Scalars['String']>,
+  externalId: Scalars['ID'],
+  gatewayAccount: GatewayAccount,
+  id: Scalars['ID'],
+  name: Scalars['String'],
+  nameSlug: Scalars['String'],
+  payments: Array<ProductPayment>,
+  price: Scalars['Int'],
+  priceFixed: Scalars['Boolean'],
+  referenceEnabled: Scalars['Boolean'],
+  referenceHint?: Maybe<Scalars['String']>,
+  referenceLabel?: Maybe<Scalars['String']>,
+  returnUrl?: Maybe<Scalars['String']>,
+  serviceNameSlug: Scalars['String'],
 };
 
 export type ProductPayment = {
-  __typename?: "ProductPayment";
-  amount?: Maybe<Scalars["Int"]>;
-  externalId: Scalars["ID"];
-  gatewayAccount: GatewayAccount;
-  id: Scalars["ID"];
-  nextUrl?: Maybe<Scalars["String"]>;
-  payment?: Maybe<Payment>;
-  product: Product;
-  reference?: Maybe<Scalars["String"]>;
-  status: ProductPaymentStatus;
+   __typename?: 'ProductPayment',
+  amount?: Maybe<Scalars['Int']>,
+  externalId: Scalars['ID'],
+  gatewayAccount: GatewayAccount,
+  id: Scalars['ID'],
+  nextUrl?: Maybe<Scalars['String']>,
+  payment?: Maybe<Payment>,
+  product: Product,
+  reference?: Maybe<Scalars['String']>,
+  status: ProductPaymentStatus,
 };
 
 export enum ProductPaymentStatus {
-  Created = "CREATED",
-  Error = "ERROR",
-  Submitted = "SUBMITTED"
+  Created = 'CREATED',
+  Error = 'ERROR',
+  Submitted = 'SUBMITTED'
 }
 
 export type Role = {
-  __typename?: "Role";
-  description: Scalars["String"];
-  id: Scalars["ID"];
-  name: Scalars["String"];
+   __typename?: 'Role',
+  description: Scalars['String'],
+  id: Scalars['ID'],
+  name: Scalars['String'],
 };
 
 export type RootMutationType = {
@@ -265,70 +265,89 @@ export type RootMutationType = {
   updateService: Service;
 };
 
+
 export type RootMutationTypeAcceptInviteArgs = {
-  serviceId: Scalars["ID"];
+  serviceId: Scalars['ID']
 };
+
 
 export type RootMutationTypeCreateProductArgs = {
-  gatewayAccountId: Scalars["ID"];
-  product: CreateProductInput;
+  gatewayAccountId: Scalars['ID'],
+  product: CreateProductInput
 };
+
 
 export type RootMutationTypeCreateProductPaymentArgs = {
-  nameSlug: Scalars["String"];
-  serviceNameSlug: Scalars["String"];
+  nameSlug: Scalars['String'],
+  serviceNameSlug: Scalars['String']
 };
+
 
 export type RootMutationTypeCreateServiceArgs = {
-  service: CreateServiceInput;
+  service: CreateServiceInput
 };
+
 
 export type RootMutationTypeInviteUserArgs = {
-  email: Scalars["String"];
-  role: Scalars["String"];
-  serviceId: Scalars["ID"];
+  email: Scalars['String'],
+  role: Scalars['String'],
+  serviceId: Scalars['ID']
 };
+
 
 export type RootMutationTypeSubmitBamboraPaymentArgs = {
-  paymentId: Scalars["ID"];
-  paymentInput: BamboraPaymentInput;
-  transition: Scalars["String"];
+  paymentId: Scalars['ID'],
+  paymentInput: BamboraPaymentInput,
+  transition: Scalars['String']
 };
+
 
 export type RootMutationTypeSubmitProductPaymentArgs = {
-  id: Scalars["ID"];
+  id: Scalars['ID']
 };
+
 
 export type RootMutationTypeSubmitRefundArgs = {
-  amount: Scalars["Int"];
-  paymentId: Scalars["ID"];
-  reference?: Maybe<Scalars["String"]>;
+  amount: Scalars['Int'],
+  paymentId: Scalars['ID'],
+  reference?: Maybe<Scalars['String']>
 };
+
 
 export type RootMutationTypeSubmitSandboxPaymentArgs = {
-  paymentId: Scalars["ID"];
-  paymentInput: SandboxPaymentInput;
-  transition: Scalars["String"];
+  paymentId: Scalars['ID'],
+  paymentInput: SandboxPaymentInput,
+  transition: Scalars['String']
 };
+
 
 export type RootMutationTypeUpdateGatewayAccountCardTypesArgs = {
-  cardTypeIds?: Maybe<Array<Scalars["ID"]>>;
-  gatewayAccountId: Scalars["ID"];
+  cardTypeIds?: Maybe<Array<Scalars['ID']>>,
+  gatewayAccountId: Scalars['ID']
 };
+
 
 export type RootMutationTypeUpdateGatewayAccountCredentialsArgs = {
-  credentials: BamboraCredentialsInput;
-  gatewayAccountId: Scalars["ID"];
+  credentials: BamboraCredentialsInput,
+  gatewayAccountId: Scalars['ID']
 };
+
+
+export type RootMutationTypeUpdateProductArgs = {
+  id: Scalars['ID'],
+  product: UpdateProductInput
+};
+
 
 export type RootMutationTypeUpdateProductPaymentArgs = {
-  id: Scalars["ID"];
-  productPayment: UpdateProductPaymentInput;
+  id: Scalars['ID'],
+  productPayment: UpdateProductPaymentInput
 };
 
+
 export type RootMutationTypeUpdateServiceArgs = {
-  id: Scalars["ID"];
-  service: UpdateServiceInput;
+  id: Scalars['ID'],
+  service: UpdateServiceInput
 };
 
 export type RootQueryType = {
@@ -347,109 +366,129 @@ export type RootQueryType = {
   users: Array<User>;
 };
 
+
 export type RootQueryTypeGatewayAccountArgs = {
-  id: Scalars["ID"];
+  id: Scalars['ID']
 };
+
 
 export type RootQueryTypePaymentArgs = {
-  id: Scalars["ID"];
+  id: Scalars['ID']
 };
+
+
+export type RootQueryTypeProductArgs = {
+  id: Scalars['ID']
+};
+
 
 export type RootQueryTypeProductPaymentArgs = {
-  id: Scalars["ID"];
+  id: Scalars['ID']
 };
 
+
 export type RootQueryTypeServiceArgs = {
-  id: Scalars["ID"];
+  id: Scalars['ID']
 };
 
 export type SandboxCredentials = {
-  __typename?: "SandboxCredentials";
-  dummy?: Maybe<Scalars["String"]>;
+   __typename?: 'SandboxCredentials',
+  dummy?: Maybe<Scalars['String']>,
 };
 
 export type SandboxPaymentInput = {
-  expiryMonth: Scalars["String"];
-  expiryYear: Scalars["String"];
-  last4: Scalars["String"];
+  expiryMonth: Scalars['String'],
+  expiryYear: Scalars['String'],
+  last4: Scalars['String'],
 };
 
 export type Service = {
-  __typename?: "Service";
-  currentGoLiveStage: ServiceGoLiveStage;
-  externalId: Scalars["ID"];
-  gatewayAccount: GatewayAccount;
-  gatewayAccounts: Array<GatewayAccount>;
-  id: Scalars["ID"];
-  invites: Array<ServiceInvite>;
-  merchantAddressCity?: Maybe<Scalars["String"]>;
-  merchantAddressCountry?: Maybe<Scalars["String"]>;
-  merchantAddressLine1?: Maybe<Scalars["String"]>;
-  merchantAddressLine2?: Maybe<Scalars["String"]>;
-  merchantAddressPostcode?: Maybe<Scalars["String"]>;
-  merchantEmail?: Maybe<Scalars["String"]>;
-  merchantName?: Maybe<Scalars["String"]>;
-  merchantTelephoneNumber?: Maybe<Scalars["String"]>;
-  name: Scalars["String"];
-  organisation?: Maybe<Organisation>;
-  users: Array<ServiceUser>;
+   __typename?: 'Service',
+  currentGoLiveStage: ServiceGoLiveStage,
+  externalId: Scalars['ID'],
+  gatewayAccount: GatewayAccount,
+  gatewayAccounts: Array<GatewayAccount>,
+  id: Scalars['ID'],
+  invites: Array<ServiceInvite>,
+  merchantAddressCity?: Maybe<Scalars['String']>,
+  merchantAddressCountry?: Maybe<Scalars['String']>,
+  merchantAddressLine1?: Maybe<Scalars['String']>,
+  merchantAddressLine2?: Maybe<Scalars['String']>,
+  merchantAddressPostcode?: Maybe<Scalars['String']>,
+  merchantEmail?: Maybe<Scalars['String']>,
+  merchantName?: Maybe<Scalars['String']>,
+  merchantTelephoneNumber?: Maybe<Scalars['String']>,
+  name: Scalars['String'],
+  organisation?: Maybe<Organisation>,
+  users: Array<ServiceUser>,
 };
 
+
 export type ServiceGatewayAccountArgs = {
-  id: Scalars["ID"];
+  id: Scalars['ID']
 };
 
 export enum ServiceGoLiveStage {
-  Live = "LIVE",
-  NotStarted = "NOT_STARTED"
+  Live = 'LIVE',
+  NotStarted = 'NOT_STARTED'
 }
 
 export type ServiceInvite = {
-  __typename?: "ServiceInvite";
-  email: Scalars["String"];
-  expiresAt: Scalars["String"];
-  id: Scalars["ID"];
-  invitedBy: Scalars["String"];
-  isExpired: Scalars["Boolean"];
-  role: Role;
-  serviceId: Scalars["ID"];
-  serviceName: Scalars["String"];
+   __typename?: 'ServiceInvite',
+  email: Scalars['String'],
+  expiresAt: Scalars['String'],
+  id: Scalars['ID'],
+  invitedBy: Scalars['String'],
+  isExpired: Scalars['Boolean'],
+  role: Role,
+  serviceId: Scalars['ID'],
+  serviceName: Scalars['String'],
 };
 
 export type ServiceUser = {
-  __typename?: "ServiceUser";
-  email: Scalars["String"];
-  externalId: Scalars["ID"];
-  id: Scalars["ID"];
-  insertedAt: Scalars["String"];
-  name: Scalars["String"];
-  platformAdmin?: Maybe<Scalars["Boolean"]>;
-  role: Role;
-  telephoneNumber?: Maybe<Scalars["String"]>;
-  updatedAt: Scalars["String"];
+   __typename?: 'ServiceUser',
+  email: Scalars['String'],
+  externalId: Scalars['ID'],
+  id: Scalars['ID'],
+  insertedAt: Scalars['String'],
+  name: Scalars['String'],
+  platformAdmin?: Maybe<Scalars['Boolean']>,
+  role: Role,
+  telephoneNumber?: Maybe<Scalars['String']>,
+  updatedAt: Scalars['String'],
 };
 
 export type Signout = {
-  __typename?: "Signout";
-  signedOut: Scalars["Boolean"];
+   __typename?: 'Signout',
+  signedOut: Scalars['Boolean'],
 };
 
 export type TransactionEvent = {
-  externalId: Scalars["ID"];
-  id: Scalars["ID"];
-  insertedAt: Scalars["String"];
-  status: PaymentStatus;
-  type: PaymentEventType;
-  updatedAt: Scalars["String"];
+  externalId: Scalars['ID'],
+  id: Scalars['ID'],
+  insertedAt: Scalars['String'],
+  status: PaymentStatus,
+  type: PaymentEventType,
+  updatedAt: Scalars['String'],
+};
+
+export type UpdateProductInput = {
+  description?: Maybe<Scalars['String']>,
+  name: Scalars['String'],
+  price?: Maybe<Scalars['Int']>,
+  priceFixed: Scalars['Boolean'],
+  referenceEnabled: Scalars['Boolean'],
+  referenceHint?: Maybe<Scalars['String']>,
+  referenceLabel?: Maybe<Scalars['String']>,
 };
 
 export type UpdateProductPaymentInput = {
-  amount?: Maybe<Scalars["Int"]>;
-  reference: Scalars["String"];
+  amount?: Maybe<Scalars['Int']>,
+  reference: Scalars['String'],
 };
 
 export type UpdateServiceInput = {
-  name: Scalars["String"];
+  name: Scalars['String'],
 };
 
 export type User = {
@@ -584,251 +623,357 @@ export type PaymentRefundFragment = { __typename?: "PaymentRefund" } & Pick<
 
 export type GetUserServicesQueryVariables = {};
 
-export type GetUserServicesQuery = { __typename?: "RootQueryType" } & {
-  services: Array<{ __typename?: "Service" } & ServiceFragment>;
-  serviceInvites: Array<
-    { __typename?: "ServiceInvite" } & ServiceInviteFragment
-  >;
-};
+
+export type GetUserServicesQuery = (
+  { __typename?: 'RootQueryType' }
+  & { services: Array<(
+    { __typename?: 'Service' }
+    & ServiceFragment
+  )>, serviceInvites: Array<(
+    { __typename?: 'ServiceInvite' }
+    & ServiceInviteFragment
+  )> }
+);
 
 export type GetServiceQueryVariables = {
-  id: Scalars["ID"];
+  id: Scalars['ID']
 };
 
-export type GetServiceQuery = { __typename?: "RootQueryType" } & {
-  service: { __typename?: "Service" } & ServiceFragment;
-};
+
+export type GetServiceQuery = (
+  { __typename?: 'RootQueryType' }
+  & { service: (
+    { __typename?: 'Service' }
+    & ServiceFragment
+  ) }
+);
 
 export type GetServiceWithGatewayAccountsQueryVariables = {
-  id: Scalars["ID"];
+  id: Scalars['ID']
 };
 
-export type GetServiceWithGatewayAccountsQuery = {
-  __typename?: "RootQueryType";
-} & {
-  service: { __typename?: "Service" } & {
-    gatewayAccounts: Array<
-      { __typename?: "GatewayAccount" } & GatewayAccountFragment
-    >;
-    users: Array<{ __typename?: "ServiceUser" } & ServiceUserFragment>;
-    invites: Array<{ __typename?: "ServiceInvite" } & ServiceInviteFragment>;
-  } & ServiceFragment;
-  roles: Array<{ __typename?: "Role" } & RoleFragment>;
-};
+
+export type GetServiceWithGatewayAccountsQuery = (
+  { __typename?: 'RootQueryType' }
+  & { service: (
+    { __typename?: 'Service' }
+    & { gatewayAccounts: Array<(
+      { __typename?: 'GatewayAccount' }
+      & GatewayAccountFragment
+    )>, users: Array<(
+      { __typename?: 'ServiceUser' }
+      & ServiceUserFragment
+    )>, invites: Array<(
+      { __typename?: 'ServiceInvite' }
+      & ServiceInviteFragment
+    )> }
+    & ServiceFragment
+  ), roles: Array<(
+    { __typename?: 'Role' }
+    & RoleFragment
+  )> }
+);
 
 export type CreateServiceMutationVariables = {
-  input: CreateServiceInput;
+  input: CreateServiceInput
 };
 
-export type CreateServiceMutation = { __typename?: "RootMutationType" } & {
-  service: { __typename?: "Service" } & ServiceFragment;
-};
+
+export type CreateServiceMutation = (
+  { __typename?: 'RootMutationType' }
+  & { service: (
+    { __typename?: 'Service' }
+    & ServiceFragment
+  ) }
+);
 
 export type InviteUserMutationVariables = {
-  serviceID: Scalars["ID"];
-  email: Scalars["String"];
-  role: Scalars["String"];
+  serviceID: Scalars['ID'],
+  email: Scalars['String'],
+  role: Scalars['String']
 };
 
-export type InviteUserMutation = { __typename?: "RootMutationType" } & {
-  service: { __typename?: "Service" } & ServiceFragment;
-};
+
+export type InviteUserMutation = (
+  { __typename?: 'RootMutationType' }
+  & { service: (
+    { __typename?: 'Service' }
+    & ServiceFragment
+  ) }
+);
 
 export type AcceptInviteMutationVariables = {
-  serviceID: Scalars["ID"];
+  serviceID: Scalars['ID']
 };
 
-export type AcceptInviteMutation = { __typename?: "RootMutationType" } & {
-  service: { __typename?: "Service" } & ServiceFragment;
-};
+
+export type AcceptInviteMutation = (
+  { __typename?: 'RootMutationType' }
+  & { service: (
+    { __typename?: 'Service' }
+    & ServiceFragment
+  ) }
+);
 
 export type UpdateServiceMutationVariables = {
-  id: Scalars["ID"];
-  input: UpdateServiceInput;
+  id: Scalars['ID'],
+  input: UpdateServiceInput
 };
 
-export type UpdateServiceMutation = { __typename?: "RootMutationType" } & {
-  service: { __typename?: "Service" } & ServiceFragment;
-};
+
+export type UpdateServiceMutation = (
+  { __typename?: 'RootMutationType' }
+  & { service: (
+    { __typename?: 'Service' }
+    & ServiceFragment
+  ) }
+);
 
 export type SubmitRefundMutationVariables = {
-  paymentId: Scalars["ID"];
-  amount: Scalars["Int"];
-  reference?: Maybe<Scalars["String"]>;
+  paymentId: Scalars['ID'],
+  amount: Scalars['Int'],
+  reference?: Maybe<Scalars['String']>
 };
 
-export type SubmitRefundMutation = { __typename?: "RootMutationType" } & {
-  refund: { __typename?: "PaymentRefund" } & PaymentRefundFragment;
-};
+
+export type SubmitRefundMutation = (
+  { __typename?: 'RootMutationType' }
+  & { refund: (
+    { __typename?: 'PaymentRefund' }
+    & PaymentRefundFragment
+  ) }
+);
 
 export type UpdateGatewayAccountCardTypesMutationVariables = {
-  gatewayAccountId: Scalars["ID"];
-  cardTypeIds: Array<Scalars["ID"]>;
+  gatewayAccountId: Scalars['ID'],
+  cardTypeIds: Array<Scalars['ID']>
 };
 
-export type UpdateGatewayAccountCardTypesMutation = {
-  __typename?: "RootMutationType";
-} & {
-  gatewayAccount: { __typename?: "GatewayAccount" } & GatewayAccountFragment;
-};
+
+export type UpdateGatewayAccountCardTypesMutation = (
+  { __typename?: 'RootMutationType' }
+  & { gatewayAccount: (
+    { __typename?: 'GatewayAccount' }
+    & GatewayAccountFragment
+  ) }
+);
 
 export type GetGatewayAccountsQueryVariables = {
-  serviceId: Scalars["ID"];
+  serviceId: Scalars['ID']
 };
 
-export type GetGatewayAccountsQuery = { __typename?: "RootQueryType" } & {
-  service: { __typename?: "Service" } & {
-    gatewayAccounts: Array<
-      { __typename?: "GatewayAccount" } & GatewayAccountFragment
-    >;
-  };
-};
+
+export type GetGatewayAccountsQuery = (
+  { __typename?: 'RootQueryType' }
+  & { service: (
+    { __typename?: 'Service' }
+    & { gatewayAccounts: Array<(
+      { __typename?: 'GatewayAccount' }
+      & GatewayAccountFragment
+    )> }
+  ) }
+);
 
 export type GetGatewayAccountQueryVariables = {
-  id: Scalars["ID"];
+  id: Scalars['ID']
 };
 
-export type GetGatewayAccountQuery = { __typename?: "RootQueryType" } & {
-  gatewayAccount: { __typename?: "GatewayAccount" } & GatewayAccountFragment;
-};
+
+export type GetGatewayAccountQuery = (
+  { __typename?: 'RootQueryType' }
+  & { gatewayAccount: (
+    { __typename?: 'GatewayAccount' }
+    & GatewayAccountFragment
+  ) }
+);
 
 export type UpdateGatewayAccountCredentialsMutationVariables = {
-  gatewayAccountId: Scalars["ID"];
-  input: BamboraCredentialsInput;
+  gatewayAccountId: Scalars['ID'],
+  input: BamboraCredentialsInput
 };
 
-export type UpdateGatewayAccountCredentialsMutation = {
-  __typename?: "RootMutationType";
-} & {
-  gatewayAccount: { __typename?: "GatewayAccount" } & {
-    credentials:
-      | ({
-          __typename?: "BamboraCredentials";
-        } & GatewayAccountCredentials_BamboraCredentials_Fragment)
-      | ({
-          __typename?: "SandboxCredentials";
-        } & GatewayAccountCredentials_SandboxCredentials_Fragment);
-  };
-};
+
+export type UpdateGatewayAccountCredentialsMutation = (
+  { __typename?: 'RootMutationType' }
+  & { gatewayAccount: (
+    { __typename?: 'GatewayAccount' }
+    & { credentials: (
+      { __typename?: 'BamboraCredentials' }
+      & GatewayAccountCredentials_BamboraCredentials_Fragment
+    ) | (
+      { __typename?: 'SandboxCredentials' }
+      & GatewayAccountCredentials_SandboxCredentials_Fragment
+    ) }
+  ) }
+);
 
 export type GetProductsQueryVariables = {
-  serviceID: Scalars["ID"];
+  serviceID: Scalars['ID']
 };
 
-export type GetProductsQuery = { __typename?: "RootQueryType" } & {
-  service: { __typename?: "Service" } & Pick<Service, "id"> & {
-      gatewayAccounts: Array<
-        { __typename?: "GatewayAccount" } & {
-          products: Array<{ __typename?: "Product" } & ProductFragment>;
-        }
-      >;
-    };
-};
+
+export type GetProductsQuery = (
+  { __typename?: 'RootQueryType' }
+  & { service: (
+    { __typename?: 'Service' }
+    & Pick<Service, 'id'>
+    & { gatewayAccounts: Array<(
+      { __typename?: 'GatewayAccount' }
+      & { products: Array<(
+        { __typename?: 'Product' }
+        & ProductFragment
+      )> }
+    )> }
+  ) }
+);
 
 export type CreateProductMutationVariables = {
-  gatewayAccountId: Scalars["ID"];
-  input: CreateProductInput;
+  gatewayAccountId: Scalars['ID'],
+  input: CreateProductInput
 };
 
-export type CreateProductMutation = { __typename?: "RootMutationType" } & {
-  product: { __typename?: "Product" } & ProductFragment;
+
+export type CreateProductMutation = (
+  { __typename?: 'RootMutationType' }
+  & { product: (
+    { __typename?: 'Product' }
+    & ProductFragment
+  ) }
+);
+
+export type UpdateProductMutationVariables = {
+  id: Scalars['ID'],
+  input: UpdateProductInput
 };
+
+
+export type UpdateProductMutation = (
+  { __typename?: 'RootMutationType' }
+  & { product: (
+    { __typename?: 'Product' }
+    & ProductFragment
+  ) }
+);
 
 export type GetPaymentsQueryVariables = {
-  serviceID: Scalars["ID"];
+  serviceID: Scalars['ID']
 };
 
-export type GetPaymentsQuery = { __typename?: "RootQueryType" } & {
-  service: { __typename?: "Service" } & Pick<Service, "id"> & {
-      gatewayAccounts: Array<
-        { __typename?: "GatewayAccount" } & {
-          payments: Array<{ __typename?: "Payment" } & PaymentFragment>;
-        } & GatewayAccountFragment
-      >;
-    };
-};
+
+export type GetPaymentsQuery = (
+  { __typename?: 'RootQueryType' }
+  & { service: (
+    { __typename?: 'Service' }
+    & Pick<Service, 'id'>
+    & { gatewayAccounts: Array<(
+      { __typename?: 'GatewayAccount' }
+      & { payments: Array<(
+        { __typename?: 'Payment' }
+        & PaymentFragment
+      )> }
+      & GatewayAccountFragment
+    )> }
+  ) }
+);
 
 export type GetPaymentQueryVariables = {
-  id: Scalars["ID"];
+  id: Scalars['ID']
 };
 
-export type GetPaymentQuery = { __typename?: "RootQueryType" } & {
-  payment: { __typename?: "Payment" } & PaymentFragment;
-};
+
+export type GetPaymentQuery = (
+  { __typename?: 'RootQueryType' }
+  & { payment: (
+    { __typename?: 'Payment' }
+    & PaymentFragment
+  ) }
+);
 
 export type GetPaymentRefundQueryVariables = {
-  id: Scalars["ID"];
+  id: Scalars['ID']
 };
 
-export type GetPaymentRefundQuery = { __typename?: "RootQueryType" } & {
-  payment: { __typename?: "Payment" } & {
-    refunds: Array<{ __typename?: "PaymentRefund" } & PaymentRefundFragment>;
-  } & PaymentFragment;
-};
+
+export type GetPaymentRefundQuery = (
+  { __typename?: 'RootQueryType' }
+  & { payment: (
+    { __typename?: 'Payment' }
+    & { refunds: Array<(
+      { __typename?: 'PaymentRefund' }
+      & PaymentRefundFragment
+    )> }
+    & PaymentFragment
+  ) }
+);
 
 export type GetPaymentEventsQueryVariables = {
-  id: Scalars["ID"];
+  id: Scalars['ID']
 };
 
-export type GetPaymentEventsQuery = { __typename?: "RootQueryType" } & {
-  payment: { __typename?: "Payment" } & {
-    events: Array<
-      | ({
-          __typename?: "PaymentRefundEvent";
-        } & PaymentEvent_PaymentRefundEvent_Fragment)
-      | ({ __typename?: "PaymentEvent" } & PaymentEvent_PaymentEvent_Fragment)
-    >;
-  } & PaymentFragment;
-};
+
+export type GetPaymentEventsQuery = (
+  { __typename?: 'RootQueryType' }
+  & { payment: (
+    { __typename?: 'Payment' }
+    & { events: Array<(
+      { __typename?: 'PaymentRefundEvent' }
+      & PaymentEvent_PaymentRefundEvent_Fragment
+    ) | (
+      { __typename?: 'PaymentEvent' }
+      & PaymentEvent_PaymentEvent_Fragment
+    )> }
+    & PaymentFragment
+  ) }
+);
 
 export const ServiceFragmentDoc = gql`
-  fragment Service on Service {
-    id
-    externalId
-    name
-    currentGoLiveStage
-  }
-`;
+    fragment Service on Service {
+  id
+  externalId
+  name
+  currentGoLiveStage
+}
+    `;
 export const RoleFragmentDoc = gql`
-  fragment Role on Role {
+    fragment Role on Role {
+  id
+  name
+  description
+}
+    `;
+export const ServiceUserFragmentDoc = gql`
+    fragment ServiceUser on ServiceUser {
+  id
+  insertedAt
+  updatedAt
+  externalId
+  name
+  email
+  telephoneNumber
+  platformAdmin
+  role {
     id
     name
     description
   }
-`;
-export const ServiceUserFragmentDoc = gql`
-  fragment ServiceUser on ServiceUser {
-    id
-    insertedAt
-    updatedAt
-    externalId
-    name
-    email
-    telephoneNumber
-    platformAdmin
-    role {
-      id
-      name
-      description
-    }
-  }
-`;
+}
+    `;
 export const ServiceInviteFragmentDoc = gql`
-  fragment ServiceInvite on ServiceInvite {
+    fragment ServiceInvite on ServiceInvite {
+  id
+  serviceId
+  serviceName
+  expiresAt
+  isExpired
+  invitedBy
+  email
+  role {
     id
-    serviceId
-    serviceName
-    expiresAt
-    isExpired
-    invitedBy
-    email
-    role {
-      id
-      name
-      description
-    }
+    name
+    description
   }
-`;
+}
+    `;
 export const GatewayAccountFragmentDoc = gql`
   fragment GatewayAccount on GatewayAccount {
     id
@@ -858,94 +1003,85 @@ export const GatewayAccountCredentialsFragmentDoc = gql`
       apiUsername
     }
   }
-`;
-export const ProductFragmentDoc = gql`
-  fragment Product on Product {
-    id
-    externalId
-    name
-    nameSlug
-    serviceNameSlug
-    description
-  }
-`;
-export const PaymentFragmentDoc = gql`
-  fragment Payment on Payment {
-    id
-    externalId
-    insertedAt
-    updatedAt
-    status
-    amount
-    reference
-    description
-    email
-    gatewayTransactionId
-    cardDetails {
-      cardholderName
-      cardNumber
-      lastDigitsCardNumber
-      firstDigitsCardNumber
-      expiryDate
-      cardBrand
-    }
-  }
-`;
-export const PaymentEventFragmentDoc = gql`
-  fragment PaymentEvent on TransactionEvent {
-    id
-    type
-    status
-    insertedAt
-    updatedAt
-  }
-`;
-export const PaymentRefundFragmentDoc = gql`
-  fragment PaymentRefund on PaymentRefund {
-    id
-    reference
-    amount
-    status
-    gatewayTransactionId
-  }
-`;
-export const GetUserServicesDocument = gql`
-  query GetUserServices {
-    services {
-      ...Service
-    }
-    serviceInvites {
-      ...ServiceInvite
-    }
-  }
-  ${ServiceFragmentDoc}
-  ${ServiceInviteFragmentDoc}
-`;
-export type GetUserServicesComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    GetUserServicesQuery,
-    GetUserServicesQueryVariables
-  >,
-  "query"
->;
+  `;
 
-export const GetUserServicesComponent = (
-  props: GetUserServicesComponentProps
-) => (
-  <ApolloReactComponents.Query<
-    GetUserServicesQuery,
-    GetUserServicesQueryVariables
-  >
-    query={GetUserServicesDocument}
-    {...props}
-  />
-);
+export const ProductFragmentDoc = gql`
+    fragment Product on Product {
+  id
+  externalId
+  name
+  nameSlug
+  serviceNameSlug
+  description
+  referenceEnabled
+  referenceLabel
+  referenceHint
+  price
+}
+    `;
+export const PaymentFragmentDoc = gql`
+    fragment Payment on Payment {
+  id
+  externalId
+  insertedAt
+  updatedAt
+  status
+  amount
+  reference
+  description
+  email
+  gatewayTransactionId
+  cardDetails {
+    cardholderName
+    cardNumber
+    lastDigitsCardNumber
+    firstDigitsCardNumber
+    expiryDate
+    cardBrand
+  }
+}
+    `;
+export const PaymentEventFragmentDoc = gql`
+    fragment PaymentEvent on TransactionEvent {
+  id
+  type
+  status
+  insertedAt
+  updatedAt
+}
+    `;
+export const PaymentRefundFragmentDoc = gql`
+    fragment PaymentRefund on PaymentRefund {
+  id
+  reference
+  amount
+  status
+  gatewayTransactionId
+}
+    `;
+export const GetUserServicesDocument = gql`
+    query GetUserServices {
+  services {
+    ...Service
+  }
+  serviceInvites {
+    ...ServiceInvite
+  }
+}
+    ${ServiceFragmentDoc}
+${ServiceInviteFragmentDoc}`;
+export type GetUserServicesComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetUserServicesQuery, GetUserServicesQueryVariables>, 'query'>;
+
+    export const GetUserServicesComponent = (props: GetUserServicesComponentProps) => (
+      <ApolloReactComponents.Query<GetUserServicesQuery, GetUserServicesQueryVariables> query={GetUserServicesDocument} {...props} />
+    );
+    
 
 /**
  * __useGetUserServicesQuery__
  *
  * To run a query within a React component, call `useGetUserServicesQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUserServicesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * When your component renders, `useGetUserServicesQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -956,67 +1092,34 @@ export const GetUserServicesComponent = (
  *   },
  * });
  */
-export function useGetUserServicesQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetUserServicesQuery,
-    GetUserServicesQueryVariables
-  >
-) {
-  return ApolloReactHooks.useQuery<
-    GetUserServicesQuery,
-    GetUserServicesQueryVariables
-  >(GetUserServicesDocument, baseOptions);
-}
-export function useGetUserServicesLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetUserServicesQuery,
-    GetUserServicesQueryVariables
-  >
-) {
-  return ApolloReactHooks.useLazyQuery<
-    GetUserServicesQuery,
-    GetUserServicesQueryVariables
-  >(GetUserServicesDocument, baseOptions);
-}
-export type GetUserServicesQueryHookResult = ReturnType<
-  typeof useGetUserServicesQuery
->;
-export type GetUserServicesLazyQueryHookResult = ReturnType<
-  typeof useGetUserServicesLazyQuery
->;
-export type GetUserServicesQueryResult = ApolloReactCommon.QueryResult<
-  GetUserServicesQuery,
-  GetUserServicesQueryVariables
->;
+export function useGetUserServicesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetUserServicesQuery, GetUserServicesQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetUserServicesQuery, GetUserServicesQueryVariables>(GetUserServicesDocument, baseOptions);
+      }
+export function useGetUserServicesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetUserServicesQuery, GetUserServicesQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetUserServicesQuery, GetUserServicesQueryVariables>(GetUserServicesDocument, baseOptions);
+        }
+export type GetUserServicesQueryHookResult = ReturnType<typeof useGetUserServicesQuery>;
+export type GetUserServicesLazyQueryHookResult = ReturnType<typeof useGetUserServicesLazyQuery>;
+export type GetUserServicesQueryResult = ApolloReactCommon.QueryResult<GetUserServicesQuery, GetUserServicesQueryVariables>;
 export const GetServiceDocument = gql`
-  query GetService($id: ID!) {
-    service(id: $id) {
-      ...Service
-    }
+    query GetService($id: ID!) {
+  service(id: $id) {
+    ...Service
   }
-  ${ServiceFragmentDoc}
-`;
-export type GetServiceComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    GetServiceQuery,
-    GetServiceQueryVariables
-  >,
-  "query"
-> &
-  ({ variables: GetServiceQueryVariables; skip?: boolean } | { skip: boolean });
+}
+    ${ServiceFragmentDoc}`;
+export type GetServiceComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetServiceQuery, GetServiceQueryVariables>, 'query'> & ({ variables: GetServiceQueryVariables; skip?: boolean; } | { skip: boolean; });
 
-export const GetServiceComponent = (props: GetServiceComponentProps) => (
-  <ApolloReactComponents.Query<GetServiceQuery, GetServiceQueryVariables>
-    query={GetServiceDocument}
-    {...props}
-  />
-);
+    export const GetServiceComponent = (props: GetServiceComponentProps) => (
+      <ApolloReactComponents.Query<GetServiceQuery, GetServiceQueryVariables> query={GetServiceDocument} {...props} />
+    );
+    
 
 /**
  * __useGetServiceQuery__
  *
  * To run a query within a React component, call `useGetServiceQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetServiceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * When your component renders, `useGetServiceQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -1028,52 +1131,27 @@ export const GetServiceComponent = (props: GetServiceComponentProps) => (
  *   },
  * });
  */
-export function useGetServiceQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetServiceQuery,
-    GetServiceQueryVariables
-  >
-) {
-  return ApolloReactHooks.useQuery<GetServiceQuery, GetServiceQueryVariables>(
-    GetServiceDocument,
-    baseOptions
-  );
-}
-export function useGetServiceLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetServiceQuery,
-    GetServiceQueryVariables
-  >
-) {
-  return ApolloReactHooks.useLazyQuery<
-    GetServiceQuery,
-    GetServiceQueryVariables
-  >(GetServiceDocument, baseOptions);
-}
+export function useGetServiceQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetServiceQuery, GetServiceQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetServiceQuery, GetServiceQueryVariables>(GetServiceDocument, baseOptions);
+      }
+export function useGetServiceLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetServiceQuery, GetServiceQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetServiceQuery, GetServiceQueryVariables>(GetServiceDocument, baseOptions);
+        }
 export type GetServiceQueryHookResult = ReturnType<typeof useGetServiceQuery>;
-export type GetServiceLazyQueryHookResult = ReturnType<
-  typeof useGetServiceLazyQuery
->;
-export type GetServiceQueryResult = ApolloReactCommon.QueryResult<
-  GetServiceQuery,
-  GetServiceQueryVariables
->;
+export type GetServiceLazyQueryHookResult = ReturnType<typeof useGetServiceLazyQuery>;
+export type GetServiceQueryResult = ApolloReactCommon.QueryResult<GetServiceQuery, GetServiceQueryVariables>;
 export const GetServiceWithGatewayAccountsDocument = gql`
-  query GetServiceWithGatewayAccounts($id: ID!) {
-    service(id: $id) {
-      ...Service
-      gatewayAccounts {
-        ...GatewayAccount
-      }
-      users {
-        ...ServiceUser
-      }
-      invites {
-        ...ServiceInvite
-      }
+    query GetServiceWithGatewayAccounts($id: ID!) {
+  service(id: $id) {
+    ...Service
+    gatewayAccounts {
+      ...GatewayAccount
     }
-    roles {
-      ...Role
+    users {
+      ...ServiceUser
+    }
+    invites {
+      ...ServiceInvite
     }
   }
   ${ServiceFragmentDoc}
@@ -1110,7 +1188,7 @@ export const GetServiceWithGatewayAccountsComponent = (
  * __useGetServiceWithGatewayAccountsQuery__
  *
  * To run a query within a React component, call `useGetServiceWithGatewayAccountsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetServiceWithGatewayAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * When your component renders, `useGetServiceWithGatewayAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -1122,67 +1200,29 @@ export const GetServiceWithGatewayAccountsComponent = (
  *   },
  * });
  */
-export function useGetServiceWithGatewayAccountsQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetServiceWithGatewayAccountsQuery,
-    GetServiceWithGatewayAccountsQueryVariables
-  >
-) {
-  return ApolloReactHooks.useQuery<
-    GetServiceWithGatewayAccountsQuery,
-    GetServiceWithGatewayAccountsQueryVariables
-  >(GetServiceWithGatewayAccountsDocument, baseOptions);
-}
-export function useGetServiceWithGatewayAccountsLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetServiceWithGatewayAccountsQuery,
-    GetServiceWithGatewayAccountsQueryVariables
-  >
-) {
-  return ApolloReactHooks.useLazyQuery<
-    GetServiceWithGatewayAccountsQuery,
-    GetServiceWithGatewayAccountsQueryVariables
-  >(GetServiceWithGatewayAccountsDocument, baseOptions);
-}
-export type GetServiceWithGatewayAccountsQueryHookResult = ReturnType<
-  typeof useGetServiceWithGatewayAccountsQuery
->;
-export type GetServiceWithGatewayAccountsLazyQueryHookResult = ReturnType<
-  typeof useGetServiceWithGatewayAccountsLazyQuery
->;
-export type GetServiceWithGatewayAccountsQueryResult = ApolloReactCommon.QueryResult<
-  GetServiceWithGatewayAccountsQuery,
-  GetServiceWithGatewayAccountsQueryVariables
->;
+export function useGetServiceWithGatewayAccountsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetServiceWithGatewayAccountsQuery, GetServiceWithGatewayAccountsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetServiceWithGatewayAccountsQuery, GetServiceWithGatewayAccountsQueryVariables>(GetServiceWithGatewayAccountsDocument, baseOptions);
+      }
+export function useGetServiceWithGatewayAccountsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetServiceWithGatewayAccountsQuery, GetServiceWithGatewayAccountsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetServiceWithGatewayAccountsQuery, GetServiceWithGatewayAccountsQueryVariables>(GetServiceWithGatewayAccountsDocument, baseOptions);
+        }
+export type GetServiceWithGatewayAccountsQueryHookResult = ReturnType<typeof useGetServiceWithGatewayAccountsQuery>;
+export type GetServiceWithGatewayAccountsLazyQueryHookResult = ReturnType<typeof useGetServiceWithGatewayAccountsLazyQuery>;
+export type GetServiceWithGatewayAccountsQueryResult = ApolloReactCommon.QueryResult<GetServiceWithGatewayAccountsQuery, GetServiceWithGatewayAccountsQueryVariables>;
 export const CreateServiceDocument = gql`
-  mutation CreateService($input: CreateServiceInput!) {
-    service: createService(service: $input) {
-      ...Service
-    }
+    mutation CreateService($input: CreateServiceInput!) {
+  service: createService(service: $input) {
+    ...Service
   }
-  ${ServiceFragmentDoc}
-`;
-export type CreateServiceMutationFn = ApolloReactCommon.MutationFunction<
-  CreateServiceMutation,
-  CreateServiceMutationVariables
->;
-export type CreateServiceComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    CreateServiceMutation,
-    CreateServiceMutationVariables
-  >,
-  "mutation"
->;
+}
+    ${ServiceFragmentDoc}`;
+export type CreateServiceMutationFn = ApolloReactCommon.MutationFunction<CreateServiceMutation, CreateServiceMutationVariables>;
+export type CreateServiceComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<CreateServiceMutation, CreateServiceMutationVariables>, 'mutation'>;
 
-export const CreateServiceComponent = (props: CreateServiceComponentProps) => (
-  <ApolloReactComponents.Mutation<
-    CreateServiceMutation,
-    CreateServiceMutationVariables
-  >
-    mutation={CreateServiceDocument}
-    {...props}
-  />
-);
+    export const CreateServiceComponent = (props: CreateServiceComponentProps) => (
+      <ApolloReactComponents.Mutation<CreateServiceMutation, CreateServiceMutationVariables> mutation={CreateServiceDocument} {...props} />
+    );
+    
 
 /**
  * __useCreateServiceMutation__
@@ -1201,56 +1241,26 @@ export const CreateServiceComponent = (props: CreateServiceComponentProps) => (
  *   },
  * });
  */
-export function useCreateServiceMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
-    CreateServiceMutation,
-    CreateServiceMutationVariables
-  >
-) {
-  return ApolloReactHooks.useMutation<
-    CreateServiceMutation,
-    CreateServiceMutationVariables
-  >(CreateServiceDocument, baseOptions);
-}
-export type CreateServiceMutationHookResult = ReturnType<
-  typeof useCreateServiceMutation
->;
-export type CreateServiceMutationResult = ApolloReactCommon.MutationResult<
-  CreateServiceMutation
->;
-export type CreateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  CreateServiceMutation,
-  CreateServiceMutationVariables
->;
+export function useCreateServiceMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateServiceMutation, CreateServiceMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateServiceMutation, CreateServiceMutationVariables>(CreateServiceDocument, baseOptions);
+      }
+export type CreateServiceMutationHookResult = ReturnType<typeof useCreateServiceMutation>;
+export type CreateServiceMutationResult = ApolloReactCommon.MutationResult<CreateServiceMutation>;
+export type CreateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateServiceMutation, CreateServiceMutationVariables>;
 export const InviteUserDocument = gql`
-  mutation InviteUser($serviceID: ID!, $email: String!, $role: String!) {
-    service: inviteUser(serviceId: $serviceID, email: $email, role: $role) {
-      ...Service
-    }
+    mutation InviteUser($serviceID: ID!, $email: String!, $role: String!) {
+  service: inviteUser(serviceId: $serviceID, email: $email, role: $role) {
+    ...Service
   }
-  ${ServiceFragmentDoc}
-`;
-export type InviteUserMutationFn = ApolloReactCommon.MutationFunction<
-  InviteUserMutation,
-  InviteUserMutationVariables
->;
-export type InviteUserComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    InviteUserMutation,
-    InviteUserMutationVariables
-  >,
-  "mutation"
->;
+}
+    ${ServiceFragmentDoc}`;
+export type InviteUserMutationFn = ApolloReactCommon.MutationFunction<InviteUserMutation, InviteUserMutationVariables>;
+export type InviteUserComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<InviteUserMutation, InviteUserMutationVariables>, 'mutation'>;
 
-export const InviteUserComponent = (props: InviteUserComponentProps) => (
-  <ApolloReactComponents.Mutation<
-    InviteUserMutation,
-    InviteUserMutationVariables
-  >
-    mutation={InviteUserDocument}
-    {...props}
-  />
-);
+    export const InviteUserComponent = (props: InviteUserComponentProps) => (
+      <ApolloReactComponents.Mutation<InviteUserMutation, InviteUserMutationVariables> mutation={InviteUserDocument} {...props} />
+    );
+    
 
 /**
  * __useInviteUserMutation__
@@ -1271,56 +1281,26 @@ export const InviteUserComponent = (props: InviteUserComponentProps) => (
  *   },
  * });
  */
-export function useInviteUserMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
-    InviteUserMutation,
-    InviteUserMutationVariables
-  >
-) {
-  return ApolloReactHooks.useMutation<
-    InviteUserMutation,
-    InviteUserMutationVariables
-  >(InviteUserDocument, baseOptions);
-}
-export type InviteUserMutationHookResult = ReturnType<
-  typeof useInviteUserMutation
->;
-export type InviteUserMutationResult = ApolloReactCommon.MutationResult<
-  InviteUserMutation
->;
-export type InviteUserMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  InviteUserMutation,
-  InviteUserMutationVariables
->;
+export function useInviteUserMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<InviteUserMutation, InviteUserMutationVariables>) {
+        return ApolloReactHooks.useMutation<InviteUserMutation, InviteUserMutationVariables>(InviteUserDocument, baseOptions);
+      }
+export type InviteUserMutationHookResult = ReturnType<typeof useInviteUserMutation>;
+export type InviteUserMutationResult = ApolloReactCommon.MutationResult<InviteUserMutation>;
+export type InviteUserMutationOptions = ApolloReactCommon.BaseMutationOptions<InviteUserMutation, InviteUserMutationVariables>;
 export const AcceptInviteDocument = gql`
-  mutation AcceptInvite($serviceID: ID!) {
-    service: acceptInvite(serviceId: $serviceID) {
-      ...Service
-    }
+    mutation AcceptInvite($serviceID: ID!) {
+  service: acceptInvite(serviceId: $serviceID) {
+    ...Service
   }
-  ${ServiceFragmentDoc}
-`;
-export type AcceptInviteMutationFn = ApolloReactCommon.MutationFunction<
-  AcceptInviteMutation,
-  AcceptInviteMutationVariables
->;
-export type AcceptInviteComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    AcceptInviteMutation,
-    AcceptInviteMutationVariables
-  >,
-  "mutation"
->;
+}
+    ${ServiceFragmentDoc}`;
+export type AcceptInviteMutationFn = ApolloReactCommon.MutationFunction<AcceptInviteMutation, AcceptInviteMutationVariables>;
+export type AcceptInviteComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<AcceptInviteMutation, AcceptInviteMutationVariables>, 'mutation'>;
 
-export const AcceptInviteComponent = (props: AcceptInviteComponentProps) => (
-  <ApolloReactComponents.Mutation<
-    AcceptInviteMutation,
-    AcceptInviteMutationVariables
-  >
-    mutation={AcceptInviteDocument}
-    {...props}
-  />
-);
+    export const AcceptInviteComponent = (props: AcceptInviteComponentProps) => (
+      <ApolloReactComponents.Mutation<AcceptInviteMutation, AcceptInviteMutationVariables> mutation={AcceptInviteDocument} {...props} />
+    );
+    
 
 /**
  * __useAcceptInviteMutation__
@@ -1339,56 +1319,26 @@ export const AcceptInviteComponent = (props: AcceptInviteComponentProps) => (
  *   },
  * });
  */
-export function useAcceptInviteMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
-    AcceptInviteMutation,
-    AcceptInviteMutationVariables
-  >
-) {
-  return ApolloReactHooks.useMutation<
-    AcceptInviteMutation,
-    AcceptInviteMutationVariables
-  >(AcceptInviteDocument, baseOptions);
-}
-export type AcceptInviteMutationHookResult = ReturnType<
-  typeof useAcceptInviteMutation
->;
-export type AcceptInviteMutationResult = ApolloReactCommon.MutationResult<
-  AcceptInviteMutation
->;
-export type AcceptInviteMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  AcceptInviteMutation,
-  AcceptInviteMutationVariables
->;
+export function useAcceptInviteMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<AcceptInviteMutation, AcceptInviteMutationVariables>) {
+        return ApolloReactHooks.useMutation<AcceptInviteMutation, AcceptInviteMutationVariables>(AcceptInviteDocument, baseOptions);
+      }
+export type AcceptInviteMutationHookResult = ReturnType<typeof useAcceptInviteMutation>;
+export type AcceptInviteMutationResult = ApolloReactCommon.MutationResult<AcceptInviteMutation>;
+export type AcceptInviteMutationOptions = ApolloReactCommon.BaseMutationOptions<AcceptInviteMutation, AcceptInviteMutationVariables>;
 export const UpdateServiceDocument = gql`
-  mutation UpdateService($id: ID!, $input: UpdateServiceInput!) {
-    service: updateService(id: $id, service: $input) {
-      ...Service
-    }
+    mutation UpdateService($id: ID!, $input: UpdateServiceInput!) {
+  service: updateService(id: $id, service: $input) {
+    ...Service
   }
-  ${ServiceFragmentDoc}
-`;
-export type UpdateServiceMutationFn = ApolloReactCommon.MutationFunction<
-  UpdateServiceMutation,
-  UpdateServiceMutationVariables
->;
-export type UpdateServiceComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    UpdateServiceMutation,
-    UpdateServiceMutationVariables
-  >,
-  "mutation"
->;
+}
+    ${ServiceFragmentDoc}`;
+export type UpdateServiceMutationFn = ApolloReactCommon.MutationFunction<UpdateServiceMutation, UpdateServiceMutationVariables>;
+export type UpdateServiceComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<UpdateServiceMutation, UpdateServiceMutationVariables>, 'mutation'>;
 
-export const UpdateServiceComponent = (props: UpdateServiceComponentProps) => (
-  <ApolloReactComponents.Mutation<
-    UpdateServiceMutation,
-    UpdateServiceMutationVariables
-  >
-    mutation={UpdateServiceDocument}
-    {...props}
-  />
-);
+    export const UpdateServiceComponent = (props: UpdateServiceComponentProps) => (
+      <ApolloReactComponents.Mutation<UpdateServiceMutation, UpdateServiceMutationVariables> mutation={UpdateServiceDocument} {...props} />
+    );
+    
 
 /**
  * __useUpdateServiceMutation__
@@ -1408,60 +1358,26 @@ export const UpdateServiceComponent = (props: UpdateServiceComponentProps) => (
  *   },
  * });
  */
-export function useUpdateServiceMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
-    UpdateServiceMutation,
-    UpdateServiceMutationVariables
-  >
-) {
-  return ApolloReactHooks.useMutation<
-    UpdateServiceMutation,
-    UpdateServiceMutationVariables
-  >(UpdateServiceDocument, baseOptions);
-}
-export type UpdateServiceMutationHookResult = ReturnType<
-  typeof useUpdateServiceMutation
->;
-export type UpdateServiceMutationResult = ApolloReactCommon.MutationResult<
-  UpdateServiceMutation
->;
-export type UpdateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UpdateServiceMutation,
-  UpdateServiceMutationVariables
->;
+export function useUpdateServiceMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateServiceMutation, UpdateServiceMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateServiceMutation, UpdateServiceMutationVariables>(UpdateServiceDocument, baseOptions);
+      }
+export type UpdateServiceMutationHookResult = ReturnType<typeof useUpdateServiceMutation>;
+export type UpdateServiceMutationResult = ApolloReactCommon.MutationResult<UpdateServiceMutation>;
+export type UpdateServiceMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateServiceMutation, UpdateServiceMutationVariables>;
 export const SubmitRefundDocument = gql`
-  mutation SubmitRefund($paymentId: ID!, $amount: Int!, $reference: String) {
-    refund: submitRefund(
-      paymentId: $paymentId
-      amount: $amount
-      reference: $reference
-    ) {
-      ...PaymentRefund
-    }
+    mutation SubmitRefund($paymentId: ID!, $amount: Int!, $reference: String) {
+  refund: submitRefund(paymentId: $paymentId, amount: $amount, reference: $reference) {
+    ...PaymentRefund
   }
-  ${PaymentRefundFragmentDoc}
-`;
-export type SubmitRefundMutationFn = ApolloReactCommon.MutationFunction<
-  SubmitRefundMutation,
-  SubmitRefundMutationVariables
->;
-export type SubmitRefundComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    SubmitRefundMutation,
-    SubmitRefundMutationVariables
-  >,
-  "mutation"
->;
+}
+    ${PaymentRefundFragmentDoc}`;
+export type SubmitRefundMutationFn = ApolloReactCommon.MutationFunction<SubmitRefundMutation, SubmitRefundMutationVariables>;
+export type SubmitRefundComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<SubmitRefundMutation, SubmitRefundMutationVariables>, 'mutation'>;
 
-export const SubmitRefundComponent = (props: SubmitRefundComponentProps) => (
-  <ApolloReactComponents.Mutation<
-    SubmitRefundMutation,
-    SubmitRefundMutationVariables
-  >
-    mutation={SubmitRefundDocument}
-    {...props}
-  />
-);
+    export const SubmitRefundComponent = (props: SubmitRefundComponentProps) => (
+      <ApolloReactComponents.Mutation<SubmitRefundMutation, SubmitRefundMutationVariables> mutation={SubmitRefundDocument} {...props} />
+    );
+    
 
 /**
  * __useSubmitRefundMutation__
@@ -1482,64 +1398,26 @@ export const SubmitRefundComponent = (props: SubmitRefundComponentProps) => (
  *   },
  * });
  */
-export function useSubmitRefundMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
-    SubmitRefundMutation,
-    SubmitRefundMutationVariables
-  >
-) {
-  return ApolloReactHooks.useMutation<
-    SubmitRefundMutation,
-    SubmitRefundMutationVariables
-  >(SubmitRefundDocument, baseOptions);
-}
-export type SubmitRefundMutationHookResult = ReturnType<
-  typeof useSubmitRefundMutation
->;
-export type SubmitRefundMutationResult = ApolloReactCommon.MutationResult<
-  SubmitRefundMutation
->;
-export type SubmitRefundMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  SubmitRefundMutation,
-  SubmitRefundMutationVariables
->;
+export function useSubmitRefundMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<SubmitRefundMutation, SubmitRefundMutationVariables>) {
+        return ApolloReactHooks.useMutation<SubmitRefundMutation, SubmitRefundMutationVariables>(SubmitRefundDocument, baseOptions);
+      }
+export type SubmitRefundMutationHookResult = ReturnType<typeof useSubmitRefundMutation>;
+export type SubmitRefundMutationResult = ApolloReactCommon.MutationResult<SubmitRefundMutation>;
+export type SubmitRefundMutationOptions = ApolloReactCommon.BaseMutationOptions<SubmitRefundMutation, SubmitRefundMutationVariables>;
 export const UpdateGatewayAccountCardTypesDocument = gql`
-  mutation UpdateGatewayAccountCardTypes(
-    $gatewayAccountId: ID!
-    $cardTypeIds: [ID!]!
-  ) {
-    gatewayAccount: updateGatewayAccountCardTypes(
-      gatewayAccountId: $gatewayAccountId
-      cardTypeIds: $cardTypeIds
-    ) {
-      ...GatewayAccount
-    }
+    mutation UpdateGatewayAccountCardTypes($gatewayAccountId: ID!, $cardTypeIds: [ID!]!) {
+  gatewayAccount: updateGatewayAccountCardTypes(gatewayAccountId: $gatewayAccountId, cardTypeIds: $cardTypeIds) {
+    ...GatewayAccount
   }
-  ${GatewayAccountFragmentDoc}
-`;
-export type UpdateGatewayAccountCardTypesMutationFn = ApolloReactCommon.MutationFunction<
-  UpdateGatewayAccountCardTypesMutation,
-  UpdateGatewayAccountCardTypesMutationVariables
->;
-export type UpdateGatewayAccountCardTypesComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    UpdateGatewayAccountCardTypesMutation,
-    UpdateGatewayAccountCardTypesMutationVariables
-  >,
-  "mutation"
->;
+}
+    ${GatewayAccountFragmentDoc}`;
+export type UpdateGatewayAccountCardTypesMutationFn = ApolloReactCommon.MutationFunction<UpdateGatewayAccountCardTypesMutation, UpdateGatewayAccountCardTypesMutationVariables>;
+export type UpdateGatewayAccountCardTypesComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<UpdateGatewayAccountCardTypesMutation, UpdateGatewayAccountCardTypesMutationVariables>, 'mutation'>;
 
-export const UpdateGatewayAccountCardTypesComponent = (
-  props: UpdateGatewayAccountCardTypesComponentProps
-) => (
-  <ApolloReactComponents.Mutation<
-    UpdateGatewayAccountCardTypesMutation,
-    UpdateGatewayAccountCardTypesMutationVariables
-  >
-    mutation={UpdateGatewayAccountCardTypesDocument}
-    {...props}
-  />
-);
+    export const UpdateGatewayAccountCardTypesComponent = (props: UpdateGatewayAccountCardTypesComponentProps) => (
+      <ApolloReactComponents.Mutation<UpdateGatewayAccountCardTypesMutation, UpdateGatewayAccountCardTypesMutationVariables> mutation={UpdateGatewayAccountCardTypesDocument} {...props} />
+    );
+    
 
 /**
  * __useUpdateGatewayAccountCardTypesMutation__
@@ -1559,33 +1437,17 @@ export const UpdateGatewayAccountCardTypesComponent = (
  *   },
  * });
  */
-export function useUpdateGatewayAccountCardTypesMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
-    UpdateGatewayAccountCardTypesMutation,
-    UpdateGatewayAccountCardTypesMutationVariables
-  >
-) {
-  return ApolloReactHooks.useMutation<
-    UpdateGatewayAccountCardTypesMutation,
-    UpdateGatewayAccountCardTypesMutationVariables
-  >(UpdateGatewayAccountCardTypesDocument, baseOptions);
-}
-export type UpdateGatewayAccountCardTypesMutationHookResult = ReturnType<
-  typeof useUpdateGatewayAccountCardTypesMutation
->;
-export type UpdateGatewayAccountCardTypesMutationResult = ApolloReactCommon.MutationResult<
-  UpdateGatewayAccountCardTypesMutation
->;
-export type UpdateGatewayAccountCardTypesMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UpdateGatewayAccountCardTypesMutation,
-  UpdateGatewayAccountCardTypesMutationVariables
->;
-export const GetGatewayAccountsDocument = gql`
-  query GetGatewayAccounts($serviceId: ID!) {
-    service(id: $serviceId) {
-      gatewayAccounts {
-        ...GatewayAccount
+export function useUpdateGatewayAccountCardTypesMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateGatewayAccountCardTypesMutation, UpdateGatewayAccountCardTypesMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateGatewayAccountCardTypesMutation, UpdateGatewayAccountCardTypesMutationVariables>(UpdateGatewayAccountCardTypesDocument, baseOptions);
       }
+export type UpdateGatewayAccountCardTypesMutationHookResult = ReturnType<typeof useUpdateGatewayAccountCardTypesMutation>;
+export type UpdateGatewayAccountCardTypesMutationResult = ApolloReactCommon.MutationResult<UpdateGatewayAccountCardTypesMutation>;
+export type UpdateGatewayAccountCardTypesMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateGatewayAccountCardTypesMutation, UpdateGatewayAccountCardTypesMutationVariables>;
+export const GetGatewayAccountsDocument = gql`
+    query GetGatewayAccounts($serviceId: ID!) {
+  service(id: $serviceId) {
+    gatewayAccounts {
+      ...GatewayAccount
     }
   }
   ${GatewayAccountFragmentDoc}
@@ -1618,7 +1480,7 @@ export const GetGatewayAccountsComponent = (
  * __useGetGatewayAccountsQuery__
  *
  * To run a query within a React component, call `useGetGatewayAccountsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetGatewayAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * When your component renders, `useGetGatewayAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -1630,43 +1492,19 @@ export const GetGatewayAccountsComponent = (
  *   },
  * });
  */
-export function useGetGatewayAccountsQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetGatewayAccountsQuery,
-    GetGatewayAccountsQueryVariables
-  >
-) {
-  return ApolloReactHooks.useQuery<
-    GetGatewayAccountsQuery,
-    GetGatewayAccountsQueryVariables
-  >(GetGatewayAccountsDocument, baseOptions);
-}
-export function useGetGatewayAccountsLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetGatewayAccountsQuery,
-    GetGatewayAccountsQueryVariables
-  >
-) {
-  return ApolloReactHooks.useLazyQuery<
-    GetGatewayAccountsQuery,
-    GetGatewayAccountsQueryVariables
-  >(GetGatewayAccountsDocument, baseOptions);
-}
-export type GetGatewayAccountsQueryHookResult = ReturnType<
-  typeof useGetGatewayAccountsQuery
->;
-export type GetGatewayAccountsLazyQueryHookResult = ReturnType<
-  typeof useGetGatewayAccountsLazyQuery
->;
-export type GetGatewayAccountsQueryResult = ApolloReactCommon.QueryResult<
-  GetGatewayAccountsQuery,
-  GetGatewayAccountsQueryVariables
->;
+export function useGetGatewayAccountsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetGatewayAccountsQuery, GetGatewayAccountsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetGatewayAccountsQuery, GetGatewayAccountsQueryVariables>(GetGatewayAccountsDocument, baseOptions);
+      }
+export function useGetGatewayAccountsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetGatewayAccountsQuery, GetGatewayAccountsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetGatewayAccountsQuery, GetGatewayAccountsQueryVariables>(GetGatewayAccountsDocument, baseOptions);
+        }
+export type GetGatewayAccountsQueryHookResult = ReturnType<typeof useGetGatewayAccountsQuery>;
+export type GetGatewayAccountsLazyQueryHookResult = ReturnType<typeof useGetGatewayAccountsLazyQuery>;
+export type GetGatewayAccountsQueryResult = ApolloReactCommon.QueryResult<GetGatewayAccountsQuery, GetGatewayAccountsQueryVariables>;
 export const GetGatewayAccountDocument = gql`
-  query GetGatewayAccount($id: ID!) {
-    gatewayAccount(id: $id) {
-      ...GatewayAccount
-    }
+    query GetGatewayAccount($id: ID!) {
+  gatewayAccount(id: $id) {
+    ...GatewayAccount
   }
   ${GatewayAccountFragmentDoc}
 `;
@@ -1698,7 +1536,7 @@ export const GetGatewayAccountComponent = (
  * __useGetGatewayAccountQuery__
  *
  * To run a query within a React component, call `useGetGatewayAccountQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetGatewayAccountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * When your component renders, `useGetGatewayAccountQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -1710,77 +1548,31 @@ export const GetGatewayAccountComponent = (
  *   },
  * });
  */
-export function useGetGatewayAccountQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetGatewayAccountQuery,
-    GetGatewayAccountQueryVariables
-  >
-) {
-  return ApolloReactHooks.useQuery<
-    GetGatewayAccountQuery,
-    GetGatewayAccountQueryVariables
-  >(GetGatewayAccountDocument, baseOptions);
-}
-export function useGetGatewayAccountLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetGatewayAccountQuery,
-    GetGatewayAccountQueryVariables
-  >
-) {
-  return ApolloReactHooks.useLazyQuery<
-    GetGatewayAccountQuery,
-    GetGatewayAccountQueryVariables
-  >(GetGatewayAccountDocument, baseOptions);
-}
-export type GetGatewayAccountQueryHookResult = ReturnType<
-  typeof useGetGatewayAccountQuery
->;
-export type GetGatewayAccountLazyQueryHookResult = ReturnType<
-  typeof useGetGatewayAccountLazyQuery
->;
-export type GetGatewayAccountQueryResult = ApolloReactCommon.QueryResult<
-  GetGatewayAccountQuery,
-  GetGatewayAccountQueryVariables
->;
-export const UpdateGatewayAccountCredentialsDocument = gql`
-  mutation UpdateGatewayAccountCredentials(
-    $gatewayAccountId: ID!
-    $input: BamboraCredentialsInput!
-  ) {
-    gatewayAccount: updateGatewayAccountCredentials(
-      gatewayAccountId: $gatewayAccountId
-      credentials: $input
-    ) {
-      credentials {
-        ...GatewayAccountCredentials
+export function useGetGatewayAccountQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetGatewayAccountQuery, GetGatewayAccountQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetGatewayAccountQuery, GetGatewayAccountQueryVariables>(GetGatewayAccountDocument, baseOptions);
       }
+export function useGetGatewayAccountLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetGatewayAccountQuery, GetGatewayAccountQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetGatewayAccountQuery, GetGatewayAccountQueryVariables>(GetGatewayAccountDocument, baseOptions);
+        }
+export type GetGatewayAccountQueryHookResult = ReturnType<typeof useGetGatewayAccountQuery>;
+export type GetGatewayAccountLazyQueryHookResult = ReturnType<typeof useGetGatewayAccountLazyQuery>;
+export type GetGatewayAccountQueryResult = ApolloReactCommon.QueryResult<GetGatewayAccountQuery, GetGatewayAccountQueryVariables>;
+export const UpdateGatewayAccountCredentialsDocument = gql`
+    mutation UpdateGatewayAccountCredentials($gatewayAccountId: ID!, $input: BamboraCredentialsInput!) {
+  gatewayAccount: updateGatewayAccountCredentials(gatewayAccountId: $gatewayAccountId, credentials: $input) {
+    credentials {
+      ...GatewayAccountCredentials
     }
   }
-  ${GatewayAccountCredentialsFragmentDoc}
-`;
-export type UpdateGatewayAccountCredentialsMutationFn = ApolloReactCommon.MutationFunction<
-  UpdateGatewayAccountCredentialsMutation,
-  UpdateGatewayAccountCredentialsMutationVariables
->;
-export type UpdateGatewayAccountCredentialsComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    UpdateGatewayAccountCredentialsMutation,
-    UpdateGatewayAccountCredentialsMutationVariables
-  >,
-  "mutation"
->;
+}
+    ${GatewayAccountCredentialsFragmentDoc}`;
+export type UpdateGatewayAccountCredentialsMutationFn = ApolloReactCommon.MutationFunction<UpdateGatewayAccountCredentialsMutation, UpdateGatewayAccountCredentialsMutationVariables>;
+export type UpdateGatewayAccountCredentialsComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<UpdateGatewayAccountCredentialsMutation, UpdateGatewayAccountCredentialsMutationVariables>, 'mutation'>;
 
-export const UpdateGatewayAccountCredentialsComponent = (
-  props: UpdateGatewayAccountCredentialsComponentProps
-) => (
-  <ApolloReactComponents.Mutation<
-    UpdateGatewayAccountCredentialsMutation,
-    UpdateGatewayAccountCredentialsMutationVariables
-  >
-    mutation={UpdateGatewayAccountCredentialsDocument}
-    {...props}
-  />
-);
+    export const UpdateGatewayAccountCredentialsComponent = (props: UpdateGatewayAccountCredentialsComponentProps) => (
+      <ApolloReactComponents.Mutation<UpdateGatewayAccountCredentialsMutation, UpdateGatewayAccountCredentialsMutationVariables> mutation={UpdateGatewayAccountCredentialsDocument} {...props} />
+    );
+    
 
 /**
  * __useUpdateGatewayAccountCredentialsMutation__
@@ -1800,35 +1592,19 @@ export const UpdateGatewayAccountCredentialsComponent = (
  *   },
  * });
  */
-export function useUpdateGatewayAccountCredentialsMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
-    UpdateGatewayAccountCredentialsMutation,
-    UpdateGatewayAccountCredentialsMutationVariables
-  >
-) {
-  return ApolloReactHooks.useMutation<
-    UpdateGatewayAccountCredentialsMutation,
-    UpdateGatewayAccountCredentialsMutationVariables
-  >(UpdateGatewayAccountCredentialsDocument, baseOptions);
-}
-export type UpdateGatewayAccountCredentialsMutationHookResult = ReturnType<
-  typeof useUpdateGatewayAccountCredentialsMutation
->;
-export type UpdateGatewayAccountCredentialsMutationResult = ApolloReactCommon.MutationResult<
-  UpdateGatewayAccountCredentialsMutation
->;
-export type UpdateGatewayAccountCredentialsMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UpdateGatewayAccountCredentialsMutation,
-  UpdateGatewayAccountCredentialsMutationVariables
->;
+export function useUpdateGatewayAccountCredentialsMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateGatewayAccountCredentialsMutation, UpdateGatewayAccountCredentialsMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateGatewayAccountCredentialsMutation, UpdateGatewayAccountCredentialsMutationVariables>(UpdateGatewayAccountCredentialsDocument, baseOptions);
+      }
+export type UpdateGatewayAccountCredentialsMutationHookResult = ReturnType<typeof useUpdateGatewayAccountCredentialsMutation>;
+export type UpdateGatewayAccountCredentialsMutationResult = ApolloReactCommon.MutationResult<UpdateGatewayAccountCredentialsMutation>;
+export type UpdateGatewayAccountCredentialsMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateGatewayAccountCredentialsMutation, UpdateGatewayAccountCredentialsMutationVariables>;
 export const GetProductsDocument = gql`
-  query GetProducts($serviceID: ID!) {
-    service(id: $serviceID) {
-      id
-      gatewayAccounts {
-        products {
-          ...Product
-        }
+    query GetProducts($serviceID: ID!) {
+  service(id: $serviceID) {
+    id
+    gatewayAccounts {
+      products {
+        ...Product
       }
     }
   }
@@ -1857,7 +1633,7 @@ export const GetProductsComponent = (props: GetProductsComponentProps) => (
  * __useGetProductsQuery__
  *
  * To run a query within a React component, call `useGetProductsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * When your component renders, `useGetProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -1869,68 +1645,29 @@ export const GetProductsComponent = (props: GetProductsComponentProps) => (
  *   },
  * });
  */
-export function useGetProductsQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetProductsQuery,
-    GetProductsQueryVariables
-  >
-) {
-  return ApolloReactHooks.useQuery<GetProductsQuery, GetProductsQueryVariables>(
-    GetProductsDocument,
-    baseOptions
-  );
-}
-export function useGetProductsLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetProductsQuery,
-    GetProductsQueryVariables
-  >
-) {
-  return ApolloReactHooks.useLazyQuery<
-    GetProductsQuery,
-    GetProductsQueryVariables
-  >(GetProductsDocument, baseOptions);
-}
+export function useGetProductsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetProductsQuery, GetProductsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetProductsQuery, GetProductsQueryVariables>(GetProductsDocument, baseOptions);
+      }
+export function useGetProductsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetProductsQuery, GetProductsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetProductsQuery, GetProductsQueryVariables>(GetProductsDocument, baseOptions);
+        }
 export type GetProductsQueryHookResult = ReturnType<typeof useGetProductsQuery>;
-export type GetProductsLazyQueryHookResult = ReturnType<
-  typeof useGetProductsLazyQuery
->;
-export type GetProductsQueryResult = ApolloReactCommon.QueryResult<
-  GetProductsQuery,
-  GetProductsQueryVariables
->;
+export type GetProductsLazyQueryHookResult = ReturnType<typeof useGetProductsLazyQuery>;
+export type GetProductsQueryResult = ApolloReactCommon.QueryResult<GetProductsQuery, GetProductsQueryVariables>;
 export const CreateProductDocument = gql`
-  mutation CreateProduct($gatewayAccountId: ID!, $input: CreateProductInput!) {
-    product: createProduct(
-      gatewayAccountId: $gatewayAccountId
-      product: $input
-    ) {
-      ...Product
-    }
+    mutation CreateProduct($gatewayAccountId: ID!, $input: CreateProductInput!) {
+  product: createProduct(gatewayAccountId: $gatewayAccountId, product: $input) {
+    ...Product
   }
-  ${ProductFragmentDoc}
-`;
-export type CreateProductMutationFn = ApolloReactCommon.MutationFunction<
-  CreateProductMutation,
-  CreateProductMutationVariables
->;
-export type CreateProductComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    CreateProductMutation,
-    CreateProductMutationVariables
-  >,
-  "mutation"
->;
+}
+    ${ProductFragmentDoc}`;
+export type CreateProductMutationFn = ApolloReactCommon.MutationFunction<CreateProductMutation, CreateProductMutationVariables>;
+export type CreateProductComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<CreateProductMutation, CreateProductMutationVariables>, 'mutation'>;
 
-export const CreateProductComponent = (props: CreateProductComponentProps) => (
-  <ApolloReactComponents.Mutation<
-    CreateProductMutation,
-    CreateProductMutationVariables
-  >
-    mutation={CreateProductDocument}
-    {...props}
-  />
-);
+    export const CreateProductComponent = (props: CreateProductComponentProps) => (
+      <ApolloReactComponents.Mutation<CreateProductMutation, CreateProductMutationVariables> mutation={CreateProductDocument} {...props} />
+    );
+    
 
 /**
  * __useCreateProductMutation__
@@ -1950,36 +1687,59 @@ export const CreateProductComponent = (props: CreateProductComponentProps) => (
  *   },
  * });
  */
-export function useCreateProductMutation(
-  baseOptions?: ApolloReactHooks.MutationHookOptions<
-    CreateProductMutation,
-    CreateProductMutationVariables
-  >
-) {
-  return ApolloReactHooks.useMutation<
-    CreateProductMutation,
-    CreateProductMutationVariables
-  >(CreateProductDocument, baseOptions);
+export function useCreateProductMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<CreateProductMutation, CreateProductMutationVariables>) {
+        return ApolloReactHooks.useMutation<CreateProductMutation, CreateProductMutationVariables>(CreateProductDocument, baseOptions);
+      }
+export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
+export type CreateProductMutationResult = ApolloReactCommon.MutationResult<CreateProductMutation>;
+export type CreateProductMutationOptions = ApolloReactCommon.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
+export const UpdateProductDocument = gql`
+    mutation UpdateProduct($id: ID!, $input: UpdateProductInput!) {
+  product: updateProduct(id: $id, product: $input) {
+    ...Product
+  }
 }
-export type CreateProductMutationHookResult = ReturnType<
-  typeof useCreateProductMutation
->;
-export type CreateProductMutationResult = ApolloReactCommon.MutationResult<
-  CreateProductMutation
->;
-export type CreateProductMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  CreateProductMutation,
-  CreateProductMutationVariables
->;
+    ${ProductFragmentDoc}`;
+export type UpdateProductMutationFn = ApolloReactCommon.MutationFunction<UpdateProductMutation, UpdateProductMutationVariables>;
+export type UpdateProductComponentProps = Omit<ApolloReactComponents.MutationComponentOptions<UpdateProductMutation, UpdateProductMutationVariables>, 'mutation'>;
+
+    export const UpdateProductComponent = (props: UpdateProductComponentProps) => (
+      <ApolloReactComponents.Mutation<UpdateProductMutation, UpdateProductMutationVariables> mutation={UpdateProductDocument} {...props} />
+    );
+    
+
+/**
+ * __useUpdateProductMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductMutation, { data, loading, error }] = useUpdateProductMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdateProductMutation, UpdateProductMutationVariables>) {
+        return ApolloReactHooks.useMutation<UpdateProductMutation, UpdateProductMutationVariables>(UpdateProductDocument, baseOptions);
+      }
+export type UpdateProductMutationHookResult = ReturnType<typeof useUpdateProductMutation>;
+export type UpdateProductMutationResult = ApolloReactCommon.MutationResult<UpdateProductMutation>;
+export type UpdateProductMutationOptions = ApolloReactCommon.BaseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables>;
 export const GetPaymentsDocument = gql`
-  query GetPayments($serviceID: ID!) {
-    service(id: $serviceID) {
-      id
-      gatewayAccounts {
-        ...GatewayAccount
-        payments {
-          ...Payment
-        }
+    query GetPayments($serviceID: ID!) {
+  service(id: $serviceID) {
+    id
+    gatewayAccounts {
+      ...GatewayAccount
+      payments {
+        ...Payment
       }
     }
   }
@@ -2009,7 +1769,7 @@ export const GetPaymentsComponent = (props: GetPaymentsComponentProps) => (
  * __useGetPaymentsQuery__
  *
  * To run a query within a React component, call `useGetPaymentsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * When your component renders, `useGetPaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -2021,65 +1781,34 @@ export const GetPaymentsComponent = (props: GetPaymentsComponentProps) => (
  *   },
  * });
  */
-export function useGetPaymentsQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetPaymentsQuery,
-    GetPaymentsQueryVariables
-  >
-) {
-  return ApolloReactHooks.useQuery<GetPaymentsQuery, GetPaymentsQueryVariables>(
-    GetPaymentsDocument,
-    baseOptions
-  );
-}
-export function useGetPaymentsLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetPaymentsQuery,
-    GetPaymentsQueryVariables
-  >
-) {
-  return ApolloReactHooks.useLazyQuery<
-    GetPaymentsQuery,
-    GetPaymentsQueryVariables
-  >(GetPaymentsDocument, baseOptions);
-}
+export function useGetPaymentsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetPaymentsQuery, GetPaymentsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetPaymentsQuery, GetPaymentsQueryVariables>(GetPaymentsDocument, baseOptions);
+      }
+export function useGetPaymentsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPaymentsQuery, GetPaymentsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetPaymentsQuery, GetPaymentsQueryVariables>(GetPaymentsDocument, baseOptions);
+        }
 export type GetPaymentsQueryHookResult = ReturnType<typeof useGetPaymentsQuery>;
-export type GetPaymentsLazyQueryHookResult = ReturnType<
-  typeof useGetPaymentsLazyQuery
->;
-export type GetPaymentsQueryResult = ApolloReactCommon.QueryResult<
-  GetPaymentsQuery,
-  GetPaymentsQueryVariables
->;
+export type GetPaymentsLazyQueryHookResult = ReturnType<typeof useGetPaymentsLazyQuery>;
+export type GetPaymentsQueryResult = ApolloReactCommon.QueryResult<GetPaymentsQuery, GetPaymentsQueryVariables>;
 export const GetPaymentDocument = gql`
-  query GetPayment($id: ID!) {
-    payment(id: $id) {
-      ...Payment
-    }
+    query GetPayment($id: ID!) {
+  payment(id: $id) {
+    ...Payment
   }
-  ${PaymentFragmentDoc}
-`;
-export type GetPaymentComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    GetPaymentQuery,
-    GetPaymentQueryVariables
-  >,
-  "query"
-> &
-  ({ variables: GetPaymentQueryVariables; skip?: boolean } | { skip: boolean });
+}
+    ${PaymentFragmentDoc}`;
+export type GetPaymentComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetPaymentQuery, GetPaymentQueryVariables>, 'query'> & ({ variables: GetPaymentQueryVariables; skip?: boolean; } | { skip: boolean; });
 
-export const GetPaymentComponent = (props: GetPaymentComponentProps) => (
-  <ApolloReactComponents.Query<GetPaymentQuery, GetPaymentQueryVariables>
-    query={GetPaymentDocument}
-    {...props}
-  />
-);
+    export const GetPaymentComponent = (props: GetPaymentComponentProps) => (
+      <ApolloReactComponents.Query<GetPaymentQuery, GetPaymentQueryVariables> query={GetPaymentDocument} {...props} />
+    );
+    
 
 /**
  * __useGetPaymentQuery__
  *
  * To run a query within a React component, call `useGetPaymentQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPaymentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * When your component renders, `useGetPaymentQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -2091,43 +1820,21 @@ export const GetPaymentComponent = (props: GetPaymentComponentProps) => (
  *   },
  * });
  */
-export function useGetPaymentQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetPaymentQuery,
-    GetPaymentQueryVariables
-  >
-) {
-  return ApolloReactHooks.useQuery<GetPaymentQuery, GetPaymentQueryVariables>(
-    GetPaymentDocument,
-    baseOptions
-  );
-}
-export function useGetPaymentLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetPaymentQuery,
-    GetPaymentQueryVariables
-  >
-) {
-  return ApolloReactHooks.useLazyQuery<
-    GetPaymentQuery,
-    GetPaymentQueryVariables
-  >(GetPaymentDocument, baseOptions);
-}
-export type GetPaymentQueryHookResult = ReturnType<typeof useGetPaymentQuery>;
-export type GetPaymentLazyQueryHookResult = ReturnType<
-  typeof useGetPaymentLazyQuery
->;
-export type GetPaymentQueryResult = ApolloReactCommon.QueryResult<
-  GetPaymentQuery,
-  GetPaymentQueryVariables
->;
-export const GetPaymentRefundDocument = gql`
-  query GetPaymentRefund($id: ID!) {
-    payment(id: $id) {
-      ...Payment
-      refunds {
-        ...PaymentRefund
+export function useGetPaymentQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetPaymentQuery, GetPaymentQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetPaymentQuery, GetPaymentQueryVariables>(GetPaymentDocument, baseOptions);
       }
+export function useGetPaymentLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPaymentQuery, GetPaymentQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetPaymentQuery, GetPaymentQueryVariables>(GetPaymentDocument, baseOptions);
+        }
+export type GetPaymentQueryHookResult = ReturnType<typeof useGetPaymentQuery>;
+export type GetPaymentLazyQueryHookResult = ReturnType<typeof useGetPaymentLazyQuery>;
+export type GetPaymentQueryResult = ApolloReactCommon.QueryResult<GetPaymentQuery, GetPaymentQueryVariables>;
+export const GetPaymentRefundDocument = gql`
+    query GetPaymentRefund($id: ID!) {
+  payment(id: $id) {
+    ...Payment
+    refunds {
+      ...PaymentRefund
     }
   }
   ${PaymentFragmentDoc}
@@ -2161,7 +1868,7 @@ export const GetPaymentRefundComponent = (
  * __useGetPaymentRefundQuery__
  *
  * To run a query within a React component, call `useGetPaymentRefundQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPaymentRefundQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * When your component renders, `useGetPaymentRefundQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -2173,45 +1880,21 @@ export const GetPaymentRefundComponent = (
  *   },
  * });
  */
-export function useGetPaymentRefundQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetPaymentRefundQuery,
-    GetPaymentRefundQueryVariables
-  >
-) {
-  return ApolloReactHooks.useQuery<
-    GetPaymentRefundQuery,
-    GetPaymentRefundQueryVariables
-  >(GetPaymentRefundDocument, baseOptions);
-}
-export function useGetPaymentRefundLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetPaymentRefundQuery,
-    GetPaymentRefundQueryVariables
-  >
-) {
-  return ApolloReactHooks.useLazyQuery<
-    GetPaymentRefundQuery,
-    GetPaymentRefundQueryVariables
-  >(GetPaymentRefundDocument, baseOptions);
-}
-export type GetPaymentRefundQueryHookResult = ReturnType<
-  typeof useGetPaymentRefundQuery
->;
-export type GetPaymentRefundLazyQueryHookResult = ReturnType<
-  typeof useGetPaymentRefundLazyQuery
->;
-export type GetPaymentRefundQueryResult = ApolloReactCommon.QueryResult<
-  GetPaymentRefundQuery,
-  GetPaymentRefundQueryVariables
->;
-export const GetPaymentEventsDocument = gql`
-  query GetPaymentEvents($id: ID!) {
-    payment(id: $id) {
-      ...Payment
-      events {
-        ...PaymentEvent
+export function useGetPaymentRefundQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetPaymentRefundQuery, GetPaymentRefundQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetPaymentRefundQuery, GetPaymentRefundQueryVariables>(GetPaymentRefundDocument, baseOptions);
       }
+export function useGetPaymentRefundLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPaymentRefundQuery, GetPaymentRefundQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetPaymentRefundQuery, GetPaymentRefundQueryVariables>(GetPaymentRefundDocument, baseOptions);
+        }
+export type GetPaymentRefundQueryHookResult = ReturnType<typeof useGetPaymentRefundQuery>;
+export type GetPaymentRefundLazyQueryHookResult = ReturnType<typeof useGetPaymentRefundLazyQuery>;
+export type GetPaymentRefundQueryResult = ApolloReactCommon.QueryResult<GetPaymentRefundQuery, GetPaymentRefundQueryVariables>;
+export const GetPaymentEventsDocument = gql`
+    query GetPaymentEvents($id: ID!) {
+  payment(id: $id) {
+    ...Payment
+    events {
+      ...PaymentEvent
     }
   }
   ${PaymentFragmentDoc}
@@ -2245,7 +1928,7 @@ export const GetPaymentEventsComponent = (
  * __useGetPaymentEventsQuery__
  *
  * To run a query within a React component, call `useGetPaymentEventsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPaymentEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * When your component renders, `useGetPaymentEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties 
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
@@ -2257,35 +1940,12 @@ export const GetPaymentEventsComponent = (
  *   },
  * });
  */
-export function useGetPaymentEventsQuery(
-  baseOptions?: ApolloReactHooks.QueryHookOptions<
-    GetPaymentEventsQuery,
-    GetPaymentEventsQueryVariables
-  >
-) {
-  return ApolloReactHooks.useQuery<
-    GetPaymentEventsQuery,
-    GetPaymentEventsQueryVariables
-  >(GetPaymentEventsDocument, baseOptions);
-}
-export function useGetPaymentEventsLazyQuery(
-  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
-    GetPaymentEventsQuery,
-    GetPaymentEventsQueryVariables
-  >
-) {
-  return ApolloReactHooks.useLazyQuery<
-    GetPaymentEventsQuery,
-    GetPaymentEventsQueryVariables
-  >(GetPaymentEventsDocument, baseOptions);
-}
-export type GetPaymentEventsQueryHookResult = ReturnType<
-  typeof useGetPaymentEventsQuery
->;
-export type GetPaymentEventsLazyQueryHookResult = ReturnType<
-  typeof useGetPaymentEventsLazyQuery
->;
-export type GetPaymentEventsQueryResult = ApolloReactCommon.QueryResult<
-  GetPaymentEventsQuery,
-  GetPaymentEventsQueryVariables
->;
+export function useGetPaymentEventsQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetPaymentEventsQuery, GetPaymentEventsQueryVariables>) {
+        return ApolloReactHooks.useQuery<GetPaymentEventsQuery, GetPaymentEventsQueryVariables>(GetPaymentEventsDocument, baseOptions);
+      }
+export function useGetPaymentEventsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPaymentEventsQuery, GetPaymentEventsQueryVariables>) {
+          return ApolloReactHooks.useLazyQuery<GetPaymentEventsQuery, GetPaymentEventsQueryVariables>(GetPaymentEventsDocument, baseOptions);
+        }
+export type GetPaymentEventsQueryHookResult = ReturnType<typeof useGetPaymentEventsQuery>;
+export type GetPaymentEventsLazyQueryHookResult = ReturnType<typeof useGetPaymentEventsLazyQuery>;
+export type GetPaymentEventsQueryResult = ApolloReactCommon.QueryResult<GetPaymentEventsQuery, GetPaymentEventsQueryVariables>;

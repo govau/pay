@@ -54,6 +54,11 @@ defmodule PayWeb.Schema do
       resolve(&Resolvers.payment/3)
     end
 
+    field :product, non_null(:product) do
+      arg(:id, non_null(:id))
+      resolve(&Resolvers.product/3)
+    end
+
     field :product_payment, non_null(:product_payment) do
       arg(:id, non_null(:id))
       resolve(&Resolvers.product_payment/3)
@@ -128,6 +133,12 @@ defmodule PayWeb.Schema do
       arg(:product, non_null(:create_product_input))
 
       resolve(&Resolvers.Mutations.Console.create_product/3)
+    end
+
+    field :update_product, type: non_null(:product) do
+      arg(:id, non_null(:id), description: "Product ID to update")
+      arg(:product, non_null(:update_product_input))
+      resolve(&Resolvers.Mutations.Console.update_product/3)
     end
 
     field :update_gateway_account_credentials, type: non_null(:gateway_account) do

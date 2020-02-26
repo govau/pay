@@ -315,6 +315,11 @@ export type RootMutationTypeUpdateGatewayAccountCredentialsArgs = {
   gatewayAccountId: Scalars["ID"];
 };
 
+export type RootMutationTypeUpdateProductArgs = {
+  id: Scalars["ID"];
+  product: UpdateProductInput;
+};
+
 export type RootMutationTypeUpdateProductPaymentArgs = {
   id: Scalars["ID"];
   productPayment: UpdateProductPaymentInput;
@@ -346,6 +351,10 @@ export type RootQueryTypeGatewayAccountArgs = {
 };
 
 export type RootQueryTypePaymentArgs = {
+  id: Scalars["ID"];
+};
+
+export type RootQueryTypeProductArgs = {
   id: Scalars["ID"];
 };
 
@@ -435,6 +444,16 @@ export type TransactionEvent = {
   status: PaymentStatus;
   type: PaymentEventType;
   updatedAt: Scalars["String"];
+};
+
+export type UpdateProductInput = {
+  description?: Maybe<Scalars["String"]>;
+  name: Scalars["String"];
+  price?: Maybe<Scalars["Int"]>;
+  priceFixed: Scalars["Boolean"];
+  referenceEnabled: Scalars["Boolean"];
+  referenceHint?: Maybe<Scalars["String"]>;
+  referenceLabel?: Maybe<Scalars["String"]>;
 };
 
 export type UpdateProductPaymentInput = {

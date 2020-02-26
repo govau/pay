@@ -96,6 +96,18 @@ defmodule PayWeb.Resolvers.Mutations do
       |> Products.create_product()
     end
 
+    def update_product(
+      _,
+      %{
+        id: external_id,
+        product: product_params
+      },
+      _
+    ) do
+    product = Products.get_product_by_external_id!(external_id)
+    Products.update_product(product, product_params)
+end
+
     def update_bambora_credentials(
           _,
           %{gateway_account_id: gateway_account_id, credentials: credentials},

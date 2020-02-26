@@ -10,6 +10,7 @@ import {
   useGetPaymentQuery,
   ServiceFragment
 } from "./__generated__/graphql";
+import { useGetProductQuery } from "../products/__generated__/graphql";
 
 const PaymentRoutes: React.FC<{
   service: ServiceFragment;
@@ -123,6 +124,55 @@ const GatewayAccountCardTypesRoutes: React.FC<{
   );
 };
 
+const GatewayAccountProductEditRoutes: React.FC<{
+  service: ServiceFragment;
+  gatewayAccountId: string;
+  productPath: string;
+}> = ({ service, gatewayAccountId, productPath }) => {
+  const { productId } = useParams<{ productId: string }>();
+
+  const { loading, error, data } = useGetProductQuery({
+    variables: { externalId: productId },
+    errorPolicy: "all"
+  });
+
+  const match = useRouteMatch();
+  if (!match) {
+    return null;
+  }
+  const { url } = match;
+
+  if (loading) {
+    return <Loader message="Loading payment link" />;
+  }
+
+  if (error || !data) {
+    return (
+      <ErrorAlert
+        title="Unable to retrieve payment link"
+        message={error && error.message}
+        showError
+      />
+    );
+  }
+
+  const { product } = data;
+
+  return (
+    <Switch>
+      <Route path={`${url}`}>
+        <Pages.Services.GatewayAccounts.Products.EditFormPage
+          serviceName={service.name}
+          gatewayAccountId={gatewayAccountId}
+          product={product}
+          path={`${url}`}
+          productPath={productPath}
+        />
+      </Route>
+    </Switch>
+  );
+};
+
 const GatewayAccountRoutes: React.FC<{
   service: ServiceFragment;
 }> = ({ service }) => {
@@ -211,6 +261,16 @@ const GatewayAccountRoutes: React.FC<{
                 />
               </Route>
             </Switch>
+          </Route>
+          <Route
+            path={`${url}/products/edit/:productId([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})`}
+            strict
+          >
+            <GatewayAccountProductEditRoutes
+              service={service}
+              gatewayAccountId={gatewayAccountId}
+              productPath={`${url}/products`}
+            />
           </Route>
           <Route path="*">
             <CorePages.NotFoundPage />

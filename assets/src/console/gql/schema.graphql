@@ -1,0 +1,102 @@
+type Query {
+  userServices(userId: ID!): [Service!]!
+  service(id: ID!): Service!
+  gatewayAccounts(serviceId: ID!): [GatewayAccount!]!
+  gatewayAccount(id: ID!): GatewayAccount!
+  products(gatewayAccountId: ID!): [Product!]!
+  payments(gatewayAccountId: ID!): [Payment!]!
+  paymentEvents(paymentId: ID!): [PaymentEvent!]!
+  payment(id: ID!): Payment!
+  product(productId: ID!): Product!
+}
+
+input CreateServiceService {
+  name: String!
+}
+
+input CreateServiceInput {
+  service: CreateServiceService!
+}
+
+input UpdateServiceService {
+  name: String!
+}
+
+input UpdateServiceInput {
+  service: UpdateServiceService!
+}
+
+input UpdateGatewayAccountBamboraCredentials {
+  merchant_id: String!
+  account_number: String
+  api_username: String!
+}
+
+input UpdateGatewayAccountCredentialsInput {
+  # Normally this would be an input union type but GraphQL doesn't support them
+  # and we only have Bambora so this is fine for now.
+  # See https://github.com/graphql/graphql-spec/issues/488
+  credentials: UpdateGatewayAccountBamboraCredentials!
+}
+
+input CreateProductProduct {
+  name: String!
+  description: String
+  reference_enabled: Boolean!
+  reference_label: String
+  reference_hint: String
+  price_fixed: Boolean!
+  price: Int
+}
+
+input CreateProductInput {
+  product: CreateProductProduct!
+}
+
+input UpdateProductProduct {
+  name: String!
+  description: String
+  reference_enabled: Boolean!
+  reference_label: String
+  reference_hint: String
+  price_fixed: Boolean!
+  price: Int
+}x
+
+input UpdateProductInput {
+  product: UpdateProductProduct!
+}
+
+input PaymentRefundInput {
+  amount: Int!
+  reference: String
+}
+
+input SubmitRefundInput {
+  payment_refund: PaymentRefundInput!
+}
+
+input GatewayAccountCardTypeInput {
+  gatewayAccountId: ID!
+  cardTypeIds: [ID!]!
+}
+
+input UpdateGatewayAccountCardTypesInput {
+  gateway_account_card_type: GatewayAccountCardTypeInput!
+}
+
+type Mutation {
+  createService(input: CreateServiceInput!): Service!
+  updateService(id: ID!, input: UpdateServiceInput!): Service!
+  updateGatewayAccountCredentials(
+    gatewayAccountId: ID!
+    input: UpdateGatewayAccountCredentialsInput!
+  ): GatewayAccountCredentials!
+  createProduct(gatewayAccountId: ID!, input: CreateProductInput!): Service!
+  updateProduct(id: ID!, input: UpdateProductInput!): Product!
+  submitRefund(paymentId: ID!, input: SubmitRefundInput!): PaymentRefund!
+  updateGatewayAccountCardTypes(
+    id: ID!
+    input: UpdateGatewayAccountCardTypesInput!
+  ): GatewayAccount!
+}
