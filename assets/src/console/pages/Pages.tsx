@@ -62,6 +62,12 @@ export const Services = {
       }),
       CreateFormPage: loadable(() => import("./products/CreateFormPage"), {
         fallback: <Loader />
+      }),
+      EditStartPage: loadable(() => import("./products/EditStartPage"), {
+        fallback: <Loader />
+      }),
+      EditFormPage: loadable(() => import("./products/EditFormPage"), {
+        fallback: <Loader />
       })
     }
   }

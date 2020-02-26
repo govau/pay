@@ -7,6 +7,7 @@ type Query {
   payments(gatewayAccountId: ID!): [Payment!]!
   paymentEvents(paymentId: ID!): [PaymentEvent!]!
   payment(id: ID!): Payment!
+  product(productId: ID!): Product!
 }
 
 input CreateServiceService {
@@ -52,6 +53,20 @@ input CreateProductInput {
   product: CreateProductProduct!
 }
 
+input UpdateProductProduct {
+  name: String!
+  description: String
+  reference_enabled: Boolean!
+  reference_label: String
+  reference_hint: String
+  price_fixed: Boolean!
+  price: Int
+}x
+
+input UpdateProductInput {
+  product: UpdateProductProduct!
+}
+
 input PaymentRefundInput {
   amount: Int!
   reference: String
@@ -78,6 +93,7 @@ type Mutation {
     input: UpdateGatewayAccountCredentialsInput!
   ): GatewayAccountCredentials!
   createProduct(gatewayAccountId: ID!, input: CreateProductInput!): Service!
+  updateProduct(id: ID!, input: UpdateProductInput!): Product!
   submitRefund(paymentId: ID!, input: SubmitRefundInput!): PaymentRefund!
   updateGatewayAccountCardTypes(
     id: ID!

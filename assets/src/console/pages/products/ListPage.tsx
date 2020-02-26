@@ -107,7 +107,7 @@ const ListPage: React.FC<props> = ({ service, gatewayAccount }) => {
                           {nameSlug}
                         </Link>
                         <LinkWrapper>
-                          <Link to="/TODO">edit</Link>
+                          <Link to={`${url}/edit/${externalId}`}>edit</Link>
                           <CustomLink to="/TODO">disable</CustomLink>
                           <CustomLink to="/TODO">delete</CustomLink>
                         </LinkWrapper>
