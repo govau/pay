@@ -111,7 +111,7 @@ defmodule Pay.ProductsTest do
     end
 
     test "update_product/2 with invalid data returns error changeset" do
-      product = product_fixture() |> IO.inspect(label: "product created at test")
+      product = product_fixture()
       assert {:error, %Ecto.Changeset{}} = Products.update_product(product, @invalid_attrs)
       assert product == Products.get_product!(product.id)
     end
