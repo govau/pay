@@ -29,7 +29,7 @@ defmodule Pay.Products.Product do
     put_change(
       changeset,
       to_field,
-      (get_change(changeset, from_field) || "") |> Slugger.slugify_downcase()
+      (get_field(changeset, from_field) || "") |> Slugger.slugify_downcase()
     )
   end
 
@@ -83,6 +83,18 @@ defmodule Pay.Products.Product do
       :reference_hint
     ])
     |> slug(:name, :name_slug)
+    |> validate_required([
+      :name,
+      :description,
+      :price_fixed,
+      :price,
+      :service_name_slug,
+      :name_slug,
+      :reference_enabled,
+      :reference_label,
+      :reference_hint
+    ])
     |> unique_constraint(:name_slug, name: :products_name_slug_service_name_slug_index)
+
   end
 end
