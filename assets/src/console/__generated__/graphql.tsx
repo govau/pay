@@ -21,19 +21,19 @@ export type Admin = {
 };
 
 export type BamboraCredentials = {
-  __typename?: "BamboraCredentials";
-  accountNumber?: Maybe<Scalars["String"]>;
-  apiUsername?: Maybe<Scalars["String"]>;
-  environment?: Maybe<Scalars["String"]>;
-  merchantId?: Maybe<Scalars["String"]>;
+   __typename?: 'BamboraCredentials',
+  accountNumber?: Maybe<Scalars['String']>,
+  apiUsername?: Maybe<Scalars['String']>,
+  environment?: Maybe<Scalars['String']>,
+  merchantId?: Maybe<Scalars['String']>,
 };
 
 export type BamboraCredentialsInput = {
-  accountNumber?: Maybe<Scalars["String"]>;
-  apiPassword?: Maybe<Scalars["String"]>;
-  apiUsername: Scalars["String"];
-  environment: Scalars["String"];
-  merchantId: Scalars["String"];
+  accountNumber?: Maybe<Scalars['String']>,
+  apiPassword?: Maybe<Scalars['String']>,
+  apiUsername: Scalars['String'],
+  environment: Scalars['String'],
+  merchantId: Scalars['String'],
 };
 
 export type BamboraPaymentInput = {
@@ -248,21 +248,30 @@ export type Role = {
 };
 
 export type RootMutationType = {
-  __typename?: "RootMutationType";
-  acceptInvite: Service;
-  createProduct: Product;
-  createProductPayment: ProductPayment;
-  createService: Service;
-  inviteUser: Service;
-  signout: Signout;
-  submitBamboraPayment: Payment;
-  submitProductPayment: ProductPayment;
-  submitRefund: PaymentRefund;
-  submitSandboxPayment: Payment;
-  updateGatewayAccountCardTypes: GatewayAccount;
-  updateGatewayAccountCredentials: GatewayAccount;
-  updateProductPayment: ProductPayment;
-  updateService: Service;
+   __typename?: 'RootMutationType',
+  /** Accept a pending service invite */
+  acceptInvite: Service,
+  /** Create a product */
+  createProduct: Product,
+  /** instantiate a product payment */
+  createProductPayment: ProductPayment,
+  /** Create a service */
+  createService: Service,
+  /** Invite a user to your service */
+  inviteUser: Service,
+  signout: Signout,
+  submitBamboraPayment: Payment,
+  submitProductPayment: ProductPayment,
+  /** Submit a payment refund */
+  submitRefund: PaymentRefund,
+  submitSandboxPayment: Payment,
+  /** Update a gateway account card types */
+  updateGatewayAccountCardTypes: GatewayAccount,
+  updateGatewayAccountCredentials: GatewayAccount,
+  updateProduct: Product,
+  updateProductPayment: ProductPayment,
+  /** Submit the details of an existing service */
+  updateService: Service,
 };
 
 
@@ -351,19 +360,26 @@ export type RootMutationTypeUpdateServiceArgs = {
 };
 
 export type RootQueryType = {
-  __typename?: "RootQueryType";
-  admin: Admin;
-  cardTypes: Array<CardType>;
-  gatewayAccount: GatewayAccount;
-  me?: Maybe<User>;
-  organisations: Array<Organisation>;
-  payment: Payment;
-  productPayment: ProductPayment;
-  roles: Array<Role>;
-  service: Service;
-  serviceInvites: Array<ServiceInvite>;
-  services: Array<Service>;
-  users: Array<User>;
+   __typename?: 'RootQueryType',
+  /** Access all resources based on admin rights */
+  admin: Admin,
+  cardTypes: Array<CardType>,
+  gatewayAccount: GatewayAccount,
+  /** Get the currently authenticated user */
+  me?: Maybe<User>,
+  organisations: Array<Organisation>,
+  payment: Payment,
+  product: Product,
+  productPayment: ProductPayment,
+  roles: Array<Role>,
+  /** Services that the active user can access */
+  service: Service,
+  /** Services that the active user can access */
+  serviceInvites: Array<ServiceInvite>,
+  /** Services that the active user can access */
+  services: Array<Service>,
+  /** List all available users */
+  users: Array<User>,
 };
 
 
@@ -492,134 +508,96 @@ export type UpdateServiceInput = {
 };
 
 export type User = {
-  __typename?: "User";
-  email: Scalars["String"];
-  externalId: Scalars["ID"];
-  id: Scalars["ID"];
-  insertedAt: Scalars["String"];
-  name: Scalars["String"];
-  platformAdmin?: Maybe<Scalars["Boolean"]>;
-  telephoneNumber?: Maybe<Scalars["String"]>;
-  updatedAt: Scalars["String"];
+   __typename?: 'User',
+  email: Scalars['String'],
+  externalId: Scalars['ID'],
+  id: Scalars['ID'],
+  insertedAt: Scalars['String'],
+  name: Scalars['String'],
+  platformAdmin?: Maybe<Scalars['Boolean']>,
+  telephoneNumber?: Maybe<Scalars['String']>,
+  updatedAt: Scalars['String'],
 };
 
-export type ServiceFragment = { __typename?: "Service" } & Pick<
-  Service,
-  "id" | "externalId" | "name" | "currentGoLiveStage"
->;
+export type ServiceFragment = (
+  { __typename?: 'Service' }
+  & Pick<Service, 'id' | 'externalId' | 'name' | 'currentGoLiveStage'>
+);
 
-export type RoleFragment = { __typename?: "Role" } & Pick<
-  Role,
-  "id" | "name" | "description"
->;
+export type RoleFragment = (
+  { __typename?: 'Role' }
+  & Pick<Role, 'id' | 'name' | 'description'>
+);
 
-export type ServiceUserFragment = { __typename?: "ServiceUser" } & Pick<
-  ServiceUser,
-  | "id"
-  | "insertedAt"
-  | "updatedAt"
-  | "externalId"
-  | "name"
-  | "email"
-  | "telephoneNumber"
-  | "platformAdmin"
-> & {
-    role: { __typename?: "Role" } & Pick<Role, "id" | "name" | "description">;
-  };
+export type ServiceUserFragment = (
+  { __typename?: 'ServiceUser' }
+  & Pick<ServiceUser, 'id' | 'insertedAt' | 'updatedAt' | 'externalId' | 'name' | 'email' | 'telephoneNumber' | 'platformAdmin'>
+  & { role: (
+    { __typename?: 'Role' }
+    & Pick<Role, 'id' | 'name' | 'description'>
+  ) }
+);
 
-export type ServiceInviteFragment = { __typename?: "ServiceInvite" } & Pick<
-  ServiceInvite,
-  | "id"
-  | "serviceId"
-  | "serviceName"
-  | "expiresAt"
-  | "isExpired"
-  | "invitedBy"
-  | "email"
-> & {
-    role: { __typename?: "Role" } & Pick<Role, "id" | "name" | "description">;
-  };
+export type ServiceInviteFragment = (
+  { __typename?: 'ServiceInvite' }
+  & Pick<ServiceInvite, 'id' | 'serviceId' | 'serviceName' | 'expiresAt' | 'isExpired' | 'invitedBy' | 'email'>
+  & { role: (
+    { __typename?: 'Role' }
+    & Pick<Role, 'id' | 'name' | 'description'>
+  ) }
+);
 
-export type GatewayAccountFragment = { __typename?: "GatewayAccount" } & Pick<
-  GatewayAccount,
-  "id" | "externalId" | "type" | "paymentProvider"
-> & {
-    credentials:
-      | ({ __typename?: "BamboraCredentials" } & Pick<
-          BamboraCredentials,
-          "environment" | "merchantId" | "accountNumber" | "apiUsername"
-        >)
-      | { __typename?: "SandboxCredentials" };
-    cardTypes: Array<
-      { __typename?: "CardType" } & Pick<CardType, "id" | "label">
-    >;
-  };
+export type GatewayAccountFragment = (
+  { __typename?: 'GatewayAccount' }
+  & Pick<GatewayAccount, 'id' | 'externalId' | 'type' | 'paymentProvider'>
+  & { credentials: (
+    { __typename?: 'BamboraCredentials' }
+    & Pick<BamboraCredentials, 'environment' | 'merchantId' | 'accountNumber' | 'apiUsername'>
+  ) | { __typename?: 'SandboxCredentials' }, cardTypes: Array<(
+    { __typename?: 'CardType' }
+    & Pick<CardType, 'id' | 'label'>
+  )> }
+);
 
-type GatewayAccountCredentials_BamboraCredentials_Fragment = {
-  __typename?: "BamboraCredentials";
-} & Pick<
-  BamboraCredentials,
-  "environment" | "merchantId" | "accountNumber" | "apiUsername"
->;
+type GatewayAccountCredentials_BamboraCredentials_Fragment = (
+  { __typename?: 'BamboraCredentials' }
+  & Pick<BamboraCredentials, 'environment' | 'merchantId' | 'accountNumber' | 'apiUsername'>
+);
 
-type GatewayAccountCredentials_SandboxCredentials_Fragment = {
-  __typename?: "SandboxCredentials";
-};
+type GatewayAccountCredentials_SandboxCredentials_Fragment = { __typename?: 'SandboxCredentials' };
 
-export type GatewayAccountCredentialsFragment =
-  | GatewayAccountCredentials_BamboraCredentials_Fragment
-  | GatewayAccountCredentials_SandboxCredentials_Fragment;
+export type GatewayAccountCredentialsFragment = GatewayAccountCredentials_BamboraCredentials_Fragment | GatewayAccountCredentials_SandboxCredentials_Fragment;
 
-export type ProductFragment = { __typename?: "Product" } & Pick<
-  Product,
-  "id" | "externalId" | "name" | "nameSlug" | "serviceNameSlug" | "description"
->;
+export type ProductFragment = (
+  { __typename?: 'Product' }
+  & Pick<Product, 'id' | 'externalId' | 'name' | 'nameSlug' | 'serviceNameSlug' | 'description' | 'referenceEnabled' | 'referenceLabel' | 'referenceHint' | 'price'>
+);
 
-export type PaymentFragment = { __typename?: "Payment" } & Pick<
-  Payment,
-  | "id"
-  | "externalId"
-  | "insertedAt"
-  | "updatedAt"
-  | "status"
-  | "amount"
-  | "reference"
-  | "description"
-  | "email"
-  | "gatewayTransactionId"
-> & {
-    cardDetails: Maybe<
-      { __typename?: "CardDetails" } & Pick<
-        CardDetails,
-        | "cardholderName"
-        | "cardNumber"
-        | "lastDigitsCardNumber"
-        | "firstDigitsCardNumber"
-        | "expiryDate"
-        | "cardBrand"
-      >
-    >;
-  };
+export type PaymentFragment = (
+  { __typename?: 'Payment' }
+  & Pick<Payment, 'id' | 'externalId' | 'insertedAt' | 'updatedAt' | 'status' | 'amount' | 'reference' | 'description' | 'email' | 'gatewayTransactionId'>
+  & { cardDetails: Maybe<(
+    { __typename?: 'CardDetails' }
+    & Pick<CardDetails, 'cardholderName' | 'cardNumber' | 'lastDigitsCardNumber' | 'firstDigitsCardNumber' | 'expiryDate' | 'cardBrand'>
+  )> }
+);
 
-type PaymentEvent_PaymentRefundEvent_Fragment = {
-  __typename?: "PaymentRefundEvent";
-} & Pick<
-  PaymentRefundEvent,
-  "id" | "type" | "status" | "insertedAt" | "updatedAt"
->;
+type PaymentEvent_PaymentRefundEvent_Fragment = (
+  { __typename?: 'PaymentRefundEvent' }
+  & Pick<PaymentRefundEvent, 'id' | 'type' | 'status' | 'insertedAt' | 'updatedAt'>
+);
 
-type PaymentEvent_PaymentEvent_Fragment = {
-  __typename?: "PaymentEvent";
-} & Pick<PaymentEvent, "id" | "type" | "status" | "insertedAt" | "updatedAt">;
+type PaymentEvent_PaymentEvent_Fragment = (
+  { __typename?: 'PaymentEvent' }
+  & Pick<PaymentEvent, 'id' | 'type' | 'status' | 'insertedAt' | 'updatedAt'>
+);
 
-export type PaymentEventFragment =
-  | PaymentEvent_PaymentRefundEvent_Fragment
-  | PaymentEvent_PaymentEvent_Fragment;
+export type PaymentEventFragment = PaymentEvent_PaymentRefundEvent_Fragment | PaymentEvent_PaymentEvent_Fragment;
 
-export type PaymentRefundFragment = { __typename?: "PaymentRefund" } & Pick<
-  PaymentRefund,
-  "id" | "reference" | "amount" | "status" | "gatewayTransactionId"
->;
+export type PaymentRefundFragment = (
+  { __typename?: 'PaymentRefund' }
+  & Pick<PaymentRefund, 'id' | 'reference' | 'amount' | 'status' | 'gatewayTransactionId'>
+);
 
 export type GetUserServicesQueryVariables = {};
 
@@ -975,27 +953,12 @@ export const ServiceInviteFragmentDoc = gql`
 }
     `;
 export const GatewayAccountFragmentDoc = gql`
-  fragment GatewayAccount on GatewayAccount {
-    id
-    externalId
-    type
-    paymentProvider
-    credentials {
-      ... on BamboraCredentials {
-        environment
-        merchantId
-        accountNumber
-        apiUsername
-      }
-    }
-    cardTypes {
-      id
-      label
-    }
-  }
-`;
-export const GatewayAccountCredentialsFragmentDoc = gql`
-  fragment GatewayAccountCredentials on GatewayAccountCredentials {
+    fragment GatewayAccount on GatewayAccount {
+  id
+  externalId
+  type
+  paymentProvider
+  credentials {
     ... on BamboraCredentials {
       environment
       merchantId
@@ -1003,8 +966,22 @@ export const GatewayAccountCredentialsFragmentDoc = gql`
       apiUsername
     }
   }
-  `;
-
+  cardTypes {
+    id
+    label
+  }
+}
+    `;
+export const GatewayAccountCredentialsFragmentDoc = gql`
+    fragment GatewayAccountCredentials on GatewayAccountCredentials {
+  ... on BamboraCredentials {
+    environment
+    merchantId
+    accountNumber
+    apiUsername
+  }
+}
+    `;
 export const ProductFragmentDoc = gql`
     fragment Product on Product {
   id
@@ -1154,35 +1131,21 @@ export const GetServiceWithGatewayAccountsDocument = gql`
       ...ServiceInvite
     }
   }
-  ${ServiceFragmentDoc}
-  ${GatewayAccountFragmentDoc}
-  ${ServiceUserFragmentDoc}
-  ${ServiceInviteFragmentDoc}
-  ${RoleFragmentDoc}
-`;
-export type GetServiceWithGatewayAccountsComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    GetServiceWithGatewayAccountsQuery,
-    GetServiceWithGatewayAccountsQueryVariables
-  >,
-  "query"
-> &
-  (
-    | { variables: GetServiceWithGatewayAccountsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+  roles {
+    ...Role
+  }
+}
+    ${ServiceFragmentDoc}
+${GatewayAccountFragmentDoc}
+${ServiceUserFragmentDoc}
+${ServiceInviteFragmentDoc}
+${RoleFragmentDoc}`;
+export type GetServiceWithGatewayAccountsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetServiceWithGatewayAccountsQuery, GetServiceWithGatewayAccountsQueryVariables>, 'query'> & ({ variables: GetServiceWithGatewayAccountsQueryVariables; skip?: boolean; } | { skip: boolean; });
 
-export const GetServiceWithGatewayAccountsComponent = (
-  props: GetServiceWithGatewayAccountsComponentProps
-) => (
-  <ApolloReactComponents.Query<
-    GetServiceWithGatewayAccountsQuery,
-    GetServiceWithGatewayAccountsQueryVariables
-  >
-    query={GetServiceWithGatewayAccountsDocument}
-    {...props}
-  />
-);
+    export const GetServiceWithGatewayAccountsComponent = (props: GetServiceWithGatewayAccountsComponentProps) => (
+      <ApolloReactComponents.Query<GetServiceWithGatewayAccountsQuery, GetServiceWithGatewayAccountsQueryVariables> query={GetServiceWithGatewayAccountsDocument} {...props} />
+    );
+    
 
 /**
  * __useGetServiceWithGatewayAccountsQuery__
@@ -1450,31 +1413,14 @@ export const GetGatewayAccountsDocument = gql`
       ...GatewayAccount
     }
   }
-  ${GatewayAccountFragmentDoc}
-`;
-export type GetGatewayAccountsComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    GetGatewayAccountsQuery,
-    GetGatewayAccountsQueryVariables
-  >,
-  "query"
-> &
-  (
-    | { variables: GetGatewayAccountsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+}
+    ${GatewayAccountFragmentDoc}`;
+export type GetGatewayAccountsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetGatewayAccountsQuery, GetGatewayAccountsQueryVariables>, 'query'> & ({ variables: GetGatewayAccountsQueryVariables; skip?: boolean; } | { skip: boolean; });
 
-export const GetGatewayAccountsComponent = (
-  props: GetGatewayAccountsComponentProps
-) => (
-  <ApolloReactComponents.Query<
-    GetGatewayAccountsQuery,
-    GetGatewayAccountsQueryVariables
-  >
-    query={GetGatewayAccountsDocument}
-    {...props}
-  />
-);
+    export const GetGatewayAccountsComponent = (props: GetGatewayAccountsComponentProps) => (
+      <ApolloReactComponents.Query<GetGatewayAccountsQuery, GetGatewayAccountsQueryVariables> query={GetGatewayAccountsDocument} {...props} />
+    );
+    
 
 /**
  * __useGetGatewayAccountsQuery__
@@ -1506,31 +1452,14 @@ export const GetGatewayAccountDocument = gql`
   gatewayAccount(id: $id) {
     ...GatewayAccount
   }
-  ${GatewayAccountFragmentDoc}
-`;
-export type GetGatewayAccountComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    GetGatewayAccountQuery,
-    GetGatewayAccountQueryVariables
-  >,
-  "query"
-> &
-  (
-    | { variables: GetGatewayAccountQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+}
+    ${GatewayAccountFragmentDoc}`;
+export type GetGatewayAccountComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetGatewayAccountQuery, GetGatewayAccountQueryVariables>, 'query'> & ({ variables: GetGatewayAccountQueryVariables; skip?: boolean; } | { skip: boolean; });
 
-export const GetGatewayAccountComponent = (
-  props: GetGatewayAccountComponentProps
-) => (
-  <ApolloReactComponents.Query<
-    GetGatewayAccountQuery,
-    GetGatewayAccountQueryVariables
-  >
-    query={GetGatewayAccountDocument}
-    {...props}
-  />
-);
+    export const GetGatewayAccountComponent = (props: GetGatewayAccountComponentProps) => (
+      <ApolloReactComponents.Query<GetGatewayAccountQuery, GetGatewayAccountQueryVariables> query={GetGatewayAccountDocument} {...props} />
+    );
+    
 
 /**
  * __useGetGatewayAccountQuery__
@@ -1608,26 +1537,14 @@ export const GetProductsDocument = gql`
       }
     }
   }
-  ${ProductFragmentDoc}
-`;
-export type GetProductsComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    GetProductsQuery,
-    GetProductsQueryVariables
-  >,
-  "query"
-> &
-  (
-    | { variables: GetProductsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+}
+    ${ProductFragmentDoc}`;
+export type GetProductsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetProductsQuery, GetProductsQueryVariables>, 'query'> & ({ variables: GetProductsQueryVariables; skip?: boolean; } | { skip: boolean; });
 
-export const GetProductsComponent = (props: GetProductsComponentProps) => (
-  <ApolloReactComponents.Query<GetProductsQuery, GetProductsQueryVariables>
-    query={GetProductsDocument}
-    {...props}
-  />
-);
+    export const GetProductsComponent = (props: GetProductsComponentProps) => (
+      <ApolloReactComponents.Query<GetProductsQuery, GetProductsQueryVariables> query={GetProductsDocument} {...props} />
+    );
+    
 
 /**
  * __useGetProductsQuery__
@@ -1743,27 +1660,15 @@ export const GetPaymentsDocument = gql`
       }
     }
   }
-  ${GatewayAccountFragmentDoc}
-  ${PaymentFragmentDoc}
-`;
-export type GetPaymentsComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    GetPaymentsQuery,
-    GetPaymentsQueryVariables
-  >,
-  "query"
-> &
-  (
-    | { variables: GetPaymentsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+}
+    ${GatewayAccountFragmentDoc}
+${PaymentFragmentDoc}`;
+export type GetPaymentsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetPaymentsQuery, GetPaymentsQueryVariables>, 'query'> & ({ variables: GetPaymentsQueryVariables; skip?: boolean; } | { skip: boolean; });
 
-export const GetPaymentsComponent = (props: GetPaymentsComponentProps) => (
-  <ApolloReactComponents.Query<GetPaymentsQuery, GetPaymentsQueryVariables>
-    query={GetPaymentsDocument}
-    {...props}
-  />
-);
+    export const GetPaymentsComponent = (props: GetPaymentsComponentProps) => (
+      <ApolloReactComponents.Query<GetPaymentsQuery, GetPaymentsQueryVariables> query={GetPaymentsDocument} {...props} />
+    );
+    
 
 /**
  * __useGetPaymentsQuery__
@@ -1837,32 +1742,15 @@ export const GetPaymentRefundDocument = gql`
       ...PaymentRefund
     }
   }
-  ${PaymentFragmentDoc}
-  ${PaymentRefundFragmentDoc}
-`;
-export type GetPaymentRefundComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    GetPaymentRefundQuery,
-    GetPaymentRefundQueryVariables
-  >,
-  "query"
-> &
-  (
-    | { variables: GetPaymentRefundQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+}
+    ${PaymentFragmentDoc}
+${PaymentRefundFragmentDoc}`;
+export type GetPaymentRefundComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetPaymentRefundQuery, GetPaymentRefundQueryVariables>, 'query'> & ({ variables: GetPaymentRefundQueryVariables; skip?: boolean; } | { skip: boolean; });
 
-export const GetPaymentRefundComponent = (
-  props: GetPaymentRefundComponentProps
-) => (
-  <ApolloReactComponents.Query<
-    GetPaymentRefundQuery,
-    GetPaymentRefundQueryVariables
-  >
-    query={GetPaymentRefundDocument}
-    {...props}
-  />
-);
+    export const GetPaymentRefundComponent = (props: GetPaymentRefundComponentProps) => (
+      <ApolloReactComponents.Query<GetPaymentRefundQuery, GetPaymentRefundQueryVariables> query={GetPaymentRefundDocument} {...props} />
+    );
+    
 
 /**
  * __useGetPaymentRefundQuery__
@@ -1897,32 +1785,15 @@ export const GetPaymentEventsDocument = gql`
       ...PaymentEvent
     }
   }
-  ${PaymentFragmentDoc}
-  ${PaymentEventFragmentDoc}
-`;
-export type GetPaymentEventsComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    GetPaymentEventsQuery,
-    GetPaymentEventsQueryVariables
-  >,
-  "query"
-> &
-  (
-    | { variables: GetPaymentEventsQueryVariables; skip?: boolean }
-    | { skip: boolean }
-  );
+}
+    ${PaymentFragmentDoc}
+${PaymentEventFragmentDoc}`;
+export type GetPaymentEventsComponentProps = Omit<ApolloReactComponents.QueryComponentOptions<GetPaymentEventsQuery, GetPaymentEventsQueryVariables>, 'query'> & ({ variables: GetPaymentEventsQueryVariables; skip?: boolean; } | { skip: boolean; });
 
-export const GetPaymentEventsComponent = (
-  props: GetPaymentEventsComponentProps
-) => (
-  <ApolloReactComponents.Query<
-    GetPaymentEventsQuery,
-    GetPaymentEventsQueryVariables
-  >
-    query={GetPaymentEventsDocument}
-    {...props}
-  />
-);
+    export const GetPaymentEventsComponent = (props: GetPaymentEventsComponentProps) => (
+      <ApolloReactComponents.Query<GetPaymentEventsQuery, GetPaymentEventsQueryVariables> query={GetPaymentEventsDocument} {...props} />
+    );
+    
 
 /**
  * __useGetPaymentEventsQuery__
