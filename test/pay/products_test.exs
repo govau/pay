@@ -24,7 +24,6 @@ defmodule Pay.ProductsTest do
       status: "some status"
     }
     @update_attrs %{
-      api_token: "some updated api_token",
       description: "some updated description",
       name: "some updated name",
       price_fixed: true,
@@ -32,24 +31,16 @@ defmodule Pay.ProductsTest do
       reference_enabled: false,
       reference_hint: "some updated reference_hint",
       reference_label: "some updated reference_label",
-      return_url: "some updated return_url",
-      service_name_slug: "some updated service_name_slug",
       status: "some updated status"
     }
     @invalid_attrs %{
-      api_token: nil,
       description: nil,
-      external_id: nil,
-      gateway_account_id: nil,
       name: nil,
       price_fixed: nil,
       price: nil,
-      name_slug: nil,
       reference_enabled: nil,
       reference_hint: nil,
       reference_label: nil,
-      return_url: nil,
-      service_name_slug: nil,
       status: nil
     }
 
@@ -109,19 +100,13 @@ defmodule Pay.ProductsTest do
     test "update_product/2 with valid data updates the product" do
       product = product_fixture()
       assert {:ok, %Product{} = product} = Products.update_product(product, @update_attrs)
-      assert product.api_token == "some updated api_token"
       assert product.description == "some updated description"
-      assert product.external_id == "7488a646-e31f-11e4-aace-600308960662"
-      assert product.gateway_account_id == "7488a646-e31f-11e4-aace-600308960660"
       assert product.name == "some updated name"
       assert product.price_fixed == true
       assert product.price == 43
-      assert product.name_slug == "some-updated-name"
       assert product.reference_enabled == false
       assert product.reference_hint == "some updated reference_hint"
       assert product.reference_label == "some updated reference_label"
-      assert product.return_url == "some updated return_url"
-      assert product.service_name_slug == "some updated service_name_slug"
       assert product.status == "some updated status"
     end
 

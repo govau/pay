@@ -260,19 +260,28 @@ export type Role = {
 
 export type RootMutationType = {
   __typename?: "RootMutationType";
+  /** Accept a pending service invite */
   acceptInvite: Service;
+  /** Create a product */
   createProduct: Product;
+  /** instantiate a product payment */
   createProductPayment: ProductPayment;
+  /** Create a service */
   createService: Service;
+  /** Invite a user to your service */
   inviteUser: Service;
   signout: Signout;
   submitBamboraPayment: Payment;
   submitProductPayment: ProductPayment;
+  /** Submit a payment refund */
   submitRefund: PaymentRefund;
   submitSandboxPayment: Payment;
+  /** Update a gateway account card types */
   updateGatewayAccountCardTypes: GatewayAccount;
   updateGatewayAccountCredentials: GatewayAccount;
+  updateProduct: Product;
   updateProductPayment: ProductPayment;
+  /** Submit the details of an existing service */
   updateService: Service;
 };
 
@@ -332,6 +341,11 @@ export type RootMutationTypeUpdateGatewayAccountCredentialsArgs = {
   gatewayAccountId: Scalars["ID"];
 };
 
+export type RootMutationTypeUpdateProductArgs = {
+  id: Scalars["ID"];
+  product: UpdateProductInput;
+};
+
 export type RootMutationTypeUpdateProductPaymentArgs = {
   id: Scalars["ID"];
   productPayment: UpdateProductPaymentInput;
@@ -344,17 +358,24 @@ export type RootMutationTypeUpdateServiceArgs = {
 
 export type RootQueryType = {
   __typename?: "RootQueryType";
+  /** Access all resources based on admin rights */
   admin: Admin;
   cardTypes: Array<CardType>;
   gatewayAccount: GatewayAccount;
+  /** Get the currently authenticated user */
   me?: Maybe<User>;
   organisations: Array<Organisation>;
   payment: Payment;
+  product: Product;
   productPayment: ProductPayment;
   roles: Array<Role>;
+  /** Services that the active user can access */
   service: Service;
+  /** Services that the active user can access */
   serviceInvites: Array<ServiceInvite>;
+  /** Services that the active user can access */
   services: Array<Service>;
+  /** List all available users */
   users: Array<User>;
 };
 
@@ -363,6 +384,10 @@ export type RootQueryTypeGatewayAccountArgs = {
 };
 
 export type RootQueryTypePaymentArgs = {
+  id: Scalars["ID"];
+};
+
+export type RootQueryTypeProductArgs = {
   id: Scalars["ID"];
 };
 
@@ -457,6 +482,16 @@ export type TransactionEvent = {
   status: PaymentStatus;
   type: PaymentEventType;
   updatedAt: Scalars["String"];
+};
+
+export type UpdateProductInput = {
+  description?: Maybe<Scalars["String"]>;
+  name: Scalars["String"];
+  price?: Maybe<Scalars["Int"]>;
+  priceFixed: Scalars["Boolean"];
+  referenceEnabled: Scalars["Boolean"];
+  referenceHint?: Maybe<Scalars["String"]>;
+  referenceLabel?: Maybe<Scalars["String"]>;
 };
 
 export type UpdateProductPaymentInput = {

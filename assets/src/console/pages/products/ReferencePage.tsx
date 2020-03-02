@@ -14,12 +14,12 @@ import { FormElement, OnSubmitFn } from "@pay/web/components/form/Form";
 import { Values } from "./CreateFormPage";
 
 interface Props {
-  path: string;
   values: Pick<Values, "reference_enabled">;
   onSubmit: OnSubmitFn;
+  redirectURL: string;
 }
 
-const ReferencePage: React.FC<Props> = ({ path, values, onSubmit }) => {
+const ReferencePage: React.FC<Props> = ({ values, onSubmit, redirectURL }) => {
   const history = useHistory();
 
   return (
@@ -35,7 +35,7 @@ const ReferencePage: React.FC<Props> = ({ path, values, onSubmit }) => {
         ) {
           return;
         }
-        history.push(`${path}/amount`);
+        history.push(redirectURL);
       }}
       noValidate
     >

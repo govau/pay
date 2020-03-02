@@ -29,7 +29,7 @@ defmodule Pay.Products.Product do
     put_change(
       changeset,
       to_field,
-      (get_change(changeset, from_field) || "") |> Slugger.slugify_downcase()
+      (get_field(changeset, from_field) || "") |> Slugger.slugify_downcase()
     )
   end
 
@@ -73,28 +73,21 @@ defmodule Pay.Products.Product do
   def update_changeset(product, attrs) do
     product
     |> cast(attrs, [
-      :api_token,
       :name,
       :description,
       :price_fixed,
       :price,
       :status,
-      :return_url,
-      :service_name_slug,
-      :name_slug,
       :reference_enabled,
       :reference_label,
       :reference_hint
     ])
     |> slug(:name, :name_slug)
     |> validate_required([
-      :api_token,
       :name,
       :description,
       :price_fixed,
       :price,
-      :status,
-      :return_url,
       :service_name_slug,
       :name_slug,
       :reference_enabled,

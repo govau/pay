@@ -123,6 +123,10 @@ defmodule PayWeb.Resolvers do
     {:ok, Products.get_product!(product_id)}
   end
 
+  def product(_parent, %{id: external_id}, _resolution) do
+    {:ok, Products.get_product_by_external_id!(external_id)}
+  end
+
   def product_payment(_parent, %{id: external_id}, _resolution) do
     {:ok, Products.get_product_payment_by_external_id!(external_id)}
   end
