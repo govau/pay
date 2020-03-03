@@ -9,7 +9,9 @@ interface Props {
 const RestrictedPage: React.FC<Props> = ({ children }) => {
   const { isInitializing, isAuthenticated } = useAuth0();
 
-  if (isInitializing) return <Loader message="Loading " />;
+  if (isInitializing) {
+    return <Loader message="Loading" />;
+  }
 
   return isAuthenticated ? (
     children
