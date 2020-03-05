@@ -119,9 +119,9 @@ export const CoaLogo = styled(Coat)`
 const Header: React.FC = () => {
   const [isNavVisible, setIsNavVisible] = React.useState(false);
   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
-  const userMe = usePayUser();
+  const { user } = usePayUser();
 
-  const isPlatformAdmin = userMe && userMe.platformAdmin;
+  const isPlatformAdmin = user && user.platformAdmin;
 
   return (
     <ThemeProvider
@@ -191,7 +191,7 @@ const Header: React.FC = () => {
           </PrimaryContainer>
         </PrimaryHeader>
 
-        {isAuthenticated ? (
+        {isAuthenticated && user ? (
           <PrimaryNav>
             <Switch>
               {isPlatformAdmin ? (

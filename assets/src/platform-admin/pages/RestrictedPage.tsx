@@ -1,6 +1,5 @@
 import * as React from "react";
 import { ErrorAlert, Loader } from "@pay/web";
-import { useAuth0 } from "../../auth/AuthContext";
 import { usePayUser } from "../../users";
 
 interface Props {
@@ -8,10 +7,9 @@ interface Props {
 }
 
 const RestrictedPage: React.FC<Props> = ({ children }) => {
-  const { isInitializing, isAuthenticated } = useAuth0();
-  const user = usePayUser();
+  const { isLoading, user } = usePayUser();
 
-  if (isInitializing || (isAuthenticated && !user)) {
+  if (isLoading) {
     return <Loader message="Loading" />;
   }
 
