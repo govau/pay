@@ -40,13 +40,11 @@ const AuthUserProvider: React.FC<{}> = ({ children }) => {
   );
 };
 
-const PayUserContext = React.createContext<PayUserContext | undefined>(
-  undefined
-);
+const PayUserContext = React.createContext<Partial<PayUserContext>>({});
 const UserContext = React.createContext<
   | {
       authUser: Auth0User;
-      payUser: PayUserContext;
+      payUser: Partial<PayUserContext>;
     }
   | undefined
 >(undefined);
@@ -55,19 +53,17 @@ const useAuthUser = () => {
   const { user } = useAuth0();
   return user;
 };
-const usePayUser = () => React.useContext(PayUserContext)!;
+const usePayUser = () => React.useContext(PayUserContext);
 const useUser = () => React.useContext(UserContext);
 
 const PayUserProvider: React.FC<{}> = ({ children }) => {
-  let isLoading = false;
   const { isInitializing } = useAuth0();
   const { loading, data } = useCheckAuthQuery({});
-  if (isInitializing || loading) {
-    isLoading = true;
-  }
   const user = data && data.me ? fromGQLUser(data.me) : undefined;
   return (
-    <PayUserContext.Provider value={{ user, isLoading }}>
+    <PayUserContext.Provider
+      value={{ user, isLoading: isInitializing || loading }}
+    >
       {children}
     </PayUserContext.Provider>
   );
