@@ -58,6 +58,7 @@ const DetailsPage: React.FC<Props> = ({
         name="description"
         label="Details (optional)"
         description="Give your users more information. For example, you could tell them how long it takes for their application to be processed."
+        parse={value => value}
       >
         {({ input, ariaProps, ...rest }) => (
           <BasicTextInput {...input} {...ariaProps} {...rest} />

@@ -85,14 +85,12 @@ defmodule Pay.Products.Product do
     |> slug(:name, :name_slug)
     |> validate_required([
       :name,
-      :description,
       :price_fixed,
       :price,
       :service_name_slug,
       :name_slug,
       :reference_enabled,
       :reference_label,
-      :reference_hint
     ])
     |> unique_constraint(:name_slug, name: :products_name_slug_service_name_slug_index)
   end

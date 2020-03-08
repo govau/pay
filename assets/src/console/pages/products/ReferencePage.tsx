@@ -56,6 +56,7 @@ const ReferencePage: React.FC<Props> = ({ values, onSubmit, redirectURL }) => {
             name="reference_hint"
             label="Hint text (optional)"
             description="Tell users what the payment reference looks like and where they can find it."
+            parse={value => value}
           >
             {({ input, ariaProps, ...rest }) => (
               <BasicTextInput {...input} {...ariaProps} {...rest} />

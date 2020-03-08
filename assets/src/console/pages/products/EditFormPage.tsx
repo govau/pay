@@ -20,7 +20,7 @@ import EditStartPage from "./EditStartPage";
 
 export interface Values {
   name: string;
-  description?: string;
+  description: string;
   reference_enabled: boolean | null;
   reference_label: string;
   reference_hint: string;
@@ -161,11 +161,9 @@ const EditFormPage: React.FC<Props> = ({
         )}
         initialValues={{
           name: product.name,
-          description: !product.description ? "" : product.description,
+          description: product.description || "",
           reference_enabled: product.referenceEnabled,
-          reference_label: !product.referenceLabel
-            ? ""
-            : product.referenceLabel,
+          reference_label: product.referenceLabel || "",
           reference_hint: product.referenceHint || "",
           price_fixed: product.priceFixed,
           price: Number(product.price / 100)
