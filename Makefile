@@ -9,7 +9,7 @@ ASSETS_PUB = $(shell find assets/public -type f)
 CF          ?= cf
 CF_USERNAME ?=
 CF_ORG      ?= dta
-CF_SPACE    ?= platforms
+CF_SPACE    ?= pay
 CF_API      ?= $(CF_API_STAGING)
 CF_PASSWORD ?= $(CF_PASSWORD_STAGING)
 
