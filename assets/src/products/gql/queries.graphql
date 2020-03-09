@@ -42,6 +42,12 @@ query GetProductPayment($id: ID!) {
   }
 }
 
+query GetProduct($externalId: ID!) {
+  product(id: $externalId) {
+    ...Product
+  }
+}
+
 mutation CreatePayment($serviceNameSlug: String!, $nameSlug: String!) {
   payment: createProductPayment(
     serviceNameSlug: $serviceNameSlug

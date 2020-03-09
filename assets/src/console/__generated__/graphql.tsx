@@ -260,19 +260,28 @@ export type Role = {
 
 export type RootMutationType = {
   __typename?: "RootMutationType";
+  /** Accept a pending service invite */
   acceptInvite: Service;
+  /** Create a product */
   createProduct: Product;
+  /** instantiate a product payment */
   createProductPayment: ProductPayment;
+  /** Create a service */
   createService: Service;
+  /** Invite a user to your service */
   inviteUser: Service;
   signout: Signout;
   submitBamboraPayment: Payment;
   submitProductPayment: ProductPayment;
+  /** Submit a payment refund */
   submitRefund: PaymentRefund;
   submitSandboxPayment: Payment;
+  /** Update a gateway account card types */
   updateGatewayAccountCardTypes: GatewayAccount;
   updateGatewayAccountCredentials: GatewayAccount;
+  updateProduct: Product;
   updateProductPayment: ProductPayment;
+  /** Submit the details of an existing service */
   updateService: Service;
 };
 
@@ -332,6 +341,11 @@ export type RootMutationTypeUpdateGatewayAccountCredentialsArgs = {
   gatewayAccountId: Scalars["ID"];
 };
 
+export type RootMutationTypeUpdateProductArgs = {
+  id: Scalars["ID"];
+  product: UpdateProductInput;
+};
+
 export type RootMutationTypeUpdateProductPaymentArgs = {
   id: Scalars["ID"];
   productPayment: UpdateProductPaymentInput;
@@ -344,17 +358,24 @@ export type RootMutationTypeUpdateServiceArgs = {
 
 export type RootQueryType = {
   __typename?: "RootQueryType";
+  /** Access all resources based on admin rights */
   admin: Admin;
   cardTypes: Array<CardType>;
   gatewayAccount: GatewayAccount;
+  /** Get the currently authenticated user */
   me?: Maybe<User>;
   organisations: Array<Organisation>;
   payment: Payment;
+  product: Product;
   productPayment: ProductPayment;
   roles: Array<Role>;
+  /** Services that the active user can access */
   service: Service;
+  /** Services that the active user can access */
   serviceInvites: Array<ServiceInvite>;
+  /** Services that the active user can access */
   services: Array<Service>;
+  /** List all available users */
   users: Array<User>;
 };
 
@@ -363,6 +384,10 @@ export type RootQueryTypeGatewayAccountArgs = {
 };
 
 export type RootQueryTypePaymentArgs = {
+  id: Scalars["ID"];
+};
+
+export type RootQueryTypeProductArgs = {
   id: Scalars["ID"];
 };
 
@@ -459,6 +484,16 @@ export type TransactionEvent = {
   updatedAt: Scalars["String"];
 };
 
+export type UpdateProductInput = {
+  description?: Maybe<Scalars["String"]>;
+  name: Scalars["String"];
+  price?: Maybe<Scalars["Int"]>;
+  priceFixed: Scalars["Boolean"];
+  referenceEnabled: Scalars["Boolean"];
+  referenceHint?: Maybe<Scalars["String"]>;
+  referenceLabel?: Maybe<Scalars["String"]>;
+};
+
 export type UpdateProductPaymentInput = {
   amount?: Maybe<Scalars["Int"]>;
   reference: Scalars["String"];
@@ -549,7 +584,16 @@ export type GatewayAccountCredentialsFragment =
 
 export type ProductFragment = { __typename?: "Product" } & Pick<
   Product,
-  "id" | "externalId" | "name" | "nameSlug" | "serviceNameSlug" | "description"
+  | "id"
+  | "externalId"
+  | "name"
+  | "nameSlug"
+  | "serviceNameSlug"
+  | "description"
+  | "referenceEnabled"
+  | "referenceLabel"
+  | "referenceHint"
+  | "price"
 >;
 
 export type PaymentFragment = { __typename?: "Payment" } & Pick<
@@ -746,10 +790,6 @@ export type CreateProductMutationVariables = {
   input: CreateProductInput;
 };
 
-export type CreateProductMutation = { __typename?: "RootMutationType" } & {
-  product: { __typename?: "Product" } & ProductFragment;
-};
-
 export type GetPaymentsQueryVariables = {
   serviceID: Scalars["ID"];
   filterBy?: Maybe<FilterPaymentsInput>;
@@ -759,6 +799,19 @@ export type GetPaymentsQuery = { __typename?: "RootQueryType" } & {
   service: { __typename?: "Service" } & Pick<Service, "id"> & {
       payments: Array<{ __typename?: "Payment" } & PaymentFragment>;
     };
+};
+
+export type CreateProductMutation = { __typename?: "RootMutationType" } & {
+  product: { __typename?: "Product" } & ProductFragment;
+};
+
+export type UpdateProductMutationVariables = {
+  id: Scalars["ID"];
+  input: UpdateProductInput;
+};
+
+export type UpdateProductMutation = { __typename?: "RootMutationType" } & {
+  product: { __typename?: "Product" } & ProductFragment;
 };
 
 export type GetPaymentQueryVariables = {
@@ -880,6 +933,10 @@ export const ProductFragmentDoc = gql`
     nameSlug
     serviceNameSlug
     description
+    referenceEnabled
+    referenceLabel
+    referenceHint
+    price
   }
 `;
 export const PaymentFragmentDoc = gql`
@@ -1983,6 +2040,75 @@ export type CreateProductMutationResult = ApolloReactCommon.MutationResult<
 export type CreateProductMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CreateProductMutation,
   CreateProductMutationVariables
+>;
+export const UpdateProductDocument = gql`
+  mutation UpdateProduct($id: ID!, $input: UpdateProductInput!) {
+    product: updateProduct(id: $id, product: $input) {
+      ...Product
+    }
+  }
+  ${ProductFragmentDoc}
+`;
+export type UpdateProductMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateProductMutation,
+  UpdateProductMutationVariables
+>;
+export type UpdateProductComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    UpdateProductMutation,
+    UpdateProductMutationVariables
+  >,
+  "mutation"
+>;
+
+export const UpdateProductComponent = (props: UpdateProductComponentProps) => (
+  <ApolloReactComponents.Mutation<
+    UpdateProductMutation,
+    UpdateProductMutationVariables
+  >
+    mutation={UpdateProductDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useUpdateProductMutation__
+ *
+ * To run a mutation, you first call `useUpdateProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProductMutation, { data, loading, error }] = useUpdateProductMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProductMutation(
+  baseOptions?: ApolloReactHooks.MutationHookOptions<
+    UpdateProductMutation,
+    UpdateProductMutationVariables
+  >
+) {
+  return ApolloReactHooks.useMutation<
+    UpdateProductMutation,
+    UpdateProductMutationVariables
+  >(UpdateProductDocument, baseOptions);
+}
+export type UpdateProductMutationHookResult = ReturnType<
+  typeof useUpdateProductMutation
+>;
+export type UpdateProductMutationResult = ApolloReactCommon.MutationResult<
+  UpdateProductMutation
+>;
+export type UpdateProductMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateProductMutation,
+  UpdateProductMutationVariables
 >;
 export const GetPaymentsDocument = gql`
   query GetPayments($serviceID: ID!, $filterBy: FilterPaymentsInput) {

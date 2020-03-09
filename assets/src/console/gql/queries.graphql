@@ -77,6 +77,10 @@ fragment Product on Product {
   nameSlug
   serviceNameSlug
   description
+  referenceEnabled
+  referenceLabel
+  referenceHint
+  price
 }
 
 fragment Payment on Payment {
@@ -239,6 +243,12 @@ query GetProducts($serviceID: ID!) {
 
 mutation CreateProduct($gatewayAccountId: ID!, $input: CreateProductInput!) {
   product: createProduct(gatewayAccountId: $gatewayAccountId, product: $input) {
+    ...Product
+  }
+}
+
+mutation UpdateProduct($id: ID!, $input: UpdateProductInput!) {
+  product: updateProduct(id: $id, product: $input) {
     ...Product
   }
 }

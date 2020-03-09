@@ -19,6 +19,16 @@ defmodule PayWeb.Schema.InputTypes do
     field :price, :integer
   end
 
+  input_object :update_product_input do
+    field :name, non_null(:string)
+    field :description, :string
+    field :reference_enabled, non_null(:boolean)
+    field :reference_label, :string
+    field :reference_hint, :string
+    field :price_fixed, non_null(:boolean)
+    field :price, :integer
+  end
+
   input_object :update_service_input do
     field :name, non_null(:string)
   end

@@ -260,19 +260,28 @@ export type Role = {
 
 export type RootMutationType = {
   __typename?: "RootMutationType";
+  /** Accept a pending service invite */
   acceptInvite: Service;
+  /** Create a product */
   createProduct: Product;
+  /** instantiate a product payment */
   createProductPayment: ProductPayment;
+  /** Create a service */
   createService: Service;
+  /** Invite a user to your service */
   inviteUser: Service;
   signout: Signout;
   submitBamboraPayment: Payment;
   submitProductPayment: ProductPayment;
+  /** Submit a payment refund */
   submitRefund: PaymentRefund;
   submitSandboxPayment: Payment;
+  /** Update a gateway account card types */
   updateGatewayAccountCardTypes: GatewayAccount;
   updateGatewayAccountCredentials: GatewayAccount;
+  updateProduct: Product;
   updateProductPayment: ProductPayment;
+  /** Submit the details of an existing service */
   updateService: Service;
 };
 
@@ -332,6 +341,11 @@ export type RootMutationTypeUpdateGatewayAccountCredentialsArgs = {
   gatewayAccountId: Scalars["ID"];
 };
 
+export type RootMutationTypeUpdateProductArgs = {
+  id: Scalars["ID"];
+  product: UpdateProductInput;
+};
+
 export type RootMutationTypeUpdateProductPaymentArgs = {
   id: Scalars["ID"];
   productPayment: UpdateProductPaymentInput;
@@ -344,17 +358,24 @@ export type RootMutationTypeUpdateServiceArgs = {
 
 export type RootQueryType = {
   __typename?: "RootQueryType";
+  /** Access all resources based on admin rights */
   admin: Admin;
   cardTypes: Array<CardType>;
   gatewayAccount: GatewayAccount;
+  /** Get the currently authenticated user */
   me?: Maybe<User>;
   organisations: Array<Organisation>;
   payment: Payment;
+  product: Product;
   productPayment: ProductPayment;
   roles: Array<Role>;
+  /** Services that the active user can access */
   service: Service;
+  /** Services that the active user can access */
   serviceInvites: Array<ServiceInvite>;
+  /** Services that the active user can access */
   services: Array<Service>;
+  /** List all available users */
   users: Array<User>;
 };
 
@@ -363,6 +384,10 @@ export type RootQueryTypeGatewayAccountArgs = {
 };
 
 export type RootQueryTypePaymentArgs = {
+  id: Scalars["ID"];
+};
+
+export type RootQueryTypeProductArgs = {
   id: Scalars["ID"];
 };
 
@@ -459,6 +484,16 @@ export type TransactionEvent = {
   updatedAt: Scalars["String"];
 };
 
+export type UpdateProductInput = {
+  description?: Maybe<Scalars["String"]>;
+  name: Scalars["String"];
+  price?: Maybe<Scalars["Int"]>;
+  priceFixed: Scalars["Boolean"];
+  referenceEnabled: Scalars["Boolean"];
+  referenceHint?: Maybe<Scalars["String"]>;
+  referenceLabel?: Maybe<Scalars["String"]>;
+};
+
 export type UpdateProductPaymentInput = {
   amount?: Maybe<Scalars["Int"]>;
   reference: Scalars["String"];
@@ -519,6 +554,14 @@ export type GetProductPaymentQueryVariables = {
 
 export type GetProductPaymentQuery = { __typename?: "RootQueryType" } & {
   productPayment: { __typename?: "ProductPayment" } & ProductPaymentFragment;
+};
+
+export type GetProductQueryVariables = {
+  externalId: Scalars["ID"];
+};
+
+export type GetProductQuery = { __typename?: "RootQueryType" } & {
+  product: { __typename?: "Product" } & ProductFragment;
 };
 
 export type CreatePaymentMutationVariables = {
@@ -667,6 +710,76 @@ export type GetProductPaymentLazyQueryHookResult = ReturnType<
 export type GetProductPaymentQueryResult = ApolloReactCommon.QueryResult<
   GetProductPaymentQuery,
   GetProductPaymentQueryVariables
+>;
+export const GetProductDocument = gql`
+  query GetProduct($externalId: ID!) {
+    product(id: $externalId) {
+      ...Product
+    }
+  }
+  ${ProductFragmentDoc}
+`;
+export type GetProductComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    GetProductQuery,
+    GetProductQueryVariables
+  >,
+  "query"
+> &
+  ({ variables: GetProductQueryVariables; skip?: boolean } | { skip: boolean });
+
+export const GetProductComponent = (props: GetProductComponentProps) => (
+  <ApolloReactComponents.Query<GetProductQuery, GetProductQueryVariables>
+    query={GetProductDocument}
+    {...props}
+  />
+);
+
+/**
+ * __useGetProductQuery__
+ *
+ * To run a query within a React component, call `useGetProductQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProductQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProductQuery({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *   },
+ * });
+ */
+export function useGetProductQuery(
+  baseOptions?: ApolloReactHooks.QueryHookOptions<
+    GetProductQuery,
+    GetProductQueryVariables
+  >
+) {
+  return ApolloReactHooks.useQuery<GetProductQuery, GetProductQueryVariables>(
+    GetProductDocument,
+    baseOptions
+  );
+}
+export function useGetProductLazyQuery(
+  baseOptions?: ApolloReactHooks.LazyQueryHookOptions<
+    GetProductQuery,
+    GetProductQueryVariables
+  >
+) {
+  return ApolloReactHooks.useLazyQuery<
+    GetProductQuery,
+    GetProductQueryVariables
+  >(GetProductDocument, baseOptions);
+}
+export type GetProductQueryHookResult = ReturnType<typeof useGetProductQuery>;
+export type GetProductLazyQueryHookResult = ReturnType<
+  typeof useGetProductLazyQuery
+>;
+export type GetProductQueryResult = ApolloReactCommon.QueryResult<
+  GetProductQuery,
+  GetProductQueryVariables
 >;
 export const CreatePaymentDocument = gql`
   mutation CreatePayment($serviceNameSlug: String!, $nameSlug: String!) {

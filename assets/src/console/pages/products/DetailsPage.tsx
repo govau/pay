@@ -8,16 +8,18 @@ import { Values } from "./CreateFormPage";
 
 interface Props {
   serviceName: string;
-  path: string;
+  title: string;
   values: Pick<Values, "name">;
   onSubmit: OnSubmitFn;
+  redirectURL: string;
 }
 
 const DetailsPage: React.FC<Props> = ({
   serviceName,
-  path,
+  title,
   values,
-  onSubmit
+  onSubmit,
+  redirectURL
 }) => {
   const history = useHistory();
 
@@ -29,11 +31,11 @@ const DetailsPage: React.FC<Props> = ({
         if (error && (error.name || error.description)) {
           return;
         }
-        history.push(`${path}/reference`);
+        history.push(redirectURL);
       }}
       noValidate
     >
-      <PageTitle title="Set payment link information" />
+      <PageTitle title={title} />
       <Field
         name="name"
         label="Title"
@@ -56,6 +58,7 @@ const DetailsPage: React.FC<Props> = ({
         name="description"
         label="Details (optional)"
         description="Give your users more information. For example, you could tell them how long it takes for their application to be processed."
+        parse={value => value}
       >
         {({ input, ariaProps, ...rest }) => (
           <BasicTextInput {...input} {...ariaProps} {...rest} />
