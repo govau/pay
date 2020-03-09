@@ -60,117 +60,124 @@ view_only_role_id =
 # Permissons
 
 permission1_id =
-  Repo.insert!(%Permission{name: "users-service:read", description: "Viewusersinservice"}).id
+  Repo.insert!(%Permission{name: "users-service:read", description: "View users in service"}).id
 
 permission2_id =
-  Repo.insert!(%Permission{name: "users-service:create", description: "Createuserinthisservice"}).id
+  Repo.insert!(%Permission{
+    name: "users-service:create",
+    description: "Create user in this service"
+  }).id
 
 permission3_id =
-  Repo.insert!(%Permission{name: "users-global:create", description: "Createuserinanyservice"}).id
+  Repo.insert!(%Permission{name: "users-global:create", description: "Create user in any service"}).id
 
 permission4_id =
-  Repo.insert!(%Permission{name: "tokens-active:read", description: "Viewactivekeys"}).id
+  Repo.insert!(%Permission{name: "tokens-active:read", description: "View active keys"}).id
 
 permission5_id =
-  Repo.insert!(%Permission{name: "tokens-revoked:read", description: "Viewrevokedkeys"}).id
+  Repo.insert!(%Permission{name: "tokens-revoked:read", description: "View revoked keys"}).id
 
-permission6_id = Repo.insert!(%Permission{name: "tokens:create", description: "Generatekey"}).id
-permission7_id = Repo.insert!(%Permission{name: "tokens:update", description: "Generatekey"}).id
-permission8_id = Repo.insert!(%Permission{name: "tokens:delete", description: "Revokekey"}).id
+permission6_id = Repo.insert!(%Permission{name: "tokens:create", description: "Generate key"}).id
+permission7_id = Repo.insert!(%Permission{name: "tokens:update", description: "Generate key"}).id
+permission8_id = Repo.insert!(%Permission{name: "tokens:delete", description: "Revoke key"}).id
 
 permission9_id =
-  Repo.insert!(%Permission{name: "transactions:read", description: "Viewtransactionslist"}).id
+  Repo.insert!(%Permission{name: "transactions:read", description: "View transactions list"}).id
 
 permission10_id =
   Repo.insert!(%Permission{
     name: "transactions-by-date:read",
-    description: "Searchtransactionsbydate"
+    description: "Search transactions by date"
   }).id
 
 permission11_id =
   Repo.insert!(%Permission{
     name: "transactions-by-fields:read",
-    description: "Searchtransactionsbypaymentfields"
+    description: "Search transactions bypayment fields"
   }).id
 
 permission12_id =
   Repo.insert!(%Permission{
     name: "transactions-download:read",
-    description: "Downloadtransactions"
+    description: "Download transactions"
   }).id
 
 permission13_id =
   Repo.insert!(%Permission{
     name: "transactions-details:read",
-    description: "Viewtransactiondetails"
+    description: "View transaction details"
   }).id
 
 permission14_id =
-  Repo.insert!(%Permission{name: "transactions-events:read", description: "Viewtransactionevents"}).id
+  Repo.insert!(%Permission{
+    name: "transactions-events:read",
+    description: "View transaction events"
+  }).id
 
-permission15_id = Repo.insert!(%Permission{name: "refunds:create", description: "Issuerefund"}).id
+permission15_id =
+  Repo.insert!(%Permission{name: "refunds:create", description: "Issue refund"}).id
 
 permission16_id =
   Repo.insert!(%Permission{
     name: "transactions-amount:read",
-    description: "Viewtransactionamounts"
+    description: "View transaction amounts"
   }).id
 
 permission17_id =
   Repo.insert!(%Permission{
     name: "transactions-description:read",
-    description: "Viewtransactiondescription"
+    description: "View transaction description"
   }).id
 
 permission18_id =
-  Repo.insert!(%Permission{name: "transactions-email:read", description: "Viewtransactionemail"}).id
+  Repo.insert!(%Permission{name: "transactions-email:read", description: "View transaction email"}).id
 
 permission19_id =
   Repo.insert!(%Permission{
     name: "transactions-card-type:read",
-    description: "Viewtransactioncardtype"
+    description: "View transaction cardtype"
   }).id
 
 permission20_id =
   Repo.insert!(%Permission{
     name: "gateway-credentials:read",
-    description: "Viewgatewayaccountcredentials"
+    description: "View gateway account credentials"
   }).id
 
 permission21_id =
   Repo.insert!(%Permission{
     name: "gateway-credentials:update",
-    description: "Editgatewayaccountcredentials"
+    description: "Edit gateway account credentials"
   }).id
 
 permission22_id =
-  Repo.insert!(%Permission{name: "service-name:read", description: "Viewservicename"}).id
+  Repo.insert!(%Permission{name: "service-name:read", description: "View service name"}).id
 
 permission23_id =
-  Repo.insert!(%Permission{name: "service-name:update", description: "Editservicename"}).id
+  Repo.insert!(%Permission{name: "service-name:update", description: "Edit service name"}).id
 
 permission24_id =
-  Repo.insert!(%Permission{name: "payment-types:read", description: "Viewpaymenttypes"}).id
+  Repo.insert!(%Permission{name: "payment-types:read", description: "View payment types"}).id
 
 permission25_id =
-  Repo.insert!(%Permission{name: "payment-types:update", description: "Editpaymenttypes"}).id
+  Repo.insert!(%Permission{name: "payment-types:update", description: "Edit payment types"}).id
 
 permission26_id =
   Repo.insert!(%Permission{
     name: "email-notification-template:read",
-    description: "Viewemailnotificationstemplate"
+    description: "View email notifications template"
   }).id
 
 permission27_id =
   Repo.insert!(%Permission{
     name: "email-notification-paragraph:update",
-    description: "Editemailnotificationsparagraph"
+    description: "Edit email notifications paragraph"
   }).id
 
 permission28_id =
   Repo.insert!(%Permission{
     name: "email-notification-toggle:update",
-    description: "Turnemailnotificationson/off"
+    description: "Turn email notifications on/off"
   }).id
 
 Repo.insert!(%RolePermission{
