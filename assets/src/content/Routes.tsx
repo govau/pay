@@ -7,22 +7,26 @@ import DefaultLayout from "../layout";
 
 const Routes: React.FC = () => {
   return (
-    <DefaultLayout>
-      <Switch>
-        <Route path="/" exact strict>
-          <Pages.HomePage />
-        </Route>
-        <Route path="/terms" exact strict>
+    <Switch>
+      <Route path="/" exact strict>
+        <Pages.HomePage />
+      </Route>
+      <Route path="/terms" exact strict>
+        <DefaultLayout>
           <Pages.TermsPage />
-        </Route>
-        <Route path="/privacy" exact strict>
+        </DefaultLayout>
+      </Route>
+      <Route path="/privacy" exact strict>
+        <DefaultLayout>
           <Pages.PrivacyPage />
-        </Route>
-        <Route path="*">
+        </DefaultLayout>
+      </Route>
+      <Route path="*">
+        <DefaultLayout>
           <CorePages.NotFoundPage />
-        </Route>
-      </Switch>
-    </DefaultLayout>
+        </DefaultLayout>
+      </Route>
+    </Switch>
   );
 };
 

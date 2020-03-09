@@ -109,7 +109,6 @@ export const ServiceInfoNav: React.FC = () => {
 // NonServiceInfoNav is shown when in console, outside the context of a service.
 export const NonServiceInfoNav: React.FC = () => (
   <Container>
-    <PageInfo />
     <SubNav>
       <NavUl>
         <li>

@@ -2,24 +2,34 @@ import * as React from "react";
 
 import styled, { ThemeProvider } from "../../styled-components";
 import Container from "../Container";
+import { P } from "../Typography";
 import { Link, LinkProps } from "../Link";
 import { desktop } from "../../media";
+import Lozenge from "../Lozenge";
 import COA from "./Coat";
 
-const FooterElement = styled.footer`
-  margin-top: 4rem;
-`;
-
-const Wrapper = styled.section`
+const FirstSection = styled.section`
   padding: 3rem 0 1rem;
   color: ${props => props.theme.footer.textColor};
   background-color: ${props => props.theme.footer.bgColor};
   border-top: 3px solid ${props => props.theme.colors.midGray};
 `;
 
-const SecondWrapper = styled(Wrapper)`
+const OtherSection = styled(FirstSection)`
   padding: 3rem 0;
   border-top-width: 1px;
+`;
+
+const Feedback = styled(P)`
+  line-height: 2;
+
+  ${Lozenge} {
+    margin-right: 1rem;
+
+    @media ${desktop} {
+      margin-right: 2rem;
+    }
+  }
 `;
 
 const License = styled.section`
@@ -70,12 +80,10 @@ const NavListItem = styled.li`
   padding-bottom: 2rem;
 `;
 
-const NavWrapper = styled.nav``;
-
 const Nav: React.FC<{}> = props => (
-  <NavWrapper>
+  <nav>
     <NavList {...props} />
-  </NavWrapper>
+  </nav>
 );
 
 const NavItem: React.FC<LinkProps> = props => (
@@ -93,8 +101,16 @@ const Footer: React.FC<Props> = props => (
       linkColor: theme.footer.textColor
     })}
   >
-    <FooterElement role="contentinfo">
-      <Wrapper>
+    <footer role="contentinfo">
+      <FirstSection>
+        <Container>
+          <Feedback>
+            <Lozenge variant="flair">Beta</Lozenge> This is a new service—your{" "}
+            <Link to="/TODO">feedback</Link> will help us to improve it.
+          </Feedback>
+        </Container>
+      </FirstSection>
+      <OtherSection>
         <Container>
           <Nav>
             <NavItem to="/">About Pay.gov.au</NavItem>
@@ -107,9 +123,8 @@ const Footer: React.FC<Props> = props => (
             <NavItem to="/">Help</NavItem>
           </Nav>
         </Container>
-      </Wrapper>
-
-      <SecondWrapper>
+      </OtherSection>
+      <OtherSection>
         <Container>
           <License>
             <Coat>
@@ -122,8 +137,8 @@ const Footer: React.FC<Props> = props => (
             </LicenseText>
           </License>
         </Container>
-      </SecondWrapper>
-    </FooterElement>
+      </OtherSection>
+    </footer>
   </ThemeProvider>
 );
 
