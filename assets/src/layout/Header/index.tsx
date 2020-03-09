@@ -113,6 +113,7 @@ export const Menu = styled.div`
 `;
 
 export const CoaLogo = styled(Coat)`
+  width: 71.8438px; /* IE11 inline svg fix */
   height: 5.5rem;
 `;
 

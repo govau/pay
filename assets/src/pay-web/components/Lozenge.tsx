@@ -23,6 +23,7 @@ const Lozenge = styled.span<Props>`
       case "flair":
         return css`
           background-color: ${theme.colors.flair};
+          color: #fff;
         `;
     }
   }};
