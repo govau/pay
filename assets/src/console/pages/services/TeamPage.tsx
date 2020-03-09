@@ -65,7 +65,7 @@ export interface props {
 }
 
 const TeamPage: React.FC<props> = ({ service }) => {
-  const user = usePayUser();
+  const { user } = usePayUser();
   const currentURL = useMatchURL();
 
   return (

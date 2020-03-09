@@ -1,6 +1,5 @@
 import * as React from "react";
-import { ErrorAlert } from "@pay/web";
-
+import { ErrorAlert, Loader } from "@pay/web";
 import { usePayUser } from "../../users";
 
 interface Props {
@@ -8,7 +7,11 @@ interface Props {
 }
 
 const RestrictedPage: React.FC<Props> = ({ children }) => {
-  const user = usePayUser();
+  const { isLoading, user } = usePayUser();
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return user && user.email ? (
     children

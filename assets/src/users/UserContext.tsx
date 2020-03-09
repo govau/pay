@@ -4,6 +4,11 @@ import { Auth0Provider, useAuth0, Auth0User } from "../auth/AuthContext";
 import { useCheckAuthQuery } from "../auth/__generated__/graphql";
 import { fromGQLUser } from "./graphql";
 
+interface PayUserContext {
+  user?: User;
+  isLoading: boolean;
+}
+
 const onAuthRedirectCallback = (redirectResult?: RedirectLoginResult) => {
   console.log(
     "auth0 onRedirectCallback called with redirectState %o",
@@ -35,11 +40,12 @@ const AuthUserProvider: React.FC<{}> = ({ children }) => {
   );
 };
 
-const PayUserContext = React.createContext<User | undefined>(undefined);
+const PayUserContext = React.createContext<PayUserContext>({
+  isLoading: false
+});
 const UserContext = React.createContext<
   | {
       authUser: Auth0User;
-      payUser: User;
     }
   | undefined
 >(undefined);
@@ -52,12 +58,15 @@ const usePayUser = () => React.useContext(PayUserContext);
 const useUser = () => React.useContext(UserContext);
 
 const PayUserProvider: React.FC<{}> = ({ children }) => {
-  const query = useCheckAuthQuery({});
-  const value =
-    query.data && query.data.me ? fromGQLUser(query.data.me) : undefined;
-
+  const { isInitializing } = useAuth0();
+  const { loading, data } = useCheckAuthQuery({});
+  const user = data && data.me ? fromGQLUser(data.me) : undefined;
   return (
-    <PayUserContext.Provider value={value}>{children}</PayUserContext.Provider>
+    <PayUserContext.Provider
+      value={{ user, isLoading: isInitializing || loading }}
+    >
+      {children}
+    </PayUserContext.Provider>
   );
 };
 
