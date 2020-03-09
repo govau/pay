@@ -40,11 +40,12 @@ const AuthUserProvider: React.FC<{}> = ({ children }) => {
   );
 };
 
-const PayUserContext = React.createContext<Partial<PayUserContext>>({});
+const PayUserContext = React.createContext<PayUserContext>({
+  isLoading: false
+});
 const UserContext = React.createContext<
   | {
       authUser: Auth0User;
-      payUser: Partial<PayUserContext>;
     }
   | undefined
 >(undefined);

@@ -10,7 +10,7 @@ const RestrictedPage: React.FC<Props> = ({ children }) => {
   const { isLoading, user } = usePayUser();
 
   if (isLoading) {
-    return <Loader message="Loading" />;
+    return <Loader />;
   }
 
   if (user && user.platformAdmin) {
