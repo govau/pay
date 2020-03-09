@@ -5,7 +5,7 @@ DIFF          ?= diff
 
 APP           ?= pay
 STG           ?= dev
-CF_SPACE      ?= platforms
+CF_SPACE      ?= pay
 CF_SPACE_ID   ?= $(shell $(CF) curl "/v2/spaces?q=name:$(CF_SPACE)" | jq -r ".resources[].metadata.guid")
 GIT_REMOTE    ?= $(shell $(GIT) config --get remote.origin.url)
 
