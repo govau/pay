@@ -139,7 +139,8 @@ const CreateFormPage: React.FC<Props> = ({
   const location = useLocation();
 
   const [createProduct, { loading, error, data }] = useCreateProductMutation({
-    errorPolicy: "all"
+    errorPolicy: "all",
+    refetchQueries: ["GetProducts"]
   });
 
   return (
