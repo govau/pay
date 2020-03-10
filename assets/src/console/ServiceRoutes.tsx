@@ -203,7 +203,7 @@ const GatewayAccountRoutes: React.FC<{
               </Route>
               <Route path="*">
                 <Pages.Services.GatewayAccounts.Products.CreateFormPage
-                  serviceName={service.name}
+                  service={service}
                   gatewayAccountId={gatewayAccountId}
                   productsPath={`${url}/products`}
                   path={`${url}/products/create`}

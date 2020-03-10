@@ -16,7 +16,8 @@ import {
 
 import {
   CreateServiceMutationFn,
-  useCreateServiceMutation
+  useCreateServiceMutation,
+  GetUserServicesDocument
 } from "../../__generated__/graphql";
 import { isServerError } from "../../../apollo-rest-utils";
 import { BreadBox } from "@pay/web/components/Breadcrumb";
@@ -51,8 +52,11 @@ const decorators = [createDecorator<FormValues>()];
 
 const CreatePage = () => {
   const [createService, { loading, error, data }] = useCreateServiceMutation({
-    errorPolicy: "all",
-    refetchQueries: ["GetUserServices"]
+    refetchQueries: [
+      {
+        query: GetUserServicesDocument
+      }
+    ]
   });
 
   return (

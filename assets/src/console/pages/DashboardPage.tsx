@@ -32,9 +32,7 @@ const Bad = styled(Hint)`
 `;
 
 const DashboardPage: React.FC = () => {
-  const { loading, error, data } = useGetUserServicesQuery({
-    errorPolicy: "all"
-  });
+  const { loading, error, data } = useGetUserServicesQuery();
 
   const [acceptInvite] = useAcceptInviteMutation({
     refetchQueries: ["GetUserServices"]
