@@ -8,7 +8,8 @@ import { validators, Pages as CorePages, Loader, ErrorAlert } from "@pay/web";
 
 import {
   CreateProductMutationFn,
-  useCreateProductMutation
+  useCreateProductMutation,
+  GetProductsDocument
 } from "../../__generated__/graphql";
 import { isServerError } from "../../../apollo-rest-utils";
 import DetailsPage from "./DetailsPage";
@@ -124,14 +125,14 @@ const handleSubmit = (
 const decorators = [createDecorator<Values>()];
 
 interface Props {
-  serviceName: string;
+  service: { externalId: string; name: string };
   gatewayAccountId: string;
   productsPath: string;
   path: string;
 }
 
 const CreateFormPage: React.FC<Props> = ({
-  serviceName,
+  service,
   gatewayAccountId,
   productsPath,
   path
@@ -139,8 +140,12 @@ const CreateFormPage: React.FC<Props> = ({
   const location = useLocation();
 
   const [createProduct, { loading, error, data }] = useCreateProductMutation({
-    errorPolicy: "all",
-    refetchQueries: ["GetProducts"]
+    refetchQueries: [
+      {
+        query: GetProductsDocument,
+        variables: { serviceID: service.externalId }
+      }
+    ]
   });
 
   return (
@@ -178,7 +183,7 @@ const CreateFormPage: React.FC<Props> = ({
                 <Switch>
                   <Route path={`${path}/details`} exact strict>
                     <DetailsPage
-                      serviceName={serviceName}
+                      serviceName={service.name}
                       path={path}
                       values={values}
                       onSubmit={handleSubmit}
