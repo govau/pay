@@ -7,6 +7,7 @@ defmodule Pay.Services do
   alias Pay.Repo
 
   alias Pay.Payments
+  alias Pay.Services.User
   alias Pay.Services.Permission
   alias Pay.Services.Role
   alias Pay.Services.ServiceUser
@@ -573,6 +574,12 @@ defmodule Pay.Services do
     Repo.all(Service)
   end
 
+  def list_services_by_user(%User{} = user) do
+    with %{services: services} <- Repo.preload(user, :services) do
+      services
+    end
+  end
+
   @doc """
   Returns the list of services the user with the given external ID has access to.
 
@@ -583,12 +590,9 @@ defmodule Pay.Services do
 
   """
   def list_services_by_user_external_id(external_id) do
-    %{services: services} =
-      external_id
-      |> get_user_by_external_id!()
-      |> Repo.preload(:services)
-
-    services
+    external_id
+    |> get_user_by_external_id!()
+    |> list_services_by_user
   end
 
   @doc """

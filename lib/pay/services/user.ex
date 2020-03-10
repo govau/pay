@@ -15,6 +15,7 @@ defmodule Pay.Services.User do
     field :telephone_number, :string
 
     many_to_many :services, Pay.Services.Service, join_through: Pay.Services.ServiceUser
+    has_many :user_service_roles, Pay.Services.UserServiceRole
 
     timestamps()
   end
