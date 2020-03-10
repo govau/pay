@@ -51,7 +51,8 @@ const decorators = [createDecorator<FormValues>()];
 
 const CreatePage = () => {
   const [createService, { loading, error, data }] = useCreateServiceMutation({
-    errorPolicy: "all"
+    errorPolicy: "all",
+    refetchQueries: ["GetUserServices"]
   });
 
   return (
