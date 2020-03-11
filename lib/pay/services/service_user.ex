@@ -1,15 +1,14 @@
 defmodule Pay.Services.ServiceUser do
   use Ecto.Schema
   import Ecto.Changeset
-  alias Pay.Services.Service
-  alias Pay.Services.User
-  alias Pay.Services.Role
   @timestamps_opts [type: :utc_datetime_usec]
 
   schema "service_users" do
-    belongs_to :service, Service
-    belongs_to :user, User
-    belongs_to :role, Role
+    belongs_to :service, Pay.Services.Service
+    belongs_to :user, Pay.Services.User
+    belongs_to :role, Pay.Services.Role
+
+    has_many :permissions, through: [:role, :permissions]
 
     timestamps()
   end

@@ -3,6 +3,5 @@ defmodule Pay.Repo.Migrations.ServiceInvitesConstraints do
 
   def change do
     create index(:service_invites, [:email])
-    create index(:service_users, [:service_id, :user_id], unique: true)
   end
 end

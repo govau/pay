@@ -14,8 +14,8 @@ defmodule Pay.Services.User do
     field :platform_admin, :boolean, default: false
     field :telephone_number, :string
 
+    has_many :service_roles, Pay.Services.ServiceUser
     many_to_many :services, Pay.Services.Service, join_through: Pay.Services.ServiceUser
-    has_many :user_service_roles, Pay.Services.UserServiceRole
 
     timestamps()
   end
