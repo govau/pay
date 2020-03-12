@@ -10,7 +10,7 @@ defmodule PayWeb.Resolvers do
   end
 
   def users(_parent, _params, _resolution) do
-    {:ok, Services.list_users()}
+    {:ok, Services.Internal.list_users()}
   end
 
   defp format_service_invite(%Services.ServiceInvite{} = invite) do
@@ -32,7 +32,7 @@ defmodule PayWeb.Resolvers do
   def service_invites(_params, %{context: %{current_user: user}}) do
     {:ok,
      Enum.map(
-       Services.list_user_service_invites(user.email),
+       Services.Internal.list_user_service_invites(user.email),
        &format_service_invite/1
      )}
   end
@@ -42,25 +42,27 @@ defmodule PayWeb.Resolvers do
       }) do
     {:ok,
      Enum.map(
-       Services.list_service_invites(%{service_id: service_id}),
+       Services.Internal.list_service_invites(%{service_id: service_id}),
        &format_service_invite/1
      )}
   end
 
   def services(%Services.User{platform_admin: true}, _params, _resolution) do
-    {:ok, Services.list_services()}
+    {:ok, Services.Internal.list_services()}
   end
 
   def services(_parent, _params, %{context: %{current_user: user}}) do
-    {:ok, Services.list_services_by_user_external_id(user.external_id)}
+    Services.services(user)
   end
 
-  def service(%Payments.GatewayAccount{external_id: external_id}, _params, _resolution) do
-    {:ok, Services.get_service_by_gateway_account_external_id!(external_id)}
+  def service(%Payments.GatewayAccount{external_id: external_id}, _params, %{
+        context: %{current_user: user}
+      }) do
+    Services.service_for_gateway_account(user, external_id: external_id)
   end
 
-  def service(_parent, %{id: service_id}, _resolution) do
-    {:ok, Services.get_service_by_external_id!(service_id)}
+  def service(_parent, %{id: external_id}, %{context: %{current_user: user}}) do
+    Services.Exposed.service(user, external_id: external_id)
   end
 
   def gateway_accounts(%Services.Service{external_id: external_id}, _params, _resolution) do

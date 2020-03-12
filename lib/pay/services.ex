@@ -992,22 +992,6 @@ defmodule Pay.Services do
   end
 
   @doc """
-  Gets a single service_user.
-
-  Raises `Ecto.NoResultsError` if the Service user does not exist.
-
-  ## Examples
-
-      iex> get_service_user!(123)
-      %ServiceUser{}
-
-      iex> get_service_user!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_service_user!(id), do: Repo.get!(ServiceUser, id)
-
-  @doc """
   Creates a service_user.
 
   ## Examples
@@ -1144,21 +1128,31 @@ defmodule Pay.Services do
     |> Repo.delete_all()
   end
 
+  defp get_service_user(%User{} = user, %{service_id: service_id}) do
+    case ServiceUser
+         |> where(user_id: ^user.id, service_id: ^service_id)
+         |> preload([:service, :user, :role, :permissions])
+         |> Repo.one() do
+      nil -> {:error, "user not associated with service"}
+      service_user -> {:ok, service_user}
+    end
+  end
+
+  defp get_service_user(%User{} = user, %{service_external_id: external_id}) do
+    case get_service_by_external_id(external_id) do
+      nil ->
+        {:error, "user not associated with service"}
+
+      service ->
+        get_service_user(user, service.id)
+    end
+  end
+
   @doc """
   Check that a user has access to a service and return the pair
   """
   def get_user_service(%User{} = user, service_id) do
-    service_user =
-      ServiceUser
-      |> where(user_id: ^user.id, service_id: ^service_id)
-      |> preload([:service, :user])
-      |> Repo.one()
-
-    with %{service: service, user: user} <- service_user do
-      {:ok, %{service: service, user: user}}
-    else
-      nil -> {:error, "user not associated with service"}
-    end
+    get_service_user(user, %{service_id: service_id})
   end
 
   def get_invite_role(%ServiceInvite{} = invite) do
@@ -1232,5 +1226,14 @@ defmodule Pay.Services do
       clear_service_invites(email, service_id)
       {:ok, service}
     end
+  end
+
+  def services(%User{} = user) do
+    {:ok, Internal.list_services_by_user()}
+  end
+
+  def service(%User{} = user) do
+    cond
+    {:ok, Internal.list_services_by_user()}
   end
 end
