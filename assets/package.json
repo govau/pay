@@ -47,7 +47,7 @@
     "graphql-anywhere": "4.2.4",
     "graphql-tag": "2.10.1",
     "jest-styled-components": "7.0.0",
-    "markdown-to-jsx": "6.11.0",
+    "markdown-to-jsx": "6.11.4",
     "prettier": "1.19.1",
     "qs": "6.9.1",
     "react": "16.12.0",
